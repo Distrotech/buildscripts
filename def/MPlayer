@@ -1,0 +1,20 @@
+VERSION="1.1"
+VERSEP="-";
+PREFIX="/usr";
+STDOPTS="--prefix=/usr --mandir=/usr/share/man";
+CONFOPT="--disable-ffmpeg_a";
+BUILDDIR="0";
+NOCCOPT="1";
+BUILDDIR="0";
+OPT_x86_64="--sysroot=/build/x86_64 --libdir=/usr/lib64 --shlibdir=/usr/lib64";
+OPT_i686="--enable-cross-compile --sysroot=/build/i686 --arch=i686 --target-os=linux
+          --cross-prefix=i686-linux-gnu- --cpu=i686 --extra-cflags=-m32";
+OPT_arm="--enable-cross-compile --sysroot=/build/arm --arch=arm --target-os=linux --cross-prefix=arm-linux-gnueabi-
+         --extra-ldflags=-Wl,--rpath-link=/build/arm/usr/lib:/build/arm/lib:/build/arm/usr/X11R7/lib
+         --host-cc=/usr/bin/gcc";
+OPT_x86_32="--enable-cross-compile --sysroot=/build/x86_32 --arch=x86_64 --target-os=linux 
+          --cross-prefix=x86_64-linux-gnu- --extra-cflags=-mx32 --extra-ldflags=-mx32
+          --libdir=/usr/libx32 --shlibdir=/usr/libx32 --host-cc=/usr/bin/gcc --disable-asm";
+OPT_mips="--enable-cross-compile --cc=mips-linux-gnu-gcc --host-cc=/usr/bin/gcc --target=mips-linux-gnu
+         --extra-ldflags=-Wl,--rpath-link=/build/mips/usr/lib:/build/mips/lib:/build/mips/usr/X11R7/lib";
+ADDCFLAG="-O2 -I=/usr/include/fribidi";

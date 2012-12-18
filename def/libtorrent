@@ -1,0 +1,8 @@
+VERSION="0.13.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-aligned --without-kqueue --enable-ipv6";
+ADDCFLAG="-I=/usr/include/sigc++-2.0 -pthread -O2 -g -DDEBUG -fvisibility=hidden";
+NOCCOPT="1";
+ADDCC="0";
+EXTRALIBS="-L=/usr/lib";

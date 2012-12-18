@@ -1,0 +1,5 @@
+VERSION="0.7.4"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ADDCFLAG="-fPIC";

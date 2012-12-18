@@ -1,0 +1,492 @@
+#/bin/bash
+
+XDIST=/dist/cross
+MAKE_J="-j6";
+
+NARCH=`uname -m`
+
+if [ "${1}" ];then
+  ARCHS=${1}
+ else
+  ARCHS="i686 x86_64 x86_32 powerpc powerpc64 mips mips64 arm";
+fi;
+
+for pkg in binutils gcc glibc qemu;do
+  if [ ! -e /dist/def/${pkg} ];then
+    echo "Missing cross build definitions requires binutils gcc glibc";
+    exit 1;
+  fi;
+done;
+
+unset CFLAGS LDFLAGS CPPFLAGS
+
+#Set build tupple   
+case ${NARCH} in
+  arm64)BUILD=aarch64-linux-gnueabi;;
+  arm)BUILD=arm-linux-gnueabi;;
+  mips64)BUILD=mips64-linux-gnuabi64;;
+  x86_32)BUILD=x86_64-linux-gnux32;;
+  *)BUILD=${NARCH}-linux-gnu;;
+esac;
+
+#Set Libdir
+case ${NARCH} in
+  x86_32)NLIBDIR="libx32";;   
+  *64)NLIBDIR="lib64";;
+  *)NLIBDIR="lib";;
+esac;
+
+export BUILD NLIBDIR NARCH
+
+setup_build_dir() {
+  cd /usr/src/${2}/${3}
+  if [ -d build-${NARCH}-${1}${4} ];then
+    rm -rf build-${NARCH}-${1}${4}
+  fi;
+  if [ -d ${XDIST}/${NARCH}/${1}/${3}${4} ];then
+    rm -rf ${XDIST}/${NARCH}/${1}/${3}${4}
+  fi;
+  if [ ! -d build-${NARCH}-${1}${4} ];then
+    mkdir build-${NARCH}-${1}${4}
+  fi;
+  cd build-${NARCH}-${1}${4}
+}
+
+build_glibc() {
+  cd /usr/src/glibc/${3}
+  if [ -d build-${NARCH}-${1} ];then
+    rm -rf build-${NARCH}-${1}
+  fi;
+  if [ -d ${XDIST}/${1}/${3} ];then
+    rm -rf ${XDIST}/${1}/${3}/usr/include
+  fi;
+  if [ ! -d build-${NARCH}-${1} ];then
+    mkdir build-${NARCH}-${1}
+  fi;
+  cd build-${NARCH}-${1}
+
+  case ${1} in
+    i686|arm)MARCH="--disable-multi-arch";;
+    *)MARCH="--enable-multi-arch";;
+  esac;
+
+  GCCEH=`${2}-gcc -print-libgcc-file-name |sed 's/libgcc/&_eh/'`
+  if [ ! -e ${GCCEH} ];then
+     ln -s libgcc.a ${GCCEH}
+  fi;
+
+  mkdir -p ${XDIST}/${1}/${3}/usr/include/
+  rsync -aP ${XDIST}/${1}/kernel-headers/usr/include/ ${XDIST}/${1}/${3}/usr/include/
+
+  if ! (../configure --prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var \
+                     --build=${BUILD} --host=${2} --with-headers=/build/${1}/usr/include \
+                     ${MARCH} ${4} libc_cv_ssp=no && \
+    (make ${MAKE_J} all || make all) && make DESTDIR=${XDIST}/${1}/${3} all install);then
+    echo "Glibc failed";
+    exit
+  fi;
+
+  #Setup some missing rpc headers / localedata / ld.so.conf
+  if [ -e /usr/src/glibc/${3}/.build-info/post-install ];then
+    sh /usr/src/glibc/${3}/.build-info/post-install ${1} /usr/src/glibc/${3} ${XDIST}/${1}/${3}
+  fi;
+
+  if [ -h ${GCCEH} ];then
+    rm ${GCCEH}
+  fi;
+}
+
+build_binutils() {
+  setup_build_dir ${1} binutils ${3}
+  if ! (../configure --prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var --program-prefix=${2}- \
+               --target=${2} --build=${BUILD} --with-sysroot=/build/${1} --host=${BUILD} --enable-lto \
+               --enable-64-bit-bfd --enable-initfini-array --with-sysroot=/build/${1} --disable-werror && \
+        make ${MAKE_J} all && make DESTDIR=${XDIST}/${NARCH}/${1}/${3} all install);then
+    echo "Binutils failed";
+    exit
+  fi;
+}
+
+build_gcc_bootstrap() {
+  case ${1} in
+    mips)MARCH="--disable-multilib --with-arch=mips32";;
+    x86_64)MARCH="--disable-multilib --with-abi=64";;
+    x86_32)MARCH="--disable-multilib --with-abi=x32";;
+    i686)MARCH="--disable-multilib";;
+    mips64)MARCH="--disable-multilib --with-arch=mips64";;
+    *)MARCH="--disable-multilib";;
+  esac;
+
+  if [ "${2}" == "${4}" ];then
+    GCCBOOTDEST=${XDIST}/${1}/${3}-boot
+#    case ${NARCH} in
+#      x86_64|x86_32)PLATFORM=${BUILD};;
+#      *)PLATFORM=${4};;
+#    esac;
+   else
+    GCCBOOTDEST=${XDIST}/${NARCH}/${1}/${3}-boot
+#    PLATFORM=${4}
+  fi;
+
+  if [ -e /build/${1}/usr/${B_LIBDIRS}/libc.so ];then
+    BUILDDIR=/build/${1}/
+   else
+    BUILDDIR=${XDIST}/${1}/kernel-headers
+  fi;
+
+  #Add Ldflags for stage2
+#  if [ -d /build/${1] ];then
+#    MARCH="${MARCH}";
+#  fi;
+
+  if ! (../configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --program-prefix=${2}- \
+              --target=${2} --disable-shared --without-lto --disable-libgomp --disable-libquadmath --disable-libmudflap  \
+              --disable-libswsp --enable-languages=c --build=${BUILD} --host=${4} --disable-threads ${MARCH} \
+              --with-build-sysroot=${BUILDDIR} --enable-bootstrap=no CFLAGS="-I${BUILDDIR}/usr/include" && \
+        (make ${MAKE_J} all-gcc all-target-libgcc || make all-gcc all-target-libgcc)  && \
+        make DESTDIR=${GCCBOOTDEST} install-gcc install-target-libgcc);then
+    echo "GCC Bootstrap failed";
+    exit
+  fi;
+
+  #Setup some missing bits
+  if [ -e /usr/src/gcc/${3}/.build-info/post-install ];then
+    sh /usr/src/gcc/${3}/.build-info/post-install ${1} /usr/src/gcc/${3} ${GCCBOOTDEST}
+  fi;
+}
+
+build_gcc_full() {
+  setup_build_dir ${1} gcc ${3}
+
+  case ${1} in
+    mips)MARCH="--disable-multilib --with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";;
+    mips64)MARCH="--disable-multilib --with-arch-32=mips32 --with-arch-64=mips64 --with-abi=64";;
+    x86_64)MARCH="--enable-multilib --with-multilib-list=m32,m64,mx32";;
+    x86_32)MARCH="--enable-multilib --with-multilib-list=mx32 --with-abi=x32";;
+    *)MARCH="--disable-multilib";;
+  esac;
+ 
+  if ! (../configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --program-prefix=${HOST}- ${4} \
+        --target=${2} --infodir=/usr/share/info --build=${BUILD} --host=${BUILD} --enable-lto \
+        --with-sysroot=/build/${1} --with-build-sysroot=${XDIST}/${1}/${GLIBC} ${MARCH} \
+        CFLAGS="-I=/usr/include -I=/include" && \
+        make ${MAKE_J} all && make DESTDIR=${XDIST}/${NARCH}/${1}/${3} install);then
+    echo "GCC Build failed";
+    exit
+  fi;
+
+  #Setup some missing bits
+  if [ -e /usr/src/gcc/${3}/.build-info/post-install ];then
+    sh /usr/src/gcc/${3}/.build-info/post-install ${1} /usr/src/gcc/${3} ${XDIST}/${NARCH}/${1}/${3}
+  fi;
+}
+
+build_qemu_static() {
+  cd /usr/src/qemu/${1}
+
+  if [ -d build-${NARCH}-static ];then
+    rm -rf build-${NARCH}-static
+  fi;
+  if [ -d ${XDIST}/${NARCH}/${1} ];then
+    rm -rf ${XDIST}/${NARCH}/${1}
+  fi;
+  if [ ! -d build-${NARCH}-static ];then
+    mkdir build-${NARCH}-static
+  fi;
+  cd build-${NARCH}-static
+
+  ./../configure --prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var --infodir=/usr/share/info \
+                 --libdir=/usr/lib64 --static --disable-system --disable-user --enable-linux-user \
+                 --target-list=arm-linux-user,mips-linux-user,ppc-linux-user,ppc64-linux-user
+  make ${MAKE_J}
+  mkdir -p ${XDIST}/${NARCH}/${1}/usr/bin
+  for arch in arm mips ppc ppc64;do
+    uemu=${arch}-linux-user/qemu-${arch};
+    cp ${uemu} ${XDIST}/${NARCH}/${1}/usr/bin/qemu-${arch}-static
+  done
+  rsync -aP ${XDIST}/${NARCH}/${1}/ /
+}
+
+#Check arch export common env variables
+check_create_arch() {
+  #Determine kernel arch
+  case ${barch} in
+    x86_*|i*86)KARCH="x86";;
+    *64)KARCH=${barch::-2};;
+    *)KARCH=${barch};
+  esac;
+
+  #Set Libdir
+  case ${barch} in
+    x86_32)B_LIBDIRS="libx32";;
+    *64)B_LIBDIRS="lib64";;
+    *)B_LIBDIRS="lib";;
+  esac;
+
+  #Set tupple  
+  case ${barch} in
+    arm64)HOST=aarch64-linux-gnueabi;;
+    arm)HOST=${barch}-linux-gnueabi;;
+    mips64)HOST=${barch}-linux-gnuabi64;;
+    x86_32)HOST=x86_64-linux-gnux32;;
+    *)HOST=${barch}-linux-gnu;;
+  esac;
+
+ case ${barch} in
+    arm|arm64)QCPU=arm;;
+    mips|mips64)QCPU=mips;;
+    powerpc)QCPU=ppc;;
+    powerpc64)QCPU=ppc64;;
+  esac;
+
+  export B_LIBDIRS HOST KARCH QCPU
+
+  if [ ! -d /build/${1} ];then
+    mkdir -p /build/${1}
+  fi;
+
+  HDIR=${XDIST}/${1}/kernel-headers
+  if [ ! -d ${HDIR}/usr/include ] || [ ! -f /dist/pkg/build/${1}/kernel-headers.tar.xz ] || \
+     [ /usr/include/linux -nt ${HDIR}/usr/include/linux ];then
+    if [ ! -d ${HDIR} ];then
+      rm -rf ${HDIR}
+    fi;
+    mkdir -p ${HDIR}/usr/include
+
+    rsync -aP /usr/include/linux /usr/include/asm-generic /usr/include/asm-${KARCH} ${HDIR}/usr/include/
+    rsync -aP --include=mtd --include=mtd/mtd-user.h --include=mtd/mtd-abi.h --exclude=* /usr/src/linux/include/mtd \
+               ${HDIR}/usr/include/
+    sed -ie "s/__user //" ${HDIR}/usr/include/mtd/mtd-abi.h
+
+    ln -s asm-${KARCH} ${HDIR}/usr/include/asm
+
+    rsync -aP ${HDIR}/usr/include/ /build/${1}/usr/include/
+    (cd ${HDIR}
+     if [ ! -d /dist/pkg/build/${1}/ ];then
+       mkdir -p /dist/pkg/build/${1}
+     fi;
+     tar -cJf /dist/pkg/build/${1}/kernel-headers.tar.xz *)
+  fi;
+  if [ ${XDIST}/${1}/kernel-headers/usr/include/linux -nt /build/${1}/usr/include/linux ];then
+    rsync -aP ${XDIST}/${1}/kernel-headers/usr/include /build/${1}/usr/include
+  fi;
+}
+
+build_native_bootstrap() {
+  if [ -d ${XDIST}/${2}/${1}-boot ];then
+    return;
+  fi;
+
+  cd /usr/src/gcc/${1}
+
+  if [ -d build-${2}-boot ];then
+    rm -rf build-${2}-boot
+  fi;
+  if [ -d ${XDIST}/${2}/${1}-boot ];then
+    rm -rf ${XDIST}/${2}/${1}-boot
+  fi;
+  if [ ! -d build-${2}-boot ];then
+    mkdir build-${2}-boot
+  fi;
+  cd build-${2}-boot
+
+  build_gcc_bootstrap ${2} ${3} ${1} ${3}
+
+  if [ ! -f /dist/pkg/build/${2}/${1}-boot.tar.xz ] || \
+     [ ${XDIST}/${2}/${1}-boot -nt /dist/pkg/build/${2}/${1}-boot.tar.xz ];then
+    (cd ${XDIST}/${2}/${1}-boot
+     tar -cJf /dist/pkg/build/${2}/${1}-boot.tar.xz *)
+  fi;
+}
+
+package_glibc() {
+  if [ ! -f /dist/pkg/build/${1}/${GLIBC}-headers.tar.xz ] || \
+     [ ${XDIST}/${1}/${GLIBC} -nt /dist/pkg/build/${1}/${GLIBC}-headers.tar.xz ];then
+       (cd ${XDIST}/${1}/${GLIBC}
+       find . ! -regex '\.\/usr\/include\/asm.*' -and ! -regex '\.\/usr\/include\/linux.*' -and \
+              ! -regex '\.\/usr\/include\/mtd.*' -and -regex '\.\/usr\/include\/.*' |\
+          cpio -ov -H tar |xz -9 > /dist/pkg/build/${1}/${GLIBC}-headers.tar.xz) > /dev/null 2>&1
+  fi;
+  if [ ! -f /dist/pkg/build/${1}/${GLIBC}-lib.tar.xz ] || \
+     [ ${XDIST}/${1}/${GLIBC} -nt /dist/pkg/build/${1}/${GLIBC}-lib.tar.xz ];then
+     (cd ${XDIST}/${1}/${GLIBC}
+      find . -regex "\.\/${2}\/.*" -or -regex "\.\/usr\/${2}\/.*" -and \
+           ! -regex "\.\/usr\/${2}\/locale.*" |\
+        cpio -ov -H tar |xz -9 > /dist/pkg/build/${1}/${GLIBC}-lib.tar.xz) > /dev/null 2>&1
+  fi;
+  if [ ! -f /dist/pkg/build/${1}/${GLIBC}.tar.xz ] || \
+     [ ${XDIST}/${1}/${GLIBC} -nt /dist/pkg/build/${1}/${GLIBC}.tar.xz ];then
+     (cd ${XDIST}/${1}/${GLIBC}
+     find . ! -regex '\.\/usr\/include\/asm.*' -and ! -regex '\.\/usr\/include\/linux.*' -and \
+            ! -regex '\.\/usr\/include\/mtd.*' |cpio -ov -H tar |\
+        xz -9 > /dist/pkg/build/${1}/${GLIBC}.tar.xz) > /dev/null 2>&1
+  fi;
+}
+
+build_cross_package() {
+  if [ ! -d /dist/pkg/build/${NARCH} ];then
+    mkdir -p /dist/pkg/build/${NARCH}
+  fi;
+
+  eval `cat /dist/def/gcc`;
+  GCC=gcc${VERSEP}${VERSION}
+#  GCC=gcc-4.7.2
+  GCCOPT=${CONFOPT}
+
+  eval `cat /dist/def/binutils`;
+  BINUTILS=binutils${VERSEP}${VERSION}
+  BINUTILOPT=${CONFOPT}
+
+  eval `cat /dist/def/glibc`;
+  GLIBC=glibc${VERSEP}${VERSION}
+  GLIBCOPT=${CONFOPT}
+
+  eval `cat /dist/def/qemu`;
+  QEMU=qemu${VERSEP}${VERSION}
+
+  #QEMU Static runtime emulator
+  if [ ! -d ${XDIST}/${NARCH}/${QEMU} ];then
+    build_qemu_static ${QEMU}
+  fi;
+  if [ ! -f /dist/pkg/build/${NARCH}/${QEMU}-static.tar.xz ] || \
+     [ ${XDIST}/${NARCH}/${QEMU} -nt /dist/pkg/build/${NARCH}/${QEMU}-static.tar.xz ];then
+       (cd ${XDIST}/${NARCH}/${QEMU}
+       tar -cJf /dist/pkg/build/${NARCH}/${QEMU}-static.tar.xz *)
+  fi;
+
+  acnt=1;
+  for barch in $@;do
+    #Check arch build dir exists Setup linux headers and env vars
+    check_create_arch ${barch}
+
+    if [ "${barch}" == "${NARCH}" ];then
+      build_native_bootstrap ${GCC} ${NARCH} ${BUILD}
+      if [ ! -e /build/${barch}/usr/${NLIBDIR}/libc.so ] || [ ! -d ${XDIST}/${barch}/${GLIBC} ];then
+        build_glibc ${barch} ${BUILD} ${GLIBC} "${GLIBCOPT}"
+      fi;
+      package_glibc ${barch} ${NLIBDIR}
+      let acnt++;
+      continue;
+    fi;
+
+    case ${barch} in
+      #Multi arch/lib for intel i686 does not support it
+      x86_32|x86_64)
+        case ${NARCH} in
+          x86_32|x86_64)
+            (#Add Arch bootstrap GCC
+            export CC="${BUILD}-gcc -m${barch:4:2} --sysroot=/build/${barch}"
+            build_native_bootstrap ${GCC} ${barch} ${HOST}
+
+            #Setup GLIBC For x86 ABI
+            if [ ! -e /build/${barch}/usr/${B_LIBDIRS}/libc.so ] || [ ! -d ${XDIST}/${barch}/${GLIBC} ];then
+              build_glibc ${barch} ${HOST} ${GLIBC} "${GLIBCOPT}"
+            fi;
+            package_glibc ${barch} ${B_LIBDIRS})
+            let acnt++;
+            continue;;
+        esac;;
+    esac;
+
+    if [ "${BUILD}" == "${HOST}" ];then
+      let acnt++;
+      continue;
+    fi;
+
+    if [ ! -d /dist/pkg/build/${NARCH}/${barch} ];then
+      mkdir -p /dist/pkg/build/${NARCH}/${barch}
+    fi;
+
+    #Binutils to handle the target
+    if [ ! -e /usr/bin/${HOST}-ld ] || [ ! -d ${XDIST}/${NARCH}/${barch}/${BINUTILS} ];then
+      build_binutils ${barch} ${HOST} ${BINUTILS}
+      if [ ! -e /usr/bin/${HOST}-ld ];then
+        rsync -aP ${XDIST}/${NARCH}/${barch}/${BINUTILS}/ /
+      fi;
+    fi;
+    if [ ! -f /dist/pkg/build/${NARCH}/${barch}/${BINUTILS}.tar.xz ] || \
+       [ ${XDIST}/${NARCH}/${barch}/${BINUTILS} -nt /dist/pkg/build/${NARCH}/${barch}/${BINUTILS}.tar.xz ];then
+         (cd ${XDIST}/${NARCH}/${barch}/${BINUTILS}
+         tar -cJf /dist/pkg/build/${NARCH}/${barch}/${BINUTILS}.tar.xz *)
+    fi;
+
+    #Static compiler to bootstrap GLIBC
+    if [ ! -e /usr/bin/${HOST}-gcc ] || [ ! -d ${XDIST}/${NARCH}/${barch}/${GCC}-boot ];then
+      setup_build_dir ${barch} gcc ${GCC} -boot
+      build_gcc_bootstrap ${barch} ${HOST} ${GCC} ${BUILD}
+      if [ ! -e /usr/bin/${HOST}-gcc ];then
+        rsync -aP ${XDIST}/${NARCH}/${barch}/${GCC}-boot/ /
+        rsync -aP ${XDIST}/${NARCH}/${barch}/${GCC}-boot/usr/${HOST} /build/${barch}/usr/
+        touch /usr/bin/${HOST}-gcc.boot
+      fi;
+    fi;
+    if [ ! -f /dist/pkg/build/${NARCH}/${barch}/${GCC}-boot.tar.xz ] || \
+       [ ${XDIST}/${NARCH}/${barch}/${GCC}-boot -nt /dist/pkg/build/${NARCH}/${barch}/${GCC}-boot.tar.xz ];then
+         (cd ${XDIST}/${NARCH}/${barch}/${GCC}-boot
+         tar -cJf /dist/pkg/build/${NARCH}/${barch}/${GCC}-boot.tar.xz *)
+    fi;
+
+    #GLIBC built with the bootstrap
+    if [ ! -e /build/${barch}/usr/${B_LIBDIRS}/libc.so ] || [ ! -d ${XDIST}/${barch}/${GLIBC} ];then
+      build_glibc ${barch} ${HOST} ${GLIBC} "${GLIBCOPT}"
+
+      #We need to make sure the multi arch libs are inplace before building the compiler
+#      case ${barch} in
+#	powerpc64)
+#		#Need stubs-32.h from 32bit
+#		rsync -aP ${XDIST}/powerpc/${GLIBC}/usr/include/gnu/stubs-32.h \
+#			/build/${barch}/usr/include/gnu/
+#
+#		#Add the 32bit libs to 64bit for sysroot
+#		rsync -aP ${XDIST}/powerpc/${GLIBC}/lib /build/${barch}/
+#		rsync -aP ${XDIST}/powerpc/${GLIBC}/usr/lib /build/${barch}/usr/
+#	;;
+#	mips64)
+#		#Need stubs-o32.h from 32bit
+#		rsync -aP ${XDIST}/mips/${GLIBC}/usr/include/gnu/stubs-o32.h \
+#			/build/${barch}/usr/include/gnu/
+#
+#		#Add the 32bit libs to 64bit for sysroot
+#		rsync -aP ${XDIST}/mips/${GLIBC}/lib /build/${barch}/
+#		rsync -aP ${XDIST}/mips/${GLIBC}/usr/lib /build/${barch}/usr/
+#	;;
+#      esac;
+      #Sync to build sysroot
+      if [ ! -e /build/${barch}/usr/${B_LIBDIRS}/libc.so ];then
+        rsync -aP ${XDIST}/${barch}/${GLIBC}/ /build/${barch}/
+      fi;
+    fi;
+    package_glibc ${barch} ${B_LIBDIRS}
+
+    if [ ! -e /usr/bin/${HOST}-gcc ] || [ ! -d ${XDIST}/${NARCH}/${barch}/${GCC} ] || \
+       [ -e /usr/bin/${HOST}-gcc.boot ];then
+      build_gcc_full ${barch} ${HOST} ${GCC} "${GCCOPT}"
+      if [ ! -e /usr/bin/${HOST}-gcc ] || [ -e /usr/bin/${HOST}-gcc.boot ];then
+        rsync -aP ${XDIST}/${NARCH}/${barch}/${GCC}/ /
+        rsync -aP ${XDIST}/${NARCH}/${barch}/${GCC}/usr/${HOST} /build/${barch}/usr/
+        rm /usr/bin/${HOST}-gcc.boot
+      fi;
+    fi;
+    if [ ! -f /dist/pkg/build/${NARCH}/${barch}/${GCC}.tar.xz ] || \
+       [ ${XDIST}/${NARCH}/${barch}/${GCC} -nt /dist/pkg/build/${NARCH}/${barch}/${GCC}.tar.xz ];then
+         (cd ${XDIST}/${NARCH}/${barch}/${GCC}
+         tar -cJf /dist/pkg/build/${NARCH}/${barch}/${GCC}.tar.xz *)
+    fi;
+
+    #Add QEMU static to build
+    if [ -d /build/${barch}/usr/bin ] && [ "${QCPU}" ] && [ -f ${XDIST}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ];then
+      if [ ! -f /build/${barch}/usr/bin/qemu-${QCPU}-static ] || \
+         [ ${XDIST}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static -nt /build/${barch}/usr/bin/qemu-${QCPU}-static ];then
+        cp ${XDIST}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static /build/${barch}/usr/bin/qemu-${QCPU}-static
+      fi;
+    fi;
+
+    #too make the kit complete distribute a bootstrap compiler
+    build_native_bootstrap ${GCC} ${barch} ${HOST}
+
+    let acnt++;
+  done;
+}
+
+
+build_cross_package ${ARCHS}

@@ -1,0 +1,6 @@
+VERSION="1.8.4"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+JAVA_HOME="/usr/lib64/jvm/jdk-1.7.0_09/";

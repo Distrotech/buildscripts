@@ -1,0 +1,17 @@
+VERSION="5.3.21"
+VERSEP="-";
+PREFIX="/usr";
+JAVA_HOME="/usr/lib64/jvm/jdk-1.7.0_09";
+CONFOPT="--enable-compat185 --enable-shared=yes --enable-dbm --enable-cxx --enable-tcl --enable-java";
+CFGPTH="build_unix";
+CFGBIN="/dist/";
+OPT_i686="--with-tcl=/build/i686/usr/lib";
+OPT_arm="--with-tcl=/build/arm/usr/lib ac_cv_func_pstat_getdynamic=no";
+OPT_mips="--with-tcl=/build/mips/usr/lib ac_cv_func_pstat_getdynamic=no";
+OPT_arm64="--with-tcl=/build/arm64/usr/lib64 ac_cv_func_pstat_getdynamic=no";
+OPT_mips64="--with-tcl=/build/mips64/usr/lib64 ac_cv_func_pstat_getdynamic=no";
+OPT_powerpc="--with-tcl=/build/powerpc/usr/lib ac_cv_func_pstat_getdynamic=no";
+OPT_powerpc64="--with-tcl=/build/powerpc64/usr/lib64 ac_cv_func_pstat_getdynamic=no";
+OPT_x86_64="--with-tcl=/build/x86_64/usr/lib64";
+OPT_x86_32="--with-tcl=/build/x86_32/usr/libx32";
+ADDCC="0";

@@ -1,0 +1,8 @@
+VERSION="5.0.5"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-cxx";
+OPT_x86_32="ABI=x32";
+ADDWITHSYSROOT="1";
+SYSROOTFIXUP="1";
+NOCCOPT="1";

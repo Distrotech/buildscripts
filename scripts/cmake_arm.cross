@@ -1,0 +1,12 @@
+SET(CMAKE_SYSTEM_NAME Linux-arm)
+include(CMakeForceCompiler)
+CMAKE_FORCE_C_COMPILER(arm-embed-linux-gnueabi-gcc GNU)
+SET(CMAKE_FIND_ROOT_PATH /build/arm)
+SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+Checking uname sysname type: UNKNOWN
+Checking uname machine type: UNKNOWN
+Checking uname release type: UNKNOWN
+Checking uname version type: UNKNOWN
+Checking simple C program: UNKNOWN

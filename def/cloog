@@ -1,0 +1,5 @@
+VERSION="0.16.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-isl=internal --with-gmp=system";
+ADDCFLAG="-I./local/isl";

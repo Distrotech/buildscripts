@@ -1,0 +1,7 @@
+VERSION="3.11"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="ac_cv_linux_kernel_pppoe=yes rpppoe_cv_pack_bitfields=rev";
+BUILDDIR="0";
+CFGPTH="/src/";
+CFGBIN="/src/";

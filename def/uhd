@@ -1,0 +1,7 @@
+VERSION="003_005_000"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+CFGBIN="host/";
+CFGPTH="host/";
+

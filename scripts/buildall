@@ -1,0 +1,59 @@
+#!/bin/bash
+
+DISTDIR=/dist
+STATDIR=${DISTDIR}/status
+DEFDIR=${DISTDIR}/def
+
+ARCH="i686 x86_64 x86_32 arm mips powerpc powerpc64 mips64";
+
+if [[ ${ARCH} != *${1}* ]];then
+  echo "Select a ARCH : ${ARCH}"
+  exit -1;
+fi;
+
+configstatdir() {
+  if [ ! -d ${STATDIR} ];then
+    mkdir ${STATDIR}
+  fi;
+
+  if [ ! -d ${STATDIR}/${1} ];then
+    mkdir ${STATDIR}/${1}
+  fi;
+  for stat in done fail output;do
+    if [ ! -d ${STATDIR}/${1}/${stat} ];then 
+      mkdir ${STATDIR}/${1}/${stat}
+    fi;
+  done
+}
+
+loop_on_dir() {
+  configstatdir ${1}
+  for pkg in `ls ${DEFDIR}`;do
+    if [ -e ${STATDIR}/${1}/done/${pkg} ];then
+      continue;
+    fi;
+    /dist/scripts/build ${1} clean ${pkg};
+    RES=$?
+    if [ ${RES} != 0 ];then
+      echo ${RES} > ${STATDIR}/${1}/fail/$pkg
+      continue;
+    fi;
+    if [ -e ${STATDIR}/${1}/fail/${pkg} ];then
+      rm ${STATDIR}/${1}/fail/${pkg}
+    fi;
+
+    echo ${pkg} >> ${STATDIR}/${1}/built
+    touch ${STATDIR}/${1}/done/${pkg}
+    touch ${STATDIR}/change;
+  done;
+  if [ -e ${STATDIR}/change ];then
+    rm ${STATDIR}/change;
+    return 0;
+   else
+    return 1;
+  fi;
+}
+
+while loop_on_dir ${1};do
+  rm ${STATDIR}/change
+done;

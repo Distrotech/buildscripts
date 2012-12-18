@@ -1,0 +1,16 @@
+VERSION="3.1.src"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-shared ac_cv_lib_dld_dld_link=no";
+OPT_powerpc="--target=powerpc-linux-gnu";
+OPT_powerpc64="--target=powerpc-linux-gnu";
+OPT_mips="--target=mips-linux-gnu";
+OPT_mips64="--target=mips64-linux-gnuabi64";
+OPT_arm="--target=arm-linux-gnueabi-";
+OPT_arm64="--target=aarch64-linux-gnu";
+FIXUPLIB="1";
+ADDFILTER="Makefile.config";
+NOCCOPT="1";
+SYSROOTFIXUP="1";
+MAKEOPTS="KEEP_SYMBOLS=1";
+ADDCC="0";

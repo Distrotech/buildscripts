@@ -1,0 +1,6 @@
+VERSION="265"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+EXTRALIBS="-lltdl -lutil -lssl -lcrypto -ldl";

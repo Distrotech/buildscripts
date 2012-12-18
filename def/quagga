@@ -1,0 +1,5 @@
+VERSION="0.99.21"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+SYSCONFPRE="quagga";

@@ -1,0 +1,17 @@
+VERSION="9.9.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-static=no --enable-exportlib --with-libtool --with-dlz-ldap --enable-epoll=yes --with-gost=no
+         BUILD_CC=/usr/bin/gcc";
+BUILDDIR="0";
+ADDCC="0";
+SYSROOTFIXUP="1";
+OPT_arm="ac_cv_file__dev_random=yes";
+OPT_arm64="ac_cv_file__dev_random=ye --with-export-libdir=/usr/lib64/bind9";
+OPT_mips="ac_cv_file__dev_random=yes";
+OPT_mips64="ac_cv_file__dev_random=yes --with-export-libdir=/usr/lib64/bind9";
+OPT_powerpc="ac_cv_file__dev_random=yes";
+OPT_powerpc64="ac_cv_file__dev_random=yes --with-export-libdir=/usr/lib64/bind9";
+OPT_i686="ac_cv_file__dev_random=yes";
+OPT_x86_32="ac_cv_file__dev_random=yes --with-export-libdir=/usr/libx32/bind9";
+OPT_x86_64="ac_cv_file__dev_random=yes --with-export-libdir=/usr/lib64/bind9";

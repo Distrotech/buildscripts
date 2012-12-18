@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ "${1}" ];then
+  SCDIR=${1}
+ else
+  SCDIR="/usr/src/"
+fi;
+
+ls ${SCDIR} |awk '{printf "if [ ! -e /dist/def/%s ];then echo %s;fi\n",$1,$1}' |sh

@@ -1,0 +1,13 @@
+VERSION="0.93.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+OPT_arm="ac_cv_func_memcmp_working=yes";
+OPT_arm64="ac_cv_func_memcmp_working=yes";
+OPT_mips="ac_cv_func_memcmp_working=yes";
+OPT_mips64="ac_cv_func_memcmp_working=yes";
+OPT_powerpc="ac_cv_func_memcmp_working=yes";
+OPT_powerpc64="ac_cv_func_memcmp_working=yes";
+OPT_i686="ac_cv_func_memcmp_working=yes";
+OPT_x86_32="ac_cv_func_memcmp_working=yes";

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+make V=1 LDFLAGS="${LDFLAGS}" AR=${AR} RANLIB=${RANLIB} LD="${LD}" \
+     CXX="${CXX}" CC="${CC}" DESTDIR=${3} all install || exit ${1}
+

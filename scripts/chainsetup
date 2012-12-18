@@ -1,0 +1,282 @@
+#!/bin/bash
+
+#
+# Builds
+# 1)Native binutils "updates" the system binutils using the system compiler
+# 2)Arch binutils target when building from a non native system
+# 3)GCC dependancies gmp mpfr mpc (build for system)
+# 4)GCC C only not shared (this is only suitiable to get GLIBC up)
+# 5)GLIBC
+# 6)ZLIB [Required by binutils]
+# 7)GCC C/C++
+# 8)Native GCC deps
+# 9)Arch Native Binutils
+# 10)Full GCC
+
+NARCH=`uname -m`;
+export CC=${1:-gcc}
+export CXX=${2:-g++}
+export BUILD=`${CC} -dumpmachine`
+export BUILD_CC=${CC}
+
+if [ "${NARCH}" == "arm" ];then
+  HOST="${NARCH}-linux-gnueabi";
+ else
+  HOST="${NARCH}-linux-gnu"
+fi;
+
+if [ ! -d /build/${NARCH} ];then
+  mkidr -p /build/${NARCH}
+fi;
+
+set_new_gcc() {
+  export CC=${HOST}-gcc
+  export CXX=${HOST}-g++
+}
+
+gcc_arch_build_32() {
+  for arch32 in mx32 m32;do
+    GCCEH32=`${CC} ${arch32} -print-libgcc-file-name |sed 's/libgcc/&_eh/'`
+    if [ ! -e ${GCCEH32} ];then
+      ln -s libgcc.a ${GCCEH32}
+    fi;
+
+    case ${arch32} in
+      m32)TARCH=i686;
+          CARCH=i686;;
+      mx32)TARCH=x86_32;
+           CARCH=x86_64;;
+    esac;
+
+    if [ -d /dist/${TARCH}/${PROJECT} ];then
+      rm -rf /dist/${TARCH}/${PROJECT}}/*
+     else
+      mkdir -p /dist/${TARCH}/${PROJECT}
+    fi;
+
+    if [ ! -d ../chain-${NARCH}-${arch32} ];then
+      mkdir ../chain-${NARCH}-${arch32} || exit
+    fi;
+    cd ../chain-${NARCH}-${arch32} || exit
+
+    #Preconfig hook for 32bit
+    if [ -e ${SRC_DIR}/.build-info/pre-config ];then
+      sh ${SRC_DIR}/.build-info/pre-config ${TARCH} ${SRC_DIR} /dist/${TARCH}/${PROJECT}
+    fi;
+
+    ../${CFGBIN}/configure ${STDOPTS} ${PKGOPT[${pcnt}]} ${ARCHOPT[${acnt}]} \
+                           --host=${CARCH}-linux-gnu --build=${CARCH}-linux-gnu BUILD_CC="${BUILD_CC}" \
+                           CC="${CC} -${arch32}" || exit
+    make DESTDIR=/dist/${TARCH}/${PROJECT} all install || exit
+    if [ ${arch32} == "m32" ];then
+      cp ./locale/localedef /usr/bin #Need this in postinstll
+    fi;
+
+    #Postinstall hook for 32bit
+    if [ -e ${SRC_DIR}/.build-info/post-install ];then
+      sh ${SRC_DIR}/.build-info/post-install ${TARCH} ${SRC_DIR} /dist/${TARCH}/${PROJECT}
+    fi;
+
+    #install 32 bit
+    if [ ! -d /build/${TARCH}/ ];then
+      mkdir -p /build/${TARCH}/
+    fi;
+    rsync -avP /dist/${TARCH}/${PROJECT}/ /build/${TARCH}/
+
+    rm -rf ./*
+  done;
+}
+
+#all
+#BINUTILS
+PKGOPT[1]="--host=${BUILD} --enable-64-bit-bfd --enable-initfini-array";
+#BINUTILS
+PKGOPT[2]="--target=${HOST} --program-prefix=${HOST}- --enable-64-bit-bfd --enable-initfini-array";
+#GCC Limited to allow building of glibc only C required
+PKGOPT[6]="--disable-shared --disable-libgomp --disable-libquadmath --disable-libmudflap --disable-libssp --program-prefix=${HOST}- --build=${BUILD} --host=${HOST} --enable-languages=c CC=${BUILD_CC}"
+#GLIBC
+PKGOPT[7]="--enable-multi-arch --enable-add-ons";
+#GCC Requre shared lib capabilities C/C++
+PKGOPT[8]="--program-prefix=${HOST}- --build=${BUILD} --host=${HOST} --enable-languages=c,c++ CC=${BUILD_CC}"
+#ZLIB
+#GMP
+PKGOPT[10]="--enable-cxx";
+#MPFR
+PKGOPT[11]="--host=${HOST} --build=${HOST}";
+#MPC
+PKGOPT[12]="--host=${HOST} --build=${HOST}";
+#PPL
+PKGOPT[13]="--host=${HOST} --build=${HOST} --with-gmp-prefix=/build/${NARCH}/usr";
+#ISL
+PKGOPT[14]="--host=${HOST} --build=${HOST}";
+#CLOOG
+PKGOPT[15]="--host=${HOST} --build=${HOST}";
+#GCC
+PKGOPT[16]="--host=${HOST} --build=${HOST} --enable-languages=all --with-ecj-jar=/usr/share/java/ecj-4.5.jar --enable-cloog-backend=isl";
+#BINUTILS
+PKGOPT[17]="--host=${HOST} --build=${HOST} --enable-64-bit-bfd --enable-initfini-array";
+
+if [ -e /usr/libx32/libstdc++.so ];then
+  startcnt=9;
+fi;
+
+startcnt=18
+
+gccidx=6; #SET TO the count of gcc bellow
+#this is for testing purposes removing pkgs from for loop bellow
+if (( $startcnt > $gccidx ));then
+  set_new_gcc
+fi;
+
+pcnt=1;
+for pkg in binutils binutils gmp mpfr mpc gcc glibc gcc zlib gmp mpfr mpc ppl isl cloog gcc binutils;do
+  if (( $pcnt < $startcnt ));then
+    let pcnt++;
+    echo "Skiping $pkg";
+    continue;
+  fi;
+
+  #Reset opts
+  unset ARCHOPT CONFOPT ADDWITHSYSROOT
+
+  #Read package build info
+  eval `cat /dist/def/${pkg}`;
+
+  acnt=1;
+  for barch in ${ARCH};do
+    #Only work with native
+    if [ "${barch}" != "${NARCH}" ];then
+      let acnt++;
+      continue;
+    fi;
+
+    PROJECT=${pkg}${VERSEP}${VERSION}
+    SRC_DIR=/usr/src/${pkg}/${PROJECT}
+    #we work from source dir
+    cd ${SRC_DIR} || exit
+
+    STDOPTS="--prefix=${PREFIX}/ --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man";
+    if [ "${ADDWITHSYSROOT}" == "1" ] && [ -d /build/${NARCH} ];then
+      STDOPTS="${STDOPTS} --with-sysroot=/build/${NARCH}"
+    fi;
+
+    #Setup DESTDIR
+    rm -rf /dist/${NARCH}/${PROJECT}
+    DIST_ROOT=/dist/${NARCH}/${PROJECT}
+    if [ -d ${DIST_ROOT} ];then
+      rm -rf ${DIST_ROOT}/*
+     else
+      mkdir -p ${DIST_ROOT}
+    fi;
+
+    if [ "${pkg}" == "zlib" ];then
+      make LDFLAGS="-L/lib64 -L/lib -L/usr/lib64 -L/usr/lib" CC=${HOST}-gcc \
+           DESTDIR=${DIST_ROOT} libdir=/usr/lib64 clean all install
+     else
+      #Create clean build directory
+      BDIR=chain-${NARCH}-${pcnt}
+      if [ -d ${BDIR} ];then
+        rm -rf ./${BDIR}
+      fi;
+      if [ ! -d ${BDIR} ];then
+        mkdir ${BDIR} || exit
+      fi;
+      cd ${BDIR} || exit
+
+      #Preconfig hook
+      if [ -e ${SRC_DIR}/.build-info/pre-config ];then
+        sh ${SRC_DIR}/.build-info/pre-config ${NARCH} ${SRC_DIR} ${DIST_ROOT}
+      fi;
+
+      #Multiarch GLIBC
+      if [ "${NARCH}" == "x86_64" ] && [ "${pkg}" == "glibc" ];then
+        gcc_arch_build_32
+
+        if [ ! -d ${DIST_ROOT}/usr ];then
+          mkdir ${DIST_ROOT}/usr
+        fi;
+        rsync -avP /dist/i686/${PROJECT}/lib /dist/x86_32/${PROJECT}/libx32 ${DIST_ROOT}/
+        rsync -avP /dist/i686/${PROJECT}/usr/lib /dist/x86_32/${PROJECT}/usr/libx32 ${DIST_ROOT}/usr
+
+        cd ../chain-${NARCH}-${pcnt} || exit
+
+        GCCEH64=`x86_64-linux-gnu-gcc -print-libgcc-file-name |sed 's/libgcc/&_eh/'`
+        if [ ! -e ${GCCEH64} ];then
+          ln -s libgcc.a ${GCCEH64}
+        fi;
+        ../${CFGBIN}/configure ${STDOPTS} ${PKGOPT[${pcnt}]} ${ARCHOPT[${acnt}]} \
+                               --host=${HOST} --build=${HOST} CC="${CC}" BUILD_CC="${BUILD_CC}" || exit
+       else
+        ../${CFGBIN}/configure ${STDOPTS} ${PKGOPT[${pcnt}]} ${ARCHOPT[${acnt}]} CC="${CC}" CXX="${CXX}" || exit
+      fi;
+
+      #Replace all libtools with the "sysroot" version
+      for ltool in `find . -name libtool`;do
+        if [ -x ${ltool} ] && [ -e /build/${NARCH}/usr/bin/libtool ];then
+         rm ${ltool}
+         cp /build/${NARCH}/usr/bin/libtool $ltool
+        fi;
+      done
+      make DESTDIR=${DIST_ROOT} all install || exit
+    fi;
+
+    #Postinstall hook
+    if [ -e ${SRC_DIR}/.build-info/post-install ];then
+      sh ${SRC_DIR}/.build-info/post-install ${NARCH} ${SRC_DIR} ${DIST_ROOT}
+    fi;
+
+    #Set new GCC as CC and determine BUILD_CC
+    if [ "${pkg}" == "gcc" ];then
+      set_new_gcc
+    fi;
+
+    #Rename /lib /usr/lib to 64 bits for x86
+    if [ "${NARCH}" == "x86_64" ];then
+      for libdir in /lib /usr/lib /usr/local/lib ${PREFIX}/lib;do
+        if [ -d ${DIST_ROOT}${libdir} ];then
+          mv ${DIST_ROOT}${libdir} ${DIST_ROOT}${libdir}64
+        fi;
+      done;
+    fi;
+
+    rsync -avP ${DIST_ROOT}/ /build/${NARCH}/
+    rsync -avP ${DIST_ROOT}/ /
+
+    let acnt++;
+  done
+  let pcnt++;
+done;
+
+#for butil in addr2line  ar  as  c++filt  elfedit  gprof  ld  ld.bfd  nm  objcopy  objdump  ranlib  readelf  size  strings;do
+#  if [ -e /usr/bin/${HOST}-${butil} ];then
+#    rm /usr/bin/${HOST}-${butil}
+#  fi;
+#  ln -s ${butil} /usr/bin/${HOST}-${butil}
+#done;
+
+if [ "${NARCH}" == "x86_64" ];then
+  ln -s ar /usr/bin/i686-linux-gnu-ar
+  ln -s ranlib /usr/bin/i686-linux-gnu-ranlib
+  for bintool in `ls /usr/x86_64-linux-gnu/bin/`;do
+    if [ -x /usr/bin/${bintool} ];then
+      if [ -e /usr/bin/x86_64-linux-gnu-${bintool} ];then
+        rm /usr/bin/x86_64-linux-gnu-${bintool};
+      fi;
+      ln -s ${bintool} /usr/bin/x86_64-linux-gnu-${bintool}
+    fi;
+  done
+  (cat << EOF
+#!/bin/bash
+
+gcc -m32 \$@
+EOF
+) > /usr/bin/i686-linux-gnu-gcc
+  chmod 755 /usr/bin/i686-linux-gnu-gcc
+  (cat << EOF
+#!/bin/bash
+
+g++ -m32 \$@
+EOF
+) > /usr/bin/i686-linux-gnu-g++
+  chmod 755 /usr/bin/i686-linux-gnu-g++
+fi;

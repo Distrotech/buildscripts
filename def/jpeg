@@ -1,0 +1,4 @@
+VERSION="8d"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";

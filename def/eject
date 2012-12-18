@@ -1,0 +1,7 @@
+VERSION="2.1.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+NOCCOPT="1";
+BUILDDIR="0";
+MAKE_J="";

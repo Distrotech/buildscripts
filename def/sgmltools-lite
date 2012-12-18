@@ -1,0 +1,6 @@
+VERSION="3.0.3"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+NOCCOPT="1";
+BUILDDIR="0";

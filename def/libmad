@@ -1,0 +1,8 @@
+VERSION="0.15.1b"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+OPT_mips="--enable-fpm=mips";
+OPT_mips64="--enable-fpm=mips";
+ADDWITHSYSROOT="1";
+NOCCOPT="1";

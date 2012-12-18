@@ -1,0 +1,23 @@
+VERSION="2.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-database=gdbm";
+ADDCC="0";
+XSYSROOTFIXUP="1";
+OPT_x86_32="ac_cv_func_malloc_0_nonnull=yes";
+OPT_arm="ac_cv_lib_ltdl_lt_dladvise_init=yes ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes 
+         ac_cv_func_sig2str=no";
+OPT_arm64="ac_cv_lib_ltdl_lt_dladvise_init=yes ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes 
+         ac_cv_func_sig2str=no";
+OPT_mips="ac_cv_lib_ltdl_lt_dladvise_init=yes ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes 
+         ac_cv_func_sig2str=no";
+OPT_mips64="ac_cv_lib_ltdl_lt_dladvise_init=yes ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes 
+         ac_cv_func_sig2str=no";
+OPT_powerpc="ac_cv_lib_ltdl_lt_dladvise_init=yes ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes 
+         ac_cv_func_sig2str=no";
+OPT_powerpc64="ac_cv_lib_ltdl_lt_dladvise_init=yes ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes 
+         ac_cv_func_sig2str=no";
+EXTRALIBS="-lrt -lpthread";
+ADDWITHSYSROOT="1";
+ADDCFLAG="-I=/usr/include/json -I=/usr/include/cairo -I=/usr/include/orc-0.4 -I=/usr/include/alsa -I=/usr/include/gconf/2
+          -I=/usr/include/pango-1.0 -I=/usr/include/gdk-pixbuf-2.0 -I=/usr/include/atk-1.0";

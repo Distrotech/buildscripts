@@ -1,0 +1,4 @@
+VERSION="2.2.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-shared";

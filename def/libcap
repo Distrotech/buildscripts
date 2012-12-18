@@ -1,0 +1,6 @@
+VERSION="2.22"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+FIXUPLIB="1";

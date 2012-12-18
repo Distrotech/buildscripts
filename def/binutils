@@ -1,0 +1,8 @@
+VERSION="2.23.1";
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-sysroot=/ --disable-werror --enable-lto --enable-64-bit-bfd --enable-initfini-array";
+SYSROOTFIXUP="0";
+CLEARFLAGS="1";
+NOCCOPT="1";
+ADDCC="0";

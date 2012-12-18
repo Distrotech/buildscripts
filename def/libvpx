@@ -1,0 +1,19 @@
+VERSION="v1.1.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-vp8 --enable-pic --enable-shared";
+STDOPTS="--prefix=/usr";
+OPT_i686="--target=x86-linux-gcc --as=yasm";
+OPT_arm="--target=armv7-linux-gcc";
+OPT_arm64="--target=aarch64-linux-gnu";
+OPT_mips="--target=mips32-linux-gcc";
+OPT_mips64="--target=mips32-linux-gcc";
+OPT_powerpc="--target=ppc32-linux-gcc";
+OPT_powerpc64="--target=ppc64-linux-gcc";
+OPT_x86_32="--target=x86_64-linux-gcc --disable-shared --as=yasm";
+OPT_x86_64="--target=x86_64-linux-gcc --as=yasm";
+FIXUPLIB="1";
+NOCCOPT="1";
+ADDCC="0";
+LDISCC="1";
+CLEARFLAGS="1";

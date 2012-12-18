@@ -1,0 +1,15 @@
+VERSION="3.1.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--disable-rpath";
+OPT_powerpc="--with-libnettle-prefix=/build/powerpc/usr/";
+OPT_powerpc64="--with-libnettle-prefix=/build/powerpc64/usr/";
+OPT_mips="--with-libnettle-prefix=/build/mips/usr/";
+OPT_mips64="--with-libnettle-prefix=/build/mips64/usr/";
+OPT_arm="--with-libnettle-prefix=/build/arm/usr/";
+OPT_arm64="--with-libnettle-prefix=/build/arm64/usr/";
+OPT_i686="--with-libnettle-prefix=/build/i686/usr/";
+OPT_x86_64="--with-libnettle-prefix=/build/x86_64/usr/";
+OPT_x86_32="--with-libnettle-prefix=/build/x86_32/usr/";
+ADDWITHSYSROOT="1";
+ADDCFLAG="-I=/usr/include/p11-kit-1 -I=/usr/include/guile/2.0";

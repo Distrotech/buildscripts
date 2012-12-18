@@ -1,0 +1,16 @@
+VERSION="20120731-b"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-freetype-src=/usr/src/freetype";
+BUILDDIR="0";
+OPT_arm="ac_cv_file__build_arm_usr_include_freetype2=yes ac_cv_file__usr_include_libxml2_libxml=yes";
+OPT_arm64="ac_cv_file__build_arm64_usr_include_freetype2=yes ac_cv_file__usr_include_libxml2_libxml=yes";
+OPT_mips="ac_cv_file__build_mips_usr_include_freetype2=yes ac_cv_file__usr_include_libxml2_libxml=yes";
+OPT_mips64="ac_cv_file__build_mips64_usr_include_freetype2=yes ac_cv_file__usr_include_libxml2_libxml=yes";
+OPT_powerpc="ac_cv_file__build_powerpc_usr_include_freetype2=yes ac_cv_file__usr_include_libxml2_libxml=yes";
+OPT_powerpc64="ac_cv_file__build_powerpc64_usr_include_freetype2=yes ac_cv_file__usr_include_libxml2_libxml=yes";
+OPT_i686="ac_cv_file__build_i686_usr_include_freetype2=yes ac_cv_file__usr_include_libxml2_libxml=yes";
+OPT_x86_32="ac_cv_file__build_x86_32_usr_include_freetype2=yes ac_cv_file__usr_include_libxml2_libxml=yes";
+OPT_x86_64="ac_cv_file__build_x86_64_usr_include_freetype2=yes ac_cv_file__usr_include_libxml2_libxml=yes";
+ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/pango-1.0";
+

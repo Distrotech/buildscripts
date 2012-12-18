@@ -1,0 +1,6 @@
+VERSION="2.2.4"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+ADDLDFLAG="-L../src/elfobjs";

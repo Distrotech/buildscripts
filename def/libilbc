@@ -1,0 +1,5 @@
+VERSION="rfc3951"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";

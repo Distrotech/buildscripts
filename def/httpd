@@ -1,0 +1,26 @@
+VERSION="2.2.23"
+VERSEP="-";
+PREFIX="/opt/apache2";
+SYSCONFPRE="httpd";
+CONFOPT="--enable-modules=all --enable-mods-shared=all --enable-ssl --enable-ldap --enable-authnz-ldap --enable-pie 
+         --enable-authn-alias --enable-isapi --enable-file-cache --enable-cache --enable-disk-cache --enable-mem-cache 
+         --enable-so --enable-proxy --enable-dav --enable-http  --enable-info  --enable-suexec --enable-cgi --enable-cgid 
+         --enable-rewrite --enable-dbd --with-suexec-userdir=public_html --with-suexec-docroot=/var/spool/apache/htdocs
+         --with-suexec-logfile=/var/log/suexec_log";
+OPT_x86_32="--with-apr-util=/build/x86_32/usr --with-apr=/build/x86_32/usr";
+OPT_x86_64="--with-apr-util=/build/x86_64/usr --with-apr=/build/x86_64/usr";
+OPT_i686="--with-apr-util=/build/i686/usr --with-apr=/build/i686/usr";
+OPT_arm="--with-apr-util=/build/arm/usr --with-apr=/build/arm/usr ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
+OPT_arm64="--with-apr-util=/build/arm64/usr --with-apr=/build/arm64/usr ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
+OPT_mips="--with-apr-util=/build/mips/usr --with-apr=/build/mips/usr ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
+OPT_mips64="--with-apr-util=/build/mips64/usr --with-apr=/build/mips64/usr ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
+OPT_powerpc="--with-apr-util=/build/powerpc/usr --with-apr=/build/powerpc/usr  ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
+OPT_powerpc64="--with-apr-util=/build/powerpc64/usr --with-apr=/build/powerpc64/usr ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
+MOPT_i686="LIBTOOL=/build/i686/usr/build-1/libtool";
+MOPT_arm="LIBTOOL=/build/arm/usr/build-1/libtool";
+MOPT_arm64="LIBTOOL=/build/arm64/usr/build-1/libtool";
+MOPT_mips="LIBTOOL=/build/mips/usr/build-1/libtool";
+MOPT_mips64="LIBTOOL=/build/mips64/usr/build-1/libtool";
+MOPT_powerpc="LIBTOOL=/build/powerpc/usr/build-1/libtool";
+MOPT_powerpc64="LIBTOOL=/build/powerpc64/usr/build-1/libtool";
+MOPT_x86_32="LIBTOOL=/build/x86_32/usr/build-1/libtool";

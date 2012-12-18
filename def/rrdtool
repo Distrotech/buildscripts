@@ -1,0 +1,15 @@
+VERSION="1.4.7"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--disable-ruby --disable-lua --disable-python --disable-perl";
+BUILDDIR="0";
+ADDCFLAG="-I=/usr/include/cairo -I=/usr/include/pango-1.0";
+OPT_arm="rd_cv_ieee_works=yes";
+OPT_arm64="rd_cv_ieee_works=yes";
+OPT_mips="rd_cv_ieee_works=yes";
+OPT_mips64="rd_cv_ieee_works=yes";
+OPT_powerpc="rd_cv_ieee_works=yes";
+OPT_powerpc64="rd_cv_ieee_works=yes";
+OPT_i686="rd_cv_ieee_works=yes";
+OPT_x86_32="rd_cv_ieee_works=yes";
+

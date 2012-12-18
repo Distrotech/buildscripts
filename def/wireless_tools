@@ -1,0 +1,6 @@
+VERSION="29"
+VERSEP=".";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+FIXUPLIB="1";

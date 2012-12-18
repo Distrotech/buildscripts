@@ -1,0 +1,8 @@
+VERSION="1.3.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+CFGPTH="build/generic";
+CFGBIN="generic/";
+ADDCFLAG="-fPIC";

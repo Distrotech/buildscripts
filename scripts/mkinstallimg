@@ -1,0 +1,76 @@
+#!/bin/bash
+
+#(ldd /*/* /*/*/* |grep found |cut -d\= -f1 |sort |uniq) 2>/dev/null
+
+if [ ! "${1}" ];then
+  echo needs arch
+  exit
+fi;
+
+cd /dist/${1}
+
+TMPDIR=$( mktemp -d -p /root dtsinstall.XXXXXXXXXXX)
+
+for pkg in glibc-2.16.0 coreutils-8.20 LVM2.2.02.97 util-linux-2.22.1 \
+           e2fsprogs-1.42.6 bash-4.2 acl-2.2.51 attr-2.4.46 libselinux-2.1.12 \
+           libsepol-2.1.8 openssl-1.0.1c openssh-6.1p1 dialog-1.1-20120706 \
+           ncurses-5.9 ncursesw-5.9 libiconv-1.14 readline-6.2 gawk-4.0.1 \
+           sed-4.2.1 grep-2.14 which-2.20 net-tools-1.60 iproute2-3.6.0 libcap-2.22 \
+           psutils-p17 psmisc-22.20 procps-3.2.8 inetutils-1.9.1 pcre-8.31 \
+           Linux-PAM-1.1.6 gnutls-3.1.2 nettle-2.5 zlib-1.2.7 xz-5.0.4 gzip-1.5 \
+           bzip2-1.0.6 tar-1.26 libtool-2.4.2 libtasn1-2.14 p11-kit-0.14 \
+           libgcrypt-1.5.0 gmp-5.0.5 libgpg-error-1.10 gnupg-2.0.19 libprelude-1.0.1 \
+           krb5-1.10.3 trousers-0.3.9 less-451 cyrus-sasl-2.1.25 openldap-2.4.32 \
+           libnetfilter_acct-1.0.0 libnetfilter_cttimeout-1.0.0 libnetfilter_queue-1.0.1 \
+           libnetfilter_conntrack-1.0.1 libnetfilter_log-1.0.1 libtirpc-0.2.2 talloc-2.0.7 \
+           keyutils-1.5.5 libmnl-1.0.3 libnfnetlink-1.0.0 gd-2.0.36RC1 libassuan-2.0.3 \
+           libksba-1.2.0 pth-2.0.7 libpng-1.5.12 libsigsegv-2.10 libusb-1.0.9 \
+           db-5.3.21 libiodbc-3.52.8 icu4c-49.1.2 curl-7.28.0 nano-2.3.1 \
+           pine-4.64 openslp-1.2.1 atk-2.2.0 file-5.11 screen-4.0.3 \
+           binutils-2.22 libidn-1.25 cairo-1.12.2 pango-1.30.1 freetype-2.4.10 \
+           fontconfig-2.10.1 c-ares-1.9.1 libxml2-2.9.0 libxslt-1.1.27 jpeg-8d \
+           pixman-0.24.4 libffi-3.0.11 rtmpdump-2.3 glib-2.32.4 expat-2.1.0 \
+           xpm-3.4k imap-2007f libusb-compat-0.1.4 findutils-4.5.10 \
+           gdk-pixbuf-2.26.3 lynx2-8-7 gtk+-2.24.12 vim73 joe-3.7 apg-2.2.3 \
+           avahi-0.6.31 bc-1.06 hdparm-9.42 htop-1.0.1 rp-pppoe-3.11 rsync-3.0.9 \
+           bridge-utils-1.5 iptables-1.4.15 ipv6calc-0.93.1 kbd-1.12 \
+           lsof_4.85_src macmask-0.1 modemtest-0.1 mktemp-1.7 module-init-tools-3.15 \
+           squashfs4.2 sysfsutils-2.1.0 dosfstools-3.0.13 ethtool-2.6.36 nmap-6.01 \
+           nss-mdns-0.10 ntfs-3g_ntfsprogs-2012.1.15 ntp-4.2.6p5 usbutils-006 \
+           uudeview-0.5.20 unzip60 openvpn-2.2.2 p7zip_9.20.1 parted-3.1 pciutils-3.1.10 \
+           vlan-1.8 wget-1.14 zip30 gptfdisk-0.8.5 ppp-2.4.5 dbus-1.6.4 kmod-10 polkit-0.105 \
+           popt-1.10.4 dovecot-2.1.10 cups-1.5.4 bind-9.9.2 libunistring-0.9.3 systemd-195 \
+           tdb-1.2.10 samba-3.6.8 libnl-1.1 libnl-3.2.14 net-snmp-5.7.2 gdbm-1.9.1 tiff-4.0.3 \
+           libdaemon-0.14 libdrm-2.4.39 libpcap-1.3.0 apr-1.4.6 tcl8.5.12 tk8.5.12 \
+           lzo-2.06 libelf-0.8.13 libevent-2.0.20-stable subversion-1.7.7 \
+           neon-0.29.6 apr-iconv-1.2.1 apr-util-1.5.1 slang-2.2.4 sqlite-autoconf-3071401 \
+           libverto-0.2.4 tevent-0.9.17;do
+  rsync -avP --exclude-from=/dist/squash/rsync.exclude ${pkg}/ ${TMPDIR}/
+done;
+
+for gcclib in libffi.so libgcc_s.so libstdc++.so libssp.so;do
+  rsync -avP gcc-git/usr/lib64/${gcclib}* ${TMPDIR}/usr/lib64/
+done 
+
+rsync -avP Python-2.7.3/usr/lib64/libpython2.7.so* ${TMPDIR}/usr/lib64/
+
+mkdir -p ${TMPDIR}/usr/X11R7
+rsync -avP Xorg-git/usr/X11R7/lib64/*so* ${TMPDIR}/usr/X11R7/lib64/
+
+if [ ! -d ${TMPDIR}/etc/ld.so.conf.d ];then
+  mkdir -p ${TMPDIR}/etc/ld.so.conf.d
+fi;
+echo "/usr/X11R7/lib64" > ${TMPDIR}/etc/ld.so.conf.d/xwin.conf
+
+for dir in root proc sys dev tmp;do
+  mkdir ${TMPDIR}/${dir}
+done
+
+chroot ${TMPDIR} /sbin/ldconfig
+
+rm install.squashfs
+mksquashfs ${TMPDIR}/* install.squashfs -comp xz
+
+if [ "${TMPDIR}" ] && [ -d ${TMPDIR} ];then
+  rm -rf ${TMPDIR}
+fi;

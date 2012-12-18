@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ ! -e /dist/def/${2} ];then
+  echo "Invalid Package";
+fi;
+
+

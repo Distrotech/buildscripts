@@ -1,0 +1,10 @@
+VERSION="3.1.10"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+MAKEOPTS="ZLIB=no DNS=yes SHARED=yes"; 
+ADDCFLAG="-fPIC";
+ADDLDFLAG="-lresolv -lz";
+FIXUPLIB="1";
+MAKETARGETS="install-lib";

@@ -1,0 +1,13 @@
+VERSION="4.3.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-ipv6";
+OPT_arm="ac_cv_linux_vers=3 td_cv_buggygetaddrinfo=no";
+OPT_arm64="ac_cv_linux_vers=3 td_cv_buggygetaddrinfo=no";
+OPT_mips="ac_cv_linux_vers=3 td_cv_buggygetaddrinfo=no";
+OPT_mips64="ac_cv_linux_vers=3 td_cv_buggygetaddrinfo=no";
+OPT_powerpc="ac_cv_linux_vers=3 td_cv_buggygetaddrinfo=no";
+OPT_powerpc64="ac_cv_linux_vers=3 td_cv_buggygetaddrinfo=no";
+OPT_i686="ac_cv_linux_vers=3 td_cv_buggygetaddrinfo=no";
+OPT_x86_32="ac_cv_linux_vers=3 td_cv_buggygetaddrinfo=no";
+EXTRALIBS="-lusb-1.0 -lpthread -lrt";

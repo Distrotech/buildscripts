@@ -1,0 +1,108 @@
+#!/bin/bash
+
+if [ ! "${PKG}" ];then
+  PKG=$( basename `pwd` )
+fi;
+
+NARCH=`uname -m`
+
+if (( $# < 1 ));then
+  echo "Requires arg $0 [clean] <arm|x86_64|i686> ....."
+  exit -1
+fi;
+
+ARG1=${1}
+shift
+
+if [ "${ARG1}" == "clean" ] || [ "${ARG1}" == "nodir" ];then
+  ARCH=${1}
+  shift
+
+  if [ -d build-${ARCH} ];then
+    rm -rf build-${ARCH}
+  fi;
+  if [ -e "Makefile" ];then
+    make clean
+  fi;
+ else
+  ARCH=${ARG1}
+fi;
+
+if [ "${ARCH}" == "arm" ];then
+  HOST=${ARCH}-embed-linux-gnueabi
+ else
+  HOST=${ARCH}-pc-linux-gnu
+fi;
+
+if [ "${NARCH}" == "arm" ];then
+  BUILD=${NARCH}-embed-linux-gnueabi
+ else
+  BUILD=${NARCH}-pc-linux-gnu
+fi;
+
+export CFLAGS="-I/build/${ARCH}/include -I/build/${ARCH}/usr/include"
+export CPPFLAGS=${CFLAGS}
+export LDFLAGS="-L/build/${ARCH}/lib64 -L/build/${ARCH}/usr/lib64 -L/build/${ARCH}/lib -L/build/${ARCH}/usr/lib"
+export FORCE_UNSAFE_CONFIGURE=1
+export PKG_CONFIG_SYSROOT_DIR=/build/${ARCH}
+export PKG_CONFIG_PATH="/lib64/pkgconfig:/usr/lib64/pkgconfig:/opt/apache2/lib64/pkgconfig:/usr/share/lib64/pkgconfig:/lib/pkgconfig:/usr/lib/pkgconfig:/opt/apache2/lib/pkgconfig:/usr/share/lib/pkgconfig"
+
+export CC="${HOST}-gcc"
+export CXX="${HOST}-g++"
+export AR="${HOST}-ar"
+export AS="${HOST}-as"
+export RANLIB="${HOST}-ranlib"
+export LD="${HOST}-ld"
+export STRIP="${HOST}-strip"
+
+if [ -x /build/${ARCH}/usr/bin/libtool ];then
+  export LIBTOOL=/build/${ARCH}/usr/bin/libtool
+fi;
+
+if [ ! "${CFGPTH}" ];then
+  if [ ${ARG1} == "nodir" ];then
+    CFGPTH=.
+   else
+    if [ ! -d build-${ARCH} ];then
+      mkdir build-${ARCH}
+    fi;
+    cd build-${ARCH}
+    CFGPTH=..
+  fi;
+fi;
+
+if [ -d /dist/${ARCH} ] && [ ! -e /dist/${ARCH}/${PKG}.conf ];then
+  (cat <<EOF
+#!/bin/bash
+
+export CFGPTH=${CFGPTH}
+$0 ${ARCH} "$@"
+EOF
+) > /dist/${ARCH}/${PKG}.conf
+  chmod 750 /dist/${ARCH}/${PKG}.conf
+fi;
+
+${CFGPTH}/configure --prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var --host=${HOST} --build=${BUILD} $@
+
+#Replace all libtools with the "sysroot" version
+if [ -x /build/${ARCH}/usr/bin/libtool ];then
+  for ltool in `find . -name libtool`;do
+    if [ -x ${ltool} ];then
+      rm ${ltool}
+      cp /build/${ARCH}/usr/bin/libtool $ltool
+    fi;
+  done
+fi
+
+export DIST_ROOT=/dist/${ARCH}/${PKG}
+if [ -d ${DIST_ROOT} ];then
+  rm -rf ${DIST_ROOT}
+fi;
+mkdir ${DIST_ROOT}
+make DESTDIR=${DIST_ROOT} all install
+
+if [ "${ARCH}" == "${NARCH}" ];then
+  make install
+fi;
+
+rsync -avP /dist/${ARCH}/${PKG}/ /build/${ARCH}/

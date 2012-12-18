@@ -1,0 +1,17 @@
+VERSION="4.0.3"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+OPT_x86_64="--host=x86_64-linux-gnu --libdir=/usr/lib64";
+OPT_x86_32="--host=x86_64-linux-gnux32 --libdir=/usr/libx32";
+OPT_i686="--host=i686-linux-gnu --libdir=/usr/lib";
+OPT_powerpc="--host=powerpc-linux-gnu --libdir=/usr/lib";
+OPT_powerpc64="--host=powerpc64-linux-gnu --libdir=/usr/lib64";
+OPT_arm="--host=arm-linux-gnueabi --libdir=/usr/lib";
+OPT_arm64="--host=aarch64-linux-gnu --libdir=/usr/lib64";
+OPT_mips="--host=mips-linux-gnu --libdir=/usr/lib";
+OPT_mips64="--host=mips64-linux-gnuabi64 --libdir=/usr/lib64";
+OPT_arm="--host=arm-linux-gnueabi --libdir=/usr/lib";
+OPT_arm64="--host=aarch64-linux-gnu --libdir=/usr/lib64";
+STDOPTS="--prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var";
+FIXUPLIB="1";

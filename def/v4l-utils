@@ -1,0 +1,6 @@
+VERSION="0.8.8"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+FIXUPLIB="1";

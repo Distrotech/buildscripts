@@ -1,0 +1,21 @@
+VERSION="2.24.4"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+OPT_arm="ac_cv_func_posix_getpwuid_r=yes
+          ac_cv_path_KRB5_CONFIG=/build/arm/usr/bin/krb5-config";
+OPT_arm64="ac_cv_func_posix_getpwuid_r=yes
+          ac_cv_path_KRB5_CONFIG=/build/arm64/usr/bin/krb5-config";
+OPT_mips="ac_cv_func_posix_getpwuid_r=yes
+          ac_cv_path_KRB5_CONFIG=/build/mips/usr/bin/krb5-config";
+OPT_mips64="ac_cv_func_posix_getpwuid_r=yes
+          ac_cv_path_KRB5_CONFIG=/build/mips64/usr/bin/krb5-config";
+OPT_powerpc="ac_cv_func_posix_getpwuid_r=yes
+          ac_cv_path_KRB5_CONFIG=/build/powerpc/usr/bin/krb5-config";
+OPT_powerpc64="ac_cv_func_posix_getpwuid_r=yes
+          ac_cv_path_KRB5_CONFIG=/build/powerpc64/usr/bin/krb5-config";
+OPT_i686="ac_cv_func_posix_getpwuid_r=yes
+          ac_cv_path_KRB5_CONFIG=/build/i686/usr/bin/krb5-config";
+OPT_x86_32="ac_cv_func_posix_getpwuid_r=yes
+          ac_cv_path_KRB5_CONFIG=/build/x86_32/usr/bin/krb5-config";
+ADDCFLAG="-I=/usr/include/libxml2 -I=/usr/include/gconf/2";

@@ -1,0 +1,5 @@
+VERSION="0.24.4"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+OPT_arm="--disable-arm-iwmmxt";

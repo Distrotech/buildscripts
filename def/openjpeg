@@ -1,0 +1,5 @@
+VERSION="1.5.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+EXTRALIBS="-llzma";

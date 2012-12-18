@@ -1,0 +1,7 @@
+VERSION="3.0.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-tls mono_cv_clang=no mono_cv_uscore=no --with-sigaltstack=yes";
+NOCCOPT="1";
+ADDCC="0";
+CLEARFLAGS="1";

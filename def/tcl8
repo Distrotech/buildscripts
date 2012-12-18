@@ -1,0 +1,7 @@
+VERSION="5.12"
+VERSEP=".";
+PREFIX="/usr";
+CONFOPT="";
+CFGPTH="build_unix";
+CFGBIN="unix/";
+BUILDDIR="0";

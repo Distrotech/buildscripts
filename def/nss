@@ -1,0 +1,5 @@
+VERSION="3.13.6"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+CFGBIN="../mozilla/nsprpub/";

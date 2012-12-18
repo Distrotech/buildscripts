@@ -1,0 +1,7 @@
+VERSION="3.2.8"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+XLDISCC="0";
+FIXUPLIB="1";

@@ -1,0 +1,12 @@
+VERSION="1.14"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+OPT_arm="--with-libgnutls-prefix=/build/arm/usr ac_cv_libgnutls=yes";
+OPT_mips="--with-libgnutls-prefix=/build/mips/usr ac_cv_libgnutls=yes";
+OPT_mips64="--with-libgnutls-prefix=/build/mips64/usr ac_cv_libgnutls=yes";
+OPT_powerpc="--with-libssl-prefix=/build/powerpc/usr --with-ssl=openssl ac_cv_libssl=yes";
+OPT_powerpc64="--with-libssl-prefix=/build/powerpc64/usr --with-ssl=openssl ac_cv_libssl=yes";
+XEXTRALIBS="-L=/usr/lib -L=/lib -L=/usr/lib64 -L=/lib64";
+XADDCFLAG="-pthread";
+NOCCOPT="1";

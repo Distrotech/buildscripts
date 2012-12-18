@@ -1,0 +1,3 @@
+#!/bin/bash
+
+make P7_CXX="${CXX}" P7_CC="${CC}" DEST_HOME=/usr DEST_DIR=${3} all install

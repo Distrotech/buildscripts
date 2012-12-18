@@ -1,0 +1,20 @@
+VERSION="4.2.4-P2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-srv-lease-file=/var/state/dhcp/dhcpd.leases --with-cli-lease-file=/var/state/dhcp/dhclient.leases
+         --with-srv6-lease-file=/var/state/dhcp/dhcpd6.leases --with-cli6-lease-file=/var/state/dhcp/dhclient6.leases
+         --with-libtool --with-ldap --with-ldapcrypto ac_cv_file__dev_random=yes";
+OPT_i686="--with-export-dir=/build/i686/usr/lib/bind9";
+OPT_arm="--with-export-dir=/build/arm/usr/lib/bind9";
+OPT_arm64="--with-export-dir=/build/arm64/usr/lib64/bind9";
+OPT_mips="--with-export-dir=/build/mips/usr/lib/bind9";
+OPT_mips64="--with-export-dir=/build/mips64/usr/lib64/bind9";
+OPT_powerpc="--with-export-dir=/build/powerpc/usr/lib/bind9";
+OPT_powerpc64="--with-export-dir=/build/powerpc64/usr/lib64/bind9";
+OPT_x86_32="--with-export-dir=/build/x86_32/usr/lib/bind9";
+OPT_x86_64="--with-export-dir=/build/x86_64/usr/lib/bind9";
+BUILDDIR="0";
+SYSROOTFIXUP="1";
+ADDCC="0";
+ADDCFLAG="-I=/usr/include/bind9";
+ADDLDFLAG="-L=/usr/lib/bind9";

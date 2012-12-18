@@ -1,0 +1,5 @@
+VERSION="soft-1.13"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+FIXUPLIB="1";

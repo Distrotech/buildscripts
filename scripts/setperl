@@ -1,0 +1,12 @@
+#!/bin/bash
+
+SYSROOT=/build/${1}
+
+export PATH=/build/${1}/usr/bin:/build/${1}:/usr/sbin/build/${1}/bin:/build/${1}/sbin
+
+export PERL5LIB="/build/${1}/usr/lib/perl5/5.16.2/x86_64-linux-thread-multi";
+
+eval `perl -V:archlib -V:sitelib -V:sitearch -V:privlib`
+export PERL5LIB="${SYSROOT}/${sitearch}:${SYSROOT}/${sitelib}:${SYSROOT}/${archlib}:${SYSROOT}/${privlib}"
+
+make

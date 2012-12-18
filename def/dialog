@@ -1,0 +1,7 @@
+VERSION="1.1-20120706"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-widec --with-ncursesw";
+ADDFILTER="makefile";
+NOCCOPT="1";
+ADDCC="0";

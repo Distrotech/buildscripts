@@ -1,0 +1,13 @@
+VERSION="0.10"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-gmp=system";
+OPT_x86_32="--with-gmp-prefix=/build/x86_32/usr --with-isl-prefix=/build/x86_32/usr";
+OPT_x86_64="--with-gmp-prefix=/build/x86_64/usr --with-isl-prefix=/build/x86_64/usr";
+OPT_i686="--with-gmp-prefix=/build/i686/usr --with-isl-prefix=/build/i686/usr";
+OPT_arm="--with-gmp-prefix=/build/arm/usr --with-isl-prefix=/build/arm/usr";
+OPT_arm64="--with-gmp-prefix=/build/arm64/usr --with-isl-prefix=/build/arm64/usr";
+OPT_mips="--with-gmp-prefix=/build/mips/usr --with-isl-prefix=/build/mips/usr";
+OPT_mips64="--with-gmp-prefix=/build/mips64/usr --with-isl-prefix=/build/mips64/usr";
+OPT_powerpc="--with-gmp-prefix=/build/powerpc/usr --with-isl-prefix=/build/powerpc/usr";
+OPT_powerpc64="--with-gmp-prefix=/build/powerpc64/usr --with-isl-prefix=/build/powerpc64/usr";

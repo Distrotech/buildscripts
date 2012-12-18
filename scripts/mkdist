@@ -1,0 +1,52 @@
+#!/bin/bash
+
+mkdir -p /mnt/initrd 
+mkdir /tmp /root /initrd
+
+ln -s /bin/bash /bin/sh
+rsync -avRP /lib/modules/3.4.10-x86-dts /boot/vmlinuz-3.4.10-x86-dts /boot/System.map-3.4.10-x86-dts /boot/busybox.tgz \
+            /usr/sbin/flashutil /etc/modprobe.d/* /var/spool/source/build/i686/
+for barch in i686 arm x86_64;do
+  rsync -avP /usr/src/glibc-2.16.0/include/rpc* /build/${barch}/usr/include/
+done;
+
+cp /etc/passwd /etc/shadow /etc/group /build/i686/etc/
+
+for barch in i686 arm x86_64;do
+  (cat <<EOF
+BRAND="Network Sentry Firewall/VOIP";
+VERSION="10.11.1";
+KERNEL="3.4.10-x86";
+IP_ADDR="0.0.0.0";
+SN_ADDR="32";
+5AHN_ADDR="pbx";
+DOM_ADDR="distrotech.co.za";
+BT="$BRAND V$VERSION Linux V$KERNEL Install";
+KERNOPTS="";
+EXTRA_DEV="";
+USBSLEEP="";
+RSERV="127.0.0.1";
+EOF
+) > /build/${barch}/etc/netsentry-version
+
+  if [ ${barch} == "i686" ] || [ ${barch} == "x86_64" ];then
+    pform=x86
+   else
+    pform=${barch}
+  fi;
+  if [ ! -d /build/${barch}/usr/include/asm-${pform} ];then
+    mkdir -p /build/${barch}/usr/include
+    rsync -avP /usr/include/linux /usr/include/asm-generic /usr/include/asm-${pform} /build/${barch}/usr/include/
+    rsync -avP --include=mtd --include=mtd/mtd-user.h --include=mtd/mtd-abi.h --exclude=* /usr/src/linux/include/mtd /build/${barch}/usr/include/
+    sed -ie "s/__user //" /build/${barch}/usr/include/mtd/mtd-abi.h
+    ln -s asm-${barch} /build/${barch}/usr/include/asm
+  fi;
+
+  mkdir -p /build/${barch}/etc/ld.so.conf.d
+  echo "include /etc/ld.so.conf.d/*.conf" > /build/${barch}/etc/ld.so.conf
+(cat <<EOF
+/lib
+/usr/lib
+EOF
+) > /build/${barch}/etc/ld.so.conf.d/glibc.conf
+done

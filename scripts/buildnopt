@@ -1,0 +1,91 @@
+#!/bin/bash
+
+PKG=$( basename `pwd` )
+NARCH=`uname -m`
+
+if (( $# < 1 ));then
+  echo "Requires arg $0 [clean] <arm|x86_64|i686> ....."
+  exit -1
+fi;
+
+ARG1=${1}
+shift
+
+if [ "${ARG1}" == "clean" ] || [ "${ARG1}" == "nodir" ];then
+  ARCH=${1}
+  shift
+
+  if [ -d build-${ARCH} ];then
+    rm -rf build-${ARCH}
+  fi;
+ else
+  ARCH=${ARG1}
+fi;
+
+if [ "${ARCH}" == "arm" ];then
+  HOST=${ARCH}-embed-linux-gnueabi
+ else
+  HOST=${ARCH}-pc-linux-gnu
+fi;
+
+if [ "${NARCH}" == "arm" ];then
+  BUILD=${NARCH}-embed-linux-gnueabi
+ else
+  BUILD=${NARCH}-pc-linux-gnu
+fi;
+
+if [ "${ARG1}" != "nodir" ];then
+  if [ ! -d build-${ARCH} ];then
+    mkdir build-${ARCH}
+  fi;
+  cd build-${ARCH}
+ elif [ -e "Makefile" ];then
+  make clean
+fi;
+
+if [ -d /dist/${ARCH} ] && [ ! -e /dist/${ARCH}/${PKG}.conf ];then
+  (cat <<EOF
+#!/bin/bash
+
+$0 ${ARCH} "$@"
+EOF
+) > /dist/${ARCH}/${PKG}.conf
+  chmod 750 /dist/${ARCH}/${PKG}.conf
+fi;
+
+export CFLAGS="-I/build/${ARCH}/include -I/build/${ARCH}/usr/include"
+export CPPFLAGS=${CFLAGS}
+export LDFLAGS="-L/build/${ARCH}/lib64 -L/build/${ARCH}/usr/lib64 -L/build/${ARCH}/lib -L/build/${ARCH}/usr/lib"
+export FORCE_UNSAFE_CONFIGURE=1
+export PKG_CONFIG_SYSROOT_DIR=/build/${ARCH}
+export PKG_CONFIG_PATH="/lib64/pkgconfig:/usr/lib64/pkgconfig:/opt/apache2/lib64/pkgconfig:/usr/share/lib64/pkgconfig:/lib/pkgconfig:/usr/lib/pkgconfig:/opt/apache2/lib/pkgconfig:/usr/share/lib/pkgconfig"
+
+if [ -x /build/${ARCH}/usr/bin/libtool ];then
+  export LIBTOOL=/build/${ARCH}/usr/bin/libtool
+fi;
+
+if [ ${ARG1} == "nodir" ];then
+  ./configure --host=${HOST} --build=${BUILD} $@
+ else
+  ../configure --host=${HOST} --build=${BUILD} $@
+fi;
+
+if [ -x /build/${ARCH}/usr/bin/libtool ] && [ -x ./libtool ];then
+echo LIBTOOLING
+  rm libtool
+  cp /build/${ARCH}/usr/bin/libtool ./
+fi
+
+
+export DIST_ROOT=/dist/${ARCH}/${PKG}
+if [ -d ${DIST_ROOT} ];then
+  rm -rf ${DIST_ROOT}
+fi;
+mkdir ${DIST_ROOT}
+make DESTDIR=${DIST_ROOT} all install
+
+if [ "${ARCH}" == "${NARCH}" ];then
+  make install
+fi;
+
+rsync -avP /dist/${ARCH}/${PKG}/ /build/${ARCH}/

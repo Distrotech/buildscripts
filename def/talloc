@@ -1,0 +1,16 @@
+VERSION="2.0.7"
+VERSEP="-";
+PREFIX="/usr";
+STDOPTS="--prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var --enable-talloc-compat1";
+CONFOPT="";
+BUILDDIR="0";
+OPT_arm="--cross-compile --cross-answers=/dist/scripts/waf_cross_arm.ans --libdir=/usr/lib";
+OPT_arm64="--cross-compile --cross-answers=/dist/scripts/waf_cross_arm64.ans --libdir=/usr/lib64";
+OPT_mips="--cross-compile --cross-answers=/dist/scripts/waf_cross_mips.ans --libdir=/usr/lib";
+OPT_mips64="--cross-compile --cross-answers=/dist/scripts/waf_cross_mips64.ans --libdir=/usr/lib64";
+OPT_powerpc="--cross-compile --cross-answers=/dist/scripts/waf_cross_powerpc.ans --libdir=/usr/lib";
+OPT_powerpc64="--cross-compile --cross-answers=/dist/scripts/waf_cross_powerpc64.ans --libdir=/usr/lib64";
+OPT_i686="--libdir=/usr/lib";
+OPT_x86_32="--libdir=/usr/libx32";
+OPT_x86_64="--libdir=/usr/lib64";
+NOCCOPT="1";

@@ -1,0 +1,5 @@
+VERSION="git"
+VERSEP="-";
+PREFIX="/usr/X11R7";
+CONFOPT="";
+BUILDDIR="0";

@@ -1,0 +1,8 @@
+VERSION="1.3.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+STDOPTS="--prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var --infodir=/usr/share/info";
+OPT_x86_64="--libdir=/usr/lib64";
+OPT_x86_32="--libdir=/usr/libx32";
+NOCCOPT="1";
