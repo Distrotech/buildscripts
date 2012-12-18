@@ -1,0 +1,30 @@
+VERSION="3.6.8"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-cifsmount --with-cifsumount --with-pam --with-quotas --with-automount
+         --with-ads --with-pam_smbpass=yes --with-configdir=/etc/samba
+         --with-privatedir=/etc/samba/private --with-lockdir=/var/lock --with-piddir=/var/run
+         --with-logfilebase=/var --enable-shared=yes --enable-shared-libs=yes --enable-debug=no --enable-static=no";
+CFGPTH="source3";
+CFGBIN="source3/";
+OPT_i686="samba_cv_CC_NEGATIVE_ENUM_VALUES=yes ac_cv_file__proc_sys_kernel_core_pattern=yes samba_cv_HAVE_WRFILE_KEYTAB=yes
+          smb_krb5_cv_enctype_to_string_takes_krb5_context_arg=no smb_krb5_cv_enctype_to_string_takes_size_t_arg=yes";
+OPT_x86_32="samba_cv_CC_NEGATIVE_ENUM_VALUES=yes ac_cv_file__proc_sys_kernel_core_pattern=yes samba_cv_HAVE_WRFILE_KEYTAB=yes
+          smb_krb5_cv_enctype_to_string_takes_krb5_context_arg=no smb_krb5_cv_enctype_to_string_takes_size_t_arg=yes";
+OPT_arm="samba_cv_CC_NEGATIVE_ENUM_VALUES=yes ac_cv_file__proc_sys_kernel_core_pattern=yes samba_cv_HAVE_WRFILE_KEYTAB=yes
+          smb_krb5_cv_enctype_to_string_takes_krb5_context_arg=no smb_krb5_cv_enctype_to_string_takes_size_t_arg=yes";
+OPT_arm64="samba_cv_CC_NEGATIVE_ENUM_VALUES=yes ac_cv_file__proc_sys_kernel_core_pattern=yes samba_cv_HAVE_WRFILE_KEYTAB=yes
+          smb_krb5_cv_enctype_to_string_takes_krb5_context_arg=no smb_krb5_cv_enctype_to_string_takes_size_t_arg=yes";
+OPT_mips="samba_cv_CC_NEGATIVE_ENUM_VALUES=yes ac_cv_file__proc_sys_kernel_core_pattern=yes samba_cv_HAVE_WRFILE_KEYTAB=yes
+          smb_krb5_cv_enctype_to_string_takes_krb5_context_arg=no smb_krb5_cv_enctype_to_string_takes_size_t_arg=yes";
+OPT_mips64="samba_cv_CC_NEGATIVE_ENUM_VALUES=yes ac_cv_file__proc_sys_kernel_core_pattern=yes samba_cv_HAVE_WRFILE_KEYTAB=yes
+          smb_krb5_cv_enctype_to_string_takes_krb5_context_arg=no smb_krb5_cv_enctype_to_string_takes_size_t_arg=yes";
+OPT_powerpc="samba_cv_CC_NEGATIVE_ENUM_VALUES=yes ac_cv_file__proc_sys_kernel_core_pattern=yes samba_cv_HAVE_WRFILE_KEYTAB=yes
+          smb_krb5_cv_enctype_to_string_takes_krb5_context_arg=no smb_krb5_cv_enctype_to_string_takes_size_t_arg=yes";
+OPT_powerpc64="samba_cv_CC_NEGATIVE_ENUM_VALUES=yes ac_cv_file__proc_sys_kernel_core_pattern=yes samba_cv_HAVE_WRFILE_KEYTAB=yes
+          smb_krb5_cv_enctype_to_string_takes_krb5_context_arg=no smb_krb5_cv_enctype_to_string_takes_size_t_arg=yes";
+ADDCFLAG="-I../lib/tdb/include -I../lib/talloc";
+ADDLDFLAG="-L./bin";
+BUILDDIR="0";
+EXTRALIBS="-lcom_err -lnsl -lpthread -ltirpc";
+

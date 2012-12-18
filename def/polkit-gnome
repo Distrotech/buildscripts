@@ -1,0 +1,9 @@
+VERSION="0.102"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+OPT_arm="--enable-introspection=no";
+OPT_mips="--enable-introspection=no";
+OPT_mips64="--enable-introspection=no";
+OPT_powerpc="--enable-introspection=no";
+OPT_powerpc64="--enable-introspection=no";

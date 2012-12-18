@@ -1,0 +1,12 @@
+VERSION="2.00"
+VERSEP="-";
+PREFIX="/usr";
+STDOPTS="--prefix=/usr/ --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var --disable-werror";
+CONFOPT="--disable-werror --enable-device-mapper";
+ADDCFLAG="-I/usr/include/freetype2";
+OPT_i686="--host=i686-linux-gnu --enable-grub-mount";
+OPT_x86_64="--host=i686-linux-gnu";
+OPT_x86_32="--host=x86_64-linux-gnux32";
+MAKEOPTS="CROSSBINPATH=/usr/bin";
+CLEARFLAGS="1";
+SYSROOTFIXUP="0";

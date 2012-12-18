@@ -1,0 +1,7 @@
+VERSION="6.1p1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-pam --disable-strip";
+ADDCC="0";
+NOCCOPT="1";
+CLEARFLAGS="1";

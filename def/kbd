@@ -1,0 +1,7 @@
+VERSION="1.12"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+STDOPTS="--prefix=/usr --datadir=/usr/share --mandir=/usr/share/man";
+NOCCOPT="1";
+BUILDDIR="0";

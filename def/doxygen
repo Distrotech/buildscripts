@@ -1,0 +1,16 @@
+VERSION="1.8.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+STDOPTS="--prefix /usr --shared";
+BUILDDIR="0";
+NOCCOPT="1";
+OPT_i686="-platform linux-g++-i686 --with-doxywizard";
+OPT_arm="-platform linux-g++-arm";
+OPT_arm64="-platform linux-g++-aarch";
+OPT_mips="-platform linux-g++-mips";
+OPT_mips64="-platform linux-g++-mips64";
+OPT_powerpc="-platform linux-g++-powerpc";
+OPT_powerpc64="-platform linux-g++-powerpc64";
+OPT_x86_32="-platform linux-g++-x32 --with-doxywizard";
+OPT_x86_64="-platform linux-64 --with-doxywizard";

@@ -1,0 +1,6 @@
+VERSION="0.83"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ALIAS="libcdio";
+BUILDDIR="0";

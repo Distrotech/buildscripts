@@ -1,0 +1,12 @@
+VERSION="1.1.27"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+OPT_i686="--with-python=/build/i686/usr";
+OPT_x86_32="--with-python=/build/x86_32/usr";
+OPT_arm="--with-python=/build/arm/usr";
+OPT_arm64="--with-python=/build/arm64/usr";
+OPT_mips="--with-python=/build/mips/usr";
+OPT_mips64="--with-python=/build/mips64/usr";
+OPT_powerpc="--with-python=/build/powerpc/usr";
+OPT_powerpc64="--with-python=/build/powerpc64/usr";

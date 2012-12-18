@@ -1,0 +1,13 @@
+VERSION="4.2.6p5"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+OPT_i686="--with-net-snmp-config=/build/i686/usr/bin/net-snmp-config";
+OPT_arm="--with-net-snmp-config=/build/arm/usr/bin/net-snmp-config";
+OPT_arm64="--with-net-snmp-config=/build/arm64/usr/bin/net-snmp-config";
+OPT_mips="--with-net-snmp-config=/build/mips/usr/bin/net-snmp-config";
+OPT_mips64="--with-net-snmp-config=/build/mips64/usr/bin/net-snmp-config";
+OPT_powerpc="--with-net-snmp-config=/build/powerpc/usr/bin/net-snmp-config";
+OPT_powerpc64="--with-net-snmp-config=/build/powerpc64/usr/bin/net-snmp-config";
+OPT_x86_32="--with-net-snmp-config=/build/x86_32/usr/bin/net-snmp-config";
+

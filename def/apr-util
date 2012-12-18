@@ -1,0 +1,23 @@
+VERSION="1.5.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-pgsql --with-mysql=/usr --with-ldap --with-gdbm=yes --with-odbc --with-gdbm=yes --with-berkeley-db=yes";
+OPT_x86_64="-with-apr=/build/x86_64/usr/bin/apr-1-config --with-iconv=/build/x86_64/usr --with-expat=/build/x86_64/usr";
+OPT_x86_32="-with-apr=/build/x86_32/usr/bin/apr-1-config --with-iconv=/build/x86_32/usr --with-expat=/build/x86_32/usr";
+OPT_i686="-with-apr=/build/i686/usr/bin/apr-1-config --with-iconv=/build/i686/usr --with-expat=/build/i686/usr";
+OPT_arm="-with-apr=/build/arm/usr/bin/apr-1-config --with-iconv=/build/arm/usr --with-expat=/build/arm/usr ac_cv_func_nl_langinfo=yes
+         ac_cv_search_crypt=yes";
+OPT_arm64="-with-apr=/build/arm64/usr/bin/apr-1-config --with-iconv=/build/arm64/usr --with-expat=/build/arm64/usr ac_cv_func_nl_langinfo=yes
+         ac_cv_search_crypt=yes";
+OPT_mips="-with-apr=/build/mips/usr/bin/apr-1-config --with-iconv=/build/mips/usr --with-expat=/build/mips/usr ac_cv_func_nl_langinfo=yes
+         ac_cv_search_crypt=yes";
+OPT_mips64="-with-apr=/build/mips64/usr/bin/apr-1-config --with-iconv=/build/mips64/usr --with-expat=/build/mips64/usr ac_cv_func_nl_langinfo=yes
+         ac_cv_search_crypt=yes";
+OPT_powerpc="-with-apr=/build/powerpc/usr/bin/apr-1-config --with-iconv=/build/powerpc/usr --with-expat=/build/powerpc/usr ac_cv_func_nl_langinfo=yes
+         ac_cv_search_crypt=yes";
+OPT_powerpc64="-with-apr=/build/powerpc64/usr/bin/apr-1-config --with-iconv=/build/powerpc64/usr --with-expat=/build/powerpc64/usr ac_cv_func_nl_langinfo=yes
+         ac_cv_search_crypt=yes";
+SYSROOTFIXUP="1";
+ADDFILTER="./build/rules.mk";
+EXTRALIBS="-lpthread -ldl";
+BUILDDIR="0";

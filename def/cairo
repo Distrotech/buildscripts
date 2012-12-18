@@ -1,0 +1,8 @@
+VERSION="1.12.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--disable-full-testing";
+BUILDDIR=0;
+ADDCFLAG="-I=/usr/include/pixman-1 -I=/usr/include/freetype2 -I=/usr/include/poppler/glib
+          -I=/usr/include/librsvg-2.0 -I=/usr/include/gdk-pixbuf-2.0";
+NOCCOPT="1";

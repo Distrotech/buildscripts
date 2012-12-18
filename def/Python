@@ -1,0 +1,17 @@
+VERSION="2.7.3"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-shared --enable-ipv6";
+OPT_x86_32="ac_cv_have_long_long_format=yes ac_cv_buggy_getaddrinfo=no";
+OPT_arm="ac_cv_buggy_getaddrinfo=no ac_cv_have_long_long_format=yes";
+OPT_arm64="ac_cv_buggy_getaddrinfo=no ac_cv_have_long_long_format=yes";
+OPT_mips="ac_cv_buggy_getaddrinfo=no ac_cv_have_long_long_format=yes";
+OPT_mips64="ac_cv_buggy_getaddrinfo=no ac_cv_have_long_long_format=yes";
+OPT_powerpc="ac_cv_buggy_getaddrinfo=no ac_cv_have_long_long_format=yes";
+OPT_powerpc64="ac_cv_buggy_getaddrinfo=no ac_cv_have_long_long_format=yes";
+OPT_i686="ac_cv_buggy_getaddrinfo=no ac_cv_have_long_long_format=yes";
+FIXUPLIB="0";
+ADDCFLAG="-I=/usr/include/python2.7";
+XMAKEOPTS="HOSTPYTHON=/usr/bin/python PGEN=./hostpgen RUNSHARED=LD_LIBRARY_PATH=";
+NOCCOPT="1";
+CLEARFLAGS="1";

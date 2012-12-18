@@ -1,0 +1,12 @@
+VERSION="4.0.17"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+OPT_mips="ac_cv_func_setpgrp_void=yes";
+OPT_mips64="ac_cv_func_setpgrp_void=yes";
+OPT_arm="ac_cv_func_setpgrp_void=yes";
+OPT_arm64="ac_cv_func_setpgrp_void=yes";
+OPT_powerpc="ac_cv_func_setpgrp_void=yes";
+OPT_powerpc64="ac_cv_func_setpgrp_void=yes";
+OPT_i686="ac_cv_func_setpgrp_void=yes";
+OPT_x86_32="ac_cv_func_setpgrp_void=yes";

@@ -1,0 +1,6 @@
+VERSION="2.2.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+ADDCFLAG="-I=/usr/include/libusb-1.0";

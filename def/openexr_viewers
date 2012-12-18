@@ -1,0 +1,6 @@
+VERSION="1.0.2/"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ADDCFLAG="-I=/usr/include/OpenEXR/";
+EXTRALIBS="-lIlmCtl -lIlmCtlMath -lIlmCtlSimd -lIlmImfCtl -lIlmThread -lIlmImf -lpthread";

@@ -1,0 +1,11 @@
+VERSION="5.16.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+STDOPTS="-e -d -s -Dusethreads -Dprefix=${PREFIX}";
+BUILDDIR="0";
+NOCCOPT="1";
+OPT_x86_32="--sysroot=/build/x86_32 -A append:cc=-mx32";
+OPT_arm="-Dcc=/usr/bin/arm-linux-gnueabi-gcc -A ldflags=-L=/usr/lib -A append:libswanted=' gcc_s'";
+OPT_powerpc="-Dcc=/usr/bin/powerpc-linux-gnu-gcc -A ldflags=-L=/usr/lib";
+SYSROOTPATH="1";

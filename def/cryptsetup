@@ -1,0 +1,7 @@
+VERSION="1.5.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+OPT_i686="--with-libgcrypt-prefix=/build/i686/usr";
+OPT_arm="--with-libgcrypt-prefix=/build/arm/usr";
+OPT_x86_64="--with-libgcrypt-prefix=/build/x86_64/usr";

@@ -1,0 +1,7 @@
+VERSION="0.1.10"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+STDOPTS="--default";
+BUILDDIR="0";
+ADDCFLAG="-I/usr/src/linux/include";

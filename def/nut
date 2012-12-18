@@ -1,0 +1,7 @@
+VERSION="2.6.3"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-all --with-cgi --without-avahi --without-powerman --without-ipmi --with-snmp-libs=-lnetsnmp
+         --with-gd-libs=-lgd";
+NOCCOPT="1";
+ADDCFLAG="-I=/usr/include/neon";

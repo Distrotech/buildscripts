@@ -1,0 +1,14 @@
+VERSION="49.1.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+CFGBIN="source/";
+OPT_arm="--with-cross-build=/usr/src/icu4c/icu4c-49.1.2/build-x86_64";
+OPT_arm64="--with-cross-build=/usr/src/icu4c/icu4c-49.1.2/build-x86_64";
+OPT_mips="--with-cross-build=/usr/src/icu4c/icu4c-49.1.2/build-x86_64";
+OPT_mips64="--with-cross-build=/usr/src/icu4c/icu4c-49.1.2/build-x86_64";
+OPT_powerpc="--with-cross-build=/usr/src/icu4c/icu4c-49.1.2/build-x86_64";
+OPT_powerpc64="--with-cross-build=/usr/src/icu4c/icu4c-49.1.2/build-x86_64";
+OPT_i686="--with-cross-build=/usr/src/icu4c/icu4c-49.1.2/build-x86_64";
+OPT_x86_32="--with-cross-build=/usr/src/icu4c/icu4c-49.1.2/build-x86_64";
+

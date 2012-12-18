@@ -1,0 +1,31 @@
+#!/bin/bash
+
+JAVA_VER=1.6.0_24-b24
+
+#${barch} ${HOST} ${DIST_ROOT} ${CLEANOPT}
+
+./../configure --prefix=/usr --sysconfdir=/etc/ --mandir=/usr/share/man --localstatedir=/var \
+               --with-jdk-home=${JAVA_HOME} --disable-bootstrap \
+               --with-ecj-jar=/usr/share/java/ecj-4.5.jar --with-rhino=/usr/share/java/js.jar \
+               --host=${2} --build=${BUILD}
+
+cp -r ../.build-info/src/* ./
+
+make stamps/patch.stamp
+
+patch -p0 -N -s -r - -i ../.build-info/make_sanity.patch openjdk/jdk/make/common/Sanity.gmk
+patch -p0 -N -s -r - -i ../.build-info/gif_version5.patch
+patch -p0 -N -s -r - -i ../.build-info/build.local-${1}.patch
+
+make
+
+case $1 in
+  x86_64)INSTJVM=/usr/lib64/jvm;;
+  x86_32)INSTJVM=/usr/libx32/jvm;;
+  *)INSTJVM=/usr/lib/jvm;;
+esac
+
+#install
+mkdir -p ${3}/${INSTJVM}/jre-${JAVA_VER} ${3}/${INSTJVM}/jdk-${JAVA_VER}
+rsync -avP openjdk.build/j2re-image/ ${3}${INSTJVM}/jre-${JAVA_VER}/
+rsync -avP openjdk.build/j2sdk-image/ ${3}${INSTJVM}/jdk-${JAVA_VER}/

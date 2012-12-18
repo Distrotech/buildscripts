@@ -1,0 +1,6 @@
+VERSION="3.7"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+ADDCFLAG="-I=/usr/include/libnl3 -DCONFIG_LIBNL30";

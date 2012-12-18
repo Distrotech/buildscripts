@@ -1,0 +1,10 @@
+VERSION="0.8.8"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="ac_cv_file__usr_local_share_java_resolver_jar=no ac_cv_file__usr_share_java_resolver_jar=no
+         ac_cv_file__usr_locak_share_java_xml_commons_resolver_1_1_jar=no ac_cv_file__usr_share_java_xml_commons_resolver_1_1_jar=no
+         ac_cv_file__usr_local_share_java_saxon_jar=no ac_cv_file__usr_share_java_saxon_jar=no
+         ac_cv_file__usr_local_share_java_xalan_jar=no ac_cv_file__usr_share_java_xalan_jar=no
+         ac_cv_file__usr_local_share_java_xalan2_jar=no ac_cv_file__usr_share_java_xalan2_jar=no";
+BUILDDIR="0";
+ADDCC="0";

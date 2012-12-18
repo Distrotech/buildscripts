@@ -1,0 +1,5 @@
+VERSION="1.4"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-sg-logdir=/var/spool/squid --with-sg-config=/etc/squid/filter.conf --with-sg-dbhome=/var/db/squid";
+BUILDDIR="0";

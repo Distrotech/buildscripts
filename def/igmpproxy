@@ -1,0 +1,5 @@
+VERSION="0.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ADDCFLAG="-std=gnu99";

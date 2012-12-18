@@ -1,0 +1,6 @@
+VERSION="snapshot-20120913-2245"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-shared";
+MAKETARGETS="lib-shared";
+ADDCC="0";

@@ -1,0 +1,18 @@
+VERSION="0.10.36"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-shared";
+ADDLDFLAG="-lm -lpthread";
+ADDCFLAG="-I=/usr/include/libxml2 -I=/usr/include/glib-2.0";
+OPT_arm="--enable-introspection=no";
+OPT_arm="--enable-introspection=no";
+OPT_mips="--enable-introspection=no";
+OPT_mips64="--enable-introspection=no";
+OPT_powerpc="--enable-introspection=no";
+OPT_powerpc64="--enable-introspection=no";
+OPT_x86_64="--enable-introspection=no";
+OPT_x86_32="--enable-introspection=no";
+OPT_i686="--enable-introspection=no";
+NOCCOPT="1";
+CLEARFLAGS="1";
+EXTRALIBS="-lm -lz -llzma";

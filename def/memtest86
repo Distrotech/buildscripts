@@ -1,0 +1,9 @@
+VERSION="4.0a"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+NOMAKEFLAGS="1";
+ADDCFLAG="-m32";
+ADDLDFLAG="-m elf_i386";
+LDISCC="0";

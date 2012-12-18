@@ -1,0 +1,6 @@
+VERSION="0.29"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ADDCFLAG="-I=/usr/include/cairo -I=/usr/include/pango-1.0 -I=/usr/include/gdk-pixbuf-2.0
+          -I=/usr/include/atk-1.0 -I=/usr/include/gstreamer-0.10 -I=/usr/include/libxml2";

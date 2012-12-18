@@ -1,0 +1,18 @@
+VERSION="2.4.3"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="-DWITH_FFMPEG:BOOL=OFF";
+BUILDDIR="1";
+ADDCFLAG="-I=/usr/include/gstreamer-0.10 -I=/usr/include/python2.7";
+FIXUPLIB="1";
+OPT_i686="-DPYTHON_INCLUDE_DIR:PATH=/build/i686/usr/include/python2.7";
+OPT_arm="-DPYTHON_INCLUDE_DIR:PATH=/build/arm/usr/include/python2.7";
+OPT_x86_32="-DPYTHON_INCLUDE_DIR:PATH=/build/x86_32/usr/include/python2.7";
+OPT_arm="-DPYTHON_INCLUDE_DIR:PATH=/build/arm/usr/include/python2.7";
+OPT_arm64="-DPYTHON_INCLUDE_DIR:PATH=/build/arm64/usr/include/python2.7";
+OPT_mips="-DPYTHON_INCLUDE_DIR:PATH=/build/mips/usr/include/python2.7";
+OPT_mips64="-DPYTHON_INCLUDE_DIR:PATH=/build/mips64/usr/include/python2.7";
+OPT_powerpc="-DPYTHON_INCLUDE_DIR:PATH=/build/powerpc/usr/include/python2.7
+             -DENABLE_SSE3:BOOL=OFF -DENABLE_SSE2:BOOL=OFF -DENABLE_SSE:BOOL=OFF";
+OPT_powerpc64="-DPYTHON_INCLUDE_DIR:PATH=/build/powerpc64/usr/include/python2.7";
+

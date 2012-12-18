@@ -1,0 +1,6 @@
+VERSION="1.0.10"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+ADDCFLAG='-W -Wall -Werror -Wundef -Wshadow -D_GNU_SOURCE -O2 -g $(DEFS)';

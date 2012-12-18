@@ -1,0 +1,15 @@
+VERSION="2.1.25"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-ldap --disable-ldapdb --enable-login --with-configdir=/etc/sasl2";
+OPT_arm="ac_cv_header_openssl_des_h=yes";
+OPT_arm64="ac_cv_header_openssl_des_h=yes --with-plugindir=/usr/lib64/sasl2";
+OPT_powerpc="ac_cv_header_openssl_des_h=yes";
+OPT_powerpc64="--with-plugindir=/usr/lib64/sasl2 ac_cv_header_openssl_des_h=yes";
+OPT_mips="ac_cv_header_openssl_des_h=yes";
+OPT_mips64="ac_cv_header_openssl_des_h=yes --with-plugindir=/usr/lib64/sasl2";
+OPT_x86_64="--with-plugindir=/usr/lib64/sasl2";
+OPT_x86_32="--with-plugindir=/usr/libx32/sasl2";
+ADDCFLAG="-fPIC";
+NOCCOPT="1";
+FIXUPLIB="1";

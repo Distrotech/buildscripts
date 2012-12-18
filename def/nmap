@@ -1,0 +1,8 @@
+VERSION="6.01"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-liblua=included --with-libpcap=/usr";
+BUILDDIR="0";
+OPT_arm="--with-openssl=/build/arm/usr";
+EXTRALIBS="-lusb-1.0 -lpthread -lrt";
+ADDGCCDIR="0";

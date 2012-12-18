@@ -1,0 +1,7 @@
+VERSION="0.4.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+ADDCFLAG="-I=/usr/include/cairo -I=/usr/include/libvisual-0.4 -I=/usr/include/pango-1.0
+          -I=/usr/include/gdk-pixbuf-2.0";

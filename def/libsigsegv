@@ -1,0 +1,5 @@
+VERSION="2.10"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+OPT_x86_32="CFG_FAULT=fault-linux.h";

@@ -1,0 +1,4 @@
+VERSION="6.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-curses";

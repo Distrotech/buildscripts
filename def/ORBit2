@@ -1,0 +1,41 @@
+VERSION="2.14.19"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+OPT_mips="ac_cv_alignof_CORBA_octet=1 ac_cv_alignof_CORBA_boolean=1 ac_cv_alignof_CORBA_char=1 
+         ac_cv_alignof_CORBA_wchar=2 ac_cv_alignof_CORBA_short=2 ac_cv_alignof_CORBA_long=4 
+         ac_cv_alignof_CORBA_long_long=4 ac_cv_alignof_CORBA_float=4 ac_cv_alignof_CORBA_double=4 
+         ac_cv_alignof_CORBA_long_double=4 ac_cv_alignof_CORBA_struct=1 ac_cv_alignof_CORBA_pointer=4 
+         --with-idl-compiler=/usr/src/ORBit2/ORBit2-2.14.19/build-x86_64/src/idl-compiler/orbit-idl-2";
+OPT_mips64="ac_cv_alignof_CORBA_octet=1 ac_cv_alignof_CORBA_boolean=1 ac_cv_alignof_CORBA_char=1 
+         ac_cv_alignof_CORBA_wchar=2 ac_cv_alignof_CORBA_short=2 ac_cv_alignof_CORBA_long=4 
+         ac_cv_alignof_CORBA_long_long=8 ac_cv_alignof_CORBA_float=4 ac_cv_alignof_CORBA_double=8 
+         ac_cv_alignof_CORBA_long_double=8 ac_cv_alignof_CORBA_struct=1 ac_cv_alignof_CORBA_pointer=8
+         --with-idl-compiler=/usr/src/ORBit2/ORBit2-2.14.19/build-x86_64/src/idl-compiler/orbit-idl-2";
+OPT_powerpc="ac_cv_alignof_CORBA_octet=1 ac_cv_alignof_CORBA_boolean=1 ac_cv_alignof_CORBA_char=1 
+         ac_cv_alignof_CORBA_wchar=2 ac_cv_alignof_CORBA_short=2 ac_cv_alignof_CORBA_long=4 
+         ac_cv_alignof_CORBA_long_long=4 ac_cv_alignof_CORBA_float=4 ac_cv_alignof_CORBA_double=4 
+         ac_cv_alignof_CORBA_long_double=4 ac_cv_alignof_CORBA_struct=1 ac_cv_alignof_CORBA_pointer=4 
+         --with-idl-compiler=/usr/src/ORBit2/ORBit2-2.14.19/build-x86_64/src/idl-compiler/orbit-idl-2";
+OPT_powerpc64="ac_cv_alignof_CORBA_octet=1 ac_cv_alignof_CORBA_boolean=1 ac_cv_alignof_CORBA_char=1 
+         ac_cv_alignof_CORBA_wchar=2 ac_cv_alignof_CORBA_short=2 ac_cv_alignof_CORBA_long=4 
+         ac_cv_alignof_CORBA_long_long=8 ac_cv_alignof_CORBA_float=4 ac_cv_alignof_CORBA_double=8 
+         ac_cv_alignof_CORBA_long_double=8 ac_cv_alignof_CORBA_struct=1 ac_cv_alignof_CORBA_pointer=8
+         --with-idl-compiler=/usr/src/ORBit2/ORBit2-2.14.19/build-x86_64/src/idl-compiler/orbit-idl-2";
+OPT_arm="ac_cv_alignof_CORBA_octet=1 ac_cv_alignof_CORBA_boolean=1 ac_cv_alignof_CORBA_char=1 
+         ac_cv_alignof_CORBA_wchar=2 ac_cv_alignof_CORBA_short=2 ac_cv_alignof_CORBA_long=4 
+         ac_cv_alignof_CORBA_long_long=4 ac_cv_alignof_CORBA_float=4 ac_cv_alignof_CORBA_double=4 
+         ac_cv_alignof_CORBA_long_double=4 ac_cv_alignof_CORBA_struct=1 ac_cv_alignof_CORBA_pointer=4 
+         --with-idl-compiler=/usr/src/ORBit2/ORBit2-2.14.19/build-x86_64/src/idl-compiler/orbit-idl-2";
+OPT_i686="ac_cv_alignof_CORBA_octet=1 ac_cv_alignof_CORBA_boolean=1 ac_cv_alignof_CORBA_char=1 
+          ac_cv_alignof_CORBA_wchar=2 ac_cv_alignof_CORBA_short=2 ac_cv_alignof_CORBA_long=4 
+          ac_cv_alignof_CORBA_long_long=4  ac_cv_alignof_CORBA_float=4 ac_cv_alignof_CORBA_double=4 
+          ac_cv_alignof_CORBA_long_double=4 ac_cv_alignof_CORBA_struct=1 ac_cv_alignof_CORBA_pointer=4
+          --with-idl-compiler=/usr/src/ORBit2/ORBit2-2.14.19/build-x86_64/src/idl-compiler/orbit-idl-2";
+XOPT_x86_64="ac_cv_alignof_CORBA_octet=1 ac_cv_alignof_CORBA_boolean=1 ac_cv_alignof_CORBA_char=1 ac_cv_alignof_CORBA_wchar=2 ac_cv_alignof_CORBA_short=2 ac_cv_alignof_CORBA_long=4 ac_cv_alignof_CORBA_long_long=8 ac_cv_alignof_CORBA_float=4 ac_cv_alignof_CORBA_double=8 ac_cv_alignof_CORBA_long_double=8 ac_cv_alignof_CORBA_struct=1 ac_cv_alignof_CORBA_pointer=4";
+OPT_x86_32="ac_cv_alignof_CORBA_octet=1 ac_cv_alignof_CORBA_boolean=1 ac_cv_alignof_CORBA_char=1 
+            ac_cv_alignof_CORBA_wchar=2 ac_cv_alignof_CORBA_short=2 ac_cv_alignof_CORBA_long=4 
+            ac_cv_alignof_CORBA_long_long=8 ac_cv_alignof_CORBA_float=4 ac_cv_alignof_CORBA_double=8 
+            ac_cv_alignof_CORBA_long_double=8 ac_cv_alignof_CORBA_struct=1 ac_cv_alignof_CORBA_pointer=4";
+ADDCFLAG="-I=/usr/include/libIDL-2.0";
+NOCCOPT="1";

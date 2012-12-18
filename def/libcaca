@@ -1,0 +1,5 @@
+VERSION="0.99.beta18"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--disable-csharp";
+ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/pango-1.0";

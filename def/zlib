@@ -1,0 +1,6 @@
+VERSION="1.2.7"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+FIXUPLIB="1";
+LDISCC="0";

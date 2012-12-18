@@ -1,0 +1,13 @@
+VERSION="4.9"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--disable-silent-rules";
+OPT_arm="QMAKESPEC=linux-arm-gnueabi-g++";
+OPT_powerpc="QMAKESPEC=linux-ppc-g++";
+OPT_i686="QMAKESPEC=linux-g++-32";
+OPT_x86_32="QMAKESPEC=linux-g++-x32";
+OPT_mips="QMAKESPEC=linux-mips-g++";
+OPT_mips64="QMAKESPEC=linux-mips-g++-64";
+OPT_powerpc="QMAKESPEC=linux-ppc-g++";
+OPT_powerpc64="QMAKESPEC=linux-ppc-g++-64";
+

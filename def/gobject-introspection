@@ -1,0 +1,17 @@
+VERSION="1.35.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ADDWITHSYSROOT="1";
+ADDCFLAG="-I=/usr/include/glib-2.0 -I=/usr/include/gio-unix-2.0 -I=/usr/include/python2.7";
+MAKEOPTS="V=1";
+XBUILDDIR="0";
+NOCCOPT="1";
+EXTRALIBS="-lglib-2.0 -lgmodule-2.0 -lgobject-2.0 -lgthread-2.0 -lgio-2.0";
+OPT_i686="PYTHON=/build/i686/usr/bin/python2.7";
+OPT_arm="PYTHON=/build/arm/usr/bin/python2.7";
+MOPT_arm="CC=/usr/bin/arm-linux-gnueabi-gcc";
+OPT_arm64="PYTHON=/build/arm64/usr/bin/python2.7";
+OPT_x86_32="PYTHON=/build/x86_32/usr/bin/python2.7";
+OPT_x86_64="PYTHON=/build/x86_64/usr/bin/python";
+MOPT_x86_64="CC=/usr/bin/gcc";

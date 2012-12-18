@@ -1,0 +1,4 @@
+VERSION="451"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="ac_cv_lib_ncurses_initscr=no";

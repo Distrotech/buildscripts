@@ -1,0 +1,16 @@
+VERSION="2.4.32";
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-crypt --enable-lmpasswd --enable-modules --enable-rlookups --enable-slp --enable-backends=mod
+         --enable-overlays=mod --enable-rewrite --enable-slapi --disable-ndb --disable-perl --enable-spasswd
+         --with-cyrus-sasl";
+OPT_powerpc="--with-yielding-select ac_cv_func_memcmp_working=yes";
+OPT_powerpc64="--with-yielding-select ac_cv_func_memcmp_working=yes";
+OPT_arm="--with-yielding-select ac_cv_func_memcmp_working=yes";
+OPT_arm64="--with-yielding-select ac_cv_func_memcmp_working=yes";
+OPT_mips="--with-yielding-select ac_cv_func_memcmp_working=yes";
+OPT_mips64="--with-yielding-select ac_cv_func_memcmp_working=yes";
+OPT_i686="--with-yielding-select ac_cv_func_memcmp_working=yes";
+OPT_x86_64="--with-yielding-select";
+OPT_x86_32="--with-yielding-select ac_cv_func_memcmp_working=yes";
+EXTRALIBS="-ldl -lltdl -lutil";

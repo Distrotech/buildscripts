@@ -1,0 +1,5 @@
+VERSION="0.2.7"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--disable-test";
+ADDCFLAG="-I=/usr/include/cairo";

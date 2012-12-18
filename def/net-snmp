@@ -1,0 +1,6 @@
+VERSION="5.7.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-mib-modules=mibII/mta_sendmail --without-perl-modules --enable-ipv6 --with-defaults ac_cv_type_ssize_t=yes --enable-shared";
+BUILDDIR="0";
+LDISCC="1";

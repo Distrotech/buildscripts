@@ -1,0 +1,18 @@
+VERSION="5.12"
+VERSEP=".";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+CFGPTH="build_unix";
+CFGBIN="unix/";
+BUILDDIR="0";
+ADDCFLAG="-I=/usr/include/freetype2 -I../../../tcl8/tcl8.5.12/generic -I../../../tcl8/tcl8.5.12/unix";
+EXTRALIBS="-lxcb -lXau -lXdmcp";
+OPT_arm="tcl_cv_strtod_buggy=no";
+OPT_arm64="tcl_cv_strtod_buggy=no";
+OPT_mips="tcl_cv_strtod_buggy=no";
+OPT_mips64="tcl_cv_strtod_buggy=no";
+OPT_powerpc="tcl_cv_strtod_buggy=no";
+OPT_powerpc64="tcl_cv_strtod_buggy=no";
+OPT_i686="tcl_cv_strtod_buggy=no";
+OPT_x86_32="tcl_cv_strtod_buggy=no";

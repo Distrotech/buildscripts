@@ -1,0 +1,20 @@
+#!/bin/bash
+
+DIST=$( basename `pwd` )
+
+if [ "${4}" ];then
+  ./build.sh clean
+  rm -rf ${DIST}
+fi;
+
+./build.sh -Ddist.dir=${DIST}
+
+case $1 in
+  x86_64)INSTJVM=/usr/lib64/jvm;;
+  x86_32)INSTJVM=/usr/libx32/jvm;;
+  *)INSTJVM=/usr/lib/jvm;;
+esac
+
+#install
+mkdir -p ${3}/${INSTJVM}
+rsync -avP ${DIST} ${3}${INSTJVM}/

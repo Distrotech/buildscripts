@@ -1,0 +1,6 @@
+VERSION="1.0.11"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ADDCFLAG="-I=/usr/include/orc-0.4";
+BUILDDIR="0";

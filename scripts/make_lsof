@@ -1,0 +1,13 @@
+#!/bin/bash
+
+export LSOF_CC=${CC}
+export LSOF_CFLAGS=${CFLAGS}
+export LSOF_LD=${CC}
+export LSOF_CFGL="-lsepol -ltirpc -lnsl"
+
+./Configure -n linux
+make || exit $?
+
+ginstall -D lsof.8 ${3}/usr/share/man/man8/lsof.8
+ginstall -D lsof ${3}/usr/bin/lsof
+

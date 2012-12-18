@@ -1,0 +1,4 @@
+VERSION="5.0.7"
+VERSEP="-";
+PREFIX="/usr";
+BUILDDIR="0";

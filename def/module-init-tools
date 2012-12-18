@@ -1,0 +1,4 @@
+VERSION="3.15"
+VERSEP="-";
+PREFIX="/";
+CONFOPT="--enable-zlib --enable-zlib-dynamic --enable-static-utils";

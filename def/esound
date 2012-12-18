@@ -1,0 +1,5 @@
+VERSION="0.2.41"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+EXTRALIBS="-lasound -lm -lpthread -ldl";

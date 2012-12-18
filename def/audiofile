@@ -1,0 +1,6 @@
+VERSION="0.3.4"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ADDCFLAG="-std=gnu99";
+EXTRALIBS="-lm";

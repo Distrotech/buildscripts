@@ -1,0 +1,4 @@
+VERSION="3.0.9"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="ac_cv_search_libiconv_open=no";

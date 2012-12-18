@@ -1,0 +1,11 @@
+#!/bin/bash
+
+unset CFLAGS LDFLAGS CPPFLAGS CXXFLAGS LD
+
+export PATH=/usr/bin:${PATH}
+
+if [ "${4}" ];then
+  make ${4}
+fi;
+
+make BUILD_CC="${CC}" CC="/usr/bin/gcc -m32 --sysroot=/" LD=/usr/bin/ld  INSTALLROOT=${3} all install

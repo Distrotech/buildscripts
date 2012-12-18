@@ -1,0 +1,12 @@
+VERSION="0.8.14"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+OPT_x86_32="libIDL_cv_long_long_format=ll";
+OPT_arm="libIDL_cv_long_long_format=%llu";
+OPT_arm64="libIDL_cv_long_long_format=%llu";
+OPT_mips="libIDL_cv_long_long_format=%llu";
+OPT_mips64="libIDL_cv_long_long_format=%llu";
+OPT_powerpc="libIDL_cv_long_long_format=%llu";
+OPT_powerpc64="libIDL_cv_long_long_format=%llu";
+OPT_i686="libIDL_cv_long_long_format=%llu";

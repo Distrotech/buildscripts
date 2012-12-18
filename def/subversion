@@ -1,0 +1,12 @@
+VERSION="1.7.7"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-swig --with-ssl";
+OPT_arm="--with-apxs=/build/arm/opt/apache2/bin/apxs --with-apr=/build/arm/usr --with-apr-util=/build/arm/usr
+         --with-gssapi=/build/arm/usr --with-swig=/build/arm/usr --with-neon=/build/arm/usr";
+OPT_i686="--with-apxs=/build/i686/opt/apache2/bin/apxs --with-apr=/build/i686/usr --with-apr-util=/build/i686/usr
+          --with-gssapi=/build/i686/usr --with-swig=/build/i686/usr --with-neon=/build/i686/usr";
+OPT_x86_32="--with-apxs=/build/x86_32/opt/apache2/bin/apxs --with-apr=/build/x86_32/usr --with-apr-util=/build/x86_32/usr
+          --with-gssapi=/build/x86_32/usr --with-swig=/build/x86_32/usr --with-neon=/build/x86_32/usr";
+ADDCFLAG="-I=/opt/apache/include";
+ADDLFLAG="/dist/${barch}/subversion${VERSEP}${VERSION}/usr/lib";

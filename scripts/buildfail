@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ls /dist/status/*/fail/* |awk -F/ '{printf "/dist/scripts/build %s noclean %s\n",$4,$6}'

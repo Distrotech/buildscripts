@@ -1,0 +1,38 @@
+#!/bin/bash
+
+CWD=$( pwd )
+
+if [ "${4}" ];then
+  /usr/bin/make ${4}
+fi;
+
+(/usr/bin/cat <<EOF
+APPENDDEF(\`confMAPDEF', \`-DLDAPMAP')
+APPENDDEF(\`confENVDEF', \`-DLDAP_VERSION_MAX=3 -DSASL -DSTARTTLS -D_FFR_SASL_OPTS -DNETINET6')dnl
+APPENDDEF(\`confINCDIRS', \`-I/usr/include/sasl')dnl
+APPENDDEF(\`confLIBDIRS', \`-L/usr/lib/sasl2')dnl
+APPENDDEF(\`confLIBS', \`-lldap -lsasl2 -lcrypt -lssl -lcrypto -llber -lpthread -lrt -lltdl -lutil')dnl
+PREPENDDEF(\`confLIBSEARCH',\`resolv')dnl
+define(\`confCC', \`/usr/bin/${MLHOST}-gcc')dnl
+define(\`confCCOPTS', \`--sysroot=/build/${1}${MLOPT}')dnl
+define(\`confMKDIR', \`mkdir')dnl
+define(\`confMANROOT', \`/usr/share/man/man')dnl
+define(\`confCCLINK', \`/usr/bin/${MLHOST}-gcc${MLOPT}')dnl
+EOF
+) > devtools/Site/site.config.m4
+
+for mandir in 1 3 4 5 8;do
+  /usr/bin/mkdir -p ${3}/usr/share/man/man${mandir}
+done;
+
+for bindir in bin sbin;do
+  /usr/bin/mkdir -p ${3}/usr/${bindir}
+done;
+
+./Build -O ${CWD}/build-${1} DESTDIR=${3} all install
+
+for noinst in build-${1}/*/rmail build-${1}/*/mail.local;do
+  /usr/bin/make -C ${noinst} DESTDIR=${3} force-install
+done
+
+/usr/bin/rsync -avP cf/ ${3}/usr/share/mailconf

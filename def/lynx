@@ -1,0 +1,7 @@
+VERSION="2-8-7"
+VERSEP="";
+PREFIX="/usr";
+CONFOPT="--with-ssl -with-screen=ncursesw --enable-ipv6 --enable-default-colors=slang --enable-color-style cf_cv_color_curses=yes cf_cv_fancy_curses=yes";
+MAKEOPTS="SITE_LIBS=-ldl";
+OPT_x86_64="ac_cv_sizeof_off_t=8 cf_cv_baddef_remove=no";
+ADDFILTER="makefile";

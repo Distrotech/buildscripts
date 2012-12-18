@@ -1,0 +1,16 @@
+VERSION="1.9.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--disable-syslogd --with-pam --with-gnu-ld --disable-ifconfig --enable-ncurses ac_cv_lib_termcap_tgetent=no
+         ac_cv_header_termcap_h=no";
+ADDCC="0";
+OPT_arm="--with-ncurses-include-dir=/build/arm/usr/include";
+OPT_arm64="--with-ncurses-include-dir=/build/arm64/usr/include";
+OPT_mips="--with-ncurses-include-dir=/build/mips/usr/include";
+OPT_mips64="--with-ncurses-include-dir=/build/mips64/usr/include";
+OPT_powerpc="--with-ncurses-include-dir=/build/powerpc/usr/include";
+OPT_powerpc64="--with-ncurses-include-dir=/build/powerpc64/usr/include";
+OPT_i686="--with-ncurses-include-dir=/build/i686/usr/include";
+OPT_x86_32="--with-ncurses-include-dir=/build/x86_32/usr/include";
+OPT_x86_64="--with-ncurses-include-dir=/build/x86_64/usr/include";
+

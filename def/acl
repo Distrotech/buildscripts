@@ -1,0 +1,9 @@
+VERSION="2.2.51"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-gettext=yes";
+BUILDDIR="0";
+MAKETARGETS="install-dev install-lib";
+ADDCFLAG="-fPIC";
+FIXUPLIB="1";
+ADDWITHSYSROOT="1";

@@ -1,0 +1,9 @@
+VERSION="2.10.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-exceptions --enable-plugins --enable-video --enable-stun --enable-audio --enable-url --enable-http
+         --enable-alsa --enable-pulse --enable-oss --enable-avc --enable-dc --enable-v4l2 --enable-asn --enable-ffvdev
+         --enable-wavfile";
+BUILDDIR="0";
+LDISCC="1";
+MAKEALL="optshared";

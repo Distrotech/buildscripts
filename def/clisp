@@ -1,0 +1,10 @@
+VERSION="2.49"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--srcdir=../..";
+STDOPTS="--prefix=${PREFIX} --mandir=/usr/share/man";
+OPT_x86_64="--libdir=/usr/lib64";
+OPT_x86_32="--host=x86_64-linux-gnux32 --libdir=/usr/libx32";
+OPT_arm="--host=arm-linux-gnueabi";
+OPT_i686="--host=i686-linux-gnu";
+CFGPTH="/src/";

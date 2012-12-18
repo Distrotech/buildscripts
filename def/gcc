@@ -1,0 +1,25 @@
+VERSION="git"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-languages=all --with-ecj-jar=/usr/share/java/ecj-4.5.jar --enable-lto";
+OPT_x86_64="--target=x86_64-linux-gnu  --with-multilib-list=m32,m64,mx32 --with-build-sysroot=/build/x86_64 
+            --with-sysroot=/ --with-abi=64";
+OPT_x86_32="--target=x86_64-linux-gnux32  --with-multilib-list=mx32,m64,m32 --with-build-sysroot=/build/x86_32 
+            --with-sysroot=/ --with-abi=x32";
+OPT_i686="--target=i686-linux-gnu --disable-multilib --with-sysroot=/";
+OPTX_i686="--with-build-sysroot=/build/i686";
+OPT_arm="--target=arm-linux-gnueabi --with-build-sysroot=/build/arm --disable-multilib --with-sysroot=/";
+OPT_arm64="--target=arm-linux-gnueabi --with-build-sysroot=/build/arm64 --enable-multilib --with-sysroot=/";
+OPT_mips64="--target=mips64-linux-gnuabi64 --with-build-sysroot=/build/mips64 --disable-multilib --with-sysroot=/
+            --with-abi=64 --with-arch-32=mips32 --with-arch-64=mips64";
+OPT_mips="--target=mips-linux-gnu --with-build-sysroot=/build/mips --disable-multilib --with-sysroot=/
+          --with-arch=mips32";
+OPT_powerpc64="--target=powerpc64-linux-gnu --with-build-sysroot=/build/powerpc64 --enable-multilib --with-sysroot=/";
+OPT_powerpc="--target=powerpc-linux-gnu --with-build-sysroot=/build/powerpc --disable-multilib --with-sysroot=/";
+DEPENDS="gmp mpfr mpc isl ppl cloog";
+SYSROOTFIXUP="0";
+NOCCOPT="1";
+ADDCC="0";
+CLEARFLAGS="1";
+#EXTRALIBS="-lm";
+#ARM --with-mode=thumb --with-arch=armv7-a --with-fpu=vfpv3-d16

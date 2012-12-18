@@ -1,0 +1,7 @@
+VERSION="1.42.6"
+VERSEP="-";
+PREFIX="/";
+CONFOPT="--enable-elf-shlibs --disable-libblkid --disable-libuuid --disable-uuidd";
+FIXUPLIB="1";
+ADDCC="0";
+EXTRALIBS="-luuid";

@@ -1,0 +1,28 @@
+#!/bin/bash
+
+case ${1} in
+  arm)TYPE=linux-armv4
+      SARCH=arm;;
+  i686)TYPE=linux-elf
+      SARCH=i386;;
+  x86_32)TYPE=linux-x32
+      SARCH=x86_64;;
+  mips)TYPE=linux-mips
+       SARCH=mips;;
+  mips64)TYPE=linux-mips64
+       SARCH=mips;;
+  powerpc)TYPE=linux-ppc
+       SARCH=powerpc;;
+  powerpc64)TYPE=linux-ppc64
+       SARCH=powerpc;;
+  x86_64)TYPE=linux-x86_64
+      SARCH=${1};;
+esac;
+
+make clean
+rm Makefile Makefile.bak
+SYSROOT=`${2}-gcc -print-sysroot`
+./Configure --prefix=/usr --openssldir=/etc/openssl shared zlib-dynamic ${TYPE} 
+make LDFLAGS="-L${SYSROOT}/usr/lib" AR="${AR} r" RANLIB=${RANLIB} \
+  CC="${CC}" ARCH=${SARCH} INCLUDEDIR=/build/${1}/usr/include INSTALL_PREFIX=${3} \
+  MANDIR=/usr/share/man all install || exit 1

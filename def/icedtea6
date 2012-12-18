@@ -1,0 +1,10 @@
+VERSION="1.11.5";
+VERSEP="-";
+PREFIX="/usr";
+JAVA_HOME="/usr/lib64/jvm/jdk-1.6.0_24-b24";
+ANT_HOME="/usr/lib64/jvm/apache-ant-1.8.4";
+CONFOPT="--with-jdk-home=/usr/lib64/jvm/jdk-1.6.0_24-b24 --with-ecj-jar=/usr/share/java/ecj-4.5.jar  --with-rhino=/usr/share/java/js.jar";
+OPT_i686="--disable-bootstrap";
+XOPT_x86_32="--enable-zero";
+NOCROSS="1";
+XMOPT_x86_32="ARCHFLAG=-mx32";

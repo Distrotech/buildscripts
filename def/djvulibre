@@ -1,0 +1,5 @@
+VERSION="3.5.25"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";

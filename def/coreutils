@@ -1,0 +1,15 @@
+VERSION="8.20"
+VERSEP="-";
+PREFIX="/";
+CONFOPT="";
+ADDCFLAG="-std=c99";
+OPT_i686="--enable-no-install-program=arch,hostname";
+OPT_x86_32="--enable-no-install-program=arch,hostname,factor";
+OPT_x86_64="--enable-no-install-program=arch,hostname";
+OPT_mips="--enable-no-install-program=arch,hostname,factor";
+OPT_mips64="--enable-no-install-program=arch,hostname";
+OPT_arm="--enable-no-install-program=arch,hostname";
+OPT_arm64="--enable-no-install-program=arch,hostname";
+OPT_powerpc="--enable-no-install-program=arch,hostname";
+OPT_powerpc64="--enable-no-install-program=arch,hostname";
+ADDCC="0";
