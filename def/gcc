@@ -21,5 +21,12 @@ SYSROOTFIXUP="0";
 NOCCOPT="1";
 ADDCC="0";
 CLEARFLAGS="1";
+BOOTOPT="--disable-multilib --disable-shared --without-lto --disable-libgomp --disable-libquadmath --disable-bootstrap
+         --disable-libmudflap --disable-libswsp --enable-languages=c,c++ --with-sysroot=/ --disable-threads";
+BOOTOPT_mips="--with-arch=mips32";
+BOOTOPT_mips64="--with-arch=mips64";
+BOOTOPT_mips="--with-arch=mips32";
+BOOTOPT_x86_32="--with-abi=x32";
+BOOTOPT_x86_64="--with-abi=64";
 #EXTRALIBS="-lm";
 #ARM --with-mode=thumb --with-arch=armv7-a --with-fpu=vfpv3-d16
