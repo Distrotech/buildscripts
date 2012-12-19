@@ -1,7 +1,7 @@
 VERSION="git"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-languages=all --with-ecj-jar=/usr/share/java/ecj-4.5.jar --enable-lto";
+CONFOPT="--enable-languages=all --with-ecj-jar=/usr/share/java/ecj-4.5.jar --enable-lto --enable-cloog-backend=isl";
 OPT_x86_64="--target=x86_64-linux-gnu  --with-multilib-list=m32,m64,mx32 --with-build-sysroot=/build/x86_64 
             --with-sysroot=/ --with-abi=64";
 OPT_x86_32="--target=x86_64-linux-gnux32  --with-multilib-list=mx32,m64,m32 --with-build-sysroot=/build/x86_32 
