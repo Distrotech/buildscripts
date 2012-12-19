@@ -128,12 +128,7 @@ check_create_arch() {
 
   export B_LIBDIRS HOST KARCH QCPU MLHOST MLASOPT MLLDOPT MLOPT
 
-  if [ -d ${ARCHROOT}/${1}/usr/include ] &&
-     [ ${TOOLDIR}/${1}/kernel-headers/usr/include/linux -nt ${ARCHROOT}/${1}/usr/include/linux ];then
-    rsync -aP ${TOOLDIR}/${1}/kernel-headers/usr/include ${ARCHROOT}/${1}/usr/include
-  fi;
-
-  HDIR=${TOODIR}/${1}/kernel-headers
+  HDIR=${TOOLDIR}/${1}/system-headers
   if [ ! -d ${HDIR}/usr/include ] || [ ! -f ${TOOLPKG}/${1}/kernel-headers.tar.xz ] || \
      [ /usr/include/linux -nt ${HDIR}/usr/include/linux ];then
     if [ -e ${HDIR} ];then
@@ -158,6 +153,14 @@ check_create_arch() {
        fi;
        tar -cJf ${TOOLPKG}/${1}/kernel-headers.tar.xz *)
     fi;
+  fi;
+
+  if [ ! -d ${ARCHROOT}/${1}/usr/include/linux ] ||
+     [ ${HDIR}/usr/include/linux -nt ${ARCHROOT}/${1}/usr/include/linux ];then
+    if [ ! -d ${ARCHROOT}/${1}/usr/include ];then
+      mkdir -p ${ARCHROOT}/${1}/usr/include
+    fi;
+    rsync -aP ${HDIR}/usr/include ${ARCHROOT}/${1}/usr/include
   fi;
 }
 
@@ -1001,8 +1004,12 @@ build_gcc_bootstrap() {
   fi;
 
   #Use GLIBC/Kern headers only [Virgin] / Build dir / sysroot
-  if [ -d ${PKGBUILDDIR}/${1}/${GLIBC} ];then
-    BUILDDIR=${PKGBUILDDIR}/${1}/${GLIBC}
+  HDIR=${TOOLDIR}/${1}/system-headers
+  if [ -d ${PKGBUILDDIR}/${1}/${GLIBC} ] && [ -d ${HDIR}/usr/include/linux ];then
+    rsync -avP ${PKGBUILDDIR}/${1}/${GLIBC}/usr/include/ ${HDIR}/usr/include/
+    BUILDDIR=${HDIR}
+    (cd ${PKGBUILDDIR}/${1}/${GLIBC}
+     tar -cJf ${TOOLPKG}/${1}/${GLIBC}-headers.tar.xz usr/include)
    elif [ -d ${ARCHROOT}/${1}/ ];then
     BUILDDIR=${ARCHROOT}/${1}/
    else
@@ -1013,8 +1020,8 @@ build_gcc_bootstrap() {
 
   #Build a native limited "bootstrap" compiler statically linked for distribution
   run_configure ${USELIBDIR} ${PROGPRE} --build=${BUILD} --host=${THOST} --target=${2} --with-build-sysroot=${BUILDDIR} \
-                ${BOOTOPT} ${!MARCH} LDFLAGS="-static" || return 1
-  make ${MAKE_J} || make || return 1
+                ${BOOTOPT} ${!MARCH} || return 1
+  make ${MAKE_J} LDFLAGS="-static" || make LDFLAGS="-static" || return 1
   make DESTDIR=${GCCBOOTDEST} install || return 1
 
   #Setup some missing bits
