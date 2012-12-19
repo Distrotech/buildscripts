@@ -1124,7 +1124,7 @@ build_toolchain() {
   (build_glibc ${1} ${2}) || return 1
 
   (build_packages ${1} m4 bison autoconf automake attr acl pcre libsepol libselinux gperf \
-                      libcap gmp coreutils ncurses ncursesw readline bash mpfr mpc ppl isl cloog) || return 1
+                      libcap gmp coreutils ncurses ncursesw readline bash mpfr mpc ppl cloog) || return 1
 
   #Build GCC
   (build_packages ${1} gcc) || return 1
@@ -1144,7 +1144,7 @@ build_cross_package() {
     mkdir -p ${TOOLPKG}/${NARCH}
   fi;
 
-  #dont build cross tools for native
+  #dont build cross tools for native but ensure toolchain is good
   if [ "${1}" == "${NARCH}" ];then
     build_toolchain ${NARCH} ${BUILD} || return 1
 
@@ -1154,17 +1154,14 @@ build_cross_package() {
   fi;
 
 exit
-#Dont bother about arch root here we native and need /
-exit
   case ${1} in
     #Multi arch/lib for intel i686 does not support it
     x86_32|x86_64)
       case ${NARCH} in
         x86_32|x86_64)
           #Add Arch bootstrap GCC
-          export CC="${BUILD}-gcc -m${1:4:2} --sysroot=${ARCHROOT}/${1}"
-          #NATIVE NEEDED
-          (build_gcc_bootstrap ${1} ${HOST}) || return 1
+          (export CC="${BUILD}-gcc -m${1:4:2} --sysroot=${ARCHROOT}/${1}"
+          build_gcc_bootstrap ${1} ${HOST} ${1}) || return 1
 
           #Setup GLIBC For x86 ABI
           (build_glibc ${1} ${HOST}) || return 1
@@ -1173,10 +1170,6 @@ exit
       esac
     ;;
   esac;
-
-  if [ "${BUILD}" == "${HOST}" ];then
-      return;
-  fi;
 
   if [ ! -d ${TOOLPKG}/${NARCH}/${1} ];then
     mkdir -p ${TOOLPKG}/${NARCH}/${1}
