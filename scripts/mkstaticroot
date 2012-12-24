@@ -1,0 +1,38 @@
+#!/bin/bash
+
+NARCH=$( uname -m )
+
+if [ ! "${NARCH}" ] || [ ! -d /dist/pkg/build/${NARCH} ];then
+  echo require arch
+  exit;
+fi;
+
+STATICROOT=/dist/root/${NARCH}-static
+
+if [ -d ${STATICROOT} ];then
+  rm -rf ${STATICROOT}
+fi;
+mkdir -p /dist/root/${NARCH}-static
+
+cd /dist/pkg/build/${NARCH}
+for pkg in `ls -d *static *boot` ;do
+  for subpkg in `ls ${pkg}/${pkg}.tar.xz ${pkg}/${pkg}-dev.tar.xz ${pkg}/${pkg}-libs.tar.xz 2>/dev/null`;do
+    tar -C ${STATICROOT} -xJf ${subpkg};
+  done;
+done
+for devpkg in glibc-2.16.0/glibc-2.16.0-headers.tar.xz  glibc-2.16.0/glibc-2.16.0-static.tar.xz \
+              kernel-headers.tar.xz;do
+  tar -C ${STATICROOT} -xJf ${devpkg};
+done;
+
+for sysdir in proc sys dev root tmp usr/src dist etc;do
+  mkdir -p ${STATICROOT}/${sysdir}
+done;
+
+if [ -e ${STATICROOT}.sqfs ];then
+  rm ${STATICROOT}.sqfs
+fi;
+mksquashfs ${STATICROOT}/* ${STATICROOT}.sqfs -comp xz
+
+
+

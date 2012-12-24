@@ -1,0 +1,28 @@
+#!/bin/bash
+
+make realclean
+rm Policy.sh config.sh > /dev/null 2>&1
+
+./Configure -e -d -s -Dusethreads -Dprefix=/usr -Dcc=/usr/bin/${HOST}-gcc -A append:cc=" --sysroot=${SYSROOT} -fPIC" \
+            -A libpth="/${B_LIBDIRS} /usr/${B_LIBDIRS} /usr/X11R7/${B_LIBDIRS}" \
+            -Dlocincpth="/usr/include /usr/X11R7/include" -Darchname=${HOST}
+
+make ${MAKE_J} || make ${MAKE_J} || make || exit 1
+make DESTDIR=${SYSROOT} install
+
+eval `chroot ${SYSROOT} /usr/bin/perl -V:privlib -V:archlib -V:sitearch -V:sitelib`
+export PERL5LIB=${SYSROOT}/${privlib}:${SYSROOT}/${archlib}:${SYSROOT}/${sitearch}:${SYSROOT}/${sitelib}
+
+if [ ! -e cpan/Pod-LaTeX/blib/script/pod2latex ] && [ -e cpan/Pod-LaTeX/pod2latex ];then
+  cp cpan/Pod-LaTeX/pod2latex cpan/Pod-LaTeX/blib/script/pod2latex
+fi;
+
+if [ ! -e cpan/podlators/blib/script/pod2man ];then
+  (cd cpan/podlators/;../../perl Makefile.PL;make)
+fi;
+
+if [ ! -e cpan/Pod-Parser/blib/script/pod2usage ];then
+  (cd cpan/Pod-Parser/;../../perl Makefile.PL;make)
+fi;
+
+make DESTDIR=${3} install
