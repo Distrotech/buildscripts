@@ -19,10 +19,16 @@ case ${1} in
       SARCH=${1};;
 esac;
 
+if [ "${1}" == "${NARCH}" ] && [ ! -d /build/${1} ];then
+  INCDIR=/usr/include
+ else
+  INCDIR=/build/${1}/usr/include 
+fi;
+
 make clean
 rm Makefile Makefile.bak
 SYSROOT=`${2}-gcc -print-sysroot`
 ./Configure --prefix=/usr --openssldir=/etc/openssl shared zlib-dynamic ${TYPE} 
 make LDFLAGS="-L${SYSROOT}/usr/lib" AR="${AR} r" RANLIB=${RANLIB} \
-  CC="${CC}" ARCH=${SARCH} INCLUDEDIR=/build/${1}/usr/include INSTALL_PREFIX=${3} \
+  CC="${CC}" ARCH=${SARCH} INCLUDEDIR=${INCDIR} INSTALL_PREFIX=${3} \
   MANDIR=/usr/share/man all install || exit 1
