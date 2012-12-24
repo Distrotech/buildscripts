@@ -3,7 +3,12 @@
 NARCH=`uname -m`
 
 export PREFIX=/usr/X11R7
-export DESTDIR=/build/${1}/
+if [ "${1}" == "${NARCH}" ] && [ ! -d /build/${1} ];then
+  DESTDIR=/
+ else
+  DESTDIR=/build/${1}/
+fi;
+export DESTDIR
 export DPATH=${DESTDIR}${PREFIX}
 export MAKEFLAGS=${MAKE_J}
 
