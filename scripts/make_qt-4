@@ -8,7 +8,11 @@ if [ "${4}" ];then
   make confclean ${4}
 fi;
 
-mkdir -p /build/${1}/opt/qt-4/${B_LIBDIRS}
+if [ "${1}" == "${NARCH}" ] && [ ! -d /build/${1} ];then
+  mkdir -p /opt/qt-4/${B_LIBDIRS}
+ else
+  mkdir -p /build/${1}/opt/qt-4/${B_LIBDIRS}
+fi;
 
 ARCH="";
 case ${1} in
