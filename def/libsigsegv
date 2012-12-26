@@ -1,5 +1,5 @@
 VERSION="2.10"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--enable-shared --enable-static";
 OPT_x86_32="CFG_FAULT=fault-linux.h";
