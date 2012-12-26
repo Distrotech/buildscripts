@@ -1352,7 +1352,9 @@ build_toolchain() {
   (build_packages ${1} util-linux flex sed nano rsync grep less gzip tar pkg-config cpio iana-etc) || return 1
 
   for pmod in XML::Parser XML::SAX Font::TTF;do
-    cpan -i ${pmod};
+    if [ ! -e ${STATDIR}/${1}/done/${pmod} ];then
+      cpan -i ${pmod} && touch ${STATDIR}/${1}/done/${pmod}
+    fi;
   done
 
   #Build tools needed for compiling
