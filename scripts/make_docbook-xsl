@@ -1,0 +1,67 @@
+#!/bin/bash
+
+#Shamelesly taken from http://www.linuxfromscratch.org/blfs/view/svn/pst/docbook-xsl.html
+
+DBDIR=/usr/share/xml/docbook
+DOCDIR=/usr/share/doc
+
+install -v -m755 -d ${3}${DBDIR}/xsl-stylesheets-${VERSION}
+
+cp -v -R VERSION common eclipse epub extensions fo highlighting html \
+         htmlhelp images javahelp lib manpages params profiling \
+         roundtrip slides template tests tools webhelp website \
+         xhtml xhtml-1_1 epub3 assembly xhtml5 docsrc ${3}${DBDIR}/xsl-stylesheets-${VERSION}
+
+ln -s VERSION ${3}${DBDIR}/xsl-stylesheets-${VERSION}/VERSION.xsl
+
+install -v -m644 -D README ${3}${DOCDIR}/docbook-xsl-${VERSION}/README.txt
+install -v -m644    TODO REVISION AUTHORS COPYING RELEASE-NOTES* NEWS* ${3}${DOCDIR}/docbook-xsl-${VERSION}
+cp -v -R doc/* ${3}${DOCDIR}/docbook-xsl-${VERSION}
+
+if [ ! -d ${3}/etc/xml ];then
+  install -v -m755 -d ${3}/etc/xml;
+fi
+
+if [ -e ${3}/etc/xml/docbook-xsl-${VERSION}.xml ];then
+  rm ${3}/etc/xml/docbook-xsl-${VERSION}.xml;
+fi; 
+xmlcatalog --noout --create ${3}/etc/xml/docbook-xsl-${VERSION}.xml
+
+xmlcatalog --noout --add "rewriteSystem" \
+           "http://docbook.sourceforge.net/release/xsl/${VERSION}/" \
+           "file://${DBDIR}/xsl-stylesheets-${VERSION}/" \
+    ${3}/etc/xml/docbook-xsl-${VERSION}.xml
+
+xmlcatalog --noout --add "rewriteURI" \
+           "http://docbook.sourceforge.net/release/xsl/${VERSION}/" \
+           "file://${DBDIR}/xsl-stylesheets-${VERSION}" \
+    ${3}/etc/xml/docbook-xsl-${VERSION}.xml
+
+xmlcatalog --noout --add "rewriteSystem" \
+           "http://docbook.sourceforge.net/release/xsl/current/" \
+           "file://${DBDIR}/xsl-stylesheets-${VERSION}/" \
+    ${3}/etc/xml/docbook-xsl-${VERSION}.xml
+
+xmlcatalog --noout --add "rewriteURI" \
+           "http://docbook.sourceforge.net/release/xsl/current/" \
+           "file://${DBDIR}/xsl-stylesheets-${VERSION}/" \
+    ${3}/etc/xml/docbook-xsl-${VERSION}.xml
+
+xmlcatalog --noout --add "rewriteSystem" \
+           "http://docbook.sourceforge.net/release/xsl/snapshot_/" \
+           "file://${DBDIR}/xsl-stylesheets-${VERSION}/" \
+    ${3}/etc/xml/docbook-xsl-${VERSION}.xml
+
+xmlcatalog --noout --add "rewriteURI" \
+           "http://docbook.sourceforge.net/release/xsl/snapshot_/" \
+           "file://${DBDIR}/xsl-stylesheets-${VERSION}/" \
+    ${3}/etc/xml/docbook-xsl-${VERSION}.xml
+
+if [ -e /etc/xml/docbook-xsl.xml ];then
+  rm /etc/xml/docbook-xsl.xml;
+fi;
+xmlcatalog --noout --create /etc/xml/docbook-xsl.xml
+
+for dbook in `ls /etc/xml/docbook-xsl-*.xml`;do
+  xmlcatalog --noout --add nextCatalog "file://${dbook}" "" /etc/xml/docbook-xsl.xml
+done;
