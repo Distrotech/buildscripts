@@ -1502,8 +1502,8 @@ loop_on_dir() {
     fi;)
   done;
 
-  if [ -e ${STATDIR}/change ];then
-    rm ${STATDIR}/change;
+  if [ -e ${STATDIR}/${1}/change ];then
+    rm ${STATDIR}/${1}/change;
     return 0;
    else
     return 1;
@@ -1512,7 +1512,9 @@ loop_on_dir() {
 
 buildall_arch() {
   while loop_on_dir ${1};do
-    rm ${STATDIR}/change
+    if [ -e ${STATDIR}/${1}/change ];then
+      rm ${STATDIR}/${1}/change
+    fi;
   done;
 }
 
