@@ -100,7 +100,7 @@ check_create_arch() {
   
   unset TUPPLE SETLIBDIR LINARCH
 
- case ${1} in
+  case ${1} in
     arm|arm64)QCPU=arm;;
     mips|mips64)QCPU=mips;;
     powerpc)QCPU=ppc;;
@@ -141,10 +141,10 @@ check_create_arch() {
   if [ ! -d ${HDIR}/usr/include ] || [ ! -f ${TOOLPKG}/${1}/kernel-headers.tar.xz ] || \
      [ /usr/include/linux -nt ${HDIR}/usr/include/linux ];then
 
-    rsync -aP /usr/include/linux /usr/include/asm-generic /usr/include/asm-${KARCH} ${HDIR}/usr/include/ >/dev/null
+    rsync -aPR /usr/include/linux /usr/include/asm-generic /usr/include/asm-${KARCH} ${HDIR}/ >/dev/null
     ln -s asm-${KARCH} ${HDIR}/usr/include/asm
     if [ -d ${ARCHROOT}/${1} ] && [ ! -h ${ARCHROOT}/${1} ];then
-      rsync -aP ${HDIR}/usr/include/ ${ARCHROOT}/${1}/usr/include/ >/dev/null
+      rsync -avP ${HDIR}/usr/include/ ${ARCHROOT}/${1}/usr/include/ >/dev/null
     fi;
 
     if [ -d ${SRCDIR}/linux/include/mtd ];then
@@ -163,7 +163,7 @@ check_create_arch() {
   #Sync root too arch if no includes
   if [ -d ${ARCHROOT}/${1} ] && [ ! -d ${ARCHROOT}/${1}/usr/include ];then
     mkdir -p ${ARCHROOT}/${1}/usr/include
-    rsync -aP ${HDIR}/usr/include ${ARCHROOT}/${1}/usr/include
+    rsync -aP ${HDIR}/usr/include/ ${ARCHROOT}/${1}/usr/include/
   fi;
 }
 
@@ -474,8 +474,8 @@ autoconf_cross_build() {
   fi;
 
   #Disable shared libs for c++ libs where libstdc++ is not shared
-  if [ "${STDCSTATIC}" == "1" ] && [ ! -f /usr/${B_LIBDIRS}/libstdc++.so ];then
-    STDOPTSX="${STDOPTSX} --disable-shared";
+  if [ "${STDCSTATIC}" ] && [ ! -f /usr/${B_LIBDIRS}/libstdc++.so ];then
+    STDOPTSX="${STDOPTSX} ${STDCSTATIC}";
   fi;
 
   if [ "${ADDBUILDSYSROOT}" == "1" ] && [ -d ${ARCHROOT}/${2} ] && [ ! -h ${ARCHROOT}/${1} ];then
@@ -544,6 +544,7 @@ autoconf_cross_build() {
 build_project() {
   BUILDPROJECT=${1}
   shift;
+  barch=${1};
 
   eval `cat ${DEFDIR}/${BUILDPROJECT}`
 
@@ -552,7 +553,6 @@ build_project() {
    else
     export PROJECT=${ALIAS};
   fi;
-  barch=${1};
 
   if [ ! "${MAKEALL}" ];then
     MAKEALL=all
@@ -1168,7 +1168,7 @@ build_gcc_bootstrap() {
       if [ "${4}" == "shared" ];then
         rm ${STATDIR}/${1}/done/* /usr/${NLIBDIR}/libgmp.a /usr/${NLIBDIR}/libgmpxx.a \
                      /usr/${NLIBDIR}/libppl.a /usr/${NLIBDIR}/libppl_c.a /usr/${NLIBDIR}/libpwl.a \
-                     /usr/${NLIBDIR}/libisl.a /usr/${NLIBDIR}/libcloog-isl.a
+                     /usr/${NLIBDIR}/libisl.a /usr/${NLIBDIR}/libcloog-isl.a > /dev/null 2>&1
       fi;
     fi;
    else
@@ -1269,6 +1269,10 @@ build_static_tool() {
     sh ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install ${1} ${SRCDIR}/${4}/${STATICTOOL} ${TOOLDIR}/${1}/${STATICTOOL}-static
   fi;
 
+  if [ "${STATICINSTLIBS}" ] && [ "${STATICINSTLIBS}" == "1" ];then
+    rsync -avP ${TOOLDIR}/${1}/${STATICTOOL}-static/usr/${3}/*.a /usr/${3}/
+  fi;
+
   tar_package ${TOOLDIR}/${1}/${STATICTOOL}-static ${TOOLPKG}/${1} ${STATICTOOL}-static > /dev/null 2>&1
 }
 
@@ -1282,7 +1286,7 @@ static_toolbuild() {
     TARGET=${BUILD}
   fi;
   for stool in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
-      subversion pkg-config util-linux;do
+      pkg-config util-linux m4 cpio krb5 subversion;do
     (build_static_tool ${1} ${TARGET} ${TLIBDIR} ${stool})
   done;
 }
@@ -1295,11 +1299,11 @@ build_toolchain() {
     fi;
   done
 
-  #Build / rebuild the compile check for a valid compiler C/C++ static
-  (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
-
   #Build fresh glibc we are asuming that binutils/gcc/make/bash/sed/awk are good as they should be
   (build_glibc ${1} ${2}) || return 1
+
+  #Libs needed for GCC
+  (build_packages ${1} libtool gmp mpfr mpc zlib diffutils) || return 1
 
   #GCC C build to bootstrap multiarch
   (build_gcc_bootstrap ${1} ${2} ${1} multi) || return 1
@@ -1311,25 +1315,23 @@ build_toolchain() {
            (build_glibc x86_32 x86_64-linux-gnux32) || return 1;;
   esac
 
-  #Shared GCC / Multi arch
+  #Shared GCC / Multi arch C/C++
   (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
 
-  #Base dependancies if gcc not built yet
-  (build_packages ${1} make libtool sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk \
-                       perl m4 gmp mpfr mpc diffutils) || return 1
-
-  (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
-
-  (build_gcc_bootstrap ${1} ${HOST} ${1} shared) || return
-
-  #Build GCC
+  #Rebuild libtool
   if [ ! -e ${STATDIR}/${1}/done/gcc ] && [ -e ${STATDIR}/${1}/done/libtool ];then
     rm ${STATDIR}/${1}/done/libtool
   fi;
-  (build_packages ${1} gmp mpfr mpc ppl cloog gcc libtool) || return 1
 
-  (build_packages ${1} perl m4 bison autoconf automake gettext attr acl pcre libsepol libselinux gperf file \
-                      libcap coreutils ncurses ncursesw readline bash popt rsync) || return 1
+  #Base dependancies
+  (build_packages ${1} make libtool sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk \
+                       perl m4) || return 1
+
+  #Build GCC
+  (build_packages ${1} gmp mpfr mpc ppl cloog zip unzip gcc libtool) || return 1
+
+  (build_packages ${1} bison autoconf automake gettext attr acl pcre libsepol libselinux gperf file \
+                      libcap coreutils readline bash popt rsync) || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
@@ -1338,7 +1340,20 @@ build_toolchain() {
   (build_bootstrap_binutils ${1} ${2}) || return 1
 
   #Base programs
-  (build_packages ${1} Python libffi glib pkg-config) || return 1
+  (build_packages ${1} Python libffi glib pkg-config xz libxml2 libxslt expat docbook-4.1.2  docbook-4.2  docbook-4.3 \
+                       docbook-4.4  docbook-4.5 docbook-xsl nettle gnutls libgpg-error libgcrypt libassuan libksba pth \
+                       gnupg openssl libprelude libtirpc Linux-PAM slang) || return 1
+
+  
+  if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
+    rm /usr/lib64/libblkid.a /usr/lib64/libuuid.a /usr/lib64/libblkid.la /usr/lib64/libuuid.la >/dev/null 2>&1
+  fi;
+
+  (build_packages ${1} util-linux flex sed nano rsync grep less gzip tar pkg-config cpio iana-etc) || return 1
+
+  for pmod in XML::Parser XML::SAX Font::TTF;do
+    cpan -i ${pmod};
+  done
 
   #Build tools needed for compiling
   static_toolbuild ${1} ${2}
@@ -1519,7 +1534,7 @@ export BUILD NKARCH NLIBDIR
 
 #OpenJDK specifically barfs when these are not inplace check and fix
 for binlink in cpio tar sed grep fgrep egrep;do
-  if [ ! -e /bin/${binlink} ];then
+  if [ ! -e /bin/${binlink} ] && [ -x /usr/bin/${binlink} ];then
     ln -s /usr/bin/${binlink} /bin;
   fi;
 done
