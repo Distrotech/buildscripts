@@ -10,5 +10,5 @@ OPT_x86_32="--with-apxs=/build/x86_32/opt/apache2/bin/apxs --with-apr=/build/x86
           --with-gssapi=/build/x86_32/usr --with-swig=/build/x86_32/usr --with-neon=/build/x86_32/usr";
 ADDCFLAG="-I=/opt/apache/include";
 ADDLFLAG="/dist/${barch}/subversion${VERSEP}${VERSION}/usr/lib";
-STATICOPT="--disable-shared --without-berkeley-db --enable-all-static --without-neon --without-apxs LDFLAGS=-static"
+STATICOPT="--disable-shared --without-berkeley-db --enable-all-static --without-apxs LDFLAGS=-static"
 STATICMOPT="LDFLAGS=-all-static";
