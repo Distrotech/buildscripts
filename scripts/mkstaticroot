@@ -42,6 +42,13 @@ if [ -x /usr/bin/xmlcatalog ];then
   xmlcatalog --noout --add nextCatalog "file:///etc/xml/docbook-xsl.xml" "" ${STATICROOT}/etc/xml/catalog.xml
 fi;
 
+for mdir in 1 2 3 4 5 6 7 8;do
+  mkdir -p ${STATICROOT}/usr/share/man/man${mdir}
+done;
+
+#Install terminfo DB
+rsync -avRP /usr/share/terminfo ${STATICROOT}/
+
 if [ -e ${STATICROOT}.sqfs ];then
   rm ${STATICROOT}.sqfs
 fi;
