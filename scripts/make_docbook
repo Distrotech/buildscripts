@@ -1,0 +1,108 @@
+#!/bin/bash
+
+DBDIR=/usr/share/xml/docbook
+DOCDIR=/usr/share/doc
+
+#Shamelesly ripped from http://cblfs.cross-lfs.org/index.php/DocBook-XML-4.1.2 /
+#                       http://cblfs.cross-lfs.org/index.php/DocBook-XML-4.3
+#                       http://www.linuxfromscratch.org/blfs/view/svn/pst/DocBook.html
+
+install -v -d -m755 ${3}/${DBDIR}/xml-dtd-${VERSION}/dtd/
+cp -rv -af *.cat *.dtd *.mod ent ${3}/${DBDIR}/xml-dtd-${VERSION}/
+
+install -dv -m755 ${3}/${DOCDIR}/docbook-xml-${VERSION}
+install -v -m644 readme.txt ChangeLog *chg.txt ${3}/${DOCDIR}/docbook-xml-${VERSION}/
+
+cd ${3}/${DBDIR}/xml-dtd-${VERSION}
+
+xmlcatalog --noout --create catalog.xml
+install -dv -m755 ${3}/etc/xml
+if [ ! -f ${3}/etc/xml/docbook-${VERSION}.xml ];then
+  xmlcatalog --noout --create ${3}/etc/xml/docbook-${VERSION}.xml
+fi;
+
+xmlcatalog --noout --add "public" \
+           "-//OASIS//DTD DocBook XML V${VERSION}//EN" docbookx.dtd catalog.xml
+xmlcatalog --noout --add "delegatePublic" \
+           "-//OASIS//DTD DocBook XML V${VERSION}//EN" \
+           "file://${DBDIR}/xml-dtd-${VERSION}/catalog.xml" ${3}/etc/xml/docbook-${VERSION}.xml
+
+xmlcatalog --noout --add "public" \
+           "-//OASIS//DTD DocBook CALS Table Model V${VERSION}//EN" calstblx.dtd catalog.xml
+xmlcatalog --noout --add "delegatePublic" \
+           "-//OASIS//DTD DocBook CALS Table Model V${VERSION}//EN" \
+           "file://${DBDIR}/xml-dtd-${VERSION}/catalog.xml" ${3}/etc/xml/docbook-${VERSION}.xml
+
+xmlcatalog --noout --add "public" \
+           "-//OASIS//DTD XML Exchange Table Model 19990315//EN" soextblx.dtd catalog.xml
+xmlcatalog --noout --add "delegatePublic" \
+           "-//OASIS//DTD XML Exchange Table Model 19990315//EN" \
+           "file://${DBDIR}/xml-dtd-${VERSION}/catalog.xml" ${3}/etc/xml/docbook-${VERSION}.xml
+
+xmlcatalog --noout --add "public" \
+           "-//OASIS//ELEMENTS DocBook Information Pool V${VERSION}//EN" dbpoolx.mod catalog.xml
+xmlcatalog --noout --add "delegatePublic" \
+           "-//OASIS//ELEMENTS DocBook Information Pool V${VERSION}//EN" \
+           "file://${DBDIR}/xml-dtd-${VERSION}/catalog.xml" ${3}/etc/xml/docbook-${VERSION}.xml
+
+xmlcatalog --noout --add "public" \
+           "-//OASIS//ELEMENTS DocBook Document Hierarchy V${VERSION}//EN" dbhierx.mod catalog.xml
+xmlcatalog --noout --add "delegatePublic" \
+           "-//OASIS//ELEMENTS DocBook Document Hierarchy V${VERSION}//EN" \
+           "file://${DBDIR}/xml-dtd-${VERSION}/catalog.xml" ${3}/etc/xml/docbook-${VERSION}.xml
+
+xmlcatalog --noout --add "public" \
+           "-//OASIS//ENTITIES DocBook Additional General Entities V${VERSION}//EN" dbgenent.mod catalog.xml
+xmlcatalog --noout --add "delegatePublic" \
+           "-//OASIS//ENTITIES DocBook Additional General Entities V${VERSION}//EN" \
+           "file://${DBDIR}/xml-dtd-${VERSION}/catalog.xml" ${3}/etc/xml/docbook-${VERSION}.xml
+
+xmlcatalog --noout --add "public" \
+           "-//OASIS//ENTITIES DocBook Notations V${VERSION}//EN" dbnotnx.mod catalog.xml
+xmlcatalog --noout --add "delegatePublic" \
+           "-//OASIS//ENTITIES DocBook Notations V${VERSION}//EN" \
+           "file://${DBDIR}/xml-dtd-${VERSION}/catalog.xml" ${3}/etc/xml/docbook-${VERSION}.xml
+
+xmlcatalog --noout --add "public" \
+           "-//OASIS//ENTITIES DocBook Character Entities V${VERSION}//EN" dbcentx.mod catalog.xml
+xmlcatalog --noout --add "delegatePublic" \
+           "-//OASIS//ENTITIES DocBook Character Entities V${VERSION}/EN" \
+           "file://${DBDIR}/xml-dtd-${VERSION}/catalog.xml" ${3}/etc/xml/docbook-${VERSION}.xml
+
+if [ -f dbgenent.mod ];then
+  xmlcatalog --noout --add "public" \
+           "-//OASIS//ENTITIES DocBook XML Additional General Entities V${VERSION}//EN" dbgenent.mod catalog.xml
+  xmlcatalog --noout --add "delegatePublic" \
+           "-//OASIS//ENTITIES DocBook XML Additional General Entities V${VERSION}//EN" \
+           "file://${DBDIR}/xml-dtd-${VERSION}/catalog.xml" ${3}/etc/xml/docbook-${VERSION}.xml
+fi;
+if [ -f htmltblx.mod ];then
+  xmlcatalog --noout --add "public" \
+           "-//OASIS//ELEMENTS DocBook XML HTML Tables V${VERSION}//EN" htmltblx.mod catalog.xml
+  xmlcatalog --noout --add "delegatePublic" \
+           "-//OASIS//ELEMENTS DocBook XML HTML Tables V${VERSION}//EN" \
+           "file://${DBDIR}/xml-dtd-${VERSION}/catalog.xml" ${3}/etc/xml/docbook-${VERSION}.xml
+fi;
+
+xmlcatalog --noout --add "rewriteSystem" "http://www.oasis-open.org/docbook/xml/${VERSION}" \
+    "file://${DBDIR}/xml-dtd-${VERSION}" catalog.xml
+xmlcatalog --noout --add "rewriteURI" "http://www.oasis-open.org/docbook/xml/${VERSION}" \
+    "file://${DBDIR}/xml-dtd-${VERSION}" catalog.xml
+
+xmlcatalog --noout --add "delegateSystem" "http://www.oasis-open.org/docbook/xml/${VERSION}" \
+    "file://${DBDIR}/xml-dtd-${VERSION}/catalog.xml" ${3}/etc/xml/docbook-${VERSION}.xml
+xmlcatalog --noout --add "delegateURI" "http://www.oasis-open.org/docbook/xml/${VERSION}" \
+    "file://${DBDIR}/xml-dtd-${VERSION}/catalog.xml" ${3}/etc/xml/docbook-${VERSION}.xml
+
+
+if [ -e /etc/xml/docbook.xml ];then
+  rm /etc/xml/docbook.xml;
+fi;
+
+xmlcatalog --noout --create /etc/xml/docbook.xml
+
+for dbook in `ls /etc/xml/docbook-4.*.xml`;do
+  xmlcatalog --noout --add nextCatalog "file://${dbook}" "" /etc/xml/docbook.xml
+done;
+
+#xmlcatalog --noout --add nextCatalog "file:///etc/xml/docbook.xml" "" /etc/xml/catalog.xml
