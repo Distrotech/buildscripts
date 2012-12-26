@@ -143,7 +143,7 @@ check_create_arch() {
 
     rsync -aP /usr/include/linux /usr/include/asm-generic /usr/include/asm-${KARCH} ${HDIR}/usr/include/ >/dev/null
     ln -s asm-${KARCH} ${HDIR}/usr/include/asm
-    if [ -d ${ARCHROOT}/${1} ];then
+    if [ -d ${ARCHROOT}/${1} ] && [ ! -h ${ARCHROOT}/${1} ];then
       rsync -aP ${HDIR}/usr/include/ ${ARCHROOT}/${1}/usr/include/ >/dev/null
     fi;
 
@@ -159,14 +159,12 @@ check_create_arch() {
        tar -cJf ${TOOLPKG}/${1}/kernel-headers.tar.xz *)
     fi;
   fi;
-#XXX
-#  if [ ! -d ${ARCHROOT}/${1}/usr/include/linux ] ||
-#     [ ${HDIR}/usr/include/linux -nt ${ARCHROOT}/${1}/usr/include/linux ];then
-#    if [ ! -d ${ARCHROOT}/${1}/usr/include ];then
-#      mkdir -p ${ARCHROOT}/${1}/usr/include
-#    fi;
-#    rsync -aP ${HDIR}/usr/include ${ARCHROOT}/${1}/usr/include
-#  fi;
+
+  #Sync root too arch if no includes
+  if [ -d ${ARCHROOT}/${1} ] && [ ! -d ${ARCHROOT}/${1}/usr/include ];then
+    mkdir -p ${ARCHROOT}/${1}/usr/include
+    rsync -aP ${HDIR}/usr/include ${ARCHROOT}/${1}/usr/include
+  fi;
 }
 
 svn_load_pkg() {
@@ -280,6 +278,7 @@ tar_package() {
   if [ -d include ] || [ -d usr/include ] || [ -d usr/X11R7/include ] || [ -d opt ] || \
      [ -d ${B_LIBDIRS} ] || [ -d usr/${B_LIBDIRS} ] || [ -d usr/X11R7/${B_LIBDIRS} ];then
     find . ! -regex ".*\/${B_LIBDIRS}\/.*\.a" -and ! -regex ".*\/${B_LIBDIRS}\/.*\.la" -and \
+           ! -regex "${dbginfo}\/.*" -and ! -regex "${dbginfo}\/.*" -and \
            ! -regex "\.\/usr\/${B_LIBDIRS}\/locale\/.*" -and -regex ".*\/${B_LIBDIRS}\/.*" |\
          cpio -ov -H tar |xz -9 > ${pkgpre}-libs.tar.xz
     find . -regex "\.\/include\/.*" -or -regex "\.\/usr\/include\/.*" -or \
@@ -315,7 +314,7 @@ sysroot_fixup() {
     for ltool in `find . -name libtool`;do
       if [ -x ${ltool} ];then
         rm ${ltool}
-        if [ -d ${ARCHROOT}/${1} ];then
+        if [ -d ${ARCHROOT}/${1} ] && [ ! -h ${ARCHROOT}/${1} ];then
           cp ${ARCHROOT}/${1}/usr/bin/libtool ${ltool}
          else
           cp /usr/bin/libtool ${ltool}
@@ -373,7 +372,14 @@ imake_cross_build() {
   unset CC
   /usr/bin/make distclean
   xmkmf -a || return 1
+
+  #Postconfig hook
+  if [ -e ${SRCDIR}/${PSOURCEDIR}/.build-info/post-config ];then
+    sh ${SRCDIR}/${PSOURCEDIR}/.build-info/post-config ${2} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT}
+  fi;
+
   sysroot_fixup ${1}
+
   /usr/bin/make V=1 CXX="${CXX} ${CC_SYSROOT}" CC="${CC_TMP} ${CC_SYSROOT}" SHLIBDIR=/usr/X11R7/${B_LIBDIRS} DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} install \
        LOCAL_LDFLAGS="-L${SYSROOT}/usr/X11R7/${B_LIBDIRS}" || return 1
 }
@@ -472,13 +478,13 @@ autoconf_cross_build() {
     STDOPTSX="${STDOPTSX} --disable-shared";
   fi;
 
-  if [ "${ADDBUILDSYSROOT}" == "1" ] && [ -d ${ARCHROOT}/${2} ];then
+  if [ "${ADDBUILDSYSROOT}" == "1" ] && [ -d ${ARCHROOT}/${2} ] && [ ! -h ${ARCHROOT}/${1} ];then
     STDOPTSX="${STDOPTSX} --with-build-sysroot=${ARCHROOT}/${2}";
-   elif [ "${ADDBUILDSYSROOT}" == "1" ] && [ ! -d ${ARCHROOT}/${2} ];then
+   elif [ "${ADDBUILDSYSROOT}" == "1" ] && [ "${2}" == "${NARCH}" ];then
     STDOPTSX="${STDOPTSX} --with-build-sysroot=/";
   fi;
 
-  if [ "${ADDWITHSYSROOT}" == "1" ] && [ -d ${ARCHROOT}/${2} ];then
+  if [ "${ADDWITHSYSROOT}" == "1" ] && [ -d ${ARCHROOT}/${2} ] && [ ! -h ${ARCHROOT}/${1} ];then
     STDOPTSX="${STDOPTSX} --with-sysroot=${ARCHROOT}/${2}"
    elif [ "${ADDWITHSYSROOT}" == "1" ] && [ "${2}" == "${NARCH}" ];then
     STDOPTSX="${STDOPTSX} --with-sysroot=/"
@@ -577,6 +583,7 @@ build_project() {
     export PKG=${BUILDPROJECT}
     export PSOURCEDIR=${PROJECT}${VERSEP}${VERSION}
   fi;
+  export VERSION
 
   if [ "${PSOURCEDIR}" ] && [ ! -d ${SRCDIR}/${PSOURCEDIR} ];then
     echo "No Such Project"
@@ -644,7 +651,7 @@ build_project() {
     return 0;
   fi;
 
-  if [ -d ${ARCHROOT}/${barch} ];then
+  if [ -d ${ARCHROOT}/${barch} ] && [ ! -h ${ARCHROOT}/${barch} ];then
     export SYSROOT=${ARCHROOT}/${barch};
    elif [ "${barch}" == "${NARCH}" ];then
     export SYSROOT="";
@@ -697,7 +704,7 @@ build_project() {
     export PATH=${SYSPATH}
   fi;
 
-  if [ -d ${ARCHROOT}/${barch}/opt/qt-4 ];then
+  if [ -d ${ARCHROOT}/${barch}/opt/qt-4 ] && [ ! -h ${ARCHROOT}/${barch} ];then
     export QTDIR=${ARCHROOT}/${barch}/opt/qt-4
    elif [ -d /opt/qt-4 ];then
     export QTDIR=/opt/qt-4
@@ -737,6 +744,7 @@ build_project() {
   export CXX="${MLHOST}-g++"
   LD="${MLHOST}-ld${MLLDOPT}"
 
+  #XXX /build AKA ARCHROOT
   if [ ! "${ADDGCCDIR}" ] || [ "${ADDGCCDIR}" == "1" ];then
     GCCDIR=$( ${CC} ${CC_SYSROOT} -print-libgcc-file-name |sed -e "s/libgcc\.a$//" -e "s/x32\/$//" -e "s/32\/$//" )
     if [ -d ${GCCDIR}/include ] && [ -d ${ARCHROOT}/${barch} ] && [ ! -d ${ARCHROOT}/${barch}/${GCCDIR}/include ];then
@@ -888,7 +896,7 @@ build_project() {
 #    fi;
   fi;
 
-  if [ -d ${ARCHROOT}/${barch} ];then
+  if [ -d ${ARCHROOT}/${barch} ] && [ ! -h ${ARCHROOT}/${barch} ];then
     ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${barch}/
   fi;
 }
@@ -938,6 +946,7 @@ build_glibc() {
   if [ ! -e /bin/pwd ] && [ -e /usr/bin/pwd ];then
     ln -s /usr/bin/pwd /bin/
   fi;
+
   check_create_arch ${1}
   build_project glibc ${1}
   RES=$?
@@ -963,9 +972,14 @@ build_glibc() {
   cd ${DIST_ROOT}
   rsync -a . ${SRDIR}/
   MULTIARCH=MARCH_${NARCH}
+
   if [ "${1}" != "${NARCH}" ] && [[ ${1} =~ ${!MULTIARCH} ]];then
     rsync -aR ${USELIBDIR} usr/${USELIBDIR} ${BASEROOT}/${NARCH}/;
     rsync -aR ${USELIBDIR} usr/${USELIBDIR} /;
+
+    #Makesure the MA stubs are available
+    rsync -avPR /usr/include/gnu/stubs* ${BASEROOT}/${1}/
+    rsync -avPR /usr/include/gnu/stubs* ${ARCHROOT}/${1}/
   fi;
   tar -cJf ${TOOLPKG}/${1}/${PKG}/${PKG}-static.tar.xz usr/${USELIBDIR}/*.o usr/${USELIBDIR}/*.a usr/include
 }
@@ -1123,7 +1137,7 @@ build_gcc_bootstrap() {
       mkdir -p ${TOOLPKG}/${1}/${GLIBC}
     fi;
     tar -cJf ${TOOLPKG}/${1}/${GLIBC}/${GLIBC}-headers.tar.xz usr/include)
-   elif [ -d ${ARCHROOT}/${1}/ ];then
+   elif [ -d ${ARCHROOT}/${1}/ ] && [ ! -h ${ARCHROOT}/${1} ];then
     BUILDDIR=${ARCHROOT}/${1}/
    else
     BUILDDIR=/
@@ -1199,16 +1213,14 @@ build_packages() {
   DARCH=${1}
   shift
 
-  if [ ! -e ${STATDIR}/${DARCH}/gcc ];then
-    for pkg in $@;do
-      if [ ! -e ${STATDIR}/${DARCH}/done/${pkg} ];then
-        (CLEANOPT=distclean
-        build_project ${pkg} ${DARCH}) ||return 1
-        #Rebuild latter again
-        #rm ${STATDIR}/${DARCH}/${pkg});
-      fi;
-    done;
-  fi;
+  for pkg in $@;do
+    if [ ! -e ${STATDIR}/${DARCH}/done/${pkg} ];then
+      (CLEANOPT=distclean
+      build_project ${pkg} ${DARCH}) ||return 1
+      #Rebuild latter again
+      #rm ${STATDIR}/${DARCH}/${pkg});
+    fi;
+  done;
 }
 
 build_static_tool() {
@@ -1221,7 +1233,7 @@ build_static_tool() {
     return
   fi;
 
-  svn_load_pkg ${4} ${STATICTOOL} || return 1 
+  svn_load_pkg ${4} ${STATICTOOL} || return 0
 
   if [ -d ${SRCDIR}/${4}/${STATICTOOL}/build-${1}-static ];then
     rm -rf ${SRCDIR}/${4}/${STATICTOOL}/build-${1}-static
@@ -1236,7 +1248,7 @@ build_static_tool() {
   fi;
   mkdir ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}/build-${1}-static 
   cd ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}/build-${1}-static
-  run_configure ${3} --build=${BUILD} --host=${2} ${STATICOPT} ${!ARCHOPT} || return 1
+  run_configure ${3} --build=${BUILD} --host=${2} ${STATICOPT} ${!ARCHOPT} || return 0
 
   if [ ! "${SYSROOTFIXUP}" ];then
     SYSROOTFIXUP="1";
@@ -1249,7 +1261,7 @@ build_static_tool() {
     sh ${SRCDIR}/${4}/{STATICTOOL}/.build-info/post-config ${1} ${SRCDIR}/${4}/${STATICTOOL} ${TOOLDIR}/${1}/${STATICTOOL}-static
   fi;
 
-  make ${MAKE_J} ${STATICMOPT} || make ${STATICMOPT} || return 1
+  make ${MAKE_J} ${STATICMOPT} || make ${STATICMOPT} || return 0
   make DESTDIR=${TOOLDIR}/${1}/${STATICTOOL}-static install
 
   #Postinstall hook
@@ -1310,20 +1322,23 @@ build_toolchain() {
 
   (build_gcc_bootstrap ${1} ${HOST} ${1} shared) || return
 
-  (build_packages ${1} gmp mpfr mpc ppl cloog gcc) || return 1
+  #Build GCC
+  if [ ! -e ${STATDIR}/${1}/done/gcc ] && [ -e ${STATDIR}/${1}/done/libtool ];then
+    rm ${STATDIR}/${1}/done/libtool
+  fi;
+  (build_packages ${1} gmp mpfr mpc ppl cloog gcc libtool) || return 1
 
   (build_packages ${1} perl m4 bison autoconf automake gettext attr acl pcre libsepol libselinux gperf file \
-                      libcap gmp coreutils ncurses ncursesw readline bash mpfr mpc ppl cloog \
-                      popt rsync) || return 1
-
-  #Build GCC
-  (build_packages ${1} gcc) || return 1
+                      libcap coreutils ncurses ncursesw readline bash popt rsync) || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
 
   #Static binutils distributable
   (build_bootstrap_binutils ${1} ${2}) || return 1
+
+  #Base programs
+  (build_packages ${1} Python libffi glib pkg-config) || return 1
 
   #Build tools needed for compiling
   static_toolbuild ${1} ${2}
@@ -1501,6 +1516,17 @@ NLIBDIR=${SETLIBDIR}
 NKARCH=${LINARCH}
 unset TUPPLE SETLIBDIR LINARCH
 export BUILD NKARCH NLIBDIR
+
+#OpenJDK specifically barfs when these are not inplace check and fix
+for binlink in cpio tar sed grep fgrep egrep;do
+  if [ ! -e /bin/${binlink} ];then
+    ln -s /usr/bin/${binlink} /bin;
+  fi;
+done
+
+if [ -d /usr/share/java ] && [ -d ${PKGDISTDIR} ] && [ ! -f ${PKGDISTDIR}/java-jar.tar.xz ];then
+  find /usr/share/java/ ! -regex .*libgcj.* |cpio -ov -H tar |xz -9 > ${PKGDISTDIR}/java-jar.tar.xz
+fi;
 
 for barch in ${ARCHLIST};do
   #Setup stat dir
