@@ -52,4 +52,8 @@ export LDFLAGS_FOR_BUILD=-L.
 
 ./util/modular/build.sh --modfile ./tobuild ${PREFIX} || sync_fin ${3} 1
 
+#LD Config
+mkdir -p ${3}/etc/ld.so.conf.d
+echo "/usr/X11R7/${B_LIBDIRS}" > ${3}/etc/ld.so.conf.d/xwin.conf
+
 sync_fin ${3} 0
