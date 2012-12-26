@@ -8,7 +8,6 @@ OPT_arm64="--enable-introspection=no";
 OPT_mips64="--enable-introspection=no";
 OPT_powerpc="--enable-introspection=no";
 OPT_powerpc64="--enable-introspection=no";
-OPT_x86_64="--enable-introspection=no";
 OPT_x86_32="--enable-introspection=no";
 OPT_i686="--enable-introspection=no";
 XPOST="ln -s atk-1.0/atk /build/i686/usr/include/atk";

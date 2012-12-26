@@ -2,3 +2,6 @@ VERSION="4.2"
 VERSEP="-";
 PREFIX="/";
 CONFOPT="--enable-readline --with-installed-readline --with-curses bash_cv_termcap_lib=-lncurses";
+STATICMOPT="LDFLAGS=-static";
+STATICOPT="--enable-readline --with-installed-readline --with-curses bash_cv_termcap_lib=-lncurses --enable-static-link  
+           --without-bash-malloc";

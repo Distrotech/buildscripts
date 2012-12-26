@@ -9,7 +9,5 @@ OPT_mips="--enable-introspection=no";
 OPT_mips64="--enable-introspection=no";
 OPT_powerpc="--enable-introspection=no";
 OPT_powerpc64="--enable-introspection=no";
-OPT_x86_64="--enable-introspection=no";
 OPT_x86_32="--enable-introspection=no";
 OPT_i686="--enable-introspection=no";
-

@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 ADDCC="0";
+STATICMOPT="LDFLAGS=-all-static";
