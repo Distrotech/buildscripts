@@ -1,5 +1,13 @@
 #!/bin/bash
 
+sync_fin() {
+  if [ ! -d ${1}/${PREFIX} ];then
+    mkdir -p ${1}/${PREFIX}
+  fi;
+  rsync -avP ${DESTDIR}${PREFIX}/ ${1}/${PREFIX}/
+  exit ${2}
+}
+
 NARCH=`uname -m`
 
 export PREFIX=/usr/X11R7
@@ -42,9 +50,6 @@ export CXXFLAGS_FOR_BUILD="-L/usr/lib"
 export CFLAGS_FOR_BUILD=-I.
 export LDFLAGS_FOR_BUILD=-L.
 
-./util/modular/build.sh --modfile ./tobuild ${PREFIX}
+./util/modular/build.sh --modfile ./tobuild ${PREFIX} || sync_fin ${3} 1
 
-if [ ! -d ${3}/${PREFIX} ];then
-  mkdir -p ${3}/${PREFIX}
-fi;
-rsync -avP ${DESTDIR}${PREFIX}/ ${3}/${PREFIX}/
+sync_fin ${3} 0
