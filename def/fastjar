@@ -1,0 +1,5 @@
+VERSION="0.94"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+NOCCOPT="1";
