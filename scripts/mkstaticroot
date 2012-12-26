@@ -1,5 +1,7 @@
 #!/bin/bash
 
+GLIBCVER=2.17
+
 NARCH=$( uname -m )
 
 if [ ! "${NARCH}" ] || [ ! -d /dist/pkg/build/${NARCH} ];then
@@ -20,19 +22,27 @@ for pkg in `ls -d *static *boot` ;do
     tar -C ${STATICROOT} -xJf ${subpkg};
   done;
 done
-for devpkg in glibc-2.16.0/glibc-2.16.0-headers.tar.xz  glibc-2.16.0/glibc-2.16.0-static.tar.xz \
-              kernel-headers.tar.xz;do
-  tar -C ${STATICROOT} -xJf ${devpkg};
+for devpkg in glibc-${GLIBCVER}/glibc-${GLIBCVER}-headers.tar.xz  glibc-${GLIBCVER}/glibc-${GLIBCVER}-static.tar.xz \
+              kernel-headers.tar.xz /dist/pkg/java-jar.tar.xz;do
+  if [ -f ${devpkg} ];then
+    tar -C ${STATICROOT} -xJf ${devpkg};
+  fi;
 done;
 
-for sysdir in proc sys dev root tmp usr/src dist etc;do
+for sysdir in proc sys dev root tmp usr/src dist etc/xml;do
   mkdir -p ${STATICROOT}/${sysdir}
 done;
+
+cp /etc/passwd /etc/group ${STATICROOT}/etc
+if [ -x /usr/bin/xmlcatalog ];then
+  xmlcatalog --noout --create ${STATICROOT}/etc/xml/docbook.xml
+  xmlcatalog --noout --create ${STATICROOT}/etc/xml/docbook-xsl.xml
+  xmlcatalog --noout --create ${STATICROOT}/etc/xml/catalog.xml
+  xmlcatalog --noout --add nextCatalog "file:///etc/xml/docbook.xml" "" ${STATICROOT}/etc/xml/catalog.xml
+  xmlcatalog --noout --add nextCatalog "file:///etc/xml/docbook-xsl.xml" "" ${STATICROOT}/etc/xml/catalog.xml
+fi;
 
 if [ -e ${STATICROOT}.sqfs ];then
   rm ${STATICROOT}.sqfs
 fi;
 mksquashfs ${STATICROOT}/* ${STATICROOT}.sqfs -comp xz
-
-
-
