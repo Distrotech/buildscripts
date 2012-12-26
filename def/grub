@@ -10,3 +10,6 @@ OPT_x86_32="--host=x86_64-linux-gnux32";
 MAKEOPTS="CROSSBINPATH=/usr/bin";
 CLEARFLAGS="1";
 SYSROOTFIXUP="0";
+MOPT_i686="CROSSBINPATH=../build_x86_64/";
+MOPT_x86_32="CROSSBINPATH=../build_x86_64/";
+

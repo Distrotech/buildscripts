@@ -6,3 +6,4 @@ OPT_x86_32="ABI=x32";
 ADDWITHSYSROOT="1";
 SYSROOTFIXUP="1";
 NOCCOPT="1";
+STDCSTATIC="--disable-shared LDFLAGS=-static";

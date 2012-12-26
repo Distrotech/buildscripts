@@ -3,6 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="-DBUILD_QtDialog=ON BUILD_TESTING:BOOL=OFF";
 NOCCOPT="1";
+ADDPATH="/usr/src/cmake/cmake-2.8.9/bin";
 OPT_mips="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=/build/mips/usr/lib/libncurses.so
          -DCURSES_LIBRARY:FILEPATH=/build/mips/usr/lib/libncurses.so
          -DCMAKE_CROSSCOMPILING=TRUE -DBUILD_TESTING:BOOL=OFF -DBUILD_QtDialog:BOOL=OFF";

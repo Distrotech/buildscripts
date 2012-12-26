@@ -3,8 +3,9 @@ VERSEP="-";
 PREFIX="/usr";
 JAVA_HOME="/usr/lib64/jvm/jdk-1.6.0_24-b24";
 ANT_HOME="/usr/lib64/jvm/apache-ant-1.8.4";
-CONFOPT="--with-jdk-home=/usr/lib64/jvm/jdk-1.6.0_24-b24 --with-ecj-jar=/usr/share/java/ecj-4.5.jar  --with-rhino=/usr/share/java/js.jar";
-OPT_i686="--disable-bootstrap";
-XOPT_x86_32="--enable-zero";
+CONFOPT="--with-ecj-jar=/usr/share/java/ecj-3.5.2.jar 
+         --with-rhino=/usr/share/java/js.jar --with-gcj=/usr/bin/gcj";
 NOCROSS="1";
-XMOPT_x86_32="ARCHFLAG=-mx32";
+MOPT_arm="CXX=/usr/bin/arm-linux-gnueabi-g++ CPP=/usr/bin/arm-linux-gnueabi-g++  CC=/usr/bin/arm-linux-gnueabi-gcc";
+OPT_x86_64="--with-jdk-home=/usr/lib64/jvm/gcj-jdk";
+OPT_arm="--with-jdk-home=/usr/lib64/jvm/jdk-1.6.0_24-b24 --disable-bootstrap";

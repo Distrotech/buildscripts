@@ -2,3 +2,5 @@ VERSION="8.31"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+STDCSTATIC="--disable-shared LDFLAGS=-static";
+CLEARFLAGS="1";

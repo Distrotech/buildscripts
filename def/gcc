@@ -1,32 +1,53 @@
 VERSION="git"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-languages=all --with-ecj-jar=/usr/share/java/ecj-4.5.jar --enable-lto --enable-cloog-backend=isl";
-OPT_x86_64="--target=x86_64-linux-gnu  --with-multilib-list=m32,m64,mx32 --with-build-sysroot=/build/x86_64 
-            --with-sysroot=/ --with-abi=64";
-OPT_x86_32="--target=x86_64-linux-gnux32  --with-multilib-list=mx32,m64,m32 --with-build-sysroot=/build/x86_32 
-            --with-sysroot=/ --with-abi=x32";
-OPT_i686="--target=i686-linux-gnu --disable-multilib --with-sysroot=/";
-OPTX_i686="--with-build-sysroot=/build/i686";
-OPT_arm="--target=arm-linux-gnueabi --with-build-sysroot=/build/arm --disable-multilib --with-sysroot=/";
-OPT_arm64="--target=arm-linux-gnueabi --with-build-sysroot=/build/arm64 --enable-multilib --with-sysroot=/";
-OPT_mips64="--target=mips64-linux-gnuabi64 --with-build-sysroot=/build/mips64 --disable-multilib --with-sysroot=/
-            --with-abi=64 --with-arch-32=mips32 --with-arch-64=mips64";
-OPT_mips="--target=mips-linux-gnu --with-build-sysroot=/build/mips --disable-multilib --with-sysroot=/
-          --with-arch=mips32";
-OPT_powerpc64="--target=powerpc64-linux-gnu --with-build-sysroot=/build/powerpc64 --enable-multilib --with-sysroot=/";
-OPT_powerpc="--target=powerpc-linux-gnu --with-build-sysroot=/build/powerpc --disable-multilib --with-sysroot=/";
+CONFOPT="--enable-languages=all --with-ecj-jar=/usr/share/java/ecj-4.2.1.jar --enable-lto --enable-cloog-backend=isl
+         --enable-java-home";
+OPT_x86_64="--target=x86_64-linux-gnu  --with-multilib-list=m32,m64,mx32 --with-sysroot=/ --with-abi=64 
+            --with-jvm-root-dir=/usr/lib64/jvm/gcj-jdk";
+OPT_x86_32="--target=x86_64-linux-gnux32  --with-multilib-list=mx32,m64,m32 --with-sysroot=/ --with-abi=x32 
+            --with-jvm-root-dir=/usr/libx32/jvm/gcj-jdk";
+OPT_i686="--target=i686-linux-gnu --disable-multilib --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk";
+OPT_arm="--target=arm-linux-gnueabi --disable-multilib --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk";
+OPT_arm64="--target=arm-linux-gnueabi --enable-multilib --with-sysroot=/ --with-jvm-root-dir=/usr/lib64/jvm/gcj-jdk";
+OPT_mips64="--target=mips64-linux-gnuabi64 --disable-multilib --with-sysroot=/ --with-abi=64 --with-arch-32=mips32 
+            --with-arch-64=mips64 --with-jvm-root-dir=/usr/lib64/jvm/gcj-jdk";
+OPT_mips="--target=mips-linux-gnu --disable-multilib --with-sysroot=/ --with-arch=mips32 
+          --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk";
+OPT_powerpc64="--target=powerpc64-linux-gnu --enable-multilib --with-sysroot=/ --with-jvm-root-dir=/usr/lib64/jvm/gcj-jdk";
+OPT_powerpc="--target=powerpc-linux-gnu --disable-multilib --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk";
 DEPENDS="gmp mpfr mpc isl ppl cloog";
 SYSROOTFIXUP="0";
 NOCCOPT="1";
 ADDCC="0";
 CLEARFLAGS="1";
-BOOTOPT="--disable-multilib --disable-shared --without-lto --disable-libgomp --disable-libquadmath --disable-bootstrap
-         --disable-libmudflap --disable-libswsp --enable-languages=c,c++ --with-sysroot=/ --disable-threads";
-BOOTOPT_mips="--with-arch=mips32";
-BOOTOPT_mips64="--with-arch=mips64";
-BOOTOPT_mips="--with-arch=mips32";
-BOOTOPT_x86_32="--with-abi=x32";
-BOOTOPT_x86_64="--with-abi=64";
+SHAREDOPT="--enable-languages=c,c++ --without-ppl --without-cloog --without-lto --disable-bootstrap --disable-libitm
+           --disable-libmudflap  --disable-libswsp --disable-libssp --disable-libquadmath --disable-libgomp
+           --with-system-zlib --without-ppl --without-cloog";
+MULTIOPT="--enable-languages=c --without-ppl --without-cloog --without-lto --disable-bootstrap --disable-libitm
+          --disable-shared --disable-libmudflap  --disable-libswsp --disable-libssp --disable-libquadmath 
+          --disable-libgomp";
+BOOTOPT="--disable-shared --without-lto --disable-bootstrap --enable-languages=c,c++ --with-sysroot=/
+         --disable-libmudflap  --disable-libswsp --disable-libgomp --with-system-zlib --without-ppl 
+         --without-cloog LDFLAGS=-static";
+BOOTOPT_mips="--disable-multilib --with-arch=mips32";
+BOOTOPT_mips64="--disable-multilib --with-arch=mips64";
+BOOTOPT_x86_32="--enable-multilib --with-multilib-list=mx32 --with-abi=x32";
+BOOTOPT_x86_64="--enable-multilib --with-multilib-list=m64 --with-abi=64";
+BOOTOPT_i686="--disable-multilib";
+BOOTOPT_arm="--disable-multilib";
+BOOTOPT_arm64="--disable-multilib";
+BOOTOPT_powerpc="--disable-multilib";
+BOOTOPT_powerpc64="--disable-multilib";
+CROSSOPT_i686="--disable-multilib";
+CROSSOPT_x86_32="--enable-multilib --with-multilib-list=mx32,m64,m32 --with-abi=x32";
+CROSSOPT_x86_64="--enable-multilib --with-multilib-list=mx32,m64,m32 --with-abi=64";
+CROSSOPT_arm="--disable-multilib";
+CROSSOPT_arm64="--disable-multilib";
+CROSSOPT_mips="--disable-multilib --with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
+CROSSOPT_mips64="--disable-multilib --with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
+CROSSOPT_powerpc="--disable-multilib";
+CROSSOPT_powerpc64="--enable-multilib";
 #EXTRALIBS="-lm";
 #ARM --with-mode=thumb --with-arch=armv7-a --with-fpu=vfpv3-d16
+ADDBUILDSYSROOT="1";

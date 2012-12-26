@@ -1,7 +1,7 @@
 VERSION="8.20"
 VERSEP="-";
 PREFIX="/";
-CONFOPT="";
+CONFOPT="FORCE_UNSAFE_CONFIGURE=1";
 ADDCFLAG="-std=c99";
 OPT_i686="--enable-no-install-program=arch,hostname";
 OPT_x86_32="--enable-no-install-program=arch,hostname,factor";
@@ -13,3 +13,4 @@ OPT_arm64="--enable-no-install-program=arch,hostname";
 OPT_powerpc="--enable-no-install-program=arch,hostname";
 OPT_powerpc64="--enable-no-install-program=arch,hostname";
 ADDCC="0";
+STATICOPT="LDFLAGS=-static FORCE_UNSAFE_CONFIGURE=1";

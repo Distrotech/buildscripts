@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 ADDWITHSYSROOT="1";
 NOCCOPT="1";
+STDCSTATIC="--disable-shared LDFLAGS=-static";
