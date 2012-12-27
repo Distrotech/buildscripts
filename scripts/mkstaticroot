@@ -40,6 +40,7 @@ if [ -x /usr/bin/xmlcatalog ];then
   xmlcatalog --noout --create ${STATICROOT}/etc/xml/catalog.xml
   xmlcatalog --noout --add nextCatalog "file:///etc/xml/docbook.xml" "" ${STATICROOT}/etc/xml/catalog.xml
   xmlcatalog --noout --add nextCatalog "file:///etc/xml/docbook-xsl.xml" "" ${STATICROOT}/etc/xml/catalog.xml
+  ln -s catalog.xml ${STATICROOT}/etc/xml/catalog
 fi;
 
 for mdir in 1 2 3 4 5 6 7 8;do
