@@ -940,7 +940,12 @@ build_glibc() {
   fi;
 
   if [ "${1}" != "${NARCH}" ] && [ ! -d /build/${1} ];then
-    mkdir -p /build/${1}
+    mkdir -p ${ARCHROOT}/${1}
+   elif [ "${1}" == "${NARCH}" ];then
+    if [ ! -d ${ARCHROOT} ];then
+      mkdir -p ${ARCHROOT}
+    fi;
+    ln -s / ${ARCHROOT}/${NARCH}
   fi;
 
   if [ ! -e /bin/pwd ] && [ -e /usr/bin/pwd ];then
@@ -1158,6 +1163,12 @@ build_gcc_bootstrap() {
   if [ -e ${SRCDIR}/gcc/${GCC}/.build-info/post-install ];then
     sh ${SRCDIR}/gcc/${GCC}/.build-info/post-install ${1} ${SRCDIR}/gcc/${GCC} ${GCCBOOTDEST}
   fi;
+
+#Build javac
+#gcj -Wl,-Bsymbolic -findirect-dispatch --main=org.eclipse.jdt.internal.compiler.batch.Main \
+#    /usr/share/java/ecj-3.5.2.jar -o ${3}/usr/bin/javac 
+#x86_64-linux-gnu-gcj -mx32 -Wl,-Bsymbolic -findirect-dispatch --main=org.eclipse.jdt.internal.compiler.batch.Main
+#/usr/share/java/ecj-3.5.2.jar -L/dist/build/x86_64/gcc-git/usr/libx32 -lgcj -lgcj_bc -o /usr/bin/javac-x3
   
   if [ "${1}" == "${TARCH}" ];then
     ln -s gcc ${GCCBOOTDEST}/usr/bin/cc
