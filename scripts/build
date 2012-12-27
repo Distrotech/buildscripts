@@ -1353,7 +1353,7 @@ build_toolchain() {
   #Base programs
   (build_packages ${1} Python libffi glib pkg-config xz libxml2 libxslt expat docbook-4.1.2  docbook-4.2  docbook-4.3 \
                        docbook-4.4  docbook-4.5 docbook-xsl nettle gnutls libgpg-error libgcrypt libassuan libksba pth \
-                       gnupg openssl libprelude libtirpc Linux-PAM slang) || return 1
+                       gnupg openssl libprelude libtirpc Linux-PAM slang gobject-introspection) || return 1
 
   
   if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
