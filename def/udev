@@ -1,7 +1,7 @@
 VERSION="182"
 VERSEP="-";
 PREFIX="/";
-CONFOPT="--disable-introspection";
+CONFOPT="";
 EXTRALIBS="-lpthread -lrt -ldl";
 OPT_arm="--with-pci-ids-path=/usr/share/pci.ids";
 OPT_arm64="--with-pci-ids-path=/usr/share/pci.ids";
