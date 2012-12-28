@@ -11,3 +11,4 @@ OPT_mips="--with-gmp-prefix=/build/mips/usr --with-isl-prefix=/build/mips/usr";
 OPT_mips64="--with-gmp-prefix=/build/mips64/usr --with-isl-prefix=/build/mips64/usr";
 OPT_powerpc="--with-gmp-prefix=/build/powerpc/usr --with-isl-prefix=/build/powerpc/usr";
 OPT_powerpc64="--with-gmp-prefix=/build/powerpc64/usr --with-isl-prefix=/build/powerpc64/usr";
+STDCSTATIC="--disable-shared LDFLAGS=-static";
