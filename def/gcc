@@ -16,12 +16,12 @@ OPT_mips="--target=mips-linux-gnu --disable-multilib --with-sysroot=/ --with-arc
           --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk";
 OPT_powerpc64="--target=powerpc64-linux-gnu --enable-multilib --with-sysroot=/ --with-jvm-root-dir=/usr/lib64/jvm/gcj-jdk";
 OPT_powerpc="--target=powerpc-linux-gnu --disable-multilib --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk";
-DEPENDS="gmp mpfr mpc isl ppl cloog";
+DEPENDS="gmp mpfr mpc isl cloog";
 SYSROOTFIXUP="0";
 NOCCOPT="1";
 ADDCC="0";
 CLEARFLAGS="1";
-BASEOPT="--without-lto --disable-bootstrap --with-sysroot=/ --without-ppl --without-cloog
+BASEOPT="--without-lto --disable-bootstrap --with-sysroot=/ --without-cloog --without-isl
          --disable-libitm --disable-libmudflap  --disable-libswsp --disable-libgomp --disable-libatomic 
          --disable-libssp --disable-libquadmath --with-system-zlib";
 BOOTOPT="${BASEOPT} --enable-languages=c,c++ --disable-multilib --disable-shared LDFLAGS=-static";
