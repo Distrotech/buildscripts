@@ -1,8 +1,8 @@
-VERSION="git"
+VERSION="4.8.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-languages=all --with-ecj-jar=/usr/share/java/ecj-4.2.1.jar --enable-lto --enable-cloog-backend=isl
-         --enable-java-home";
+         --enable-java-home --with-system-zlib";
 OPT_x86_64="--target=x86_64-linux-gnu  --with-multilib-list=m32,m64,mx32 --with-sysroot=/ --with-abi=64 
             --with-jvm-root-dir=/usr/lib64/jvm/gcj-jdk";
 OPT_x86_32="--target=x86_64-linux-gnux32  --with-multilib-list=mx32,m64,m32 --with-sysroot=/ --with-abi=x32 
@@ -21,24 +21,14 @@ SYSROOTFIXUP="0";
 NOCCOPT="1";
 ADDCC="0";
 CLEARFLAGS="1";
-SHAREDOPT="--enable-languages=c,c++ --without-ppl --without-cloog --without-lto --disable-bootstrap --disable-libitm
-           --disable-libmudflap  --disable-libswsp --disable-libssp --disable-libquadmath --disable-libgomp
-           --with-system-zlib --without-ppl --without-cloog";
-MULTIOPT="--enable-languages=c --without-ppl --without-cloog --without-lto --disable-bootstrap --disable-libitm
-          --disable-shared --disable-libmudflap  --disable-libswsp --disable-libssp --disable-libquadmath 
-          --disable-libgomp";
-BOOTOPT="--disable-shared --without-lto --disable-bootstrap --enable-languages=c,c++ --with-sysroot=/
-         --disable-libmudflap  --disable-libswsp --disable-libgomp --with-system-zlib --without-ppl 
-         --without-cloog LDFLAGS=-static";
-BOOTOPT_mips="--disable-multilib --with-arch=mips32";
-BOOTOPT_mips64="--disable-multilib --with-arch=mips64";
-BOOTOPT_x86_32="--enable-multilib --with-multilib-list=mx32 --with-abi=x32";
-BOOTOPT_x86_64="--enable-multilib --with-multilib-list=m64 --with-abi=64";
-BOOTOPT_i686="--disable-multilib";
-BOOTOPT_arm="--disable-multilib";
-BOOTOPT_arm64="--disable-multilib";
-BOOTOPT_powerpc="--disable-multilib";
-BOOTOPT_powerpc64="--disable-multilib";
+BASEOPT="--without-lto --disable-bootstrap --with-sysroot=/ --without-ppl --without-cloog
+         --disable-libitm --disable-libmudflap  --disable-libswsp --disable-libgomp --disable-libatomic 
+         --disable-libssp --disable-libquadmath --with-system-zlib";
+BOOTOPT="${BASEOPT} --enable-languages=c,c++ --disable-multilib --disable-shared LDFLAGS=-static";
+MULTIOPT="${BASEOPT} --enable-languages=c --disable-shared --enable-multilib";
+SHAREDOPT="${BASEOPT} --enable-languages=c,c++ --enable-multilib";
+BOOTOPT_mips="--with-arch=mips32";
+BOOTOPT_mips64="--with-arch=mips64";
 CROSSOPT_i686="--disable-multilib";
 CROSSOPT_x86_32="--enable-multilib --with-multilib-list=mx32,m64,m32 --with-abi=x32";
 CROSSOPT_x86_64="--enable-multilib --with-multilib-list=mx32,m64,m32 --with-abi=64";
