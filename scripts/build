@@ -1297,7 +1297,7 @@ static_toolbuild() {
     TARGET=${BUILD}
   fi;
   for stool in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
-      pkg-config util-linux m4 cpio krb5 subversion;do
+      pkg-config util-linux m4 cpio diffutils libtool krb5 subversion;do
     (build_static_tool ${1} ${TARGET} ${TLIBDIR} ${stool})
   done;
 }
@@ -1314,7 +1314,7 @@ build_toolchain() {
   (build_glibc ${1} ${2}) || return 1
 
   #Libs needed for GCC
-  (build_packages ${1} libtool gmp mpfr mpc zlib diffutils) || return 1
+  (build_packages ${1} gmp mpfr mpc zlib) || return 1
 
   #GCC C build to bootstrap multiarch
   (build_gcc_bootstrap ${1} ${2} ${1} multi) || return 1
@@ -1329,20 +1329,22 @@ build_toolchain() {
   #Shared GCC / Multi arch C/C++
   (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
 
+  #Build perl/autoconf
+  (build_packages ${1} groff perl autoconf automake) || return 1
+
   #Rebuild libtool
   if [ ! -e ${STATDIR}/${1}/done/gcc ] && [ -e ${STATDIR}/${1}/done/libtool ];then
     rm ${STATDIR}/${1}/done/libtool
   fi;
 
-  #Base dependancies
-  (build_packages ${1} make libtool sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk \
-                       perl m4) || return 1
-
   #Build GCC
-  (build_packages ${1} gmp mpfr mpc ppl cloog zip unzip gcc libtool) || return 1
+  (build_packages ${1} gmp mpfr mpc ppl cloog zip unzip gcc) || return 1
 
-  (build_packages ${1} bison autoconf automake gettext attr acl pcre libsepol libselinux gperf file \
-                      libcap coreutils readline bash popt rsync) || return 1
+  #Base dependancies
+  (build_packages ${1} libtool make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4) || return 1
+
+  (build_packages ${1} bison diffutils gperf gettext attr acl pcre libsepol libselinux file \
+                       libcap coreutils readline bash popt rsync) || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
