@@ -3,3 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-std=c99";
+STATICOPT="--disable-shared";
+STATICMOPT="LDFLAGS=-static LIBCSTACK=-lc LIBSIGSEGV=-lsigsegv";
