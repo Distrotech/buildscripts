@@ -1,6 +1,6 @@
 VERSION="0.17.0"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-isl=system --with-gmp=system";
+CONFOPT="--with-isl=system --with-gmp=system --with-bits=gmp";
 ADDCFLAG="-I./local/isl";
 STDCSTATIC="--disable-shared LDFLAGS=-static";
