@@ -11,4 +11,4 @@ OPT_powerpc="CC=powerpc-linux-gnu-gcc ac_cv_lib_lex=-lfl";
 OPT_powerpc64="CC=powerpc64-linux-gnu-gcc ac_cv_lib_lex=-lfl";
 OPT_x86_64="CC=x86_64-linux-gnu-gcc";
 OPT_x86_32="CC=x86_64-linux-gnux32-gcc";
-
+MAKEOPTS="LEXLIB=-lfl";
