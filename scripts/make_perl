@@ -7,11 +7,18 @@ rm Policy.sh config.sh > /dev/null 2>&1
             -A libpth="/${B_LIBDIRS} /usr/${B_LIBDIRS} /usr/X11R7/${B_LIBDIRS}" \
             -Dlocincpth="/usr/include /usr/X11R7/include" -Darchname=${HOST}
 
-make ${MAKE_J} || make ${MAKE_J} || make || exit 1
-make DESTDIR=${SYSROOT} install
 
-eval `chroot ${SYSROOT} /usr/bin/perl -V:privlib -V:archlib -V:sitearch -V:sitelib`
-export PERL5LIB=${SYSROOT}/${privlib}:${SYSROOT}/${archlib}:${SYSROOT}/${sitearch}:${SYSROOT}/${sitelib}
+make ${MAKE_J} || make ${MAKE_J} || make || exit 1
+if [ "${SYSROOT}" ];then
+  make DESTDIR=${SYSROOT} install
+ else
+  make install
+fi;
+
+if [ -x ${SYSROOT}/usr/bin/perl ];then
+  eval `chroot ${SYSROOT} /usr/bin/perl -V:privlib -V:archlib -V:sitearch -V:sitelib`
+  export PERL5LIB=${SYSROOT}/${privlib}:${SYSROOT}/${archlib}:${SYSROOT}/${sitearch}:${SYSROOT}/${sitelib}
+fi;
 
 if [ ! -e cpan/Pod-LaTeX/blib/script/pod2latex ] && [ -e cpan/Pod-LaTeX/pod2latex ];then
   cp cpan/Pod-LaTeX/pod2latex cpan/Pod-LaTeX/blib/script/pod2latex
