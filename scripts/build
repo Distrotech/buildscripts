@@ -1338,7 +1338,7 @@ build_toolchain() {
   fi;
 
   #Build GCC
-  (build_packages ${1} gmp mpfr mpc ppl cloog zip unzip gcc) || return 1
+  (build_packages ${1} gmp mpfr mpc isl cloog zip unzip gcc) || return 1
 
   #Base dependancies
   (build_packages ${1} libtool make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4) || return 1
