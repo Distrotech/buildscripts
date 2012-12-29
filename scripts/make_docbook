@@ -105,4 +105,7 @@ for dbook in `ls /etc/xml/docbook-4.*.xml`;do
   xmlcatalog --noout --add nextCatalog "file://${dbook}" "" /etc/xml/docbook.xml
 done;
 
-#xmlcatalog --noout --add nextCatalog "file:///etc/xml/docbook.xml" "" /etc/xml/catalog.xml
+#Add Me i may not be installed yet
+if [ ! -e /etc/xml/docbook-${VERSION}.xml ];then
+  xmlcatalog --noout --add nextCatalog "file:///etc/xml/docbook-${VERSION}.xml" "" /etc/xml/docbook.xml
+fi;

@@ -65,3 +65,8 @@ xmlcatalog --noout --create /etc/xml/docbook-xsl.xml
 for dbook in `ls /etc/xml/docbook-xsl-*.xml`;do
   xmlcatalog --noout --add nextCatalog "file://${dbook}" "" /etc/xml/docbook-xsl.xml
 done;
+
+#Add Me i may not be installed yet
+if [ ! -e /etc/xml/docbook-xsl-${VERSION}.xml ];then
+  xmlcatalog --noout --add nextCatalog "file:///etc/xml/docbook-xsl-${VERSION}.xml" "" /etc/xml/docbook-xsl.xml
+fi;
