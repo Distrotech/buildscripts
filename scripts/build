@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SVNIP=192.168.25.1
+
 #Setup layout path
 SRCDIR=/usr/src
 DISTDIR=/dist
@@ -12,7 +14,7 @@ BASEROOT=${DISTDIR}/root
 SCRIPTDIR=${DISTDIR}/scripts
 PKGBUILDDIR=${DISTDIR}/build
 ARCHROOT=/build
-SVNURL=http://pbx.distrotech.co.za/svn/distro/
+SVNURL=http://${SVNIP}/svn/distro/
 SVNUPDATE=0;
 
 #Multiarch Definitions
@@ -1129,6 +1131,7 @@ build_gcc_bootstrap() {
     done;
 #    CONFOPT="${CONFOPT} --with-stage1-ldflags=-L${GCCLDIR} --with-boot-ldflags=-L${GCCLDIR} CFLAGS=-B${GCCLDIR}";
   fi;
+  svn_load_pkg gcc ${GCC}
   setup_build_dir ${1} gcc ${GCC} ${TARCH} ${SDIROPT}
 
   #Use GLIBC/Kern headers only [Virgin] / Build dir / sysroot
@@ -1177,9 +1180,10 @@ build_gcc_bootstrap() {
     if [ "${TARCH}" == "${NARCH}" ] && [ ! -e ${STATDIR}/${TARCH}/done/gcc ];then
       rsync -aP ${GCCBOOTDEST}/ /
       if [ "${4}" == "shared" ];then
-        rm ${STATDIR}/${1}/done/* /usr/${NLIBDIR}/libgmp.a /usr/${NLIBDIR}/libgmpxx.a \
-                     /usr/${NLIBDIR}/libppl.a /usr/${NLIBDIR}/libppl_c.a /usr/${NLIBDIR}/libpwl.a \
-                     /usr/${NLIBDIR}/libisl.a /usr/${NLIBDIR}/libcloog-isl.a > /dev/null 2>&1
+        (rm ${STATDIR}/${1}/done/gmp ${STATDIR}/${1}/done/mpfr ${STATDIR}/${1}/done/mpc \
+            /usr/${NLIBDIR}/libgmp.a /usr/${NLIBDIR}/libgmpxx.a /usr/${NLIBDIR}/libppl.a \
+            /usr/${NLIBDIR}/libppl_c.a /usr/${NLIBDIR}/libpwl.a /usr/${NLIBDIR}/libisl.a \
+            /usr/${NLIBDIR}/libcloog-isl.a) >/dev/null 2>&1
       fi;
     fi;
    else
@@ -1189,6 +1193,7 @@ build_gcc_bootstrap() {
       touch /usr/bin/${2}-gcc.boot
     fi;
   fi;
+  return 0
 }
 
 build_qemu_static() {
@@ -1313,8 +1318,11 @@ build_toolchain() {
   #Build fresh glibc we are asuming that binutils/gcc/make/bash/sed/awk are good as they should be
   (build_glibc ${1} ${2}) || return 1
 
+  #Build perl/autoconf/zlib
+  (build_packages ${1} groff perl autoconf automake zlib libtool) || return 1
+
   #Libs needed for GCC
-  (build_packages ${1} gmp mpfr mpc zlib) || return 1
+  (build_packages ${1} gmp mpfr mpc) || return 1
 
   #GCC C build to bootstrap multiarch
   (build_gcc_bootstrap ${1} ${2} ${1} multi) || return 1
@@ -1329,21 +1337,17 @@ build_toolchain() {
   #Shared GCC / Multi arch C/C++
   (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
 
-  #Build perl/autoconf
-  (build_packages ${1} groff perl autoconf automake) || return 1
-
   #Rebuild libtool
   if [ ! -e ${STATDIR}/${1}/done/gcc ] && [ -e ${STATDIR}/${1}/done/libtool ];then
-    rm ${STATDIR}/${1}/done/libtool
+    rm ${STATDIR}/${1}/done/libtool ${STATDIR}/${1}/done/autoconf ${STATDIR}/${1}/done/automake
   fi;
 
   #Build GCC
   (build_packages ${1} gmp mpfr mpc isl cloog zip unzip gcc) || return 1
 
   #Base dependancies
-  (build_packages ${1} libtool make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4) || return 1
-
-  (build_packages ${1} bison diffutils gperf gettext attr acl pcre libsepol libselinux file \
+  (build_packages ${1} libtool autoconf automake make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
+                       bison diffutils gperf flex gettext attr acl pcre libsepol libselinux file \
                        libcap coreutils readline bash popt rsync) || return 1
 
   #Time to build a static gcc bootstrap distributable
@@ -1354,8 +1358,8 @@ build_toolchain() {
 
   #Base programs
   (build_packages ${1} Python libffi glib pkg-config xz libxml2 libxslt expat docbook-4.1.2  docbook-4.2  docbook-4.3 \
-                       docbook-4.4  docbook-4.5 docbook-xsl nettle gnutls libgpg-error libgcrypt libassuan libksba pth \
-                       gnupg openssl libprelude libtirpc Linux-PAM slang gobject-introspection) || return 1
+            docbook-4.4  docbook-4.5 docbook-xsl nettle gnutls libgpg-error libgcrypt libassuan libksba pth \
+            gnupg openssl libprelude libtirpc Linux-PAM slang gobject-introspection pixman wget which) || return 1
 
   
   if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
