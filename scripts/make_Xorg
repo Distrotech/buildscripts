@@ -44,7 +44,7 @@ fi;
 
 export CC_FOR_BUILD=gcc
 export CXX_FOR_BUILD=g++
-export CONFFLAGS="--host=${2} --build=${BUILD} --with-sysroot --libdir=${PREFIX}/${B_LIBDIRS}"
+export CONFFLAGS="--host=${2} --build=${BUILD} --with-sysroot --libdir=${PREFIX}/${B_LIBDIRS} --disable-selective-werror"
 
 export CXXFLAGS_FOR_BUILD="-L/usr/lib"
 export CFLAGS_FOR_BUILD=-I.
@@ -55,5 +55,8 @@ export LDFLAGS_FOR_BUILD=-L.
 #LD Config
 mkdir -p ${3}/etc/ld.so.conf.d
 echo "/usr/X11R7/${B_LIBDIRS}" > ${3}/etc/ld.so.conf.d/xwin.conf
+if [ "${1}" == "${NARCH}" ];then
+  /sbin/ldconfig
+fi;
 
 sync_fin ${3} 0
