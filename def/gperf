@@ -2,3 +2,4 @@ VERSION="3.0.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+STATICOPT="LDFLAGS=-static";
