@@ -95,6 +95,10 @@ xmlcatalog --noout --add "delegateURI" "http://www.oasis-open.org/docbook/xml/${
     "file://${DBDIR}/xml-dtd-${VERSION}/catalog.xml" ${3}/etc/xml/docbook-${VERSION}.xml
 
 
+if [ ! -d /etc/xml ];then
+  mkdir -p /etc/xml
+fi;
+
 if [ -e /etc/xml/docbook.xml ];then
   rm /etc/xml/docbook.xml;
 fi;

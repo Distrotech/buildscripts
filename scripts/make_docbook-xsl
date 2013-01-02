@@ -57,6 +57,10 @@ xmlcatalog --noout --add "rewriteURI" \
            "file://${DBDIR}/xsl-stylesheets-${VERSION}/" \
     ${3}/etc/xml/docbook-xsl-${VERSION}.xml
 
+if [ ! -d /etc/xml ];then
+  mkdir -p /etc/xml
+fi;
+
 if [ -e /etc/xml/docbook-xsl.xml ];then
   rm /etc/xml/docbook-xsl.xml;
 fi;
