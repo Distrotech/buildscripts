@@ -24,9 +24,9 @@ CLEARFLAGS="1";
 BASEOPT="--without-lto --disable-bootstrap --with-sysroot=/ --without-cloog --without-isl
          --disable-libitm --disable-libmudflap  --disable-libswsp --disable-libgomp --disable-libatomic 
          --disable-libssp --disable-libquadmath --with-system-zlib";
-BOOTOPT="${BASEOPT} --enable-languages=c,c++ --disable-multilib --disable-shared LDFLAGS=-static";
-MULTIOPT="${BASEOPT} --enable-languages=c --disable-shared --enable-multilib";
-SHAREDOPT="${BASEOPT} --enable-languages=c,c++ --enable-multilib";
+BOOTOPT="${BASEOPT} --enable-languages=c,c++,ada --disable-multilib --disable-shared LDFLAGS=-static";
+MULTIOPT="${BASEOPT} --enable-languages=c,ada --disable-libada --disable-shared --enable-multilib";
+SHAREDOPT="${BASEOPT} --enable-languages=c,c++,ada --enable-multilib";
 BOOTOPT_mips="--with-arch=mips32";
 BOOTOPT_mips64="--with-arch=mips64";
 CROSSOPT_i686="--disable-multilib";
