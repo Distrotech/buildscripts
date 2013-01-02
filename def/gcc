@@ -1,8 +1,8 @@
 VERSION="4.8.0"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-languages=all --with-ecj-jar=/usr/share/java/ecj-4.2.1.jar --enable-lto --enable-cloog-backend=isl
-         --enable-java-home --with-system-zlib";
+CONFOPT="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada --with-ecj-jar=/usr/share/java/ecj-4.2.1.jar 
+         --enable-lto --enable-cloog-backend=isl --enable-java-home --with-system-zlib";
 OPT_x86_64="--target=x86_64-linux-gnu  --with-multilib-list=m32,m64,mx32 --with-sysroot=/ --with-abi=64 
             --with-jvm-root-dir=/usr/lib64/jvm/gcj-jdk";
 OPT_x86_32="--target=x86_64-linux-gnux32  --with-multilib-list=mx32,m64,m32 --with-sysroot=/ --with-abi=x32 
