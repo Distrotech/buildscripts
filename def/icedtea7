@@ -1,9 +1,10 @@
 VERSION="2.3.3"
 VERSEP="-";
 PREFIX="/usr";
+JAVA_HOME="/usr/lib64/jvm/jdk-1.6.0_24-b24"
 ANT_HOME="/usr/lib64/jvm/apache-ant-1.8.4";
-CONFOPT="--with-jdk-home=/usr/lib64/jvm/gcj-jdk --with-ecj-jar=/usr/share/java/ecj-3.5.2.jar 
-         --with-rhino=/usr/share/java/js.jar --with-gcj";
+CONFOPT="--with-jdk-home=/usr/lib64/jvm/jdk-1.6.0_24-b24 --with-ecj-jar=/usr/share/java/ecj-3.5.2.jar 
+         --with-rhino=/usr/share/java/js.jar --with-gcj --disable-bootstrap";
 NOCROSS="1";
 NOCCOPT="1";
 XCONFWORK="--with-jdk-home=/usr/lib64/jvm/gcj-jdk --with-ecj-jar=/usr/share/java/ecj-3.5.2.jar 
