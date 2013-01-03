@@ -1,4 +1,4 @@
-VERSION="2.1.10"
+VERSION="2.1.12"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-pam --with-gssapi --mandir=/usr/share/man --with-sql=plugin --enable-shared=yes --enable-static=no 
