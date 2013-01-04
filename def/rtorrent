@@ -6,3 +6,4 @@ OPT_arm="ac_cv_sys_largefile_CC=no";
 OPT_i686="ac_cv_sys_largefile_CC=no";
 OPT_x86_32="ac_cv_sys_largefile_CC=no";
 ADDCFLAG="-I=/usr/include/ncursesw -I=/usr/include/sigc++-2.0";
+AMVER="1.11";
