@@ -1,7 +1,7 @@
 VERSION="1.1.6"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="CC_FOR_BUILD=/usr/bin/gcc";
+CONFOPT="--enable-static --enable-shared CC_FOR_BUILD=/usr/bin/gcc";
 OPT_i686="CC=i686-linux-gnu-gcc";
 OPT_arm="CC=arm-linux-gnueabi-gcc ac_cv_lib_lex=-lfl";
 OPT_arm64="CC=aarch64-linux-gnueabi-gcc ac_cv_lib_lex=-lfl";
