@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SVNIP=192.168.25.1
+SVNBASE=http://${SVNIP}/svn 
 
 #Setup layout path
 SRCDIR=/usr/src
@@ -14,7 +15,7 @@ BASEROOT=${DISTDIR}/root
 SCRIPTDIR=${DISTDIR}/scripts
 PKGBUILDDIR=${DISTDIR}/build
 ARCHROOT=/build
-SVNURL=http://${SVNIP}/svn/distro/
+SVNURL=${SVNBASE}/distro/
 SVNUPDATE=0;
 
 #Multiarch Definitions
@@ -161,6 +162,12 @@ check_create_arch() {
        tar -cJf ${TOOLPKG}/${1}/kernel-headers.tar.xz *)
     fi;
   fi;
+
+  if [ "${1}" == "${NARCH}" ];then
+    rsync -avPR /usr/include/gnu/stubs-*.h ${HDIR}/
+   elif [ -d ${ARCHROOT}/${1}/usr/include/gnu ];then
+    rsync -avPR ${ARCHROOT}/usr/include/gnu/stubs-*.h ${HDIR}/
+  fi; 
 
   #Sync root too arch if no includes
   if [ -d ${ARCHROOT}/${1} ] && [ ! -d ${ARCHROOT}/${1}/usr/include ];then
@@ -663,6 +670,14 @@ build_project() {
     return 0;
   fi;
 
+  if [ "${AMVER}" ];then
+    ACLOCAL=aclocal-${AMVER}
+    export AUTOMAKE=automake-${AMVER}
+   else
+    ACLOCAL=aclocal
+    export AUTOMAKE=automake
+  fi;
+
   MOPTIN=MOPT_${barch}
   AOPTIN=OPT_${barch}
 
@@ -724,7 +739,8 @@ build_project() {
   export FORCE_UNSAFE_CONFIGURE=1
 #    export PKG_CONFIG_SYSROOT_DIR="${SYSROOT}"
   export PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig/";
-  export ACLOCAL="aclocal -I /usr/share/aclocal"
+#  export ACLOCAL="${ACLOCAL} -I /usr/share/aclocal"
+  export ACLOCAL
 #  export PYTHONPATH="/usr/${B_LIBDIRS}/python2.7/site-packages/"
 
   if [ ! "${MLOPT}" ] && [ "${NARCH}" != "${barch}" ];then
@@ -784,6 +800,10 @@ build_project() {
      else
       (/usr/bin/make distclean || /usr/bin/make clean) > /dev/null 2>&1
     fi;
+  fi;
+
+  if [ "${AUTORECONF}" ] && [ "${AUTORECONF}" == "1" ];then
+    (cd ${TOPDIR};autoreconf)
   fi;
 
   export DIST_ROOT=${PKGBUILDDIR}/${barch}/${PKG}
@@ -1302,7 +1322,7 @@ static_toolbuild() {
     TARGET=${BUILD}
   fi;
   for stool in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
-      pkg-config util-linux m4 cpio diffutils libtool krb5 subversion;do
+      pkg-config util-linux m4 cpio diffutils libtool gperf krb5 subversion;do
     (build_static_tool ${1} ${TARGET} ${TLIBDIR} ${stool})
   done;
 }
@@ -1319,7 +1339,7 @@ build_toolchain() {
   (build_glibc ${1} ${2}) || return 1
 
   #Build perl/autoconf/zlib
-  (build_packages ${1} groff perl autoconf automake zlib libtool) || return 1
+  (build_packages ${1} groff perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf zlib libtool) || return 1
 
   #Libs needed for GCC
   (build_packages ${1} gmp mpfr mpc) || return 1
@@ -1339,40 +1359,64 @@ build_toolchain() {
 
   #Rebuild libtool
   if [ ! -e ${STATDIR}/${1}/done/gcc ] && [ -e ${STATDIR}/${1}/done/libtool ];then
-    rm ${STATDIR}/${1}/done/libtool ${STATDIR}/${1}/done/autoconf ${STATDIR}/${1}/done/automake
+    rm ${STATDIR}/${1}/done/libtool 
+    (build_packages ${1} libtool) || return 1
+    rm ${STATDIR}/${1}/done/libtool
   fi;
 
   #Build GCC
   (build_packages ${1} gmp mpfr mpc isl cloog zip unzip gcc) || return 1
 
   #Base dependancies
-  (build_packages ${1} libtool autoconf automake make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
-                       bison diffutils gperf flex gettext attr acl pcre libsepol libselinux file \
+  (build_packages ${1} libtool make gperf gettext sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
+                       bison diffutils flex attr acl pcre libsepol libselinux file \
                        libcap coreutils readline bash popt rsync) || return 1
 
-  #Time to build a static gcc bootstrap distributable
-  (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
-
-  #Static binutils distributable
-  (build_bootstrap_binutils ${1} ${2}) || return 1
-
   #Base programs
-  (build_packages ${1} Python libffi glib pkg-config xz libxml2 libxslt expat docbook-4.1.2  docbook-4.2  docbook-4.3 \
-            docbook-4.4  docbook-4.5 docbook-xsl nettle gnutls libgpg-error libgcrypt libassuan libksba pth \
-            gnupg openssl libprelude libtirpc Linux-PAM slang gobject-introspection pixman wget which) || return 1
+  (build_packages ${1} xz libxml2 libxslt gnome-doc-utils scrollkeeper gtk-doc expat Python libffi glib pkg-config docbook-4.1.2 \
+            docbook-4.2  docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl nettle p11-kit gnutls libgpg-error libgcrypt \
+            libassuan libksba pth gnupg openssl trousers libprelude libtirpc Linux-PAM slang gobject-introspection \
+            vala pixman libidn wget which) || return 1
 
   
   if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
     rm /usr/lib64/libblkid.a /usr/lib64/libuuid.a /usr/lib64/libblkid.la /usr/lib64/libuuid.la >/dev/null 2>&1
   fi;
 
-  (build_packages ${1} util-linux flex sed nano rsync grep less gzip tar pkg-config cpio iana-etc) || return 1
+ (build_packages ${1} util-linux flex sed nano rsync grep less gzip tar pkg-config cpio iana-etc) || return 1
 
+  #Add required perl modules from cpan
   for pmod in XML::Parser XML::SAX Font::TTF;do
     if [ ! -e ${STATDIR}/${1}/done/${pmod} ];then
       cpan -i ${pmod} && touch ${STATDIR}/${1}/done/${pmod}
     fi;
   done
+
+ (build_packages ${1} xmlto xmltoman giflib freetype fontconfig fontforge fonttools jpeg openjpeg libpng libmng OpenSP \
+                      openjade ) || return 1
+
+ #This will fail due to Mesa so dont bail only do it on first pass
+ if [ ! -e ${STATDIR}/${1}/fail/Xorg ];then
+   (build_packages ${1} Xorg) || touch ${STATDIR}/${1}/fail/Xorg
+ fi;
+ (build_packages ${1} libdrm llvm Mesa glu glw freeglut intltool libverto krb5 cups dbus systemd pcsc-lite mtdev Xorg) || return 1
+ (build_packages ${1} tiff atk cairo pango gdk-pixbuf gtk+) || return 1 
+ (build_packages ${1} patch alsa-lib icedtea6 lcms2 icedtea7) || return 1
+
+ (build_packages ${1} libusb libusb-compat cmake yasm nasm kmod module-init-tools fuse swig keyutils neon) || return 1
+ (build_packages ${1} libunistring txt2man printproto portablexdr ppp libIDL ORBit2 dbus-glib GConf libbonobo) || return 1
+ (build_packages ${1} gc guile libmad Xaw3d gv polkit polkit-gnome gengetopt libidn c-ares curl rtmpdump apr \
+                      apr-iconv sqlite-autoconf M2Crypto libnl-1 libnl crda) || return 1
+
+ (build_packages ${1} apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql) ||return 1
+ (build_packages ${1} apr-util httpd subversion) ||return 1
+ (build_packages ${1} qt-4) || return 1
+
+  #Time to build a static gcc bootstrap distributable
+  (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
+
+  #Static binutils distributable
+  (build_bootstrap_binutils ${1} ${2}) || return 1
 
   #Build tools needed for compiling
   static_toolbuild ${1} ${2}
@@ -1536,6 +1580,10 @@ buildall_arch() {
     fi;
   done;
 }
+
+if [ ! -d /dist/def ] || [ ! -d /dist/scripts ];then
+  svn co ${SVNBASE}/buildscripts/trunk/ /dist/
+fi;
 
 #XXX find packages smarter use svn
 for pkg in binutils gcc glibc qemu;do
