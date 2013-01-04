@@ -12,3 +12,4 @@ OPT_powerpc64="--with-pci-ids-path=/usr/share/pci.ids";
 OPT_i686="--with-pci-ids-path=/usr/share/pci.ids";
 OPT_x86_32="--with-pci-ids-path=/usr/share/pci.ids";
 EXTRALIBS="-L=/lib -lblkid";
+AMVER="1.11";
