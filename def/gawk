@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 EXTRALIBS="-lsigsegv -ldl";
 STATICMOPT="LDFLAGS=-static LIBSIGSEGV=-lsigsegv";
+NONULLCONF="1";
