@@ -1358,11 +1358,9 @@ build_toolchain() {
   #Build fresh glibc we are asuming that binutils/gcc/make/bash/sed/awk are good as they should be
   (build_glibc ${1} ${2}) || return 1
 
-  #Build perl/autoconf/zlib
-  (build_packages ${1} groff perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf zlib libtool) || return 1
-
-  #Libs needed for GCC
-  (build_packages ${1} gmp mpfr mpc) || return 1
+  #Build perl/autoconf/zlib and Libs needed for GCC
+  (build_packages ${1} groff perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf \
+                       zlib libtool gmp mpfr mpc) || return 1
 
   #GCC C build to bootstrap multiarch
   (build_gcc_bootstrap ${1} ${2} ${1} multi) || return 1
@@ -1377,7 +1375,7 @@ build_toolchain() {
   #Shared GCC / Multi arch C/C++
   (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
 
-  #Rebuild libtool
+  #Rebuild libtool this will be rebuilt again after final GCC build
   if [ ! -e ${STATDIR}/${1}/done/gcc ] && [ -e ${STATDIR}/${1}/done/libtool ];then
     rm ${STATDIR}/${1}/done/libtool 
     (build_packages ${1} libtool) || return 1
@@ -1385,19 +1383,17 @@ build_toolchain() {
   fi;
 
   #Build GCC
-  (build_packages ${1} gmp mpfr mpc isl cloog zip unzip gcc) || return 1
+  (build_packages ${1} gmp mpfr mpc isl cloog zip unzip gcc libtool) || return 1
 
   #Base dependancies
-  (build_packages ${1} libtool make gperf gettext sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
-                       bison diffutils flex attr acl pcre libsepol libselinux file \
-                       libcap coreutils readline bash intltool popt rsync) || return 1
+  (build_packages ${1} make gperf gettext sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
+                       bison diffutils flex attr acl pcre libsepol libselinux file libcap coreutils readline bash \
+                       intltool popt rsync xz libxml2 p11-kit nettle gnutls libgpg-error libgcrypt libxslt \
+                       gnome-doc-utils scrollkeeper gtk-doc expat Python libffi glib pkg-config docbook-4.1.2 \
+                       docbook-4.2  docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl libassuan libksba pth libusb \
+                       libusb-compat gnupg openssl trousers libprelude libtirpc Linux-PAM slang gobject-introspection \
+                       vala gengetopt libidn wget which) || return 1
 
-  #Base programs
-  (build_packages ${1} xz libxml2 p11-kit nettle gnutls libgpg-error libgcrypt libxslt gnome-doc-utils scrollkeeper \
-            gtk-doc expat Python libffi glib pkg-config docbook-4.1.2 docbook-4.2  docbook-4.3 \
-            docbook-4.4  docbook-4.5 docbook-xsl libassuan libksba pth libusb libusb-compat gnupg openssl trousers \
-            libprelude libtirpc Linux-PAM slang gobject-introspection vala gengetopt libidn wget which) || return 1
-  
   if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
     rm /usr/lib64/libblkid.a /usr/lib64/libuuid.a /usr/lib64/libblkid.la /usr/lib64/libuuid.la >/dev/null 2>&1
   fi;
@@ -1419,22 +1415,13 @@ build_toolchain() {
     (build_packages ${1} Xorg) || touch ${STATDIR}/${1}/fail/Xorg
   fi;
 
-  (build_packages ${1} cairo pango libdrm llvm intltool krb5 cups dbus kmod module-init-tools cryptsetup systemd \
-                       Mesa glu glw mtdev Xorg freeglut mtdev) || return 1
-
   (build_packages ${1} cairo pango libdrm llvm intltool cmake talloc tevent libverto krb5 cups dbus kmod module-init-tools \
-                       cryptsetup systemd Mesa glu glw mtdev Xorg freeglut pcsc-lite) || return 1
-  (build_packages ${1} tiff atk gdk-pixbuf gtk+) || return 1 
-  (build_packages ${1} patch alsa-lib fastjar icedtea6 lcms2 icedtea7) || return 1
-
-  (build_packages ${1} libusb libusb-compat yasm nasm kmod module-init-tools fuse swig keyutils neon) || return 1
-  (build_packages ${1} libunistring txt2man printproto portablexdr ppp libIDL ORBit2 dbus-glib GConf libbonobo) || return 1
-  (build_packages ${1} gc guile libmad Xaw3d gv polkit polkit-gnome rtmpdump M2Crypto libnl-1 libnl crda) || return 1
-
-  (build_packages ${1} apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql) ||return 1
-  (build_packages ${1} apr apr-iconv sqlite-autoconf swig keyutils neon) || return 1
-  (build_packages ${1} apr-util httpd subversion) ||return 1
-  (build_packages ${1} qt-4) || return 1
+                       cryptsetup systemd Mesa glu glw mtdev Xorg freeglut pcsc-lite tiff atk gdk-pixbuf gtk+ patch \
+                       alsa-lib fastjar icedtea6 lcms2 icedtea7 libusb libusb-compat yasm nasm fuse libunistring txt2man \
+                       printproto portablexdr ppp libIDL ORBit2 dbus-glib GConf libbonobo gc guile libmad Xaw3d gv \
+                       polkit polkit-gnome rtmpdump M2Crypto libnl-1 libnl crda ragel apr apr-iconv sqlite-autoconf swig \
+                       keyutils neon apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql \
+                       apr-util httpd subversion qt-4) || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
