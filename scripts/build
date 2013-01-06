@@ -193,10 +193,12 @@ svn_load_pkg() {
     fi;
     #some packages are retards null config them
     if [ -e ${SRCDIR}/${PKGSVNDIR}/configure.ac ] || [ -e ${SRCDIR}/${PKGSVNDIR}/configure.in ];then
-      (cd ${SRCDIR}/${PKGSVNDIR}
-       sh ./configure;
-       svn up
-       make distclean)
+      if [ "${SRCDIR}" ] && [ "${PKGSVNDIR}" ] && [ -d ${SRCDIR}/${PKGSVNDIR} ];then
+        (cd ${SRCDIR}/${PKGSVNDIR}
+         sh ./configure;
+         make distclean || rm -rf ${SRCDIR}/${PKGSVNDIR}/*
+         svn up)
+      fi
     fi;
    elif [ "${SVNUPDATE}" == "1" ];then
     svn up ${SRCDIR}/${PKGSVNDIR}
@@ -759,8 +761,6 @@ build_project() {
   export FORCE_UNSAFE_CONFIGURE=1
 #    export PKG_CONFIG_SYSROOT_DIR="${SYSROOT}"
   export PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig/";
-#  export ACLOCAL="${ACLOCAL} -I /usr/share/aclocal"
-  export ACLOCAL
 #  export PYTHONPATH="/usr/${B_LIBDIRS}/python2.7/site-packages/"
 
   if [ ! "${MLOPT}" ] && [ "${NARCH}" != "${barch}" ];then
@@ -1396,7 +1396,7 @@ build_toolchain() {
   (build_packages ${1} xz libxml2 p11-kit nettle gnutls libgpg-error libgcrypt libxslt gnome-doc-utils scrollkeeper \
             gtk-doc expat Python libffi glib pkg-config docbook-4.1.2 docbook-4.2  docbook-4.3 \
             docbook-4.4  docbook-4.5 docbook-xsl libassuan libksba pth libusb libusb-compat gnupg openssl trousers \
-            libprelude libtirpc Linux-PAM slang gobject-introspection vala pixman gengetopt libidn wget which) || return 1
+            libprelude libtirpc Linux-PAM slang gobject-introspection vala gengetopt libidn wget which) || return 1
   
   if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
     rm /usr/lib64/libblkid.a /usr/lib64/libuuid.a /usr/lib64/libblkid.la /usr/lib64/libuuid.la >/dev/null 2>&1
@@ -1424,22 +1424,15 @@ build_toolchain() {
 
   (build_packages ${1} cairo pango libdrm llvm intltool cmake talloc tevent libverto krb5 cups dbus kmod module-init-tools \
                        cryptsetup systemd Mesa glu glw mtdev Xorg freeglut pcsc-lite) || return 1
-
   (build_packages ${1} tiff atk gdk-pixbuf gtk+) || return 1 
-
   (build_packages ${1} patch alsa-lib fastjar icedtea6 lcms2 icedtea7) || return 1
-  (build_packages ${1} tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql) ||return 1
-  (build_packages ${1} apr apr-iconv apr-util httpd sqlite-autoconf swig keyutils neon subversion) || return 1
-  (build_packages ${1} qt-4) || return 1
 
   (build_packages ${1} libusb libusb-compat yasm nasm kmod module-init-tools fuse swig keyutils neon) || return 1
   (build_packages ${1} libunistring txt2man printproto portablexdr ppp libIDL ORBit2 dbus-glib GConf libbonobo) || return 1
-  (build_packages ${1} gc guile libmad Xaw3d gv polkit polkit-gnome rtmpdump) || return 1
-
-  (build_packages ${1} gc guile libmad Xaw3d gv polkit polkit-gnome rtmpdump
-                       apr apr-iconv sqlite-autoconf M2Crypto libnl-1 libnl crda) || return 1
+  (build_packages ${1} gc guile libmad Xaw3d gv polkit polkit-gnome rtmpdump M2Crypto libnl-1 libnl crda) || return 1
 
   (build_packages ${1} apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql) ||return 1
+  (build_packages ${1} apr apr-iconv sqlite-autoconf swig keyutils neon) || return 1
   (build_packages ${1} apr-util httpd subversion) ||return 1
   (build_packages ${1} qt-4) || return 1
 
