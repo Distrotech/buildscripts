@@ -2,3 +2,4 @@ VERSION="1.0.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-easy-bindings --without-python --without-perl";
+NONULLCONF="1";
