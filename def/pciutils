@@ -8,3 +8,4 @@ ADDCFLAG="-fPIC";
 ADDLDFLAG="-lresolv -lz";
 FIXUPLIB="1";
 MAKETARGETS="install-lib";
+MAKE_J="-j1";
