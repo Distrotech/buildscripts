@@ -160,7 +160,7 @@ check_create_arch() {
        if [ ! -d ${TOOLPKG}/${1}/ ];then
          mkdir -p ${TOOLPKG}/${1}
        fi;
-       tar -cJf ${TOOLPKG}/${1}/kernel-headers.tar.xz *)
+       tar -cJf ${TOOLPKG}/${1}/kernel-headers.tar.xz usr/include/asm* usr/include/mtd usr/include/linux)
     fi;
   fi;
 
