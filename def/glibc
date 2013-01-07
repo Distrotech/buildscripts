@@ -19,3 +19,4 @@ OPTX_powerpc="--with-headers=/build/powerpc/usr/include";
 OPTX_powerpc64="--with-headers=/build/powerpc64/usr/include";
 NOCCOPT="1";
 CLEARFLAGS="1";
+NONULLCONF="1";
