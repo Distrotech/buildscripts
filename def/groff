@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
+ADDPATH="/usr/src/groff/groff${VERSEP}${VERSION}/src/roff/groff/";
