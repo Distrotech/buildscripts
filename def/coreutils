@@ -14,3 +14,4 @@ OPT_powerpc="--enable-no-install-program=arch,hostname";
 OPT_powerpc64="--enable-no-install-program=arch,hostname";
 ADDCC="0";
 STATICOPT="LDFLAGS=-static FORCE_UNSAFE_CONFIGURE=1";
+AMVER="1.13";
