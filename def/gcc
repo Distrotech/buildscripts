@@ -33,15 +33,18 @@ MULTIOPT="${BASEOPT} --enable-languages=c,ada --disable-libada --disable-shared 
 SHAREDOPT="${BASEOPT} --enable-languages=c,c++,ada --enable-multilib";
 BOOTOPT_mips="--with-arch=mips32";
 BOOTOPT_mips64="--with-arch=mips64";
-CROSSOPT_i686="--disable-multilib";
-CROSSOPT_x86_32="--enable-multilib --with-multilib-list=mx32,m64,m32 --with-abi=x32";
-CROSSOPT_x86_64="--enable-multilib --with-multilib-list=mx32,m64,m32 --with-abi=64";
-CROSSOPT_arm="--disable-multilib";
-CROSSOPT_arm64="--disable-multilib";
+CROSSOPT_i686="--disable-multilib --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
+CROSSOPT_x86_32="--enable-multilib --with-multilib-list=mx32,m64,m32 --with-abi=x32
+                 --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
+CROSSOPT_x86_64="--enable-multilib --with-multilib-list=mx32,m64,m32 --with-abi=64
+                 --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
+CROSSOPT_arm="--disable-multilib --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
+CROSSOPT_arm64="--disable-multilib --enable-languages=c,c++,fortran,lto,objc,obj-c++,go,ada";
 CROSSOPT_mips="--disable-multilib --with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
-CROSSOPT_mips64="--disable-multilib --with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
-CROSSOPT_powerpc="--disable-multilib";
-CROSSOPT_powerpc64="--enable-multilib";
+CROSSOPT_mips64="--disable-multilib --with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32
+                 --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
+CROSSOPT_powerpc="--disable-multilib --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
+CROSSOPT_powerpc64="--enable-multilib --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 #EXTRALIBS="-lm";
 #ARM --with-mode=thumb --with-arch=armv7-a --with-fpu=vfpv3-d16
 ADDBUILDSYSROOT="1";
