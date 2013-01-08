@@ -8,3 +8,4 @@ NOCROSS="1";
 NOCCOPT="1";
 XCONFWORK="--with-jdk-home=/usr/lib64/jvm/gcj-jdk --with-ecj-jar=/usr/share/java/ecj-3.5.2.jar 
            --with-rhino=/usr/share/java/js.jar --with-gcj CFLAGS=-I=/usr/X11R7/include";
+AMVER="1.13";
