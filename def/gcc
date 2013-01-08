@@ -39,7 +39,7 @@ CROSSOPT_x86_32="--enable-multilib --with-multilib-list=mx32,m64,m32 --with-abi=
 CROSSOPT_x86_64="--enable-multilib --with-multilib-list=mx32,m64,m32 --with-abi=64
                  --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 CROSSOPT_arm="--disable-multilib --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
-CROSSOPT_arm64="--disable-multilib --enable-languages=c,c++,fortran,lto,objc,obj-c++,go,ada";
+CROSSOPT_arm64="--disable-multilib --enable-languages=c,c++,fortran,lto,objc,obj-c++,ada --disable-libatomic";
 CROSSOPT_mips="--disable-multilib --with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
 CROSSOPT_mips64="--disable-multilib --with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32
                  --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
