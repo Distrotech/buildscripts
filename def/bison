@@ -2,5 +2,6 @@ VERSION="2.7"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+MAKEOPTS="BISON=/usr/bin/bison";
 STATICMOPT="LDFLAGS=-static";
 AMVER="1.13";
