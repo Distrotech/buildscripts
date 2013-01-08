@@ -23,3 +23,4 @@ EXTRALIBS="-lxcb -lXau -lXdmcp -ldl -lm";
 ADDCFLAG="-I=/usr/include/gio-unix-2.0 -I=/usr/include/cairo -I=/usr/include/freetype2
           -I=/usr/include/pango-1.0 -I=/usr/include/gdk-pixbuf-2.0 -I=/usr/include/glib-2.0
           -I=/usr/include/atk-1.0";
+AMVER="1.12";
