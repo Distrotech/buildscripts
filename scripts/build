@@ -72,7 +72,7 @@ unset CFLAGS LDFLAGS CPPFLAGS
 arch_config() {
   #Set build tupple
   case ${1} in
-    arm64)TUPPLE=aarch64-linux-gnueabi;;
+    arm64)TUPPLE=aarch64-linux-gnu;;
     arm)TUPPLE=arm-linux-gnueabi;;
     mips64)TUPPLE=mips64-linux-gnuabi64;;
     x86_32)TUPPLE=x86_64-linux-gnux32;;
@@ -82,6 +82,7 @@ arch_config() {
   #Set Libdir
   case ${1} in
     x86_32)SETLIBDIR="libx32";;
+    arm64)SETLIBDIR="lib";;
     *64)SETLIBDIR="lib64";;
     *)SETLIBDIR="lib";;
   esac;
@@ -89,6 +90,7 @@ arch_config() {
   #Determine kernel arch
   case ${1} in
     x86_*|i[3-6]86)LINARCH="x86";;
+    arm64)LINARCH=arm64;;
     *64)LINARCH=${1::-2};;
     *)LINARCH=${1};
   esac;
@@ -709,7 +711,7 @@ build_project() {
 
   if [ "${barch}" != "${NARCH}" ];then
     XOPTIN=OPTX_${barch}
-    ARCHXOPT=${!XOPTIN}
+    ARCHXOPT="${CONFOPTX} ${!XOPTIN}"
    else
     ARCHXOPT="";
   fi;
@@ -1271,10 +1273,10 @@ build_packages() {
 
   for pkg in $@;do
     if [ ! -e ${STATDIR}/${DARCH}/done/${pkg} ];then
-      (CLEANOPT=distclean
-      build_project ${pkg} ${DARCH}) ||return 1
-      #Rebuild latter again
-      #rm ${STATDIR}/${DARCH}/${pkg});
+      #If we fail on 1st pass rebuild with no clean opt's
+      if ! (CLEANOPT=distclean;build_project ${pkg} ${DARCH});then
+        (unset CLEANOPT;build_project ${pkg} ${DARCH}) || return 1
+      fi;
     fi;
   done;
 }
@@ -1386,42 +1388,59 @@ build_toolchain() {
   (build_packages ${1} gmp mpfr mpc isl cloog zip unzip gcc libtool) || return 1
 
   #Base dependancies
-  (build_packages ${1} make gperf gettext sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
+  (build_packages ${1} gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
                        bison diffutils flex attr acl pcre libsepol libselinux file libcap coreutils readline bash \
-                       intltool popt rsync xz libxml2 p11-kit nettle gnutls libgpg-error libgcrypt libxslt \
-                       gnome-doc-utils scrollkeeper gtk-doc expat Python libffi glib pkg-config docbook-4.1.2 \
-                       docbook-4.2  docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl libassuan libksba pth libusb \
-                       libusb-compat gnupg openssl trousers libprelude libtirpc Linux-PAM slang gobject-introspection \
-                       vala gengetopt libidn wget which) || return 1
+                       xz libxml2 expat)
 
-  if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
-    rm /usr/lib64/libblkid.a /usr/lib64/libuuid.a /usr/lib64/libblkid.la /usr/lib64/libuuid.la >/dev/null 2>&1
-  fi;
-
- (build_packages ${1} util-linux nano rsync grep less gzip tar pkg-config cpio iana-etc) || return 1
-
-  #Add required perl modules from cpan
+  #Add required perl modules from cpan may not need libxml only expat !!!
   for pmod in XML::Parser XML::SAX Font::TTF;do
     if [ ! -e ${STATDIR}/${1}/done/${pmod} ];then
       cpan -i ${pmod} && touch ${STATDIR}/${1}/done/${pmod}
     fi;
   done
 
- (build_packages ${1} xmlto xmltoman giflib freetype fontconfig fontforge fonttools jpeg libpng openjpeg libmng OpenSP \
-                      openjade c-ares curl git) || return 1
+  if [ ! -e ${STATDIR}/${1}/done/gcc ] && [ -e ${STATDIR}/${1}/done/libtool ];then
+    rm ${STATDIR}/${1}/done/libtool
+    (build_packages ${1} libtool) || return 1
+    rm ${STATDIR}/${1}/done/libtool
+  fi;
 
-  #This will fail due to Mesa so dont bail only do it on first pass
-  if [ ! -e ${STATDIR}/${1}/fail/Xorg ];then
-    (build_packages ${1} Xorg) || touch ${STATDIR}/${1}/fail/Xorg
+  if [ ! -e ${STATDIR}/${1}/done/Python ] && [ -e ${STATDIR}/${1}/done/libxml2 ];then
+    rm ${STATDIR}/${1}/done/libxml2
+  fi;
+
+  (build_packages ${1} intltool popt rsync xz p11-kit nettle gnutls libgpg-error libgcrypt libxslt \
+                       Python libxml2 gnome-doc-utils docbook-4.1.2 docbook-4.2  docbook-4.3 docbook-4.4  docbook-4.5 \
+                       docbook-xsl scrollkeeper which gtk-doc libffi glib pkg-config libassuan libksba pth libusb \
+                       libusb-compat gnupg openssl trousers libprelude libtirpc Linux-PAM slang gobject-introspection \
+                       vala gengetopt libidn wget) || return 1
+
+  if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
+    rm /usr/lib64/libblkid.a /usr/lib64/libuuid.a /usr/lib64/libblkid.la /usr/lib64/libuuid.la >/dev/null 2>&1
+  fi;
+
+  (build_packages ${1} util-linux nano rsync grep less gzip tar pkg-config cpio iana-etc xmlto xmltoman giflib freetype \
+                       fontconfig fontforge fonttools jpeg libpng openjpeg libmng OpenSP openjade c-ares curl \
+                       git) || return 1
+
+  #This will fail due to Mesa so dont bail only do it on first pass use build_project directly
+  if [ ! -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
+    (build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
   fi;
 
   (build_packages ${1} cairo pango libdrm llvm intltool cmake talloc tevent libverto krb5 cups dbus kmod module-init-tools \
-                       cryptsetup systemd Mesa glu glw mtdev Xorg freeglut pcsc-lite tiff atk gdk-pixbuf gtk+ patch \
-                       alsa-lib fastjar icedtea6 lcms2 icedtea7 libusb libusb-compat yasm nasm fuse libunistring txt2man \
+                       LVM2 cryptsetup systemd Mesa glu glw mtdev Xorg freeglut pcsc-lite tiff atk  gdk-pixbuf gtk+ patch \
+                       alsa-lib fastjar icedtea6 lcms2 icedtea7 yasm nasm fuse libunistring txt2man \
                        printproto portablexdr ppp libIDL ORBit2 dbus-glib GConf libbonobo gc guile libmad Xaw3d gv \
-                       polkit polkit-gnome rtmpdump M2Crypto libnl-1 libnl crda ragel apr apr-iconv sqlite-autoconf swig \
+                       polkit polkit-gnome rtmpdump swig M2Crypto libnl-1 libnl crda ragel apr apr-iconv sqlite-autoconf \
                        keyutils neon apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql \
-                       apr-util httpd subversion qt-4) || return 1
+                       apr-util httpd subversion libva frei0r libraw1394 SDL libdc1394 libavc1394 libiec61883 faac \
+                       fdk-aac libaacplus vo-aacenc vo-amrwbenc fribidi libass libbluray celt libcaca gsm libmodplug \
+                       lame twolame libnut opencore-amr OpenCV opus json-c libsndfile gdbm pulseaudio orc schroedinger \
+                       libogg libtheora speex utvideo v4l-utils libvorbis libvpx x264 xavs xvidcore openal libcdio-cdda \
+                       libcdio libcddb ffmpeg gstreamer gst-plugins-base icu4c qt-4 ptlib h323plus gnugk t38modem \
+                       alsa-lib fltk libdaemon libnfnetlink libmnl libnetfilter_conntrack libnetfilter_cttimeout \
+                       ilmbase gss libcroco librsvg djvulibre libexif exif) || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
