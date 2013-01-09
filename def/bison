@@ -4,4 +4,5 @@ PREFIX="/usr";
 CONFOPT="";
 MAKEOPTS="BISON=/usr/bin/bison";
 STATICMOPT="LDFLAGS=-static";
+STATICMOPT="${MAKEOPTS}";
 AMVER="1.13";
