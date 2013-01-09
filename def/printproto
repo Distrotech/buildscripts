@@ -2,3 +2,4 @@ VERSION="1.0.3"
 VERSEP="-";
 PREFIX="/usr/X11R7";
 CONFOPT="";
+AMVER="1.9";
