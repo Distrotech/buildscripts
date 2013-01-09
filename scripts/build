@@ -1440,7 +1440,7 @@ build_toolchain() {
                        libogg libtheora speex utvideo v4l-utils libvorbis libvpx x264 xavs xvidcore openal libcdio-cdda \
                        libcdio libcddb ffmpeg gstreamer gst-plugins-base icu4c qt-4 ptlib h323plus gnugk t38modem \
                        alsa-lib fltk libdaemon libnfnetlink libmnl libnetfilter_conntrack libnetfilter_cttimeout \
-                       ilmbase gss libcroco librsvg djvulibre libexif exif) || return 1
+                       ilmbase gss libcroco librsvg djvulibre libexif exif iptables usbutils) || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
