@@ -12,3 +12,4 @@ STATICOPT="--enable-ddate --enable-arch --enable-last --enable-line --enable-mes
          --enable-vipw --enable-newgrp --enable-chfn-chsh --enable-write --enable-socket-activation
          --with-selinux --without-udev --without-slang LDFLAGS=-static";
 STATICMOPT="LDFLAGS=-all-static";
+AMVER="1.12";
