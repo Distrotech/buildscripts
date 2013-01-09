@@ -1,7 +1,7 @@
 VERSION="0.8.0"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-natt --enable-dpd --enable-stats --enable-frag --enable-hybrid 
+CONFOPT="--enable-natt --enable-dpd --enable-stats --enable-frag --enable-hybrid --with-kernel-headers=/usr/include
          --enable-adminport --with-libpam --enable-security-context=no";
 SYSCONFPRE="racoon";
 EXTRALIBS="-lrt";
