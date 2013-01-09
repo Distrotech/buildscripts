@@ -1,4 +1,4 @@
 VERSION="0.2.4"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--enable-shared --enable-static";
