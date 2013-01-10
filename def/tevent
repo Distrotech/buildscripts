@@ -4,7 +4,7 @@ PREFIX="/usr";
 CONFOPT="";
 STDOPTS="--prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var";
 OPT_arm="--cross-compile --cross-answers=/dist/scripts/waf_cross_arm.ans --libdir=/usr/lib";
-OPT_arm64="--cross-compile --cross-answers=/dist/scripts/waf_cross_arm64.ans --libdir=/usr/lib64";
+OPT_arm64="--cross-compile --cross-answers=/dist/scripts/waf_cross_arm64.ans --libdir=/usr/lib";
 OPT_mips="--cross-compile --cross-answers=/dist/scripts/waf_cross_mips.ans --libdir=/usr/lib";
 OPT_mips64="--cross-compile --cross-answers=/dist/scripts/waf_cross_mips64.ans --libdir=/usr/lib64";
 OPT_powerpc="--cross-compile --cross-answers=/dist/scripts/waf_cross_powerpc.ans --libdir=/usr/lib";
