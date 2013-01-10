@@ -1,7 +1,7 @@
 VERSION="1.10.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--with-system-verto";
 CFGPTH="src";
 CFGBIN="src/";
 OPT_arm="krb5_cv_attr_constructor_destructor=yes,yes ac_cv_func_regcomp=yes ac_cv_printf_positional=yes";
@@ -15,6 +15,6 @@ OPT_x86_64="krb5_cv_attr_constructor_destructor=yes,yes ac_cv_func_regcomp=yes a
 OPT_x86_32="krb5_cv_attr_constructor_destructor=yes,yes ac_cv_func_regcomp=yes ac_cv_printf_positional=yes";
 ADDCFLAG="-I../../../src/util/verto -I../../../../src/util/verto";
 LDISCC="0";
-STATICOPT="--disable-shared --enable-static";
+STATICOPT="--disable-shared --enable-static --with-system-verto";
 STATICMOPT="LDFLAGS=-static";
 STATICINSTLIBS="1";
