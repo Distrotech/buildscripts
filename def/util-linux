@@ -4,7 +4,6 @@ PREFIX="/";
 CONFOPT="--enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 
          --enable-vipw --enable-newgrp --enable-chfn-chsh --enable-write --enable-socket-activation
          --with-selinux --without-udev --with-slang --enable-static-programs=mount";
-BUILDDIR="0";
 ADDCFLAG="-std=gnu99 -fPIC";
 NOCCOPT="1";
 ADDWITHSYSROOT="1";
