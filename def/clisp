@@ -8,3 +8,4 @@ OPT_x86_32="--host=x86_64-linux-gnux32 --libdir=/usr/libx32";
 OPT_arm="--host=arm-linux-gnueabi";
 OPT_i686="--host=i686-linux-gnu";
 CFGPTH="/src/";
+NONULLCONF="1";
