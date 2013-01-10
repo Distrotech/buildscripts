@@ -1167,7 +1167,7 @@ build_gcc_bootstrap() {
     USELIBDIR=${TLIBDIR}
    else
     GCCBOOTDEST=${TOOLDIR}/${TARCH}/${1}/${TARGPKG}
-    PROGPRE="--program-prefix=${2}";
+    PROGPRE="--program-prefix=${2}-";
     USELIBDIR=${B_LIBDIRS}
   fi;
 
@@ -1175,14 +1175,16 @@ build_gcc_bootstrap() {
     return;
   fi;
 
-  GCCLDIR=$( dirname `${2}-gcc --print-libgcc-file-name` )
-  if [ -d ${GCCLDIR} ];then
-    for booto in crti.o crt1.o crtn.o;do
-      if [ -f /usr/${USELIBDIR}/${booto} ];then
-        cp /usr/${USELIBDIR}/${booto} ${GCCLDIR}/
-      fi;
-    done;
-#    CONFOPT="${CONFOPT} --with-stage1-ldflags=-L${GCCLDIR} --with-boot-ldflags=-L${GCCLDIR} CFLAGS=-B${GCCLDIR}";
+  if which ${2}-gcc 2>/dev/null;then
+    GCCLDIR=$( dirname `${2}-gcc --print-libgcc-file-name` )
+    if [ -d ${GCCLDIR} ];then
+      for booto in crti.o crt1.o crtn.o;do
+        if [ -f /usr/${USELIBDIR}/${booto} ];then
+          cp ${BUILDROOT}/usr/${USELIBDIR}/${booto} ${GCCLDIR}/
+        fi;
+      done;
+#      CONFOPT="${CONFOPT} --with-stage1-ldflags=-L${GCCLDIR} --with-boot-ldflags=-L${GCCLDIR} CFLAGS=-B${GCCLDIR}";
+    fi;
   fi;
   svn_load_pkg gcc ${GCC}
   setup_build_dir ${1} gcc ${GCC} ${TARCH} ${SDIROPT}
@@ -1534,6 +1536,16 @@ build_cross_package() {
 
   #Cross compiler
   (build_gcc_bootstrap ${1} ${HOST} ${NARCH} cross) || return 1;
+
+  #Add QEMU static to build
+  if [ -d ${ARCHROOT}/${1}/usr/bin ] && [ "${QCPU}" ] && [ -f ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ];then
+    if [ ! -f ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static ] || \
+       [ ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static -nt ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static ];then
+      cp ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static
+    fi;
+  fi;
+
+  build_toolchain ${1} ${HOST} || return 1
 
 exit
 #--gn
