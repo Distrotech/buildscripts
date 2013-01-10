@@ -1140,7 +1140,7 @@ build_gcc_bootstrap() {
     CFLAGS=-I=/usr/include
     CXXFLAGS=-I=/usr/include
     export CFLAGS CXXFLAGS
-    CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${USELIBDIR}/jvm/gcj-jdk-${1} --enable-cxx-flags=-I=/usr/include \
+    CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${USELIBDIR}/jvm/gcj-jdk-${1} --enable-cxx-flags=-I=/usr/include
              CFLAGS=-I=/usr/include ${LANGOPT}"
     SDIROPT=-cross
     MAKEOPT="";
@@ -1561,34 +1561,6 @@ exit
 #    if [ ! -e ${ARCHROOT}/${1}/usr/${B_LIBDIRS}/libc.so ];then
 #      rsync -aP ${TOOLDIR}/${1}/${GLIBC}/ ${ARCHROOT}/${1}/
 #    fi;
-#  fi;
-
-  if [ ! -e /usr/bin/${HOST}-gcc ] || [ ! -d ${TOOLDIR}/${NARCH}/${1}/${GCC} ] || \
-     [ -e /usr/bin/${HOST}-gcc.boot ];then
-    build_gcc_full ${1} ${HOST} ${GCC} "${GCCOPT}"
-    if [ ! -e /usr/bin/${HOST}-gcc ] || [ -e /usr/bin/${HOST}-gcc.boot ];then
-      rsync -aP ${TOOLDIR}/${NARCH}/${1}/${GCC}/ /
-      rsync -aP ${TOOLDIR}/${NARCH}/${1}/${GCC}/usr/${HOST} ${ARCHROOT}/${1}/usr/
-      rm /usr/bin/${HOST}-gcc.boot
-    fi;
-  fi;
-  if [ ! -f ${TOOLPKG}/${NARCH}/${1}/${GCC}.tar.xz ] || \
-     [ ${TOOLDIR}/${NARCH}/${1}/${GCC} -nt ${TOOLPKG}/${NARCH}/${1}/${GCC}.tar.xz ];then
-       (cd ${TOOLDIR}/${NARCH}/${1}/${GCC}
-       tar -cJf ${TOOLPKG}/${NARCH}/${1}/${GCC}.tar.xz *)
-  fi;
-
-  #Add QEMU static to build
-  if [ -d ${ARCHROOT}/${1}/usr/bin ] && [ "${QCPU}" ] && [ -f ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ];then
-    if [ ! -f ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static ] || \
-       [ ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static -nt ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static ];then
-      cp ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static
-    fi;
-  fi;
-
-  #too make the kit complete distribute a bootstrap compiler XXX build_gcc_bootstrap needs work
-#  if ! build_native_bootstrap ${GCC} ${1} ${HOST};then
-#    return 1;
 #  fi;
 }
 
