@@ -15,4 +15,4 @@ OPT_mips="enable_gio_sniffing=yes --enable-introspection=no";
 OPT_mips64="enable_gio_sniffing=yes --enable-introspection=no";
 OPT_powerpc="enable_gio_sniffing=yes --enable-introspection=no";
 OPT_powerpc64="enable_gio_sniffing=yes --enable-introspection=no";
-
+AMVER="1.13";
