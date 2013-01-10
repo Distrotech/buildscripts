@@ -1,7 +1,7 @@
 VERSION="2.35.2"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-static --enable-shared";
+CONFOPT="--enable-static --enable-shared --disable-libelf";
 OPT_mips="glib_cv_stack_grows=no glib_cv_uscore=no ac_cv_func_posix_getpwuid_r=yes ac_cv_func_posix_getgrgid_r=yes 
             ac_cv_alignof_guint32=4 ac_cv_alignof_guint64=4 ac_cv_alignof_unsigned_long=4 
             glib_cv_long_long_format=ll glib_cv_sane_realloc=yes glib_cv_have_strlcpy=no glib_cv_va_val_copy=yes 
