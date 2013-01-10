@@ -5,6 +5,21 @@ sync_fin() {
     mkdir -p ${1}/${PREFIX}
   fi;
   rsync -avP ${DESTDIR}${PREFIX}/ ${1}/${PREFIX}/
+
+  #Clean up failed pkg
+  if [ "${2}" ] && [ "${2}" == "1" ];then
+    clean="";
+    for pkg in `./util/modular/build.sh -L |grep -vE "(^driver/xf86-video-newport)|(^driver/xf86-video-sis)|(^mesa)"`;do
+      if [ ! -e ${pkg}/config.log ] || [ ! -e tobuild ] || [ ./tobuild -nt ${pkg}/config.log ];then
+        clean=${pkg};
+      fi;
+    done
+    if [ "${clean}" ];then
+      make -C ${clean} clean distclean
+      rm ${clean}/config.log
+    fi;
+  fi;
+
   exit ${2}
 }
 
@@ -24,9 +39,17 @@ export MAKEFLAGS=${MAKE_J}
 export LD_LIBRARY_PATH=/usr/${B_LIBDIRS}:/${B_LIBDIRS}:${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${PREFIX}/${B_LIBDIRS}
 
 if [ "${4}" ];then
-  ./util/modular/build.sh -L |grep -vE "(^driver/xf86-video-newport)|(^driver/xf86-video-sis)|(^mesa)" > tobuild
-  cat tobuild |awk '{printf "make -C %s distclean\n",$1}' |sh
+  ./util/modular/build.sh -L |awk '{printf "make -C %s distclean\n",$1}' |sh
+  rm tobuild
 fi;
+
+(for pkg in `./util/modular/build.sh -L |grep -vE "(^driver/xf86-video-newport)|(^driver/xf86-video-sis)|(^mesa)"`;do
+  if [ ! -e ${pkg}/config.log ] || [ ! -e tobuild ] || [ ./tobuild -nt ${pkg}/config.log ];then
+    echo ${pkg};
+  fi;
+done) > tobuild.tmp
+cp tobuild.tmp tobuild
+touch tobuild
 
 if [ "${NARCH}" == "x86_64" ];then
   case ${1} in
