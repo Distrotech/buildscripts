@@ -787,7 +787,7 @@ build_project() {
   #XXX /build AKA ARCHROOT
   if [ ! "${ADDGCCDIR}" ] || [ "${ADDGCCDIR}" == "1" ];then
     GCCDIR=$( ${CC} ${CC_SYSROOT} -print-libgcc-file-name |sed -e "s/libgcc\.a$//" -e "s/x32\/$//" -e "s/32\/$//" )
-    if [ -d ${GCCDIR}/include ] && [ -d ${ARCHROOT}/${barch} ] && [ ! -d ${ARCHROOT}/${barch}/${GCCDIR}/include ];then
+    if [ "${GCCDIR}" ] && [ -d ${GCCDIR}/include ] && [ -d ${ARCHROOT}/${barch} ] && [ ! -d ${ARCHROOT}/${barch}/${GCCDIR}/include ];then
       rsync -avPR ${GCCDIR}/ ${ARCHROOT}/${barch}/
       CFLAGS="${CFLAGS} -I${GCCDIR}/include";
      elif [ -d ${GCCDIR}/include ];then
@@ -1122,14 +1122,31 @@ build_gcc_bootstrap() {
   VERSION=${!AVER-$VERSION}
   GCC=gcc${VERSEP}${VERSION}
 
+  if [ "${1}" != "${3}" ];then
+    SYSROOT="--with-sysroot=/build/${1} ${CONFOPTX}";
+    BUILDROOT=${ARCHROOT}/${1}
+   else
+    SYSROOT="--with-sysroot=/";
+    if [ -d ${ARCHROOT}/${1} ];then
+      BUILDROOT=${ARCHROOT}/${1}
+     else
+      BUILDROOT=""
+    fi
+  fi;
   if [ ! "${4}" ] || [ "${4}" == "static" ];then
     MARCH=BOOTOPT_${1}
-    CONFOPT=${BOOTOPT}
+    CONFOPT="${BOOTOPT} ${SYSROOT}"
     CFLAGS=-fPIC
     CXXFLAGS=-fPIC
     LDFLAGS="-static"
     SDIROPT=-boot
     MAKEOPT="LDFLAGS=-static";
+   elif [ ! "${4}" ] || [ "${4}" == "null" ];then
+    MARCH=BOOTOPT_${1}
+    CONFOPT="${NULLOPT} ${SYSROOT}"
+    CFLAGS=-fPIC
+    CXXFLAGS=-fPIC
+    SDIROPT=-null
    elif [ "${4}" == "cross" ];then
     if [ "${1}" == "${TARCH}" ];then
       return;
@@ -1148,14 +1165,14 @@ build_gcc_bootstrap() {
     MARCH=CROSSOPT_${1}
     CFLAGS=-I=/usr/include
     CXXFLAGS=-I=/usr/include
-    CONFOPT=${SHAREDOPT}
+    CONFOPT="${SHAREDOPT} ${CONFOPTX}"
     SDIROPT=-shared
     MAKEOPT="";
    elif [ "${4}" == "multi" ];then
     MARCH=CROSSOPT_${1}
     CFLAGS=-I=/usr/include
     CXXFLAGS=-I=/usr/include
-    CONFOPT=${MULTIOPT}
+    CONFOPT="${MULTIOPT} ${CONFOPTX}"
     SDIROPT=-multi
     MAKEOPT="";
   fi;
@@ -1528,11 +1545,14 @@ build_cross_package() {
   #Binutils to handle the target
   (build_bootstrap_binutils ${1} ${HOST}) || return 1
 
-  #Static compiler to bootstrap GLIBC
-  (build_gcc_bootstrap ${1} ${HOST} ${NARCH} static) || return 1;
+  #Null compiler to bootstrap GLIBC
+  (build_gcc_bootstrap ${1} ${HOST} ${NARCH} null) || return 1;
 
   #GLIBC
   (build_glibc ${1} ${HOST}) || return 1;
+
+  #Static compiler to bootstrap GLIBC distributed static with C++/ADA
+  (build_gcc_bootstrap ${1} ${HOST} ${NARCH} static) || return 1;
 
   #Cross compiler
   (build_gcc_bootstrap ${1} ${HOST} ${NARCH} cross) || return 1;
