@@ -13,4 +13,3 @@ OPT_powerpc64="--with-ncurses-include-dir=/build/powerpc64/usr/include";
 OPT_i686="--with-ncurses-include-dir=/build/i686/usr/include";
 OPT_x86_32="--with-ncurses-include-dir=/build/x86_32/usr/include";
 OPT_x86_64="--with-ncurses-include-dir=/build/x86_64/usr/include";
-NONULLCONF="1";
