@@ -7,3 +7,4 @@ NOCCOPT="1";
 EXTRALIBS="-lz -llber -lsasl2 -lrt -llzma -lpthread -lkrb5 -lkrb5support -lk5crypto -lcom_err -lresolv -ldl -lltdl -lutil -lldap_r";
 BUILDDIR="0";
 ADDCFLAG="-I=/usr/include/python2.7";
+OPT_arm64="--disable-spinlocks --without-perl --without-python";
