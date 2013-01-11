@@ -8,7 +8,7 @@ CFGBIN="/dist/";
 OPT_i686="--with-tcl=/build/i686/usr/lib";
 OPT_arm="--with-tcl=/build/arm/usr/lib ac_cv_func_pstat_getdynamic=no";
 OPT_mips="--with-tcl=/build/mips/usr/lib ac_cv_func_pstat_getdynamic=no";
-OPT_arm64="--with-tcl=/build/arm64/usr/lib64 ac_cv_func_pstat_getdynamic=no";
+OPT_arm64="--with-tcl=/build/arm64/usr/lib ac_cv_func_pstat_getdynamic=no";
 OPT_mips64="--with-tcl=/build/mips64/usr/lib64 ac_cv_func_pstat_getdynamic=no";
 OPT_powerpc="--with-tcl=/build/powerpc/usr/lib ac_cv_func_pstat_getdynamic=no";
 OPT_powerpc64="--with-tcl=/build/powerpc64/usr/lib64 ac_cv_func_pstat_getdynamic=no";
