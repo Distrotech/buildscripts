@@ -376,7 +376,9 @@ make_cc_destdir() {
      elif [ ${RES} != 0 ];then
       return 1
     fi;
-    /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} install
+    /usr/bin/make V=1 AR=${AR} RANLIB=${RANLIB} LD="${LD}" SYSROOT=${SYSROOT} \
+        CXX="${CXX} ${CC_SYSROOT}" CC="${CC} $CC_SYSROOT}" ${ARCHMOPT} DESTDIR=${DIST_ROOT} \
+        ${MAKEOPTS} ${ARCHMOPT} install  || return 1
    else
     /usr/bin/make ${MAKE_J} V=1 LDFLAGS="${LDFLAGS}" CFLAGS="${CFLAGS}" AR=${AR} RANLIB=${RANLIB} LD="${LD}" \
       CXX="${CXX} ${CC_SYSROOT}" CC="${CC} ${CC_SYSROOT}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
@@ -408,7 +410,7 @@ imake_cross_build() {
   /usr/bin/make V=1 CXX="${CXX} ${CC_SYSROOT}" CC="${CC_TMP} ${CC_SYSROOT}" SHLIBDIR=/usr/X11R7/${B_LIBDIRS} \
        LOCAL_LDFLAGS="-L${SYSROOT}/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
   /usr/bin/make V=1 CXX="${CXX} ${CC_SYSROOT}" CC="${CC_TMP} ${CC_SYSROOT}" SHLIBDIR=/usr/X11R7/${B_LIBDIRS} \
-       LOCAL_LDFLAGS="-L${SYSROOT}/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} DESTDIR=${DIST_ROOT} || return 1
+       LOCAL_LDFLAGS="-L${SYSROOT}/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} DESTDIR=${DIST_ROOT} install || return 1
 }
 
 cmake_cross_build() {
@@ -516,6 +518,14 @@ autoconf_cross_build() {
     STDOPTSX="${STDOPTSX} --with-sysroot=${ARCHROOT}/${2}"
    elif [ "${ADDWITHSYSROOT}" == "1" ] && [ "${2}" == "${NARCH}" ];then
     STDOPTSX="${STDOPTSX} --with-sysroot=/"
+  fi;
+
+  if [ "${GOBJECTINTRO}" ] && [ "${GOBJECTINTRO}" == "1" ] && [ "${2}" != "${NARCH}" ];then
+    if [ ! -d ${ARCHROOT}/${2}/usr/${B_LIBDIRS}/gobject-introspection ];then
+      STDOPTSX="${STDOPTSX} --enable-introspection=no"
+     else
+      STDOPTSX="${STDOPTSX} --enable-introspection=yes"
+    fi;
   fi;
 
   #Preconfig hook
@@ -752,6 +762,9 @@ build_project() {
   fi;
 
   CFLAGS="${ADDCFLAG} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/usr/include/glib-2.0 -I=/usr/include/gtk-2.0 -I=/usr/include/dbus-1.0 -I=/opt/qt-4/include";
+  if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
+    CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
+  fi
   LDFLAGS="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} ${ADDLDFLAG}"
   if [ "${SETCPPTOC}" == "1" ];then
     CPPFLAGS=${CFLAGS};
@@ -1419,7 +1432,7 @@ build_toolchain() {
 
   #Base dependancies
   (build_packages ${1} gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
-                       bison diffutils flex attr acl pcre libsepol libselinux file libidn libtasn1 p11-kit \
+                       bison diffutils flex attr acl pcre libsepol libselinux file gengetopt libidn libtasn1 p11-kit \
                        nettle gnutls libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap coreutils \
                        readline bash xz expat) || return 1
 
@@ -1459,34 +1472,34 @@ build_toolchain() {
   fi;
 
   (build_packages ${1} util-linux nano rsync grep less gzip tar pkg-config cpio iana-etc xmlto xmltoman giflib freetype \
-                       fontconfig fontforge fonttools jpeg libpng openjpeg libmng OpenSP openjade c-ares curl \
-                       git) || return 1
+                       fontconfig fonttools lcms2 jpeg libpng openjpeg libmng OpenSP c-ares curl git) || return 1
 
   #This will fail due to Mesa so dont bail only do it on first pass use build_project directly
   if [ ! -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
     (CLEANOPT=distclean;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
   fi;
 
-  (build_packages ${1} cairo pango libdrm llvm intltool cmake talloc tevent libverto krb5 cups kmod module-init-tools \
-                       LVM2 cryptsetup systemd Mesa glu glw mtdev) || return 1
+  (build_packages ${1} cairo pango libdrm llvm intltool cmake talloc tevent libevent libverto krb5 cups kmod \
+                       module-init-tools LVM2 cryptsetup systemd Mesa glu glw mtdev) || return 1
 
   #Continue X Build with GL/Mesa
-  if [ ! -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
+  if [ -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
     (unset CLEANOPT;build_project Xorg ${1}) || return 1
   fi;
 
-  (build_packages ${1} freeglut pcsc-lite tiff atk  gdk-pixbuf gtk+ patch alsa-lib fastjar icedtea6 lcms2 icedtea7 \
-                       yasm nasm fuse libunistring txt2man printproto portablexdr ppp libIDL ORBit2 dbus-glib GConf \
-                       libbonobo gc guile libmad Xaw3d gv polkit polkit-gnome rtmpdump swig M2Crypto libnl-1 libnl \
+  (build_packages ${1} fontforge freeglut pcsc-lite tiff atk  gdk-pixbuf gtk+ patch alsa-lib fastjar icedtea6 icedtea7 \
+                       yasm nasm fuse libunistring txt2man printproto portablexdr libpcap ppp libIDL ORBit2 dbus-glib \
+                       polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig M2Crypto libnl-1 libnl \
                        crda ragel apr apr-iconv sqlite-autoconf keyutils neon apache-ant tcl8 tk8 db unixODBC \
-                       cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion libva frei0r libraw1394 \
-                       SDL libdc1394 libavc1394 libiec61883 faac fdk-aac libaacplus vo-aacenc vo-amrwbenc fribidi \
-                       libass libbluray celt libcaca gsm libmodplug lame twolame libnut opencore-amr OpenCV opus \
-                       json-c libsndfile gdbm pulseaudio orc schroedinger libogg libtheora speex utvideo v4l-utils \
-                       libvorbis libvpx x264 xavs xvidcore openal libcdio-cdda libcdio libcddb ffmpeg gstreamer \
-                       gst-plugins-base icu4c qt-4 ptlib h323plus gnugk t38modem alsa-lib fltk libdaemon libnfnetlink \
-                       libmnl libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss libcroco librsvg djvulibre \
-                       libexif exif iptables usbutils) || return 1
+                       cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion libva gavl OpenCV \
+                       frei0r libraw1394 audiofile esound libogg flac libvorbis libsndfile gdbm json-c fftw \
+                       libsamplerate speex orc pulseaudio SDL libdc1394 libavc1394 libiec61883 faac libaacplus \
+                       vo-aacenc vo-amrwbenc fribidi icu4c graphite2 harfbuzz libass libbluray celt libcaca gsm \
+                       libmodplug lame twolame libnut opencore-amr opus schroedinger libtheora utvideo openal xvidcore \
+                       ptlib libcddb libcdio-cdda libcdio libcddb fltk libdaemon libnfnetlink libmnl libexif exif \
+                       libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss libcroco librsvg iptables usbutils \
+                       xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem bzip2 qt-4 avahi gnome-vfs \
+                       gstreamer libvisual gst-plugins-base qt-4 djvulibre) || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
