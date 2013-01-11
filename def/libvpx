@@ -5,7 +5,7 @@ CONFOPT="--enable-vp8 --enable-pic --enable-shared";
 STDOPTS="--prefix=/usr";
 OPT_i686="--target=x86-linux-gcc --as=yasm";
 OPT_arm="--target=armv7-linux-gcc";
-OPT_arm64="--target=aarch64-linux-gnu";
+OPT_arm64="--target=aarch64-linux-gcc";
 OPT_mips="--target=mips32-linux-gcc";
 OPT_mips64="--target=mips32-linux-gcc";
 OPT_powerpc="--target=ppc32-linux-gcc";
