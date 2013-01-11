@@ -1,7 +1,7 @@
 VERSION="2.1"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-database=gdbm";
+CONFOPT="--with-database=gdbm --disable-avahi";
 ADDCC="0";
 XSYSROOTFIXUP="1";
 OPT_x86_32="ac_cv_func_malloc_0_nonnull=yes";
