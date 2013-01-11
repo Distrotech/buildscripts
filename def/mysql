@@ -5,8 +5,8 @@ CONFOPT="-DINSTALL_MANDIR=/usr/share/man -DMYSQL_DATADIR=/var/spool/mysql";
 OPT_arm="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=/build/arm/usr/lib/libncurses.so 
          -DCURSES_LIBRARY:FILEPATH=/build/arm/usr/lib/libncurses.so
          -DCMAKE_CROSSCOMPILING:BOOL=ON";
-OPT_arm64="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=/build/arm64/usr/lib64/libncurses.so 
-         -DCURSES_LIBRARY:FILEPATH=/build/arm64/usr/lib64/libncurses.so
+OPT_arm64="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=/build/arm64/usr/lib/libncurses.so 
+         -DCURSES_LIBRARY:FILEPATH=/build/arm64/usr/lib/libncurses.so
          -DCMAKE_CROSSCOMPILING:BOOL=ON";
 OPT_powerpc="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=/build/powerpc/usr/lib/libncurses.so 
          -DCURSES_LIBRARY:FILEPATH=/build/powerpc/usr/lib/libncurses.so
