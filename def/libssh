@@ -6,8 +6,8 @@ FIXUPLIB="1";
 EXTRALIBS="-ldl";
 OPT_arm="-DZLIB_LIBRARY:FILEPATH=/build/arm/usr/lib/libz.so
          -DGCRYPT_LIBRARY:FILEPATH=/build/arm/usr/lib/libgcrypt.so";
-OPT_arm64="-DZLIB_LIBRARY:FILEPATH=/build/arm64/usr/lib64/libz.so
-         -DGCRYPT_LIBRARY:FILEPATH=/build/arm64/usr/lib64/libgcrypt.so";
+OPT_arm64="-DZLIB_LIBRARY:FILEPATH=/build/arm64/usr/lib/libz.so
+         -DGCRYPT_LIBRARY:FILEPATH=/build/arm64/usr/lib/libgcrypt.so";
 OPT_i686="-DZLIB_LIBRARY:FILEPATH=/build/i686/usr/lib/libz.so
           -DGCRYPT_LIBRARY:FILEPATH=/build/i686/usr/lib/libgcrypt.so";
 OPT_x86_32="-DZLIB_LIBRARY:FILEPATH=/build/x86_32/usr/libx32/libz.so
