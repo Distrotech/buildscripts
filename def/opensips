@@ -4,6 +4,7 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 MOPT_arm="ARCH=arm";
+MOPT_arm64="ARCH=arm64";
 MOPT_mips="ARCH=mips";
 MOPT_mips64="ARCH=mips";
 MOPT_powerpc="ARCH=ppc";
