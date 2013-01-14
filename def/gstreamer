@@ -5,7 +5,7 @@ CONFOPT="--enable-shared";
 ADDLDFLAG="-lm -lpthread";
 ADDCFLAG="-I=/usr/include/libxml2 -I=/usr/include/glib-2.0";
 OPT_arm="--enable-introspection=no";
-OPT_arm="--enable-introspection=no";
+OPT_arm64="--enable-introspection=no";
 OPT_mips="--enable-introspection=no";
 OPT_mips64="--enable-introspection=no";
 OPT_powerpc="--enable-introspection=no";
