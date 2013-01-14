@@ -16,4 +16,5 @@ OPT_arm64="PYTHON=/build/arm64/usr/bin/python2.7";
 OPT_x86_32="PYTHON=/build/x86_32/usr/bin/python2.7";
 OPT_x86_64="PYTHON=/build/x86_64/usr/bin/python";
 MOPT_x86_64="CC=/usr/bin/gcc";
+MOPT_i686="GLIB_LIBDIR=/build/i686/usr/lib CC=/usr/bin/i686-linux-gnu-gcc";
 #SYSROOTPATH="1";

@@ -2,25 +2,18 @@ VERSION="2.24.14"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-OPT_x86_64="--enable-introspection=yes";
-OPT_arm="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource --enable-introspection=no
-         ac_cv_path_CUPS_CONFIG=/build/arm/usr/bin/cups-config";
-OPT_arm64="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource --enable-introspection=no
-         ac_cv_path_CUPS_CONFIG=/build/arm/usr/bin/cups-config";
-OPT_mips="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource --enable-introspection=no
-         ac_cv_path_CUPS_CONFIG=/build/mips/usr/bin/cups-config";
-OPT_mips64="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource --enable-introspection=no
-         ac_cv_path_CUPS_CONFIG=/build/mips64/usr/bin/cups-config";
-OPT_powerpc="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource --enable-introspection=no
-         ac_cv_path_CUPS_CONFIG=/build/powerpc/usr/bin/cups-config";
-OPT_powerpc64="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource --enable-introspection=no
-         ac_cv_path_CUPS_CONFIG=/build/powerpc64/usr/bin/cups-config";
-OPT_i686="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource --enable-introspection=no
-          ac_cv_path_CUPS_CONFIG=/build/i686/usr/bin/cups-config";
-OPT_x86_32="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource --enable-introspection=no
-            ac_cv_path_CUPS_CONFIG=/build/x86_32/usr/bin/cups-config";
+OPT_arm="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CONFIG=/build/arm/usr/bin/cups-config";
+OPT_arm64="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CONFIG=/build/arm/usr/bin/cups-config";
+OPT_mips="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CONFIG=/build/mips/usr/bin/cups-config";
+OPT_mips64="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CONFIG=/build/mips64/usr/bin/cups-config";
+OPT_powerpc="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CONFIG=/build/powerpc/usr/bin/cups-config";
+OPT_powerpc64="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CONFIG=/build/powerpc64/usr/bin/cups-config";
+OPT_i686="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CONFIG=/build/i686/usr/bin/cups-config";
+OPT_x86_32="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CONFIG=/build/x86_32/usr/bin/cups-config";
+OPT_x86_64="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CONFIG=/build/x86_64/usr/bin/cups-config";
 EXTRALIBS="-lxcb -lXau -lXdmcp -ldl -lm";
 ADDCFLAG="-I=/usr/include/gio-unix-2.0 -I=/usr/include/cairo -I=/usr/include/freetype2
           -I=/usr/include/pango-1.0 -I=/usr/include/gdk-pixbuf-2.0 -I=/usr/include/glib-2.0
           -I=/usr/include/atk-1.0";
 AMVER="1.12";
+GOBJECTINTRO="1";

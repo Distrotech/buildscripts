@@ -1,18 +1,10 @@
 VERSION="2.26.5"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-x11";
+CONFOPT="--with-x11 enable_gio_sniffing=yes";
 ADDCC="0";
 CLEARLAGS="1";
 NOCCOPT="1";
 XPOST="ln -s gdk-pixbuf-2.0/gdk-pixbuf /usr/include/gdk-pixbuf";
-OPT_arm="enable_gio_sniffing=yes --enable-introspection=no";
-OPT_arm64="enable_gio_sniffing=yes --enable-introspection=no";
-OPT_x86_64="enable_gio_sniffing=yes --enable-introspection=yes";
-OPT_x86_32="enable_gio_sniffing=yes --enable-introspection=no";
-OPT_i686="enable_gio_sniffing=yes --enable-introspection=no";
-OPT_mips="enable_gio_sniffing=yes --enable-introspection=no";
-OPT_mips64="enable_gio_sniffing=yes --enable-introspection=no";
-OPT_powerpc="enable_gio_sniffing=yes --enable-introspection=no";
-OPT_powerpc64="enable_gio_sniffing=yes --enable-introspection=no";
 AMVER="1.13";
+GOBJECTINTRO="1";
