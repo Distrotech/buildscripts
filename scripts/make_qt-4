@@ -23,6 +23,8 @@ case ${1} in
 		ARCH="-host-arch mips";;
 	arm)PLATFORM=linux-arm-gnueabi-g++;
 		ARCH="-host-arch arm";;
+	arm64)PLATFORM=linux-aarch64-gnu-g++;
+		ARCH="-host-arch arm64";;
 	powerpc)PLATFORM=linux-ppc-g++;
 		ARCH="-host-arch powerpc";;
 	powerpc64)PLATFORM=linux-ppc-g++-64;
