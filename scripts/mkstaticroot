@@ -1,9 +1,6 @@
 #!/bin/bash
 
 GLIBCVER=2.17
-ANTVER=1.8.4
-GCCVER=4.8.0
-AUTOCONF=2.69
 
 NARCH=$( uname -m )
 
@@ -21,18 +18,11 @@ mkdir -p /dist/root/${NARCH}-static
 
 cd /dist/pkg/build/${NARCH}
 for pkg in `ls -d *static *boot` ;do
-  for subpkg in `ls ${pkg}/${pkg}.tar.xz ${pkg}/${pkg}-libs.tar.xz ${pkg}/${pkg}-dev.tar.xz 2>/dev/null`;do
+  for subpkg in `ls ${pkg}/${pkg}.tar.xz ${pkg}/${pkg}-dev.tar.xz ${pkg}/${pkg}-libs.tar.xz 2>/dev/null`;do
     tar -C ${STATICROOT} -xJf ${subpkg};
   done;
 done
-
-#Strip all the bits
-strip ${STATICROOT}/bin/* ${STATICROOT}/sbin/* ${STATICROOT}/usr/bin/* ${STATICROOT}/usr/sbin/*
-
-for devpkg in glibc-${GLIBCVER}/glibc-${GLIBCVER}-headers.tar.xz \
-              glibc-${GLIBCVER}/glibc-${GLIBCVER}-static.tar.xz \
-              /dist/pkg/${NARCH}/apache-ant-${ANTVER}/apache-ant-${ANTVER}-libs.tar.xz \
-              /dist/pkg/${NARCH}/autoconf-${AUTOCONF}/autoconf-${AUTOCONF}.tar.xz \
+for devpkg in glibc-${GLIBCVER}/glibc-${GLIBCVER}-headers.tar.xz  glibc-${GLIBCVER}/glibc-${GLIBCVER}-static.tar.xz \
               kernel-headers.tar.xz /dist/pkg/java-jar.tar.xz;do
   if [ -f ${devpkg} ];then
     tar -C ${STATICROOT} -xJf ${devpkg};
@@ -57,10 +47,9 @@ for mdir in 1 2 3 4 5 6 7 8;do
   mkdir -p ${STATICROOT}/usr/share/man/man${mdir}
 done;
 
-#Install terminfo DB / Stub files / CPAN config
-rsync -avRP /usr/share/terminfo /usr/include/gnu/stubs-* /root/.cpan/CPAN/MyConfig.pm ${STATICROOT}/
+#Install terminfo DB
+rsync -avRP /usr/share/terminfo ${STATICROOT}/
 
-echo "nameserver ::1" > ${STATICROOT}/etc/resolv.conf
 if [ -e ${STATICROOT}.sqfs ];then
   rm ${STATICROOT}.sqfs
 fi;
