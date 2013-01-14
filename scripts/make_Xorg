@@ -72,6 +72,7 @@ export CONFFLAGS="--host=${2} --build=${BUILD} --with-sysroot --libdir=${PREFIX}
 export CXXFLAGS_FOR_BUILD="-L/usr/lib"
 export CFLAGS_FOR_BUILD=-I.
 export LDFLAGS_FOR_BUILD=-L.
+export MANCONF="/etc/man.conf";
 
 ./util/modular/build.sh --modfile ./tobuild ${PREFIX} || sync_fin ${3} 1
 
