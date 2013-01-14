@@ -1,11 +1,6 @@
 VERSION="0.102"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
-OPT_arm="--enable-introspection=no";
-OPT_mips="--enable-introspection=no";
-OPT_mips64="--enable-introspection=no";
-OPT_powerpc="--enable-introspection=no";
-OPT_powerpc64="--enable-introspection=no";
-MOPT_i686="G_IR_SCANNER=/build/i686/usr/bin/g-ir-scanner";
-SYSROOTPATH="1";
+CONFOPT="INTLTOOL_PERL=/usr/bin/perl";
+OPT_i686="G_IR_SCANNER=/build/i686/usr/bin/g-ir-scanner";
+GOBJECTINTRO="1";

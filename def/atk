@@ -2,12 +2,5 @@ VERSION="2.2.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-OPT_arm="--enable-introspection=no";
-OPT_mips="--enable-introspection=no";
-OPT_arm64="--enable-introspection=no";
-OPT_mips64="--enable-introspection=no";
-OPT_powerpc="--enable-introspection=no";
-OPT_powerpc64="--enable-introspection=no";
-OPT_x86_32="--enable-introspection=no";
-OPT_i686="--enable-introspection=no";
 XPOST="ln -s atk-1.0/atk /build/i686/usr/include/atk";
+GOBJECTINTRO="1";

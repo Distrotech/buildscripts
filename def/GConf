@@ -1,7 +1,9 @@
 VERSION="2.32.4"
 VERSEP="-";
+CONFOPT="INTLTOOL_PERL=/usr/bin/perl";
 PREFIX="/usr";
-CONFOPT="--enable-introspection=no";
-BUILDDIR="0";
 ADDCFLAG="-I=/usr/include/orbit-2.0 -I=/usr/include/libxml2 -I=/usr/include/polkit-1";
-SYSROOTPATH="1";
+GOBJECTINTRO="1";
+OPT_arm64="INTROSPECTION_SCANNER=/build/arm64/usr/bin/g-ir-scanner";
+OPT_i686="INTROSPECTION_SCANNER=/build/i686/usr/bin/g-ir-scanner";
+BUILDDIR="0";
