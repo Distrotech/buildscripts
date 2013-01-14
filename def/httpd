@@ -9,7 +9,8 @@ CONFOPT="--enable-modules=all --enable-mods-shared=all --enable-ssl --enable-lda
          --with-suexec-logfile=/var/log/suexec_log";
 OPT_x86_32="--with-apr-util=/build/x86_32/usr --with-apr=/build/x86_32/usr";
 OPT_x86_64="--with-apr-util=/build/x86_64/usr --with-apr=/build/x86_64/usr";
-OPT_i686="--with-apr-util=/build/i686/usr --with-apr=/build/i686/usr";
+OPT_i686="--with-apr-util=/build/i686/usr --with-apr=/build/i686/usr ap_cv_void_ptr_lt_long=no BUILDCC=gcc
+          --with-pcre=/build/i686/usr";
 OPT_arm="--with-apr-util=/build/arm/usr --with-apr=/build/arm/usr ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
 OPT_arm64="--with-apr-util=/build/arm64/usr --with-apr=/build/arm64/usr ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
 OPT_mips="--with-apr-util=/build/mips/usr --with-apr=/build/mips/usr ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
