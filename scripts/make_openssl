@@ -3,6 +3,8 @@
 case ${1} in
   arm)TYPE=linux-armv4
       SARCH=arm;;
+  arm64)TYPE=linux-aarch64
+      SARCH=arm64;;
   i686)TYPE=linux-elf
       SARCH=i386;;
   x86_32)TYPE=linux-x32
