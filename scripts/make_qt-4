@@ -36,7 +36,7 @@ esac;
 export QMAKE_INCDIR_X11="-I=/usr/X11R7/include";
 export QMAKE_LIBDIR_X11="-L=/usr/X11R7/${B_LIBDIRS}";
 
-./configure -prefix /opt/qt-4 -v -opensource -openssl-linked -confirm-license -xplatform ${PLATFORM} \
+./configure -prefix /opt/qt-4 -v -opensource -openssl-linked -confirm-license -xplatform ${PLATFORM} -system-sqlite \
             -no-javascript-jit -no-scripttools -no-webkit -no-script -libdir /opt/qt-4/${B_LIBDIRS} ${ARCH}
 make -C src/tools/bootstrap all ;ranlib src/tools/bootstrap/libbootstrap.a
 make -j6 INSTALL_ROOT=${3} all && make INSTALL_ROOT=${3} install
