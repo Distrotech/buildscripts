@@ -1,7 +1,9 @@
 #!/bin/bash
 
-
 FILTER_arm="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
+
+FILT=FILTER_${1}
+FILTER=${!FILT}
 
 sync_fin() {
   if [ ! -d ${1}/${PREFIX} ];then
