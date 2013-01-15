@@ -1,5 +1,8 @@
 #!/bin/bash
 
+
+FILTER_arm="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
+
 sync_fin() {
   if [ ! -d ${1}/${PREFIX} ];then
     mkdir -p ${1}/${PREFIX}
@@ -9,7 +12,7 @@ sync_fin() {
   #Clean up failed pkg
   if [ "${2}" ] && [ "${2}" == "1" ];then
     clean="";
-    for pkg in `./util/modular/build.sh -L |grep -vE "(^driver/xf86-video-newport)|(^driver/xf86-video-sis)|(^mesa)"`;do
+    for pkg in `./util/modular/build.sh -L |grep -vE "(^driver/xf86-video-newport)|(^driver/xf86-video-sis)|(^mesa)${FILTER}"`;do
       if [ ! -e ${pkg}/config.log ] || [ ! -e tobuild ] || [ ./tobuild -nt ${pkg}/config.log ];then
         clean=${pkg};
       fi;
@@ -57,17 +60,16 @@ if [ "${NARCH}" == "x86_64" ];then
   esac;
 fi;
 
-#set
-#exit -1
-
-
 if [ ! -d ${DPATH} ];then
   mkdir -p ${DPATH}
 fi;
 
 export CC_FOR_BUILD=gcc
 export CXX_FOR_BUILD=g++
-export CONFFLAGS="--host=${2} --build=${BUILD} --with-sysroot --libdir=${PREFIX}/${B_LIBDIRS} --disable-selective-werror"
+export CONFFLAGS="--host=${2} --build=${BUILD} --with-sysroot --libdir=${PREFIX}/${B_LIBDIRS} --disable-selective-werror 
+                  ac_cv_file__dev_urandom=yes --with-utmp-file=/var/run/utmp --with-wtmp-file=/var/log/wtmp
+                  ac_cv_file__usr_X11R7_include_xorg_dri_h=yes ac_cv_file__usr_X11R7_include_xorg_sarea_h=yes
+                  ac_cv_file__usr_X11R7_include_xorg_dristruct_h=yes ac_cv_file__usr_X11R7_include_xorg_damage_h=yes"
 
 export CXXFLAGS_FOR_BUILD="-L/usr/lib"
 export CFLAGS_FOR_BUILD=-I.
