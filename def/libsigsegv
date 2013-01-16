@@ -1,5 +1,6 @@
-VERSION="2.10"
+VERSION="git"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-shared --enable-static";
 OPT_x86_32="CFG_FAULT=fault-linux.h";
+AMVER="1.12";
