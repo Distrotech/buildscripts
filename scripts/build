@@ -170,7 +170,8 @@ check_create_arch() {
        fi;
       find . ! -regex '.*\.install$' -and ! -regex '.*\.\.install.cmd$'  -and ! -regex '.*\.check$' -and ! -regex \
              '.*\.check.cmd$' -and ! -regex '\.\/usr\/include\/asm-.*' -and -regex '\.\/usr\/include\/.*' -or -regex \
-             "\.\/usr\/include\/asm-${KARCH}\/.*\.h" |cpio -o -H tar |xz -9 > ${TOOLPKG}/${1}/kernel-headers.tar.xz)
+             "\.\/usr\/include\/asm-${KARCH}\/.*\.h" -or -regex "\.\/usr\/include\/asm-generic\/.*\.h" |\
+        cpio -o -H tar |xz -9 > ${TOOLPKG}/${1}/kernel-headers.tar.xz)
     fi;
   fi;
 
@@ -598,6 +599,10 @@ build_project() {
   barch=${1};
 
   eval `cat ${DEFDIR}/${BUILDPROJECT}`
+  DONTBUILDPAT=${DONTBUILD// /|}
+  if [ "${DONTBUILD}" ] && [[ ${1} =~ ${DONTBUILDPAT} ]];then
+    return 0;
+  fi;
 
   if [ ! "${ALIAS}" ];then
     export PROJECT=${BUILDPROJECT}
@@ -708,10 +713,6 @@ build_project() {
      export RSYNC=true
   fi;
 
-  if [ "${CANBUILD}" ] && [[ ${barch} != *${CANBUILD}* ]];then
-    return 0;
-  fi;
-
   if [ -d ${ARCHROOT}/${barch} ] && [ ! -h ${ARCHROOT}/${barch} ];then
     export SYSROOT=${ARCHROOT}/${barch};
    elif [ "${barch}" == "${NARCH}" ];then
@@ -736,6 +737,7 @@ build_project() {
     ARCHXOPT="";
   fi;
 
+  #XXX only when there is a scanner and can execute
   if [ "${GOBJECTINTRO}" ] && [ "${GOBJECTINTRO}" == "1" ] && [ "${barch}" != "${NARCH}" ];then
     SYSROOTPATH=1;
   fi;
@@ -862,10 +864,7 @@ build_project() {
   fi;
   mkdir -p ${DIST_ROOT}
 
-  export LDFLAGS="${LDFLAGS} -L${DIST_ROOT}/${B_LIBDIRS} -L${DIST_ROOT}/usr/${B_LIBDIRS}";
-  export CPPFLAGS="${CFLAGS}"
-  export CXXFLAGS="${CFLAGS}"
-  export CFLAGS
+  export LDFLAGS CPPFLAGS CXXFLAGS CFLAGS
 
   if [ -x ${SCRIPTDIR}/make_${PROJECT} ];then
     export CC="${CC} ${CC_SYSROOT}"
@@ -1406,6 +1405,10 @@ build_static_tool() {
 
   run_configure ${3} --build=${BUILD} --host=${2} ${STATICOPT} ${ARCHOPT} || return 0
 
+  if [ "${4}" == "binutils" ];then
+    make configure-host
+  fi;
+
   if [ -x libtool ];then
     cp ${ARCHROOT}/${1}/usr/bin/libtool ./
   fi;
@@ -1457,7 +1460,7 @@ static_toolbuild() {
     TARGET=${BUILD}
   fi;
   for stool in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
-      pkg-config util-linux m4 cpio diffutils libtool gperf krb5 subversion;do
+      pkg-config util-linux m4 cpio diffutils libtool gperf krb5 subversion binutils;do
     (build_static_tool ${1} ${TARGET} ${TLIBDIR} ${stool})
   done;
 }
@@ -1569,7 +1572,7 @@ build_toolchain() {
                        ptlib libcddb libcdio-cdda libcdio libcddb fltk libdaemon libnfnetlink libmnl libexif exif \
                        libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils \
                        xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem bzip2 qt-4 avahi gnome-vfs \
-                       gstreamer libvisual gst-plugins-base qt-4 djvulibre) || return 1
+                       gstreamer libvisual gst-plugins-base djvulibre) || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
@@ -1650,6 +1653,7 @@ build_cross_package() {
 
   build_toolchain ${1} ${HOST} || return 1
 
+return 0;
 exit
 #--gn
 #  if [ ! -e ${ARCHROOT}/${1}/usr/${B_LIBDIRS}/libc.so ] || [ ! -d ${TOOLDIR}/${1}/${GLIBC} ];then
