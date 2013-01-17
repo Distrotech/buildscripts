@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="libopts_cv_with_libregex=yes";
 ADDCFLAG="-I=/usr/include/guile/2.0";
 OPT_mips="--target=mips-linux-gnu";
+DONTBUILD="arm aarch64 mips mips64 powerpc powerpc64";
