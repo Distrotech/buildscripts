@@ -420,8 +420,7 @@ imake_cross_build() {
   /usr/bin/make V=1 CXX="${CXX} ${CC_SYSROOT}" CC="${CC_TMP} ${CC_SYSROOT}" SHLIBDIR=/usr/X11R7/${B_LIBDIRS} \
        LOCAL_LDFLAGS="-L=/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
   /usr/bin/make V=1 CXX="${CXX} ${CC_SYSROOT}" CC="${CC_TMP} ${CC_SYSROOT}" SHLIBDIR=/usr/X11R7/${B_LIBDIRS} \
-       LOCAL_LDFLAGS="-L=/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} DESTDIR=${DIST_ROOT} ${MAKEITARGETS} install || 
-return 1
+       LOCAL_LDFLAGS="-L=/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} DESTDIR=${DIST_ROOT} ${MAKEITARGETS} install || return 1
 }
 
 cmake_cross_build() {
