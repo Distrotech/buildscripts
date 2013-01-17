@@ -782,6 +782,7 @@ build_project() {
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
+  CXXFLAGS=${CFLAGS}
   LDFLAGS="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} ${ADDLDFLAG}"
   if [ "${SETCPPTOC}" == "1" ];then
     CPPFLAGS=${CFLAGS};
@@ -1074,6 +1075,12 @@ build_glibc() {
   fi;
   rsync -a usr/include /usr/${2}/include
 
+  #C Lib Stubs
+  if [ ! -d  /usr/${2}/${USELIBDIR} ];then
+    mkdir -p /usr/${2}/${USELIBDIR}
+  fi;
+  rsync -avP usr/${USELIBDIR}/*.o /usr/${2}/${USELIBDIR}/
+
   tar -cJf ${TOOLPKG}/${1}/${PKG}/${PKG}-static.tar.xz usr/${USELIBDIR}/*.o usr/${USELIBDIR}/*.a usr/include
 }
 
@@ -1082,7 +1089,7 @@ run_configure() {
   CONFLIBDIR=${1}
   shift;
   ../configure --libdir=/usr/${CONFLIBDIR} --prefix=${PREFIX} --sysconfdir=/etc --mandir=/usr/share/man \
-               --infodir=/usr/share/info --localstatedir=/var $@ || return 1
+               --infodir=/usr/share/info --localstatedir=/var CC="${CC}" CXX="${CXX}" LD="${LD}" $@ || return 1
 }
 
 build_bootstrap_binutils() {
@@ -1150,7 +1157,6 @@ build_gcc_bootstrap() {
     THOST=${BUILD}
     TLIBDIR=${NLIBDIR}
   fi;
-
 
   eval `cat ${DEFDIR}/gcc`;
   AVER=VERSION_${1}
@@ -1244,7 +1250,7 @@ build_gcc_bootstrap() {
   #Use GLIBC/Kern headers only [Virgin] / Build dir / sysroot
   SRDIR=${BASEROOT}/${1}
   if [ -d ${PKGBUILDDIR}/${1}/${GLIBC}/usr/include ] && [ -d ${SRDIR}/usr/include/linux ] &&
-     [ ${4} == "static" ];then
+     [ "${4}" == "static" ];then
     BUILDDIR=${SRDIR}
     (cd ${PKGBUILDDIR}/${1}/${GLIBC}
     rsync -avP ${PKGBUILDDIR}/${1}/${GCC}/ ${SRDIR}/
@@ -1342,7 +1348,7 @@ build_qemu_static() {
   (svn_load_pkg qemu ${QEMU}) || return 1
   setup_build_dir ${NARCH} qemu ${QEMU} ${NARCH}
 
-  run_configure ${NLIBDIR} --static --disable-system --disable-user --enable-linux-user \
+  run_configure ${NLIBDIR} --static --disable-system --disable-user --enable-linux-user --disable-werror \
                 --target-list=arm-linux-user,mips-linux-user,ppc-linux-user,ppc64-linux-user || return 1
   make ${MAKE_J} || make || return 1
 
