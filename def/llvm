@@ -14,3 +14,4 @@ NOCCOPT="1";
 SYSROOTFIXUP="1";
 MAKEOPTS="KEEP_SYMBOLS=1";
 ADDCC="0";
+DONTBUILD="arm aarch64 mips mips64 powerpc powerpc64";
