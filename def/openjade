@@ -4,3 +4,5 @@ PREFIX="/usr";
 CONFOPT="ac_cv_file__usr_include_OpenSP=yes";
 BUILDDIR="0";
 OPT_arm64="--enable-splibdir=/build/arm64/usr/lib";
+OPT_arm="--enable-splibdir=/build/arm64/usr/lib";
+
