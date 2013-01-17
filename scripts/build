@@ -418,9 +418,9 @@ imake_cross_build() {
   sysroot_fixup ${1}
 
   /usr/bin/make V=1 CXX="${CXX} ${CC_SYSROOT}" CC="${CC_TMP} ${CC_SYSROOT}" SHLIBDIR=/usr/X11R7/${B_LIBDIRS} \
-       LOCAL_LDFLAGS="-L${SYSROOT}/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
+       LOCAL_LDFLAGS="-L/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
   /usr/bin/make V=1 CXX="${CXX} ${CC_SYSROOT}" CC="${CC_TMP} ${CC_SYSROOT}" SHLIBDIR=/usr/X11R7/${B_LIBDIRS} \
-       LOCAL_LDFLAGS="-L${SYSROOT}/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} DESTDIR=${DIST_ROOT} ${MAKEITARGETS} install || return 1
+       LOCAL_LDFLAGS="-L/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} DESTDIR=${DIST_ROOT} ${MAKEITARGETS} install || return 1
 }
 
 cmake_cross_build() {
@@ -1115,7 +1115,7 @@ build_bootstrap_binutils() {
     export MAKEOPT
     run_configure ${B_LIBDIRS} ${PROGPRE} --target=${2} --build=${BUILD} --host=${BUILD} \
                   ${CONFOPT} ${ARCHOPT} || return 1
-    make configure-host || return 1
+    make ${MAKE_J} configure-host || return 1
     make ${MAKE_J} ${MAKEOPT} all || make ${MAKEOPT} all || return 1
     make DESTDIR=${DIST_ROOT} all install || return 1
 
@@ -1406,7 +1406,7 @@ build_static_tool() {
   run_configure ${3} --build=${BUILD} --host=${2} ${STATICOPT} ${ARCHOPT} || return 0
 
   if [ "${4}" == "binutils" ];then
-    make configure-host
+    make ${MAKE_J} configure-host
   fi;
 
   if [ -x libtool ];then
