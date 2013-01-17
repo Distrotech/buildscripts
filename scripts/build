@@ -418,9 +418,10 @@ imake_cross_build() {
   sysroot_fixup ${1}
 
   /usr/bin/make V=1 CXX="${CXX} ${CC_SYSROOT}" CC="${CC_TMP} ${CC_SYSROOT}" SHLIBDIR=/usr/X11R7/${B_LIBDIRS} \
-       LOCAL_LDFLAGS="-L/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
+       LOCAL_LDFLAGS="-L=/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
   /usr/bin/make V=1 CXX="${CXX} ${CC_SYSROOT}" CC="${CC_TMP} ${CC_SYSROOT}" SHLIBDIR=/usr/X11R7/${B_LIBDIRS} \
-       LOCAL_LDFLAGS="-L/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} DESTDIR=${DIST_ROOT} ${MAKEITARGETS} install || return 1
+       LOCAL_LDFLAGS="-L=/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} DESTDIR=${DIST_ROOT} ${MAKEITARGETS} install || 
+return 1
 }
 
 cmake_cross_build() {
@@ -566,24 +567,24 @@ autoconf_cross_build() {
     sh ${SRCDIR}/${PSOURCEDIR}/.build-info/make-config ${NARCH} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT} ${HOST} ${2}
    else
     if [ "${ADDCC}" ] && [ "${ADDCC}" == "0" ];then
-      /usr/bin/make ${MAKE_J} HOSTCC="${BUILD}-gcc" HOSTLD="${BUILD}-gcc" HOSTCC_LDFLAGS="-L/lib64 -L/libx32 -L/lib -L/usr/lib64 -L/usr/libx32 -L/usr/lib" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} && \
+      /usr/bin/make ${MAKE_J} HOSTCC="${BUILD}-gcc" HOSTLD="${BUILD}-gcc" HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} && \
         /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} install
       RES=$?
       if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
-        /usr/bin/make HOSTCC="${BUILD}-gcc" HOSTLD="${BUILD}-gcc" HOSTCC_LDFLAGS="-L/lib64 -L/libx32 -L/lib -L/usr/lib64 -L/usr/libx32 -L/usr/lib" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} &&\
+        /usr/bin/make HOSTCC="${BUILD}-gcc" HOSTLD="${BUILD}-gcc" HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} &&\
         /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
        elif [ ${RES} != 0 ];then
         return 1
       fi;
      else
       /usr/bin/make ${MAKE_J} LD="${LD}" CC="${CC}" CXX="${CXX}" HOSTCC="${BUILD}-gcc" \
-        HOSTCC_LDFLAGS="-L/lib64 -L/libx32 -L/lib -L/usr/lib64 -L/usr/libx32 -L/usr/lib" ${MAKEOPTS} ${ARCHMOPT} \
+        HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" ${MAKEOPTS} ${ARCHMOPT} \
         ${MAKEALL} ${MAKETARGETS} && \
       /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install
       RES=$?
       if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
         /usr/bin/make LD="${LD}" CC="${CC}" CXX="${CXX}" HOSTCC="${BUILD}-gcc" \
-          HOSTCC_LDFLAGS="-L/lib64 -L/libx32 -L/lib -L/usr/lib64 -L/usr/libx32 -L/usr/lib" ${MAKEOPTS} ${ARCHMOPT} \
+          HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" ${MAKEOPTS} ${ARCHMOPT} \
           ${MAKEALL} ${MAKETARGETS} || return 1
         /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
        elif [ ${RES} != 0 ];then
