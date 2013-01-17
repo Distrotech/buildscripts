@@ -1,4 +1,5 @@
 VERSION="2.23.1";
+VERSION_arm="2.22";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-sysroot=/ --disable-werror --enable-lto --enable-64-bit-bfd --enable-initfini-array";
@@ -6,5 +7,6 @@ SYSROOTFIXUP="0";
 CLEARFLAGS="1";
 NOCCOPT="1";
 ADDCC="0";
-STATICMOPT="LDFLAGS=-static";
 ADDBUILDSYSROOT="1";
+STATICMOPT="LDFLAGS=-all-static";
+STATICOPT="--with-sysroot=/ --disable-werror --enable-lto --enable-64-bit-bfd --enable-initfini-array LDFLAGS=-static";
