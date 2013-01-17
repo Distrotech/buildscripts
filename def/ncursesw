@@ -1,6 +1,6 @@
 VERSION="5.9"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-gpm --enable-widec --with-shared --enable-ext-colors --enable-ext-mouse --enable-overwrite";
+CONFOPT="--with-gpm --enable-widec --with-shared --enable-ext-colors --enable-ext-mouse --enable-overwrite --without-ada";
 ALIAS="ncurses";
 ADDCC="0";
