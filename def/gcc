@@ -29,7 +29,7 @@ BASEOPT="--without-lto --disable-bootstrap --without-cloog --without-isl
          --disable-libitm --disable-libmudflap  --disable-libswsp --disable-libgomp --disable-libatomic 
          --disable-libssp --disable-libquadmath --with-system-zlib";
 NULLOPT="${BASEOPT} --enable-languages=c --disable-multilib --disable-shared --disable-threads --with-newlib";
-BOOTOPT="${BASEOPT} --enable-languages=c,c++,ada --disable-multilib --disable-shared --disable-threads LDFLAGS=-static";
+BOOTOPT="${BASEOPT} --enable-languages=c,c++,ada --disable-multilib --disable-shared --disable-threads";
 MULTIOPT="${BASEOPT} --enable-languages=c,ada --disable-libada --disable-shared";
 SHAREDOPT="${BASEOPT} --enable-languages=c,c++,ada";
 BOOTOPT_mips="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
