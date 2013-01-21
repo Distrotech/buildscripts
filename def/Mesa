@@ -1,7 +1,7 @@
 VERSION="9.0"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--with-pic";
 BUILDDIR="0";
 OPT_arm="--enable-shared=yes --enable-static=no --with-dri-drivers=nouveau,r200,radeon,swrast";
 OPT_mips="--enable-shared=yes --enable-static=no --with-dri-drivers=nouveau,r200,radeon,swrast";
