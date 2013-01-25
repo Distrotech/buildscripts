@@ -1,7 +1,0 @@
-VERSION="1.0"
-VERSEP="-";
-PREFIX="/usr";
-CONFOPT="";
-ADDWITHSYSROOT="1";
-NOCCOPT="1";
-STDCSTATIC="--disable-shared LDFLAGS=-static";
