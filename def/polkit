@@ -6,4 +6,6 @@ OPT_x86_32="have_pam=yes";
 OPT_x86_64="have_pam=yes";
 MOPT_i686="G_IR_SCANNER=/build/i686/usr/bin/g-ir-scanner";
 MOPT_x86_32="G_IR_SCANNER=/build/x86_32/usr/bin/g-ir-scanner";
-GOBJECTINTRO="1";
+XGOBJECTINTRO="1";
+OPT_arm64="--enable-introspection=no";
+CLEARFLAGS="1";
