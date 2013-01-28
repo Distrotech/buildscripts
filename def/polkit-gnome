@@ -3,4 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="INTLTOOL_PERL=/usr/bin/perl";
 OPT_i686="G_IR_SCANNER=/build/i686/usr/bin/g-ir-scanner";
-GOBJECTINTRO="1";
+XGOBJECTINTRO="1";
+DONTBUILD="arm64";
+CLEARFLAGS="1";
