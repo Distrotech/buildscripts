@@ -2,6 +2,6 @@ VERSION="git";
 VERSION_arm="7.5";
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--disable-werror";
 SYSROOTFIXUP="0";
 CLEARFLAGS="1";
