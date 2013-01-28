@@ -2,3 +2,4 @@ VERSION="1.3.3"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+ADDLDFLAG="-shared-libgcc";
