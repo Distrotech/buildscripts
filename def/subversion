@@ -10,6 +10,8 @@ OPT_i686="--with-apxs=/build/i686/opt/apache2/bin/apxs --with-apr=/build/i686/us
           --with-gssapi=/build/i686/usr --with-swig=/build/i686/usr --with-neon=/build/i686/usr";
 OPT_x86_32="--with-apxs=/build/x86_32/opt/apache2/bin/apxs --with-apr=/build/x86_32/usr --with-apr-util=/build/x86_32/usr
           --with-gssapi=/build/x86_32/usr --with-swig=/build/x86_32/usr --with-neon=/build/x86_32/usr";
+OPT_x86_64="--with-apxs=/build/x86_64/opt/apache2/bin/apxs --with-apr=/build/x86_64/usr --with-apr-util=/build/x86_64/usr
+          --with-gssapi=/build/x86_64/usr --with-swig=/build/x86_64/usr/bin/swig --with-neon=/build/x86_64/usr";
 ADDCFLAG="-I=/opt/apache/include";
 ADDLFLAG="/dist/${barch}/subversion${VERSEP}${VERSION}/usr/lib";
 STATICOPT="--disable-shared --without-berkeley-db --enable-all-static --without-apxs LDFLAGS=-static"
