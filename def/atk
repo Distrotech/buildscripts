@@ -2,5 +2,6 @@ VERSION="2.2.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+CLEARFLAGS="1";
 XPOST="ln -s atk-1.0/atk /build/i686/usr/include/atk";
-GOBJECTINTRO="1";
+OPT_arm64="--enable-introspection=no";
