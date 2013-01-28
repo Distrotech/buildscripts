@@ -3,6 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-system-libtiff";
 BUILDDIR="0";
+ADDCFLAG="-fPIC";
 MAKEITARGETS="soinstall";
 OPT_arm="cross_compiling=yes";
 OPT_arm64="cross_compiling=yes";
