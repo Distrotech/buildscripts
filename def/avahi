@@ -4,7 +4,7 @@ PREFIX="/usr";
 CONFOPT="--with-distro=none --disable-qt3 --disable-gtk3 --disable-mono --with-avahi-priv-access-group=avahi 
          --with-autoipd-group=avahi --with-autoipd-user=avahi --disable-python";
 OPT_arm="--enable-introspection=no";
-OPT_arm64="--enable-introspection=no";
+OPT_arm64="--enable-introspection=no --disable-qt4";
 OPT_mips="--enable-introspection=no";
 OPT_mips64="--enable-introspection=no";
 OPT_powerpc="--enable-introspection=no";
