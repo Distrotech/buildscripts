@@ -15,4 +15,4 @@ OPT_x86_32="ac_cv_header_gssapi_gssapi_h=yes ac_cv_header_gssapi_gssapi_generic_
 OPT_arm="ac_cv_header_gssapi_gssapi_h=yes ac_cv_header_gssapi_gssapi_generic_h=yes
             ac_cv_path_KRB5CONFIG=/build/arm/usr/bin/krb5-config";
 ADDCFLAG="-I=/usr/include/libpng15 -I=/usr/include/libusb-1.0";
-EXTRALIBS="-lresolv -ldl -lrt";
+EXTRALIBS="-lresolv -ldl -lrt -shared-libgcc";
