@@ -4,3 +4,4 @@ PREFIX="/opt/qt-4";
 STDOPTS="-opensource -openssl-linked -confirm-license";
 NOCCOPT="1";
 BUILDDIR="0";
+DONTBUILD="arm64";
