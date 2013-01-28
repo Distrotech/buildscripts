@@ -1,6 +1,7 @@
 VERSION="1.3.0"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--enable-shared";
 BUILDDIR="0";
 SYSROOTFIXUP="1";
+ADDCFLAGS="-fPIC";
