@@ -1654,6 +1654,9 @@ build_cross_package() {
     mkdir -p ${TOOLPKG}/${NARCH}
   fi;
 
+  #Build Native Arch Libs
+  (build_glibc ${NARCH} ${BUILD}) || return 1
+
   #Binutils/glibc for native and target
   (build_packages ${NARCH} binutils) || return 1
   build_glibc_march ${NARCH} || return 1
