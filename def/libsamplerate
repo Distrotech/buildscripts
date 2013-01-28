@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-shared";
 ADDWITHSYSROOT="1";
+ADDLDFLAG="-shared-libgcc";
