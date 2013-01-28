@@ -21,3 +21,5 @@ SYSROOTFIXUP="1";
 ADDFILTER="./build/rules.mk";
 EXTRALIBS="-lpthread -ldl";
 BUILDDIR="0";
+DONTBUILD="arm64";
+CLEARFLAGS="1";
