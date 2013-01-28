@@ -5,4 +5,4 @@ CONFOPT="";
 STDOPTS="--default";
 BUILDDIR="0";
 ADDCFLAG="-I/usr/src/linux/include";
-DONTBUILD="arm aarch64 mips mips64 powerpc powerpc64";
+DONTBUILD="arm arm64 mips mips64 powerpc powerpc64";
