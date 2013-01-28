@@ -6,4 +6,4 @@ BUILDDIR="0";
 ADDCC="0";
 NOCCOPT="1";
 ADDCFLAG="-I=/usr/include/freetype2";
-OPT_arm="-x-libraries=/build/arm/usr/X11R7/lib --x-includes=/build/arm/usr/X11R7/include";
+OPT_arm="--x-libraries=/build/arm/usr/X11R7/lib --x-includes=/build/arm/usr/X11R7/include";
