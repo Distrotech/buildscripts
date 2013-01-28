@@ -2,3 +2,4 @@ VERSION="0.7.3"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+OPT_arm64="--without-python";
