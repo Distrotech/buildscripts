@@ -22,9 +22,10 @@ AMDEF="1.11";
 #Multiarch Definitions
 MARCH_x86_64="x86_32|i[3-6]86|x86_64"
 MARCH_x86_32=${MARCH_x86_64}
+MARCH_powerpc64="powerpc|powerpc64"
 
 #Parse cmdline opts
-#Adding a arch here may require you adding tupple/kernel arch/libdirs and MLOPTS bellow in arch_config
+#Adding a arch here may require you adding tupple/kernel arch/libdirs and bellow in arch_config
 ALLARCHLIST="i686 arm x86_64 x86_32 mips mips64 powerpc powerpc64";
 ARCHMPAT=${ALLARCHLIST// /|}
 ALLARCH="0";
@@ -61,6 +62,10 @@ ulimit -s unlimited
 
 #Set the arch based on uname -m this is not able to determine multi/sub arches
 export NARCH=${NARCH:=$( uname -m )}
+
+case ${NARCH} in
+  arm*)NARCH=arm;;
+esac;
 
 #Native if not specified
 if [ ! "${ARCHLIST}" ];then
@@ -113,32 +118,7 @@ check_create_arch() {
     powerpc64)QCPU=ppc64;;
   esac;
 
-  #Multi arch opts
-  MLOPT="";
-  MLLDOPT="";
-  MLASOPT="";
-  if [ "${NARCH}" == "x86_64" ];then
-    case ${1} in
-      i686)MLOPT=" -m32"
-           MLLDOPT=" -m elf_i386";
-           MLASOPT=" --32";;
-      x86_32)MLOPT=" -mx32";
-             MLLDOPT=" -m elf32_x86_64";
-             MLASOPT=" --x32";;
-      x86_64)MLOPT=" -m64";
-             MLLDOPT=" -m elf_x86_64";
-             MLASOPT=" --64";;
-    esac;
-    if [ "${MLOPT}" ];then
-      MLHOST=${BUILD};
-     else
-      MLHOST=${HOST};
-    fi;
-   else
-    MLHOST=${HOST};
-  fi;
-
-  export B_LIBDIRS HOST KARCH QCPU MLHOST MLASOPT MLLDOPT MLOPT
+  export B_LIBDIRS HOST KARCH QCPU
 
   HDIR=${BASEROOT}/${1}
   if [ ! -d ${HDIR} ];then
@@ -150,6 +130,7 @@ check_create_arch() {
        [ ${SRCDIR}/linux/usr/include/linux -nt ${HDIR}/usr/include/linux ];then
       
       rsync -aP --include=asm-${KARCH} --include=asm-generic --exclude=.install --exclude=..install.cmd \
+                --exclude=.check --exclude=..check.cmd \
                 --exclude=asm* ${SRCDIR}/linux/usr/include/ ${HDIR}/usr/include/
       if [ -e ${HDIR}/usr/include/asm ] && [ ! -h ${HDIR}/usr/include/asm ];then
         rm -rf ${HDIR}/usr/include/asm
@@ -174,12 +155,6 @@ check_create_arch() {
         cpio -o -H tar |xz -9 > ${TOOLPKG}/${1}/kernel-headers.tar.xz)
     fi;
   fi;
-
-  if [ "${1}" == "${NARCH}" ];then
-    rsync -avPR /usr/include/gnu/stubs-*.h ${HDIR}/
-   elif [ -d ${ARCHROOT}/${1}/usr/include/gnu ];then
-    rsync -avPR ${ARCHROOT}/usr/include/gnu/stubs-*.h ${HDIR}/
-  fi; 
 
   #Sync root too arch if no includes
   if [ -d ${ARCHROOT}/${1} ] && [ ! -d ${ARCHROOT}/${1}/usr/include ];then
@@ -370,32 +345,35 @@ make_cc_destdir() {
   if [ "${LDISCC}" == "1" ];then
     export LD="${CC} ${CC_SYSROOT}"
    else
-    export LD="${MLHOST}-ld --sysroot=${SYSROOT}/${MLLDOPT} --rpath-link=${RPATH_LINK}"
+    export LD="${HOST}-ld --sysroot=${SYSROOT}/ --rpath-link=${RPATH_LINK}"
   fi;
 
   if [ "${NOMAKEFLAGS}" == "1" ];then
     unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-    /usr/bin/make ${MAKE_J} V=1 AR=${AR} RANLIB=${RANLIB} LD="${LD}" SYSROOT=${SYSROOT} \
-      CXX="${CXX} ${CC_SYSROOT}" CC="${CC} $CC_SYSROOT}" ${MAKEOPTS} \
+    if [ "${ADDCFLAG}" ];then
+      CC_SYSROOT="${CC_SYSROOT} ${ADDCFLAG}"
+    fi;
+    /usr/bin/make ${MAKE_J} V=1 AR="${AR}" RANLIB=${RANLIB} LD="${LD}" SYSROOT=${SYSROOT} \
+      CXX="${CXX} ${CC_SYSROOT}" CC="${CC} ${CC_SYSROOT}" ${MAKEOPTS} \
       ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS}
     RES=$?
     if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
-      /usr/bin/make V=1 AR=${AR} RANLIB=${RANLIB} LD="${LD}" SYSROOT=${SYSROOT} \
-        CXX="${CXX} ${CC_SYSROOT}" CC="${CC} $CC_SYSROOT}" ${MAKEOPTS} \
+      /usr/bin/make V=1 AR="${AR}" RANLIB=${RANLIB} LD="${LD}" SYSROOT=${SYSROOT} \
+        CXX="${CXX} ${CC_SYSROOT}" CC="${CC} ${CC_SYSROOT}" ${MAKEOPTS} \
         ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
      elif [ ${RES} != 0 ];then
       return 1
     fi;
-    /usr/bin/make V=1 AR=${AR} RANLIB=${RANLIB} LD="${LD}" SYSROOT=${SYSROOT} \
-        CXX="${CXX} ${CC_SYSROOT}" CC="${CC} $CC_SYSROOT}" ${ARCHMOPT} DESTDIR=${DIST_ROOT} \
+    /usr/bin/make V=1 AR="${AR}" RANLIB=${RANLIB} LD="${LD}" SYSROOT=${SYSROOT} \
+        CXX="${CXX} ${CC_SYSROOT}" CC="${CC} ${CC_SYSROOT}" ${ARCHMOPT} DESTDIR=${DIST_ROOT} \
         ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install  || return 1
    else
-    /usr/bin/make ${MAKE_J} V=1 LDFLAGS="${LDFLAGS}" CFLAGS="${CFLAGS}" AR=${AR} RANLIB=${RANLIB} LD="${LD}" \
+    /usr/bin/make ${MAKE_J} V=1 LDFLAGS="${LDFLAGS}" CFLAGS="${CFLAGS}" AR="${AR}" RANLIB=${RANLIB} LD="${LD}" \
       CXX="${CXX} ${CC_SYSROOT}" CC="${CC} ${CC_SYSROOT}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
       /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} install || return 1
     RES=$?
     if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
-      /usr/bin/make V=1 LDFLAGS="${LDFLAGS}" CFLAGS="${CFLAGS}" AR=${AR} RANLIB=${RANLIB} LD="${LD}" \
+      /usr/bin/make V=1 LDFLAGS="${LDFLAGS}" CFLAGS="${CFLAGS}" AR="${AR}" RANLIB=${RANLIB} LD="${LD}" \
         CXX="${CXX} ${CC_SYSROOT}" CC="${CC} ${CC_SYSROOT}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
       /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
      elif [ ${RES} != 0 ];then
@@ -425,27 +403,21 @@ imake_cross_build() {
 
 cmake_cross_build() {
 #  export LD_LIBRARY_PATH="${RPATH_LINK}"
-  export CC="${CC} --sysroot=${SYSROOT} -Wl,--rpath-link=${RPATH_LINK}"
+  export CC="${CC} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${RPATH_LINK}"
   export CXX="${CXX} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${RPATH_LINK}"
   export LDFLAGS="${LDFLAGS} ${EXTRALIBS}"
 
   if [ "${2}" == "${NARCH}" ];then
-    cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} \
-          -DCMAKE_C_FLAGS="${MLOPT} --sysroot=${SYSROOT}/ ${CFLAGS}" \
-          -DCMAKE_CXX_FLAGS="${MLOPT} --sysroot=${SYSROOT}/ ${CPPLAGS}" \
-          -DCMAKE_C_LINK_FLAGS="${MLOPT} --sysroot=${SYSROOT}/ ${LDFLAGS} ${EXTRALIBS}" \
-          -DCMAKE_STANDARD_LIBRARIES="${EXTRALIBS}" \
+    cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES="${EXTRALIBS}" \
+          -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" -DCMAKE_C_LINK_FLAGS="${LDFLAGS} ${EXTRALIBS}" \
           -DCMAKE_INSTALL_RPATH:PATH="${RPATH_LINK}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} ${1}${CFGBIN}
    else
-    cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} \
+    cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES="${EXTRALIBS}" \
+          -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" -DCMAKE_C_LINK_FLAGS="${LDFLAGS} ${EXTRALIBS}" \
           -DCMAKE_SYSTEM_NAME=Linux  -DCMAKE_FIND_ROOT_PATH=${SYSROOT}/ \
-          -DCMAKE_C_FLAGS="${MLOPT} --sysroot=${SYSROOT}/ ${CFLAGS}" \
-          -DCMAKE_CXX_FLAGS="${MLOPT} --sysroot=${SYSROOT}/ ${CPPLAGS}" \
-          -DCMAKE_C_LINK_FLAGS="${MLOPT} --sysroot=${SYSROOT}/ ${LDFLAGS} ${EXTRALIBS}" \
-          -DCMAKE_STANDARD_LIBRARIES="${EXTRALIBS}" \
           -DCMAKE_INSTALL_RPATH:PATH="${RPATH_LINK}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} \
-          -DCMAKE_C_COMPILER="/usr/bin/${HOST}-gcc" -DCMAKE_C_COMPILER_ENV_VAR="${CC_SYSROOT}" \
-          -DCMAKE_CXX_COMPILER="/usr/bin/${HOST}-g++" -DCMAKE_CXX_COMPILER_ENV_VAR="${CC_SYSROOT}" \
+          -DCMAKE_C_COMPILER="${HOST}-gcc" -DCMAKE_C_COMPILER_ENV_VAR="${CC_SYSROOT}" \
+          -DCMAKE_CXX_COMPILER="${HOST}-g++" -DCMAKE_CXX_COMPILER_ENV_VAR="${CC_SYSROOT}" \
           -DGNU_HOST=${3} -DCMAKE_TOOLCHAIN_FILE=${SCRIPTDIR}/cmake_${2}.cross ${1}${CFGBIN}
   fi;
   cmake ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} ${1}${CFGBIN}
@@ -469,8 +441,6 @@ cmake_cross_build() {
 autoconf_cross_build() {
   if [ "${CLEARFLAGS}" ] && [ "${CLEARFLAGS}" == "1" ];then
     unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS LD
-    export CC="/usr/bin/${CC} --sysroot=${SYSROOT}/ ${MLOPT}"
-    export CXX="/usr/bin/${CXX} --sysroot=${SYSROOT}/ ${MLOPT}"
     if [ "${ADDLDFLAG}" ];then
       export LDFLAGS="${ADDLDFLAG}"
     fi;
@@ -480,8 +450,8 @@ autoconf_cross_build() {
       export CXXFLAGS=${ADDCFLAG}
     fi;
    else
-    export CC="/usr/bin/${CC} ${CC_SYSROOT}"
-    export CXX="/usr/bin/${CXX} ${CC_SYSROOT}"
+    export CC="${CC} ${CC_SYSROOT}"
+    export CXX="${CXX} ${CC_SYSROOT}"
     export AS="${CC} ${CFLAGS}"
     export CC="${CC}"
     export CXX="${CXX}"
@@ -490,7 +460,7 @@ autoconf_cross_build() {
   if [ "${LDISCC}" == "1" ];then
     export LD="${CC}"
    else
-    export LD="${MLHOST}-ld --sysroot=${SYSROOT}/${MLLDOPT} --rpath-link=${RPATH_LINK}"
+    export LD="${HOST}-ld --sysroot=${SYSROOT}/ --rpath-link=${RPATH_LINK}"
   fi;
 
 #  export LD_LIBRARY_PATH="${RPATH_LINK}"
@@ -502,9 +472,7 @@ autoconf_cross_build() {
         STDOPTSX="${STDOPTSX}/${LIBDIRPRE}";
       fi;
     fi;
-    if [ "${2}" != "${NARCH}" ] && [ ! "${MLOPT}" ];then
-      STDOPTSX="${STDOPTSX} cross_compiling=yes --host=${3} --build=${BUILD}"
-     elif [ "${NOCROSS}" == "1" ];then
+    if [ "${NOCROSS}" ] && [ "${NOCROSS}" == "1" ];then
       STDOPTSX="${STDOPTSX} --host=${3} --build=${3}"
      else
       STDOPTSX="${STDOPTSX} --host=${3} --build=${BUILD}"
@@ -535,7 +503,7 @@ autoconf_cross_build() {
       STDOPTSX="${STDOPTSX} --enable-introspection=no"
      else
       STDOPTSX="${STDOPTSX} --enable-introspection=yes"
-      MAKEOPTS="${MAKEOPTS} INTROSPECTION_SCANNER=/build/${2}/usr/bin/g-ir-scanner";
+      MAKEOPTS="${MAKEOPTS} INTROSPECTION_SCANNER=${ARCHROOT}/${2}/usr/bin/g-ir-scanner";
     fi;
   fi;
 
@@ -566,12 +534,14 @@ autoconf_cross_build() {
     sh ${SRCDIR}/${PSOURCEDIR}/.build-info/make-config ${NARCH} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT} ${HOST} ${2}
    else
     if [ "${ADDCC}" ] && [ "${ADDCC}" == "0" ];then
-      /usr/bin/make ${MAKE_J} HOSTCC="${BUILD}-gcc" HOSTLD="${BUILD}-gcc" HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} && \
+      /usr/bin/make ${MAKE_J} HOSTCC="${BUILD}-gcc" HOSTLD="${BUILD}-gcc" \
+        HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} && \
         /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} install
       RES=$?
       if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
-        /usr/bin/make HOSTCC="${BUILD}-gcc" HOSTLD="${BUILD}-gcc" HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} &&\
-        /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
+        /usr/bin/make HOSTCC="${BUILD}-gcc" HOSTLD="${BUILD}-gcc" HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" \
+          ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || make ${MAKE_J} || return 1
+        /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install 
        elif [ ${RES} != 0 ];then
         return 1
       fi;
@@ -584,8 +554,8 @@ autoconf_cross_build() {
       if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
         /usr/bin/make LD="${LD}" CC="${CC}" CXX="${CXX}" HOSTCC="${BUILD}-gcc" \
           HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" ${MAKEOPTS} ${ARCHMOPT} \
-          ${MAKEALL} ${MAKETARGETS} || return 1
-        /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
+          ${MAKEALL} ${MAKETARGETS} || make ${MAKE_J} || return 1
+        /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install
        elif [ ${RES} != 0 ];then
         return 1
       fi;
@@ -664,11 +634,6 @@ build_project() {
     SYSROOTFIXUP="1";
   fi;
   export SYSROOTFIXUP;
-
-  if [ ! "${LDIGNORE}" ];then
-    LDIGNORE="0";
-  fi;
-  export LDIGNORE;
 
   if [ ! "${FIXUPLIB}" ];then
     FIXUPLIB="0";
@@ -782,7 +747,7 @@ build_project() {
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
-  CXXFLAGS=${CFLAGS}
+  export CXXFLAGS=${CFLAGS}
   LDFLAGS="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} ${ADDLDFLAG}"
   if [ "${SETCPPTOC}" == "1" ];then
     CPPFLAGS=${CFLAGS};
@@ -796,29 +761,21 @@ build_project() {
   export PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig/";
 #  export PYTHONPATH="/usr/${B_LIBDIRS}/python2.7/site-packages/"
 
-  if [ ! "${MLOPT}" ] && [ "${NARCH}" != "${barch}" ];then
-    if [ "${LDIGNORE}" != "0" ];then
-      XCCOPT=" -Wl,--unresolved-symbols=ignore-in-shared-libs";
-      XCCOPTLD=" -Wl,--unresolved-symbols=ignore-all";
-    fi;
-#    LDFLAGS="${LDFLAGS} ${XCCOPTLD}"
-  fi;
-
-  RPATH_LINK="${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio:${SYSROOT}/opt/qt4/${B_LIBDIRS}"
+  RPATH_LINK="${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio:${SYSROOT}/opt/qt-4/${B_LIBDIRS}"
   RPLINK=" -Wl,--rpath-link=${RPATH_LINK}";
   XCCOPT="${XCCOPT} ${RPLINK}"
 
-  export MLOPT MLHOST MLLDOPT
-
-  export CC_SYSROOT="--sysroot=${SYSROOT}/ ${MLOPT} ${XCCOPT} -L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} -I=/include -I=/usr/include -I=/usr/X11R7/include";
-  export CC="${MLHOST}-gcc";
-  export CXX="${MLHOST}-g++"
-  LD="${MLHOST}-ld${MLLDOPT}"
+  export CC_SYSROOT="--sysroot=${SYSROOT}/ ${XCCOPT} -L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} -I=/include -I=/usr/include -I=/usr/X11R7/include";
+  CC="/usr/bin/${HOST}-gcc";
+  CXX="/usr/bin/${HOST}-g++"
+  LD="/usr/bin/${HOST}-ld"
+  export CC CXX
 
   #XXX /build AKA ARCHROOT
   if [ ! "${ADDGCCDIR}" ] || [ "${ADDGCCDIR}" == "1" ];then
     GCCDIR=$( ${CC} ${CC_SYSROOT} -print-libgcc-file-name |sed -e "s/libgcc\.a$//" -e "s/x32\/$//" -e "s/32\/$//" )
-    if [ "${GCCDIR}" ] && [ -d ${GCCDIR}/include ] && [ -d ${ARCHROOT}/${barch} ] && [ ! -d ${ARCHROOT}/${barch}/${GCCDIR}/include ];then
+    if [ "${GCCDIR}" ] && [ -d ${GCCDIR}/include ] && [ -d ${ARCHROOT}/${barch} ] && \
+       [ ! -d ${ARCHROOT}/${barch}/${GCCDIR}/include ];then
       rsync -avPR ${GCCDIR}/ ${ARCHROOT}/${barch}/
       CFLAGS="${CFLAGS} -I${GCCDIR}/include";
      elif [ -d ${GCCDIR}/include ];then
@@ -832,12 +789,16 @@ build_project() {
     LDFLAGS="${LDFLAGS} ${RPLINK}";
   fi;
 
-  export AR="${MLHOST}-ar"
-  export AS="${MLHOST}-as"
-  export NM="${MLHOST}-nm"
-  export RANLIB="${MLHOST}-ranlib"
-  export OBJCOPY="${MLHOST}-objcopy"
-  export STRIP="${MLHOST}-strip"
+  if [ "${ARFLAGS}" ];then
+    export AR="${HOST}-ar ${ARFLAGS}"
+   else
+    export AR="${HOST}-ar"
+  fi;
+  export AS="${HOST}-as"
+  export NM="${HOST}-nm"
+  export RANLIB="${HOST}-ranlib"
+  export OBJCOPY="${HOST}-objcopy"
+  export STRIP="${HOST}-strip"
 
   if [ ${BUILDDIR} == "1" ];then
     if [ ! -d build-${barch} ];then
@@ -851,7 +812,8 @@ build_project() {
     if [ "${CLEANOPT}" == "clean" ];then
       /usr/bin/make ${CLEANOPT} > /dev/null 2>&1
      else
-      (/usr/bin/make distclean || /usr/bin/make clean) > /dev/null 2>&1
+      (/usr/bin/make ${MAKEOPTS} ${ARCHOPT} distclean || /usr/bin/make ${MAKEOPTS} ${ARCHOPT} clean
+       /usr/bin/make distclean || /usr/bin/make clean) > /dev/null 2>&1
     fi;
   fi;
 
@@ -891,6 +853,8 @@ build_project() {
         [ ! -e ${TOPDIR}cmake ];then
     make_cc_destdir || return 1
    else
+    pwd
+    echo ${TOPDIR}${CFGBIN}
     echo "no build method"
     return 1
   fi;
@@ -1002,25 +966,15 @@ build_glibc() {
   fi;
 
   CLEANOPT=distclean
-  case $1 in
-    i[3-6]86|x86_32)MLHOST=x86_64-linux-gnu;;
-    *)MLHOST=${2};;
-  esac;
 
-  case $1 in
-    i[3-6]86)MLOPT=-m32;;
-    x86_32)MLOPT=-mx32;;
-    *)MLOPT="";;
-  esac;
-
-  if [ -x /usr/bin/${MLHOST}-gcc ];then
-    GCCEH=`${MLHOST}-gcc ${MLOPT} -print-libgcc-file-name |sed 's/libgcc/&_eh/'`
+  if [ -x /usr/bin/${2}-gcc ];then
+    GCCEH=`${2}-gcc -print-libgcc-file-name |sed 's/libgcc/&_eh/'`
     if [ ! -e ${GCCEH} ];then
       ln -s libgcc.a ${GCCEH}
     fi;
   fi;
 
-  if [ "${1}" != "${NARCH}" ] && [ ! -d /build/${1} ];then
+  if [ "${1}" != "${NARCH}" ] && [ ! -d ${ARCHROOT}/${1} ];then
     mkdir -p ${ARCHROOT}/${1}
    elif [ "${1}" == "${NARCH}" ];then
     if [ ! -d ${ARCHROOT} ];then
@@ -1042,6 +996,7 @@ build_glibc() {
   if [ ${RES} != 0 ];then
     return 1;
   fi;
+
   #Create a static libc pkg
   if [ "${1}" == "${NARCH}" ];then
     USELIBDIR=${NLIBDIR}
@@ -1057,16 +1012,60 @@ build_glibc() {
   fi;
   cd ${DIST_ROOT}
   rsync -a . ${SRDIR}/
-  MULTIARCH=MARCH_${NARCH}
 
-  if [ "${1}" != "${NARCH}" ] && [[ ${1} =~ ${!MULTIARCH} ]];then
-    rsync -aR ${USELIBDIR} usr/${USELIBDIR} /;
-    rsync -aR ${USELIBDIR} usr/${USELIBDIR} ${BASEROOT}/${NARCH}/;
-
-    #Makesure the MA stubs are available
-    rsync -avPR /usr/include/gnu/stubs* ${BASEROOT}/${1}/
-    rsync -avPR /usr/include/gnu/stubs* ${ARCHROOT}/${1}/
-  fi;
+  case ${1} in
+    i[3-6]86)
+      if [ ! -d ${ARCHROOT}/x86_64 ];then
+        mkdir -p ${ARCHROOT}/x86_64
+      fi;
+      if [ ! -d ${ARCHROOT}/x86_32 ];then
+        mkdir -p ${ARCHROOT}/x86_32
+      fi;
+      if [ ! -d ${BASEROOT}/x86_64 ];then
+        mkdir -p ${BASEROOT}/x86_64
+      fi;
+      if [ ! -d ${BASEROOT}/x86_32 ];then
+        mkdir -p ${BASEROOT}/x86_32
+      fi;
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${ARCHROOT}/x86_64/
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${BASEROOT}/x86_64/
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${ARCHROOT}/x86_32/
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${BASEROOT}/x86_32/
+    ;;
+    x86_32)
+      if [ ! -d ${ARCHROOT}/x86_64 ];then
+        mkdir -p ${ARCHROOT}/x86_64
+      fi;
+      if [ ! -d ${BASEROOT}/x86_64 ];then
+        mkdir -p ${BASEROOT}/x86_64
+      fi;
+      if [ ! -e usr/include/gnu/stubs-x32.h ];then
+        ln -s stubs-64.h usr/include/gnu/stubs-x32.h
+      fi;
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-x32.h ${ARCHROOT}/x86_64/
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-x32.h ${BASEROOT}/x86_64/
+    ;;
+    x86_64)
+      if [ ! -d ${ARCHROOT}/x86_32 ];then
+        mkdir -p ${ARCHROOT}/x86_32
+      fi;
+      if [ ! -d ${BASEROOT}/x86_32 ];then
+        mkdir -p ${BASEROOT}/x86_32
+      fi;
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-64.h ${ARCHROOT}/x86_32/
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-64.h ${BASEROOT}/x86_32/
+    ;;
+    powerpc)
+      if [ ! -d ${ARCHROOT}/powerpc64 ];then
+        mkdir -p ${ARCHROOT}/powerpc64
+      fi
+      if [ ! -d ${BASEROOT}/powerpc64 ];then
+        mkdir -p ${BASEROOT}/powerpc64
+      fi
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${ARCHROOT}/powerpc64/
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${BASEROOT}/powerpc64/
+  ;;
+  esac;
 
   #Arch include dir
   if [ ! -d  /usr/${2}/include ];then
@@ -1089,10 +1088,11 @@ run_configure() {
   CONFLIBDIR=${1}
   shift;
   ../configure --libdir=/usr/${CONFLIBDIR} --prefix=${PREFIX} --sysconfdir=/etc --mandir=/usr/share/man \
-               --infodir=/usr/share/info --localstatedir=/var CC="${CC}" CXX="${CXX}" LD="${LD}" $@ || return 1
+               --infodir=/usr/share/info --localstatedir=/var $@ || return 1
 }
 
 build_bootstrap_binutils() {
+  barch=${1}
   eval `cat ${DEFDIR}/binutils`;
   AVER=VERSION_${1}
   VERSION=${!AVER-$VERSION}
@@ -1100,8 +1100,10 @@ build_bootstrap_binutils() {
 
   if [ "${1}" == "${NARCH}" ];then
     DIST_ROOT=${TOOLDIR}/${NARCH}/${BINUTILS}-static
+    CSYSROOT="--with-sysroot=/"
    else
     DIST_ROOT=${TOOLDIR}/${NARCH}/${1}/${BINUTILS}
+    CSYSROOT="--with-sysroot=${ARCHROOT}/${1}"
   fi;
 
   if [ ! -e /usr/bin/${2}-ld ] || [ ! -d ${DIST_ROOT} ];then
@@ -1121,8 +1123,11 @@ build_bootstrap_binutils() {
     setup_build_dir ${1} binutils ${BINUTILS} ${NARCH}
     export MAKEOPT
     run_configure ${B_LIBDIRS} ${PROGPRE} --target=${2} --build=${BUILD} --host=${BUILD} \
-                  ${CONFOPT} ${ARCHOPT} || return 1
+                  ${CONFOPT} ${ARCHOPT} ${CSYSROOT} || return 1
     make ${MAKE_J} configure-host || return 1
+    make ${MAKE_J} -C bfd ${MAKEOPT} all || return 1
+    make ${MAKE_J} -C libiberty ${MAKEOPT} all || return 1
+    make ${MAKE_J} -C gold all || return 1
     make ${MAKE_J} ${MAKEOPT} all || make ${MAKEOPT} all || return 1
     make DESTDIR=${DIST_ROOT} all install || return 1
 
@@ -1130,7 +1135,7 @@ build_bootstrap_binutils() {
       if [ ! -e /usr/bin/${2}-ld ];then
         rsync -aP ${DIST_ROOT}/ /
       fi;
-      MULTIARCH=MARCH_${NARCH}
+      MULTIARCH=MARCH_${1}
       if [[ ${1} =~ ${!MULTIARCH} ]];then
         rsync -a ${DIST_ROOT}/usr/${2} ${BASEROOT}/${NARCH}/usr/;
       fi;
@@ -1142,6 +1147,7 @@ build_bootstrap_binutils() {
 }
 
 build_gcc_bootstrap() {
+  barch=${1}
   eval `cat ${DEFDIR}/glibc`;
   AVER=VERSION_${1}
   VERSION=${!AVER-$VERSION}
@@ -1164,7 +1170,7 @@ build_gcc_bootstrap() {
   GCC=gcc${VERSEP}${VERSION}
 
   if [ "${1}" != "${3}" ];then
-    SYSROOT="--with-sysroot=/build/${1} ${CONFOPTX}";
+    SYSROOT="--with-sysroot=${ARCHROOT}/${1} ${CONFOPTX}";
     BUILDROOT=${ARCHROOT}/${1}
    else
     SYSROOT="--with-sysroot=/";
@@ -1197,6 +1203,7 @@ build_gcc_bootstrap() {
     LANGOPT=${!GCCLANG}
     CFLAGS=-I=/usr/include
     CXXFLAGS=-I=/usr/include
+    LDFLAGS="-L/lib -L/libx32 -L/lib64 -L/usr/lib -L/usr/libx32 -L/usr/lib64"
     export CFLAGS CXXFLAGS
     CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${TLIBDIR}/jvm/gcj-jdk-${1} --enable-cxx-flags=-I=/usr/include
              CFLAGS=-I=/usr/include ${LANGOPT} ${SYSROOT}"
@@ -1206,15 +1213,8 @@ build_gcc_bootstrap() {
     MARCH=CROSSOPT_${1}
     CFLAGS=-I=/usr/include
     CXXFLAGS=-I=/usr/include
-    CONFOPT="${SHAREDOPT} ${CONFOPTX}"
+    CONFOPT="${SHAREDOPT} ${SYSROOT} ${CONFOPTX}"
     SDIROPT=-shared
-    MAKEOPT="";
-   elif [ "${4}" == "multi" ];then
-    MARCH=CROSSOPT_${1}
-    CFLAGS=-I=/usr/include
-    CXXFLAGS=-I=/usr/include
-    CONFOPT="${MULTIOPT} ${CONFOPTX}"
-    SDIROPT=-multi
     MAKEOPT="";
   fi;
   TARGPKG=${GCC}${SDIROPT}
@@ -1229,21 +1229,21 @@ build_gcc_bootstrap() {
     USELIBDIR=${B_LIBDIRS}
   fi;
 
-  if [ -d ${GCCBOOTDEST} ];then
+  if [ -d ${GCCBOOTDEST} ] && [ -e /usr/bin/${2}-gcc ];then
     return;
   fi;
 
-  if which ${2}-gcc 2>/dev/null;then
-    GCCLDIR=$( dirname `${2}-gcc --print-libgcc-file-name` )
-    if [ -d ${GCCLDIR} ];then
-      for booto in crti.o crt1.o crtn.o;do
-        if [ -f /usr/${USELIBDIR}/${booto} ];then
-          cp ${BUILDROOT}/usr/${USELIBDIR}/${booto} ${GCCLDIR}/
-        fi;
-      done;
+#  if which ${2}-gcc 2>/dev/null;then
+#    GCCLDIR=$( dirname `${2}-gcc --print-libgcc-file-name` )
+#    if [ -d ${GCCLDIR} ];then
+#      for booto in crti.o crt1.o crtn.o;do
+#        if [ -f /usr/${USELIBDIR}/${booto} ];then
+#          cp ${BUILDROOT}/usr/${USELIBDIR}/${booto} ${GCCLDIR}/
+#        fi;
+#      done;
 #      CONFOPT="${CONFOPT} --with-stage1-ldflags=-L${GCCLDIR} --with-boot-ldflags=-L${GCCLDIR} CFLAGS=-B${GCCLDIR}";
-    fi;
-  fi;
+#    fi;
+#  fi;
   svn_load_pkg gcc ${GCC}
   setup_build_dir ${1} gcc ${GCC} ${TARCH} ${SDIROPT}
 
@@ -1309,7 +1309,7 @@ build_gcc_bootstrap() {
         if [ "${4}" != "cross" ];then
           touch /usr/bin/${2}-gcc.${4}
          else
-          for stamp in null boot multi shared;do
+          for stamp in null boot shared;do
             if [ -e /usr/bin/${2}-gcc.${stamp} ];then
               rm /usr/bin/${2}-gcc.${stamp}
             fi;
@@ -1334,6 +1334,7 @@ build_gcc_bootstrap() {
 }
 
 build_qemu_static() {
+  barch=${1}
   eval `cat ${DEFDIR}/qemu`;
   AVER=VERSION_${NARCH}
   VERSION=${!AVER-$VERSION}
@@ -1349,7 +1350,7 @@ build_qemu_static() {
   setup_build_dir ${NARCH} qemu ${QEMU} ${NARCH}
 
   run_configure ${NLIBDIR} --static --disable-system --disable-user --enable-linux-user --disable-werror \
-                --target-list=arm-linux-user,mips-linux-user,ppc-linux-user,ppc64-linux-user || return 1
+                --target-list=arm-linux-user,mips-linux-user,ppc-linux-user,ppc64-linux-user --cc=${BUILD}-gcc || return 1
   make ${MAKE_J} || make || return 1
 
   mkdir -p ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin
@@ -1377,6 +1378,7 @@ build_packages() {
 }
 
 build_static_tool() {
+  barch=${1}
   eval `cat ${DEFDIR}/${4}`;
   AVER=VERSION_${1}
   VERSION=${!AVER-$VERSION}
@@ -1398,7 +1400,7 @@ build_static_tool() {
     ARCHOPTV=OPT_${1}
     ARCHOPT=${!ARCHOPTV}
    else
-    ARCHOPT="--with-neon=/build/${1}/usr/ --with-apr-util=/build/${1}/usr/";
+    ARCHOPT="--with-neon=${ARCHROOT}/${1}/usr/ --with-apr-util=${ARCHROOT}/${1}/usr/";
   fi;
 
   if [ "${CFGPTH}" ];then
@@ -1471,6 +1473,42 @@ static_toolbuild() {
   done;
 }
 
+bootstrap_arch() {
+  for arch in $@;do
+    arch_config ${arch}
+    #build binutils
+    if [ ! -x /usr/bin/${TUPPLE}-ld ];then
+      (build_bootstrap_binutils ${arch} ${TUPPLE}) || return 1
+    fi;
+
+    #Build null compiler if needed
+    if [ ! -x /usr/bin/${TUPPLE}-gcc ];then
+      (build_gcc_bootstrap ${arch} ${TUPPLE} ${NARCH} null) || return 1
+    fi;
+    #build glibc and dependandcies for arch cross
+    (build_glibc ${arch} ${TUPPLE}) || return 1
+    (build_packages ${arch} zlib) || return 1 
+
+    #Cross compiler
+    (check_create_arch ${arch})
+    (build_gcc_bootstrap ${arch} ${TUPPLE} ${NARCH} cross) || return 1;
+  done;
+}
+
+build_glibc_march() {
+  #GCC C build to bootstrap multiarch
+  case ${1} in
+    x86_32|x86_64)(bootstrap_arch i686 x86_32 x86_64) || return 1;;
+    powerpc64)(bootstrap_arch ${1} powerpc powerpc64) || return 1;
+           if [ -d ${ARCHROOT}/${1} ] && [ -e ${STATDIR}/powerpc/done/glibc ] && \
+              [ ! -e ${ARCHROOT}/${1}/usr/lib/libc.so ];then
+             rm /dist/status/powerpc/done/glibc
+           fi;
+           (build_glibc powerpc powerpc-linux-gnu) || return 1;;
+    *)(bootstrap_arch ${1} ${1}) || return 1;;
+  esac
+}
+
 build_toolchain() {
   #Is LD good ?? create symlinks needed
   for bintool in `ls /usr/${2}/bin/`;do
@@ -1480,23 +1518,18 @@ build_toolchain() {
   done
 
   #Build fresh glibc we are asuming that binutils/gcc/make/bash/sed/awk are good as they should be
-  (build_glibc ${1} ${2}) || return 1
+  (build_glibc_march ${1}) || return 1
 
   #Build perl/autoconf/zlib and Libs needed for GCC
-  (build_packages ${1} groff perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf \
-                       zlib libtool gmp mpfr mpc) || return 1
+  if [ "${1}" == "${NARCH}" ];then
+    (build_packages ${1} groff perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf \
+                         zlib libtool gmp mpfr mpc) || return 1
+   else
+    (build_packages ${1} groff automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf \
+                         zlib libtool gmp mpfr mpc) || return 1
+  fi;
 
-  #GCC C build to bootstrap multiarch
-  case ${1} in
-    x86_32)(build_gcc_bootstrap ${1} ${2} ${1} multi) || return 1;
-           (build_glibc i686 i686-linux-gnu) || return 1;
-           (build_glibc x86_64 x86_64-linux-gnu) || return 1;;
-    x86_64)(build_gcc_bootstrap ${1} ${2} ${1} multi) || return 1;
-           (build_glibc i686 i686-linux-gnu) || return 1;
-           (build_glibc x86_32 x86_64-linux-gnux32) || return 1;;
-  esac
-
-  #Shared GCC / Multi arch C/C++
+  #Shared GCC / Multi arch C/C++/ADA
   (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
 
   #Rebuild libtool this will be rebuilt again after final GCC build
@@ -1510,7 +1543,7 @@ build_toolchain() {
   (build_packages ${1} gmp mpfr mpc isl cloog zip unzip gcc libtool) || return 1
 
   #Base dependancies
-  (build_packages ${1} gperf libcroco gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
+  (build_packages ${1} gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
                        bison diffutils flex attr acl pcre libsepol libselinux file gengetopt libidn libtasn1 p11-kit \
                        nettle gnutls libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap coreutils \
                        readline bash xz expat) || return 1
@@ -1543,8 +1576,8 @@ build_toolchain() {
 
   (build_packages ${1} intltool popt rsync Python libxml2 libxslt gnome-doc-utils docbook-4.1.2 docbook-4.2 \
                        docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus glib gtk-doc \
-                       pkg-config libassuan libksba pth libusb libusb-compat gnupg openssl trousers slang \
-                       gobject-introspection vala wget) || return 1
+                       pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg openssl trousers slang \
+                       wget) || return 1
 
   if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
     rm /usr/lib64/libblkid.a /usr/lib64/libuuid.a /usr/lib64/libblkid.la /usr/lib64/libuuid.la >/dev/null 2>&1
@@ -1558,8 +1591,8 @@ build_toolchain() {
     (CLEANOPT=distclean;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
   fi;
 
-  (build_packages ${1} cairo pango libdrm llvm intltool cmake talloc tevent libevent libverto krb5 cups kmod \
-                       module-init-tools LVM2 cryptsetup systemd Mesa glu glw mtdev) || return 1
+  (build_packages ${1} cairo pango gobject-introspection vala libdrm llvm intltool cmake talloc tevent libevent libverto \
+                       krb5 cups kmod module-init-tools LVM2 cryptsetup systemd Mesa glu glw mtdev) || return 1
 
   #Continue X Build with GL/Mesa
   if [ -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
@@ -1570,16 +1603,15 @@ build_toolchain() {
                        yasm nasm fuse libunistring txt2man printproto portablexdr libpcap ppp libIDL ORBit2 dbus-glib \
                        polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig M2Crypto libnl-1 libnl \
                        crda ragel apr apr-iconv sqlite-autoconf keyutils neon apache-ant tcl8 tk8 db unixODBC \
-                       cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion libva gavl OpenCV \
-                       frei0r libraw1394 audiofile esound libogg flac libvorbis libsndfile gdbm json-c fftw \
+                       cyrus-sasl openslp openldap mysql gdbm postgresql apr-util httpd subversion libva gavl jasper \
+                       OpenCV frei0r libraw1394 audiofile esound libogg flac libvorbis libsndfile json-c fftw \
                        libsamplerate speex orc pulseaudio SDL libdc1394 libavc1394 libiec61883 faac libaacplus \
                        vo-aacenc vo-amrwbenc fribidi icu4c graphite2 harfbuzz libass libbluray celt libcaca gsm \
                        libmodplug lame twolame libnut opencore-amr opus schroedinger libtheora utvideo openal xvidcore \
                        ptlib libcddb libcdio-cdda libcdio libcddb fltk libdaemon libnfnetlink libmnl libexif exif \
                        libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils \
                        xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem bzip2 qt-4 avahi gnome-vfs \
-                       gstreamer libvisual gst-plugins-base djvulibre) || return 1
-
+                       gstreamer libvisual gst-plugins-base djvulibre nspr nss) || return 1
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
 
@@ -1590,6 +1622,31 @@ build_toolchain() {
   static_toolbuild ${1} ${2}
 }
 
+sync_ml_libs() {
+  if [ "${1}" == "x86_32" ] && [ "${NARCH}" == "x86_64" ];then
+    if [ -d ${DIST_ROOT}/${B_LIBDIRS} ];then
+      ${RSYNC} -avP ${DIST_ROOT}/${B_LIBDIRS} /
+    fi;
+    if [ -d ${DIST_ROOT}/usr/${B_LIBDIRS} ];then
+      ${RSYNC} -avP ${DIST_ROOT}/usr/${B_LIBDIRS} /usr/
+    fi;
+  fi;
+}
+
+build_ml_packages() {
+  DARCH=${1}
+  shift
+
+  for pkg in $@;do
+    if [ ! -e ${STATDIR}/${DARCH}/done/${pkg} ];then
+      #If we fail on 1st pass rebuild with no clean opt's
+      if ! (CLEANOPT=distclean;build_project ${pkg} ${DARCH};sync_ml_libs ${DARCH});then
+        (unset CLEANOPT;build_project ${pkg} ${DARCH};sync_ml_libs ${DARCH}) || return 1
+      fi;
+    fi;
+  done;
+}
+
 build_cross_package() {
   #Check arch build dir exists Setup linux headers and env vars
   check_create_arch ${1}
@@ -1597,33 +1654,31 @@ build_cross_package() {
     mkdir -p ${TOOLPKG}/${NARCH}
   fi;
 
-  #dont build cross tools for native but ensure toolchain is good
+  #Binutils/glibc for native and target
+  (build_packages ${NARCH} binutils) || return 1
+  build_glibc_march ${NARCH} || return 1
+  if [ "${1}" != "${NARCH}" ];then
+    (build_bootstrap_binutils ${1} ${HOST}) || return 1
+    build_glibc_march ${1} || return 1
+  fi;
+
+  #dont build cross tools for native but ensure toolchain is good also neeed qemu
   if [ "${1}" == "${NARCH}" ];then
     build_toolchain ${NARCH} ${BUILD} || return 1
 
     #QEMU Static runtime emulator
-    (build_qemu_static) || return 1
-    return;
+    (build_qemu_static)
+    return 0;
   fi;
 
   case ${1} in
     #Multi arch/lib for intel i686 does not support it
-    x86_32|x86_64)
+    x86_32|x86_64|i[3-6]86)
       case ${NARCH} in
         x86_32|x86_64)
-          #Add Arch bootstrap GCC this is not actually used its a distributable
-          (if [ "${1}" == "x86_32" ];then
-            MOPT="-mx32";
-           else
-            MOPT="-m64";
-          fi;
-          export CC="${BUILD}-gcc ${MOPT} --sysroot=${ARCHROOT}/${1}"
-          build_gcc_bootstrap ${1} ${HOST} ${1} static) || return 1
-
-          #Setup GLIBC For x86 ABI
-          (build_glibc ${1} ${HOST}) || return 1
-
-          return
+          #Build GCC Deps
+          build_toolchain ${1} ${HOST} || return 1
+          return;
         ;;
       esac
     ;;
@@ -1634,20 +1689,11 @@ build_cross_package() {
     mkdir -p ${TOOLPKG}/${NARCH}/${1}
   fi;
 
-  #Binutils to handle the target
-  (build_bootstrap_binutils ${1} ${HOST}) || return 1
-
-  #Null compiler to bootstrap GLIBC
-  (build_gcc_bootstrap ${1} ${HOST} ${NARCH} null) || return 1;
-
-  #GLIBC
-  (build_glibc ${1} ${HOST}) || return 1;
-
-  #Static compiler to bootstrap GLIBC distributed static with C++/ADA
-  (build_gcc_bootstrap ${1} ${HOST} ${NARCH} static) || return 1;
-
   #Cross compiler
   (build_gcc_bootstrap ${1} ${HOST} ${NARCH} cross) || return 1;
+
+  #Static cross compiler to bootstrap GLIBC distributed static with C++/ADA
+  (build_gcc_bootstrap ${1} ${HOST} ${NARCH} static) || return 1;
 
   #Add QEMU static to build
   if [ -d ${ARCHROOT}/${1}/usr/bin ] && [ "${QCPU}" ] && [ -f ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ];then
@@ -1659,20 +1705,6 @@ build_cross_package() {
 
   build_toolchain ${1} ${HOST} || return 1
 
-return 0;
-exit
-#--gn
-#  if [ ! -e ${ARCHROOT}/${1}/usr/${B_LIBDIRS}/libc.so ] || [ ! -d ${TOOLDIR}/${1}/${GLIBC} ];then
-#We need to make sure the multi arch libs are inplace before building the compiler
-#   case ${1} in
-#     powerpc64)
-#       #Need stubs-32.h from 32bit
-#       rsync -aP ${TOOLDIR}/powerpc/${GLIBC}/usr/include/gnu/stubs-32.h ${ARCHROOT}/${1}/usr/include/gnu/
-#
-#       #Add the 32bit libs to 64bit for sysroot
-#       rsync -aP ${TOOLDIR}/powerpc/${GLIBC}/lib ${ARCHROOT}/${1}/
-#       rsync -aP ${TOOLDIR}/powerpc/${GLIBC}/usr/lib ${ARCHROOT}/${1}/usr/
-#     ;;
 #     mips64)
 #       #Need stubs-o32.h from 32bit
 #       rsync -aP ${TOOLDIR}/mips/${GLIBC}/usr/include/gnu/stubs-o32.h ${ARCHROOT}/${1}/usr/include/gnu/
@@ -1681,12 +1713,6 @@ exit
 #       rsync -aP ${TOOLDIR}/mips/${GLIBC}/lib ${ARCHROOT}/${1}/
 #       rsync -aP ${TOOLDIR}/mips/${GLIBC}/usr/lib ${ARCHROOT}/${1}/usr/
 #     ;;
-#    esac;
-#    #Sync to build sysroot
-#    if [ ! -e ${ARCHROOT}/${1}/usr/${B_LIBDIRS}/libc.so ];then
-#      rsync -aP ${TOOLDIR}/${1}/${GLIBC}/ ${ARCHROOT}/${1}/
-#    fi;
-#  fi;
 }
 
 configstatdir() {
