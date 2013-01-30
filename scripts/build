@@ -1532,9 +1532,6 @@ bootstrap_arch() {
   (check_create_arch ${NARCH}
   build_packages ${NARCH} gcc) || return 1
 
-exit 1
-#--gn
-
   #Build cross compilers
   for arch in $@;do
     (check_create_arch ${arch}
@@ -1775,7 +1772,6 @@ build_cross_package() {
 
   #Get native toolchain in order / multilib
   (bootstrap_native) ||return 1
-#--gn Build GCC
 
   if [ "${1}" != "${NARCH}" ];then
     (build_bootstrap_binutils ${1} ${HOST}) || return 1
