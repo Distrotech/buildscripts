@@ -1220,12 +1220,20 @@ build_gcc_bootstrap() {
     LDFLAGS="-static"
     SDIROPT=-boot
     MAKEOPT="LDFLAGS=-static";
+   elif [ "${4}" == "shared" ];then
+    MARCH=BOOTOPT_${1}
+    CONFOPT="${SHAREDOPT} ${SYSROOT} ${CONFOPTX}"
+    CFLAGS=-fPIC
+    CXXFLAGS=-fPIC
+    SDIROPT=-shared
+    MAKEOPT="";
    elif [ ! "${4}" ] || [ "${4}" == "null" ];then
     MARCH=BOOTOPT_${1}
     CONFOPT="${NULLOPT} ${SYSROOT}"
     CFLAGS=-fPIC
     CXXFLAGS=-fPIC
     SDIROPT=-null
+    MAKEOPT="";
    elif [ "${4}" == "cross" ];then
     if [ "${1}" == "${TARCH}" ];then
       return;
@@ -1240,13 +1248,6 @@ build_gcc_bootstrap() {
     CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${TLIBDIR}/jvm/gcj-jdk-${1} --enable-cxx-flags=-I=/usr/include
              CFLAGS=-I=/usr/include ${LANGOPT} ${SYSROOT}"
     SDIROPT=-cross
-    MAKEOPT="";
-   elif [ "${4}" == "shared" ];then
-    MARCH=CROSSOPT_${1}
-    CFLAGS=-I=/usr/include
-    CXXFLAGS=-I=/usr/include
-    CONFOPT="${SHAREDOPT} ${SYSROOT} ${CONFOPTX}"
-    SDIROPT=-shared
     MAKEOPT="";
   fi;
   TARGPKG=${GCC}${SDIROPT}
@@ -1527,28 +1528,18 @@ bootstrap_arch() {
     (build_glibc ${arch} ${TUPPLE}) || return 1
   done;
 
-  #Build native if needed rebuild some packages latter
-  if [ ! -e ${STATDIR}/${NARCH}/done/gcc ];then
-    for delstamp in glibc libxml2 libxslt libtool gmp mpfr mpc isl cloog;do
-      if [ -e ${STATDIR}/${NARCH}/done/${delstamp} ];then
-        rm ${STATDIR}/${NARCH}/done/${delstamp}
-      fi;
-    done;
-    if [ -e /usr/${NLIBDIR}/libgmp.a ];then
-      rm /usr/${NLIBDIR}/libgmp.a
-    fi;
-    build_packages ${NARCH} libtool gmp mpfr mpc isl cloog gcc || return 1
-  fi;
 exit 1
 #--gn
 
-  #Build cross compilers with above native compiler
+  #Build final compilers
   for arch in $@;do
     (check_create_arch ${arch}
-    #Build a full cross compiler if not native
+    #Build a full cross compiler if not native or native compiler
     if [ "${arch}" != "${NARCH}" ];then
-       build_packages ${arch} zlib libtool || exit 1
-       (build_gcc_bootstrap ${arch} ${HOST} ${NARCH} cross) || exit 1
+      build_packages ${arch} zlib libtool || exit 1
+      (build_gcc_bootstrap ${arch} ${HOST} ${NARCH} cross) || exit 1
+     else
+      build_packages ${NARCH} gcc || exit 1
     fi;
     #GCC needs system zlib glibc can use selinux/gd
     build_packages ${arch} pcre libsepol libselinux libpng libxml2 expat freetype fontconfig 
@@ -1702,12 +1693,68 @@ build_ml_packages() {
   done;
 }
 
-build_cross_package() {
+
+bootstrap_native() {
   #Check arch build dir exists Setup linux headers and env vars
-  check_create_arch ${1}
+  check_create_arch ${NARCH}
+
   if [ ! -d ${TOOLPKG}/${NARCH} ];then
     mkdir -p ${TOOLPKG}/${NARCH}
   fi;
+
+  #Build Native Arch Libs
+  if [ ! -e /${NLIBDIR}/libc.so.6 ];then
+    (build_glibc ${NARCH} ${BUILD}) || return 1
+  fi;
+
+  #Bootstrap native arch buildtools
+  build_packages ${NARCH} binutils groff perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 \
+                          help2man autoconf zlib patch ||return 1
+
+  #build shared gcc to get shared libstdc++/libada/libgcc [C/C++/ADA]
+  if [ ! -e /usr/${NLIBDIR}/libstdc++.so ];then
+    build_packages ${NARCH} libtool gmp mpfr mpc || return 1
+    touch /usr/bin/${BUILD}-gcc.boot
+    (build_gcc_bootstrap ${NARCH} ${BUILD} ${NARCH} shared) || return 1
+    rm /usr/bin/${BUILD}-gcc.boot /usr/bin/${BUILD}-gcc.shared
+    rm ${STATDIR}/${NARCH}/done/libtool
+    for delstamp in libtool gmp mpfr mpc isl cloog;do
+      if [ -e ${STATDIR}/${NARCH}/done/${delstamp} ];then
+        rm ${STATDIR}/${NARCH}/done/${delstamp}
+      fi;
+    done;
+    if [ -e /usr/${NLIBDIR}/libgmp.a ];then
+      rm /usr/${NLIBDIR}/libgmp.a
+    fi;
+    if [ -e ${ARCHROOT}/${NARCH}/usr/${NLIBDIR}/libgmp.a ];then
+      rm ${ARCHROOT}/${NARCH}/usr/${NLIBDIR}/libgmp.a
+    fi;
+    (BOOTCLEAN=distclean;build_packages ${NARCH} libtool gmp mpfr mpc isl cloog) || return 1
+  fi;
+
+  #Bootstrap native arch with deps for GCC [libjava] if gcc not built
+  if [ ! -e ${STATDIR}/${NARCH}/done/unzip ];then
+    build_packages ${NARCH} gettext xz libxml2 libxslt libffi Python docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
+                            docbook-4.5 docbook-xsl xmlto OpenSP openjade glib pkg-config gtk-doc libcroco zip unzip || return 1
+  fi;
+
+  #Rebuild some packages with python/shared gcc
+  if [ ! -e ${STATDIR}/${NARCH}/done/gcc ];then
+    for delstamp in glibc libxml2 libxslt;do
+      if [ -e ${STATDIR}/${NARCH}/done/${delstamp} ];then
+        rm ${STATDIR}/${NARCH}/done/${delstamp}
+      fi;
+    done;
+    (BOOTCLEAN=distclean;build_packages ${NARCH} libtool gmp mpfr mpc isl cloog) || return 1
+  fi;
+
+  #Build multi arch stack for native
+  (build_glibc_march ${NARCH}) || return 1
+}
+
+build_cross_package() {
+  #Check arch build dir exists Setup linux headers and env vars
+  check_create_arch ${1}
 
   #Is LD good ?? create symlinks needed
   for binarch in ${HOST} ${BUILD};do
@@ -1725,43 +1772,14 @@ build_cross_package() {
     fi;
   done;
 
-  #Build Native Arch Libs
-  if [ ! -e /${NLIBDIR}/libc.so.6 ];then
-    (build_glibc ${NARCH} ${BUILD}) || return 1
-  fi;
+  #Get native toolchain in order / multilib
+  (bootstrap_native)
+#--gn Build GCC
 
-  #Bootstrap native arch buildtools
-  if [ "${1}" == "${NARCH}" ];then
-    build_packages ${NARCH} binutils groff perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 \
-                            help2man autoconf zlib ||return 1
-  fi;
-
-  #build shared gcc to get shared libstdc++/libada/libgcc [C/C++/ADA]
-  if [ ! -e /usr/${NLIBDIR}/libstdc++.so ];then
-    build_packages ${NARCH} libtool gmp mpfr mpc || return 1
-    touch /usr/bin/${BUILD}-gcc.boot
-    (build_gcc_bootstrap ${NARCH} ${BUILD} ${NARCH} shared) || return 1
-    rm /usr/bin/${BUILD}-gcc.boot /usr/bin/${BUILD}-gcc.shared
-  fi;
-
-  #Bootstrap native arch with deps for GCC [libjava] if gcc not built
-  if [ "${1}" == "${NARCH}" ] && [ ! -e ${STATDIR}/${NARCH}/done/unzip ];then
-    build_packages ${NARCH} gettext xz libxml2 libxslt libffi Python docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 
-                            docbook-4.5 docbook-xsl xmlto OpenSP openjade glib pkg-config gtk-doc libcroco zip unzip || return 1
-  fi;
-
-#--gn
-  #Build multi arch stack for native
-  (build_glibc_march ${NARCH}) || return 1
-
-  #Glibc/binutils for target
   if [ "${1}" != "${NARCH}" ];then
     (build_bootstrap_binutils ${1} ${HOST}) || return 1
     build_glibc_march ${1} || return 1
-  fi;
-
-  #dont build cross tools for native but ensure toolchain is good also neeed qemu
-  if [ "${1}" == "${NARCH}" ];then
+   else
     build_toolchain ${NARCH} ${BUILD} || return 1
 
     #QEMU Static runtime emulator
