@@ -976,7 +976,7 @@ build_glibc() {
     return;
   fi;
 
-  CLEANOPT=distclean
+  CLEANOPT=${BOOTCLEAN}
 
   if [ -x /usr/bin/${2}-gcc ];then
     GCCEH=`${2}-gcc -print-libgcc-file-name |sed 's/libgcc/&_eh/'`
