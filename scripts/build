@@ -1540,13 +1540,6 @@ build_glibc_march() {
 }
 
 build_toolchain() {
-  #Is LD good ?? create symlinks needed
-  for bintool in `ls /usr/${2}/bin/`;do
-    if [ ! -e /usr/bin/${2}-${bintool} ];then
-      ln -s ../${2}/bin/${bintool} /usr/bin/${2}-${bintool};
-    fi;
-  done
-
   #Build fresh glibc we are asuming that binutils/gcc/make/bash/sed/awk are good as they should be
   (build_glibc_march ${1}) || return 1
 
@@ -1682,6 +1675,22 @@ build_cross_package() {
   check_create_arch ${1}
   if [ ! -d ${TOOLPKG}/${NARCH} ];then
     mkdir -p ${TOOLPKG}/${NARCH}
+  fi;
+
+  #Is LD good ?? create symlinks needed
+  for binarch in ${HOST} ${BUILD};do
+    for bintool in `ls /usr/${binarch}/bin/`;do
+      if [ ! -e /usr/bin/${binarch}-${bintool} ];then
+        ln -s ../${HOST}/bin/${bintool} /usr/bin/${binarch}-${bintool};
+      fi;
+    done
+  done;
+
+  #Gnat tools symlinks
+  for gnatt in gnatmake gnatbind gnattls;do
+    if [ -x /usr/bin/${gnatt} ] && [ ! -e /usr/bin/${BUILD}-${gnatt} ];then
+      ln -s ${gnatt} /usr/bin/${BUILD}-${gnatt}
+    fi;
   fi;
 
   #Build Native Arch Libs
