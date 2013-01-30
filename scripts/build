@@ -1707,9 +1707,18 @@ build_cross_package() {
   #Build Native Arch Libs
   (build_glibc ${NARCH} ${BUILD}) || return 1
 
-  #Binutils/glibc for native and target
-  build_packages ${NARCH} binutils || return 1
-  build_glibc_march ${NARCH} || return 1
+  #Bootstrap native arch with deps for GCC [libjava]
+  if [ "${1}" == "${NARCH}" ];then
+    build_packages ${NARCH} binutils groff perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 \
+                             help2man autoconf zlib libtool gmp mpfr mpc isl cloog gettext xz libxml2 libxslt libffi \
+                             Python docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl xmlto \
+                             OpenSP openjade libxslt glib pkg-config gtk-doc libcroco zip unzip || return 1
+  fi;
+
+  #Build multi arch stack for native
+  (build_glibc_march ${NARCH}) || return 1
+
+  #Glibc/binutils for target
   if [ "${1}" != "${NARCH}" ];then
     (build_bootstrap_binutils ${1} ${HOST}) || return 1
     build_glibc_march ${1} || return 1
