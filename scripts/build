@@ -18,6 +18,7 @@ ARCHROOT=/build
 SVNURL=${SVNBASE}/distro/
 SVNUPDATE=0;
 AMDEF="1.11";
+BOOTCLEAN="";
 
 #Multiarch Definitions
 MARCH_x86_64="x86_32|i[3-6]86|x86_64"
@@ -408,6 +409,10 @@ cmake_cross_build() {
   export LDFLAGS="${LDFLAGS} ${EXTRALIBS}"
 
   if [ "${2}" == "${NARCH}" ];then
+    #Cmake bootstrap process special case
+    if [ "${PROJECT}" == "cmake" ];then
+      (../bootstrap --prefix=/usr --mandir=share && make ${MAKE_J} && make install) || return 1
+    fi;
     cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES="${EXTRALIBS}" \
           -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" -DCMAKE_C_LINK_FLAGS="${LDFLAGS} ${EXTRALIBS}" \
           -DCMAKE_INSTALL_RPATH:PATH="${RPATH_LINK}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} ${1}${CFGBIN}
@@ -567,11 +572,17 @@ build_project() {
   BUILDPROJECT=${1}
   shift;
   barch=${1};
+  shift;
+  addopts=$@
 
   eval `cat ${DEFDIR}/${BUILDPROJECT}`
   DONTBUILDPAT=${DONTBUILD// /|}
   if [ "${DONTBUILD}" ] && [[ ${1} =~ ${DONTBUILDPAT} ]];then
     return 0;
+  fi;
+
+  if [ "${addopts}" ];then
+    CONFOPT="${CONFOPT} ${addopts}"
   fi;
 
   if [ ! "${ALIAS}" ];then
@@ -948,10 +959,10 @@ build_project() {
 
 setup_build_dir() {
   cd ${SRCDIR}/${2}/${3}
-  if [ -d build-${4}-${1}${5} ];then
+  if [ -d build-${4}-${1}${5} ] && [ "${BOOTCLEAN}" ];then
     rm -rf build-${4}-${1}${5}
   fi;
-  if [ -d ${TOOLDIR}/${4}/${1}/${3}${5} ];then
+  if [ -d ${TOOLDIR}/${4}/${1}/${3}${5} ] && [ "${BOOTCLEAN}" ];then
     rm -rf ${TOOLDIR}/${4}/${1}/${3}${5}
   fi;
   if [ ! -d build-${4}-${1}${5} ];then
@@ -987,9 +998,29 @@ build_glibc() {
     ln -s /usr/bin/pwd /bin/
   fi;
 
+  #Setup Arch
   check_create_arch ${1}
-  build_project glibc ${1}
-  RES=$?
+
+  #Set dir correctly
+  if [ "${1}" == "${NARCH}" ];then
+    USELIBDIR=${NLIBDIR}
+   else
+    USELIBDIR=${B_LIBDIRS}
+  fi;
+
+  #building without gcc do so without SSP
+  if [ ! -x /usr/bin/${2}-g++ ];then
+    build_project glibc ${1} libc_cv_ssp=no
+    RES=$?
+    #i want to rebuild this when i have toolchain
+    if [ -e ${STATDIR}/${1}/done/glibc ];then
+      rm ${STATDIR}/${1}/done/glibc
+    fi;
+   else
+    build_project glibc ${1}
+    RES=$?
+  fi
+
   if [ -h ${GCCEH} ];then
     rm ${GCCEH}
   fi;
@@ -998,11 +1029,6 @@ build_glibc() {
   fi;
 
   #Create a static libc pkg
-  if [ "${1}" == "${NARCH}" ];then
-    USELIBDIR=${NLIBDIR}
-   else
-    USELIBDIR=${B_LIBDIRS}
-  fi;
   SRDIR=${BASEROOT}/${1}
   if [ ! -d ${SRDIR} ];then
     mkdir -p ${SRDIR}/usr/include
@@ -1106,43 +1132,45 @@ build_bootstrap_binutils() {
     CSYSROOT="--with-sysroot=${ARCHROOT}/${1}"
   fi;
 
-  if [ ! -e /usr/bin/${2}-ld ] || [ ! -d ${DIST_ROOT} ];then
-    svn_load_pkg binutils ${BINUTILS} || return 1
-    ARCHOPTV=OPT_${1}
-    ARCHOPT=${!ARCHOPTV}
+  if [ -e /usr/bin/${2}-ld ] && [ -d ${DIST_ROOT} ];then
+    return 0
+  fi;
 
-    if [ "${1}" == "${NARCH}" ];then
-      PROGPRE="";
-      ARCHOPT="${ARCHOPT} LDFLAGS=-static";
-      MAKEOPT="LDFLAGS=-all-static";
-     else
-      MAKEOPT="";
-      PROGPRE="--program-prefix=${2}-";
+  svn_load_pkg binutils ${BINUTILS} || return 1
+  ARCHOPTV=OPT_${1}
+  ARCHOPT=${!ARCHOPTV}
+
+  if [ "${1}" == "${NARCH}" ];then
+    PROGPRE="";
+    ARCHOPT="${ARCHOPT} LDFLAGS=-static";
+    MAKEOPT="LDFLAGS=-all-static";
+   else
+    MAKEOPT="";
+    PROGPRE="--program-prefix=${2}-";
+  fi;
+
+  setup_build_dir ${1} binutils ${BINUTILS} ${NARCH}
+  export MAKEOPT
+  run_configure ${B_LIBDIRS} ${PROGPRE} --target=${2} --build=${BUILD} --host=${BUILD} \
+                ${CONFOPT} ${ARCHOPT} ${CSYSROOT} CC=${BUILD}-gcc || return 1
+  make ${MAKE_J} configure-host || return 1
+  make ${MAKE_J} -C bfd ${MAKEOPT} all || return 1
+  make ${MAKE_J} -C libiberty ${MAKEOPT} all || return 1
+  make ${MAKE_J} -C gold all || return 1
+  make ${MAKE_J} ${MAKEOPT} all || make ${MAKEOPT} all || return 1
+  make DESTDIR=${DIST_ROOT} all install || return 1
+
+  if [ "${1}" != "${NARCH}" ];then
+    if [ ! -e /usr/bin/${2}-ld ];then
+      rsync -aP ${DIST_ROOT}/ /
     fi;
-
-    setup_build_dir ${1} binutils ${BINUTILS} ${NARCH}
-    export MAKEOPT
-    run_configure ${B_LIBDIRS} ${PROGPRE} --target=${2} --build=${BUILD} --host=${BUILD} \
-                  ${CONFOPT} ${ARCHOPT} ${CSYSROOT} || return 1
-    make ${MAKE_J} configure-host || return 1
-    make ${MAKE_J} -C bfd ${MAKEOPT} all || return 1
-    make ${MAKE_J} -C libiberty ${MAKEOPT} all || return 1
-    make ${MAKE_J} -C gold all || return 1
-    make ${MAKE_J} ${MAKEOPT} all || make ${MAKEOPT} all || return 1
-    make DESTDIR=${DIST_ROOT} all install || return 1
-
-    if [ "${1}" != "${NARCH}" ];then
-      if [ ! -e /usr/bin/${2}-ld ];then
-        rsync -aP ${DIST_ROOT}/ /
-      fi;
-      MULTIARCH=MARCH_${1}
-      if [[ ${1} =~ ${!MULTIARCH} ]];then
-        rsync -a ${DIST_ROOT}/usr/${2} ${BASEROOT}/${NARCH}/usr/;
-      fi;
-      tar_package ${DIST_ROOT} ${TOOLPKG}/${NARCH}/${1} ${BINUTILS} > /dev/null 2>&1
-     else
-      tar_package ${DIST_ROOT} ${TOOLPKG}/${NARCH} ${BINUTILS}-static > /dev/null 2>&1
+    MULTIARCH=MARCH_${1}
+    if [[ ${1} =~ ${!MULTIARCH} ]];then
+      rsync -a ${DIST_ROOT}/usr/${2} ${BASEROOT}/${NARCH}/usr/;
     fi;
+    tar_package ${DIST_ROOT} ${TOOLPKG}/${NARCH}/${1} ${BINUTILS} > /dev/null 2>&1
+   else
+    tar_package ${DIST_ROOT} ${TOOLPKG}/${NARCH} ${BINUTILS}-static > /dev/null 2>&1
   fi;
 }
 
@@ -1267,7 +1295,7 @@ build_gcc_bootstrap() {
 
   export CFLAGS CXXFLAGS LDFLAGS
   run_configure ${USELIBDIR} ${PROGPRE} --build=${BUILD} --host=${THOST} --target=${2} --with-build-sysroot=${BUILDDIR} \
-                ${CONFOPT} ${!MARCH} || return 1
+                ${CONFOPT} ${!MARCH} CC=${BUILD}-gcc CXX=${BUILD}-g++ || return 1
 
   if [ ! -d ${2}/libstdc++-v3 ];then
     mkdir -p ${2}/libstdc++-v3
@@ -1370,7 +1398,7 @@ build_packages() {
   for pkg in $@;do
     if [ ! -e ${STATDIR}/${DARCH}/done/${pkg} ];then
       #If we fail on 1st pass rebuild with no clean opt's
-      if ! (CLEANOPT=distclean;build_project ${pkg} ${DARCH});then
+      if ! (CLEANOPT=${BOOTCLEAN};build_project ${pkg} ${DARCH});then
         (unset CLEANOPT;build_project ${pkg} ${DARCH}) || return 1
       fi;
     fi;
@@ -1476,7 +1504,8 @@ static_toolbuild() {
 bootstrap_arch() {
   for arch in $@;do
     arch_config ${arch}
-    #build binutils
+
+    #build binutils if needed
     if [ ! -x /usr/bin/${TUPPLE}-ld ];then
       (build_bootstrap_binutils ${arch} ${TUPPLE}) || return 1
     fi;
@@ -1485,6 +1514,7 @@ bootstrap_arch() {
     if [ ! -x /usr/bin/${TUPPLE}-gcc ];then
       (build_gcc_bootstrap ${arch} ${TUPPLE} ${NARCH} null) || return 1
     fi;
+
     #build glibc and dependandcies for arch cross
     (build_glibc ${arch} ${TUPPLE}) || return 1
     (build_packages ${arch} zlib) || return 1 
