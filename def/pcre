@@ -1,7 +1,6 @@
 VERSION="8.31"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-shared";
+CONFOPT="";
 STDCSTATIC="--disable-shared LDFLAGS=-static";
 CLEARFLAGS="1";
-NOCCOPT="1";
