@@ -1731,7 +1731,6 @@ bootstrap_native() {
     if [ -e ${ARCHROOT}/${NARCH}/usr/${NLIBDIR}/libgmp.a ];then
       rm ${ARCHROOT}/${NARCH}/usr/${NLIBDIR}/libgmp.a
     fi;
-    (BOOTCLEAN=distclean;build_packages ${NARCH} libtool gmp mpfr mpc isl cloog) || return 1
   fi;
 
   #Bootstrap native arch with deps for GCC [libjava] if gcc not built
@@ -1747,8 +1746,8 @@ bootstrap_native() {
         rm ${STATDIR}/${NARCH}/done/${delstamp}
       fi;
     done;
-    (BOOTCLEAN=distclean;build_packages ${NARCH} libtool gmp mpfr mpc isl cloog) || return 1
   fi;
+  (BOOTCLEAN=distclean;build_packages ${NARCH} libtool gmp mpfr mpc isl cloog) || return 1
 
   #Build multi arch stack for native
   (build_glibc_march ${NARCH}) || return 1
@@ -1775,7 +1774,7 @@ build_cross_package() {
   done;
 
   #Get native toolchain in order / multilib
-  (bootstrap_native)
+  (bootstrap_native) ||return 1
 #--gn Build GCC
 
   if [ "${1}" != "${NARCH}" ];then
@@ -1905,6 +1904,10 @@ for binlink in cpio tar sed grep fgrep egrep;do
     ln -s /usr/bin/${binlink} /bin;
   fi;
 done
+
+if [ ! -d ${PKGDISTDIR} ];then
+  mkdir -p ${PKGDISTDIR}
+fi;
 
 if [ -d /usr/share/java ] && [ -d ${PKGDISTDIR} ] && [ ! -f ${PKGDISTDIR}/java-jar.tar.xz ];then
   find /usr/share/java/ ! -regex .*libgcj.* |cpio -ov -H tar |xz -9 > ${PKGDISTDIR}/java-jar.tar.xz
