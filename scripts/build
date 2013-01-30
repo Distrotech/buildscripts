@@ -1517,11 +1517,21 @@ bootstrap_arch() {
 
     #build glibc and dependandcies for arch cross
     (build_glibc ${arch} ${TUPPLE}) || return 1
-    (build_packages ${arch} zlib) || return 1 
+  done;
 
-    #Cross compiler
-    (check_create_arch ${arch})
-    (build_gcc_bootstrap ${arch} ${TUPPLE} ${NARCH} cross) || return 1;
+  #Build native
+  build_packages ${NARCH} gcc || return 1
+
+  #Build cross compilers with above native compiler
+  for arch in $@;do
+    if [ "${arch}" == "${NARCH}" ];then
+       continue;
+    fi;
+    (check_create_arch ${arch}
+    #GCC needs system zlib glibc can use selinux/gd
+    build_packages ${arch} zlib libtool && \
+    (build_gcc_bootstrap ${arch} ${HOST} ${NARCH} cross) && \
+    build_packages ${arch} pcre libsepol libselinux libpng libxml2 expat freetype fontconfig jpeg gd) || return 1;
   done;
 }
 
@@ -1545,11 +1555,11 @@ build_toolchain() {
 
   #Build perl/autoconf/zlib and Libs needed for GCC
   if [ "${1}" == "${NARCH}" ];then
-    (build_packages ${1} groff perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf \
-                         zlib libtool gmp mpfr mpc) || return 1
+    build_packages ${1} groff perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf \
+                         zlib libtool gmp mpfr mpc || return 1
    else
-    (build_packages ${1} groff automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf \
-                         zlib libtool gmp mpfr mpc) || return 1
+    build_packages ${1} groff automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf \
+                         zlib libtool gmp mpfr mpc || return 1
   fi;
 
   #Shared GCC / Multi arch C/C++/ADA
@@ -1558,22 +1568,22 @@ build_toolchain() {
   #Rebuild libtool this will be rebuilt again after final GCC build
   if [ ! -e ${STATDIR}/${1}/done/gcc ] && [ -e ${STATDIR}/${1}/done/libtool ];then
     rm ${STATDIR}/${1}/done/libtool 
-    (build_packages ${1} libtool) || return 1
+    build_packages ${1} libtool || return 1
     rm ${STATDIR}/${1}/done/libtool
   fi;
 
   #Build GCC
-  (build_packages ${1} gmp mpfr mpc isl cloog zip unzip gcc libtool) || return 1
+  build_packages ${1} gmp mpfr mpc isl cloog zip unzip gcc libtool || return 1
 
   #Base dependancies
-  (build_packages ${1} gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
+  build_packages ${1} gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
                        bison diffutils flex attr acl pcre libsepol libselinux file gengetopt libidn libtasn1 p11-kit \
                        nettle gnutls libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap coreutils \
-                       readline bash xz expat) || return 1
+                       readline bash xz expat || return 1
 
   #Dont build libxml2 if there is a python in / may not be one in /build/.../
   if [ ! -d /usr/lib/python2.7 ];then
-    (build_packages ${1} libxml2 libxslt) || return 1
+    build_packages ${1} libxml2 libxslt || return 1
   fi;
 
   #Add required perl modules from cpan may not need libxml only expat !!!
@@ -1585,7 +1595,7 @@ build_toolchain() {
 
   if [ ! -e ${STATDIR}/${1}/done/gcc ] && [ -e ${STATDIR}/${1}/done/libtool ];then
     rm ${STATDIR}/${1}/done/libtool
-    (build_packages ${1} libtool) || return 1
+    build_packages ${1} libtool || return 1
     rm ${STATDIR}/${1}/done/libtool
   fi;
 
@@ -1597,32 +1607,32 @@ build_toolchain() {
     rm ${STATDIR}/${1}/done/libxslt
   fi;
 
-  (build_packages ${1} intltool popt rsync Python libxml2 libxslt gnome-doc-utils docbook-4.1.2 docbook-4.2 \
+  build_packages ${1} intltool popt rsync Python libxml2 libxslt gnome-doc-utils docbook-4.1.2 docbook-4.2 \
                        docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus glib gtk-doc \
                        pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg openssl trousers slang \
-                       wget) || return 1
+                       wget || return 1
 
   if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
     rm /usr/lib64/libblkid.a /usr/lib64/libuuid.a /usr/lib64/libblkid.la /usr/lib64/libuuid.la >/dev/null 2>&1
   fi;
 
-  (build_packages ${1} util-linux nano rsync grep less gzip tar pkg-config cpio iana-etc xmlto xmltoman giflib freetype \
-                       fontconfig fonttools lcms2 jpeg libpng openjpeg libmng OpenSP c-ares curl git) || return 1
+  build_packages ${1} util-linux nano rsync grep less gzip tar pkg-config cpio iana-etc xmlto xmltoman giflib freetype \
+                       fontconfig fonttools lcms2 jpeg libpng openjpeg libmng OpenSP c-ares curl git || return 1
 
   #This will fail due to Mesa so dont bail only do it on first pass use build_project directly
   if [ ! -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
     (CLEANOPT=distclean;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
   fi;
 
-  (build_packages ${1} cairo pango gobject-introspection vala libdrm llvm intltool cmake talloc tevent libevent libverto \
-                       krb5 cups kmod module-init-tools LVM2 cryptsetup systemd Mesa glu glw mtdev) || return 1
+  build_packages ${1} cairo pango gobject-introspection vala libdrm llvm intltool cmake talloc tevent libevent libverto \
+                       krb5 cups kmod module-init-tools LVM2 cryptsetup systemd Mesa glu glw mtdev || return 1
 
   #Continue X Build with GL/Mesa
   if [ -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
     (unset CLEANOPT;build_project Xorg ${1}) || return 1
   fi;
 
-  (build_packages ${1} fontforge freeglut pcsc-lite tiff atk  gdk-pixbuf gtk+ patch alsa-lib fastjar icedtea6 icedtea7 \
+  build_packages ${1} fontforge freeglut pcsc-lite tiff atk  gdk-pixbuf gtk+ patch alsa-lib fastjar icedtea6 icedtea7 \
                        yasm nasm fuse libunistring txt2man printproto portablexdr libpcap ppp libIDL ORBit2 dbus-glib \
                        polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig M2Crypto libnl-1 libnl \
                        crda ragel apr apr-iconv sqlite-autoconf keyutils neon apache-ant tcl8 tk8 db unixODBC \
@@ -1634,7 +1644,8 @@ build_toolchain() {
                        ptlib libcddb libcdio-cdda libcdio libcddb fltk libdaemon libnfnetlink libmnl libexif exif \
                        libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils \
                        xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem bzip2 qt-4 avahi gnome-vfs \
-                       gstreamer libvisual gst-plugins-base djvulibre nspr nss) || return 1
+                       gstreamer libvisual gst-plugins-base djvulibre nspr nss || return 1
+
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
 
@@ -1697,7 +1708,7 @@ build_cross_package() {
   (build_glibc ${NARCH} ${BUILD}) || return 1
 
   #Binutils/glibc for native and target
-  (build_packages ${NARCH} binutils) || return 1
+  build_packages ${NARCH} binutils || return 1
   build_glibc_march ${NARCH} || return 1
   if [ "${1}" != "${NARCH}" ];then
     (build_bootstrap_binutils ${1} ${HOST}) || return 1
