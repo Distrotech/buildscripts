@@ -1698,7 +1698,7 @@ build_cross_package() {
   done;
 
   #Gnat tools symlinks
-  for gnatt in gnatmake gnatbind gnattls;do
+  for gnatt in gnatmake gnatbind gnatls;do
     if [ -x /usr/bin/${gnatt} ] && [ ! -e /usr/bin/${BUILD}-${gnatt} ];then
       ln -s ${gnatt} /usr/bin/${BUILD}-${gnatt}
     fi;
