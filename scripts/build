@@ -1702,7 +1702,7 @@ build_cross_package() {
     if [ -x /usr/bin/${gnatt} ] && [ ! -e /usr/bin/${BUILD}-${gnatt} ];then
       ln -s ${gnatt} /usr/bin/${BUILD}-${gnatt}
     fi;
-  fi;
+  done;
 
   #Build Native Arch Libs
   (build_glibc ${NARCH} ${BUILD}) || return 1
