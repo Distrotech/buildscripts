@@ -1528,18 +1528,20 @@ bootstrap_arch() {
     (build_glibc ${arch} ${TUPPLE}) || return 1
   done;
 
+  #Build native GCC we called here 1st to bootstrap native
+  (check_create_arch ${NARCH}
+  build_packages ${NARCH} gcc) || return 1
+
 exit 1
 #--gn
 
-  #Build final compilers
+  #Build cross compilers
   for arch in $@;do
     (check_create_arch ${arch}
-    #Build a full cross compiler if not native or native compiler
+    #Build a full cross compiler if not native
     if [ "${arch}" != "${NARCH}" ];then
       build_packages ${arch} zlib libtool || exit 1
       (build_gcc_bootstrap ${arch} ${HOST} ${NARCH} cross) || exit 1
-     else
-      build_packages ${NARCH} gcc || exit 1
     fi;
     #GCC needs system zlib glibc can use selinux/gd
     build_packages ${arch} pcre libsepol libselinux libpng libxml2 expat freetype fontconfig 
@@ -1551,13 +1553,13 @@ build_glibc_march() {
   #GCC C build to bootstrap multiarch
   case ${1} in
     x86_32|x86_64)(bootstrap_arch i686 x86_32 x86_64) || return 1;;
-    powerpc64)(bootstrap_arch ${1} powerpc powerpc64) || return 1;
+    powerpc64)(bootstrap_arch powerpc powerpc64) || return 1;
            if [ -d ${ARCHROOT}/${1} ] && [ -e ${STATDIR}/powerpc/done/glibc ] && \
               [ ! -e ${ARCHROOT}/${1}/usr/lib/libc.so ];then
              rm /dist/status/powerpc/done/glibc
            fi;
            (build_glibc powerpc powerpc-linux-gnu) || return 1;;
-    *)(bootstrap_arch ${1} ${1}) || return 1;;
+    *)(bootstrap_arch ${1}) || return 1;;
   esac
 }
 
