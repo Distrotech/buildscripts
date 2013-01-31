@@ -577,7 +577,7 @@ build_project() {
 
   eval `cat ${DEFDIR}/${BUILDPROJECT}`
   DONTBUILDPAT=${DONTBUILD// /|}
-  if [ "${DONTBUILD}" ] && [[ ${1} =~ ${DONTBUILDPAT} ]];then
+  if [ "${DONTBUILD}" ] && [[ ${barch} =~ ${DONTBUILDPAT} ]];then
     return 0;
   fi;
 
@@ -600,7 +600,7 @@ build_project() {
     return 1;
   fi;
 
-  AVER=VERSION_${1}
+  AVER=VERSION_${barch}
   VERSION=${!AVER-$VERSION}
 
   #For null config i need this set up early
@@ -612,7 +612,6 @@ build_project() {
     AUTOMAKE=automake-${AMDEF}
   fi;
   export ACLOCAL AUTOMAKE
-
   svn_load_pkg ${PROJECT} ${PROJECT}${VERSEP}${VERSION}
 
   if [ "${VERSION}" ];then
@@ -1596,9 +1595,9 @@ build_dependancies() {
   #Rebuild libxml2 with Python support
   if [ {STATDIR}/${1}/done/libxml2 -nt {STATDIR}/${1}/done/Python ] || \
      [ {STATDIR}/${1}/done/libxslt -nt {STATDIR}/${1}/done/Python ];then
-    for delstamp in Python libxml2 libxslt
+    for delstamp in Python libxml2 libxslt;do
       rm ${STATDIR}/${1}/done/${delstamp}
-    fi;
+    done;
   fi;
 
   build_packages ${1} intltool popt rsync Python libxml2 libxslt gnome-doc-utils docbook-4.1.2 docbook-4.2 \
