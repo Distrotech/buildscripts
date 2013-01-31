@@ -1347,6 +1347,9 @@ build_gcc_bootstrap() {
               rm /usr/bin/${2}-gcc.${stamp}
             fi;
           done
+          if [ -e ${STATDIR}/${1}/done/libtool ];then
+            rm ${STATDIR}/${1}/done/libtool
+          fi;
         fi;
        elif [ -e /usr/bin/${2}-gcc.null ] && [ "${4}" == "boot" ];then
         rsync -aP ${GCCBOOTDEST}/ /
@@ -1524,13 +1527,23 @@ bootstrap_arch() {
       (build_gcc_bootstrap ${arch} ${TUPPLE} ${NARCH} null) || return 1
     fi;
 
-    #build glibc and dependandcies for arch cross
-    (build_glibc ${arch} ${TUPPLE}) || return 1
+    #build glibc and dependandcies for arch
+    if [ ! -e ${ARCHROOT}/${arch}/${SETLIBDIR}/libc.so.6 ];then
+      (build_glibc ${arch} ${TUPPLE}) || return 1
+    fi;
   done;
 
-  #Build native GCC we called here 1st to bootstrap native
+  #Build native GCC we called here 1st to bootstrap native may need to rebuild libtool
+  if [ ! -e ${STATDIR}/${NARCH}/done/gcc ] && [ -e ${STATDIR}/${NARCH}/done/libtool ];then
+    DELLIBTOOL=${STATDIR}/${NARCH}/done/libtool
+   else
+    DELLIBTOOL="";
+  fi
   (check_create_arch ${NARCH}
   build_packages ${NARCH} gcc) || return 1
+  if [ "${DELLIBTOOL}" ];then
+    rm ${DELLIBTOOL}
+  fi;
 
   #Build cross compilers
   for arch in $@;do
@@ -1541,8 +1554,9 @@ bootstrap_arch() {
       (build_gcc_bootstrap ${arch} ${HOST} ${NARCH} cross) || exit 1
     fi;
     #GCC needs system zlib glibc can use selinux/gd
-    build_packages ${arch} pcre libsepol libselinux libpng libxml2 expat freetype fontconfig 
-                           jpeg gd || exit 1) || return 1;
+    BOOTCLEAN=distclean
+    build_packages ${arch} libtool pcre libsepol libselinux libpng libxml2 expat freetype fontconfig \
+                           jpeg gd glibc gmp mpfr mpc isl cloog gcc || exit 1) || return 1;
   done;
 }
 
@@ -1560,37 +1574,12 @@ build_glibc_march() {
   esac
 }
 
-build_toolchain() {
-  #Build fresh glibc we are asuming that binutils/gcc/make/bash/sed/awk are good as they should be
-  (build_glibc_march ${1}) || return 1
-
-  #Build perl/autoconf/zlib and Libs needed for GCC
-  if [ "${1}" == "${NARCH}" ];then
-    build_packages ${1} groff perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf \
-                         zlib libtool gmp mpfr mpc || return 1
-   else
-    build_packages ${1} groff automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf \
-                         zlib libtool gmp mpfr mpc || return 1
-  fi;
-
-  #Shared GCC / Multi arch C/C++/ADA
-  (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
-
-  #Rebuild libtool this will be rebuilt again after final GCC build
-  if [ ! -e ${STATDIR}/${1}/done/gcc ] && [ -e ${STATDIR}/${1}/done/libtool ];then
-    rm ${STATDIR}/${1}/done/libtool 
-    build_packages ${1} libtool || return 1
-    rm ${STATDIR}/${1}/done/libtool
-  fi;
-
-  #Build GCC
-  build_packages ${1} gmp mpfr mpc isl cloog zip unzip gcc libtool || return 1
-
+build_dependancies() {
   #Base dependancies
-  build_packages ${1} gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
-                       bison diffutils flex attr acl pcre libsepol libselinux file gengetopt libidn libtasn1 p11-kit \
-                       nettle gnutls libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap coreutils \
-                       readline bash xz expat || return 1
+  build_packages ${1} groff perl gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
+                      bison diffutils flex attr acl pcre libsepol libselinux file gengetopt libidn libtasn1 p11-kit \
+                      nettle gnutls libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap coreutils \
+                      readline bash xz expat || return 1
 
   #Dont build libxml2 if there is a python in / may not be one in /build/.../
   if [ ! -d /usr/lib/python2.7 ];then
@@ -1604,18 +1593,12 @@ build_toolchain() {
     fi;
   done
 
-  if [ ! -e ${STATDIR}/${1}/done/gcc ] && [ -e ${STATDIR}/${1}/done/libtool ];then
-    rm ${STATDIR}/${1}/done/libtool
-    build_packages ${1} libtool || return 1
-    rm ${STATDIR}/${1}/done/libtool
-  fi;
-
-  if [ ! -e ${STATDIR}/${1}/done/Python ] && [ -e ${STATDIR}/${1}/done/libxml2 ];then
-    rm ${STATDIR}/${1}/done/libxml2
-  fi;
-
-  if [ ! -e ${STATDIR}/${1}/done/Python ] && [ -e ${STATDIR}/${1}/done/libxslt ];then
-    rm ${STATDIR}/${1}/done/libxslt
+  #Rebuild libxml2 with Python support
+  if [ {STATDIR}/${1}/done/libxml2 -nt {STATDIR}/${1}/done/Python ] || \
+     [ {STATDIR}/${1}/done/libxslt -nt {STATDIR}/${1}/done/Python ];then
+    for delstamp in Python libxml2 libxslt
+      rm ${STATDIR}/${1}/done/${delstamp}
+    fi;
   fi;
 
   build_packages ${1} intltool popt rsync Python libxml2 libxslt gnome-doc-utils docbook-4.1.2 docbook-4.2 \
@@ -1655,13 +1638,17 @@ build_toolchain() {
                        ptlib libcddb libcdio-cdda libcdio libcddb fltk libdaemon libnfnetlink libmnl libexif exif \
                        libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils \
                        xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem bzip2 qt-4 avahi gnome-vfs \
-                       gstreamer libvisual gst-plugins-base djvulibre nspr nss || return 1
+                       gstreamer libvisual gst-plugins-base djvulibre nspr nss automake-1.9 automake-1.10 \
+                       automake-1.11 automake-1.12 automake-1.13 help2man autoconf || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
 
   #Static binutils distributable
   (build_bootstrap_binutils ${1} ${2}) || return 1
+
+  #Shared GCC / Multi arch C/C++/ADA distributable
+  (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
 
   #Build tools needed for compiling
   static_toolbuild ${1} ${2}
@@ -1691,7 +1678,6 @@ build_ml_packages() {
     fi;
   done;
 }
-
 
 bootstrap_native() {
   #Check arch build dir exists Setup linux headers and env vars
@@ -1750,7 +1736,7 @@ bootstrap_native() {
   (build_glibc_march ${NARCH}) || return 1
 }
 
-build_cross_package() {
+bootstrap_toolchain() {
   #Check arch build dir exists Setup linux headers and env vars
   check_create_arch ${1}
 
@@ -1764,7 +1750,7 @@ build_cross_package() {
   done;
 
   #Gnat tools symlinks
-  for gnatt in gnatmake gnatbind gnatls;do
+  for gnatt in gnatlink gnatmake gnatbind gnatls;do
     if [ -x /usr/bin/${gnatt} ] && [ ! -e /usr/bin/${BUILD}-${gnatt} ];then
       ln -s ${gnatt} /usr/bin/${BUILD}-${gnatt}
     fi;
@@ -1774,39 +1760,15 @@ build_cross_package() {
   (bootstrap_native) ||return 1
 
   if [ "${1}" != "${NARCH}" ];then
-    (build_bootstrap_binutils ${1} ${HOST}) || return 1
-    build_glibc_march ${1} || return 1
+    (build_bootstrap_binutils ${1} ${HOST} && \
+    build_glibc_march ${1}) || return 1
    else
-    build_toolchain ${NARCH} ${BUILD} || return 1
+    build_dependancies ${NARCH} ${BUILD} || return 1
 
     #QEMU Static runtime emulator
     (build_qemu_static)
     return 0;
   fi;
-
-  case ${1} in
-    #Multi arch/lib for intel i686 does not support it
-    x86_32|x86_64|i[3-6]86)
-      case ${NARCH} in
-        x86_32|x86_64)
-          #Build GCC Deps
-          build_toolchain ${1} ${HOST} || return 1
-          return;
-        ;;
-      esac
-    ;;
-  esac;
-
-  #Here we build a cross chain for non native / multarch
-  if [ ! -d ${TOOLPKG}/${NARCH}/${1} ];then
-    mkdir -p ${TOOLPKG}/${NARCH}/${1}
-  fi;
-
-  #Cross compiler
-  (build_gcc_bootstrap ${1} ${HOST} ${NARCH} cross) || return 1;
-
-  #Static cross compiler to bootstrap GLIBC distributed static with C++/ADA
-  (build_gcc_bootstrap ${1} ${HOST} ${NARCH} static) || return 1;
 
   #Add QEMU static to build
   if [ -d ${ARCHROOT}/${1}/usr/bin ] && [ "${QCPU}" ] && [ -f ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ];then
@@ -1816,7 +1778,7 @@ build_cross_package() {
     fi;
   fi;
 
-  build_toolchain ${1} ${HOST} || return 1
+  build_dependancies ${1} ${HOST} || return 1
 
 #     mips64)
 #       #Need stubs-o32.h from 32bit
@@ -1914,7 +1876,7 @@ for barch in ${ARCHLIST};do
   configstatdir ${barch}
 
   #ensure the tool chain is in place
-  build_cross_package ${barch} || continue;
+  bootstrap_toolchain ${barch} || continue;
 
   #Build multiple packages XXX add svn bits
   if (( $# > 1 ));then
