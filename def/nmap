@@ -1,4 +1,4 @@
-VERSION="6.01"
+VERSION="6.25"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-liblua=included --with-libpcap=/usr";
