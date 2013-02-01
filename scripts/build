@@ -1658,7 +1658,7 @@ build_glibc_march() {
 
 build_dependancies() {
   #Base dependancies
-  build_packages ${1} groff perl gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
+  build_packages ${1} groff gdbm perl gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
                       bison diffutils flex attr acl pcre libsepol libselinux file gengetopt libidn libtasn1 p11-kit \
                       nettle gnutls libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap coreutils \
                       readline bash xz expat || return 1
@@ -1683,9 +1683,9 @@ build_dependancies() {
     done;
   fi;
 
-  build_packages ${1} intltool popt rsync Python libxml2 libxslt gnome-doc-utils docbook-4.1.2 docbook-4.2 \
+  build_packages ${1} intltool popt rsync bzip2 openssl Python libxml2 libxslt gnome-doc-utils docbook-4.1.2 docbook-4.2 \
                        docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus glib gtk-doc \
-                       pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg openssl trousers slang \
+                       pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg trousers slang \
                        wget || return 1
 
   if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
@@ -1716,14 +1716,14 @@ build_dependancies() {
                        yasm nasm fuse libunistring txt2man printproto portablexdr libpcap ppp libIDL ORBit2 dbus-glib \
                        polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig M2Crypto libnl-1 libnl \
                        crda ragel apr apr-iconv sqlite-autoconf keyutils neon apache-ant tcl8 tk8 db unixODBC \
-                       cyrus-sasl openslp openldap mysql gdbm postgresql apr-util httpd subversion libva gavl jasper \
+                       cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion libva gavl jasper \
                        OpenCV frei0r libraw1394 audiofile esound libogg flac libvorbis libsndfile json-c fftw \
                        libsamplerate speex orc pulseaudio SDL libdc1394 libavc1394 libiec61883 faac libaacplus \
                        vo-aacenc vo-amrwbenc fribidi icu4c graphite2 harfbuzz libass libbluray celt libcaca gsm \
                        libmodplug lame twolame libnut opencore-amr opus schroedinger libtheora utvideo openal xvidcore \
                        ptlib libcddb libcdio-cdda libcdio libcddb fltk libdaemon libnfnetlink libmnl libexif exif \
                        libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils \
-                       xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem bzip2 qt-4 avahi gnome-mime-data \
+                       xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem qt-4 avahi gnome-mime-data \
                        gnome-vfs gstreamer libvisual gst-plugins-base djvulibre nspr nss automake-1.9 automake-1.10 \
                        automake-1.11 automake-1.12 automake-1.13 help2man autoconf || return 1
 
