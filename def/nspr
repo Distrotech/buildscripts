@@ -13,3 +13,4 @@ OPT_arm="--host=arm-linux-gnueabi --target=arm-linux-gnueabi";
 OPT_arm64="--host=aarch64-linux-gnu --target=aarch64-linux-gnu --enable-64bit";
 NOCCOPT="1";
 DONTBUILD="arm64";
+FIXUPLIB="1";
