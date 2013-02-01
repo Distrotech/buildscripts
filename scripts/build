@@ -169,7 +169,7 @@ check_create_arch() {
   fi;
 
   if [ "${1}" != "${NARCH}" ];then
-    for adir in / /dev /proc /sys /usr/src /usr/include /dist ${ARCHROOT};do
+    for adir in / /root /dev /proc /sys /usr/src /usr/include /dist ${ARCHROOT};do
       mkdir -p ${ARCHROOT}/${1}/${adir}
     done
     if [ ! -e ${ARCHROOT}/${1}${ARCHROOT}/${1} ];then
@@ -1733,7 +1733,7 @@ build_dependancies() {
   #Static binutils distributable
   (build_bootstrap_binutils ${1} ${2}) || return 1
 
-  #Shared GCC / Multi arch C/C++/ADA distributable
+  #Shared GCC C/C++/ADA distributable
   (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
 
   #Build tools needed for compiling
