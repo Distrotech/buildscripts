@@ -1,12 +1,13 @@
-VERSION="9.2.1"
+VERSION="9.2.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--datadir=/usr/share/postgresql --enable-depend --with-perl --with-python --with-krb5 --with-pam --with-openssl 
-         --with-ldap --with-libxml --with-libxslt --with-zlib --with-readline --enable-thread-safety";
+         --with-ldap --with-libxml --with-libxslt --with-zlib --with-readline --enable-thread-safety --with-system-tzdata=/usr/share/zoneinfo
+         ac_cv_func_getpeereid=no ac_cv_func_strlcpy=no";
 NOCCOPT="1";
-EXTRALIBS="-lz -llber -lsasl2 -lrt -llzma -lpthread -lkrb5 -lkrb5support -lk5crypto -lcom_err -lresolv -ldl -lltdl -lutil -lldap_r";
+EXTRALIBS="-shared-libgcc -lz -llber -lsasl2 -lrt -llzma -lpthread -lkrb5 -lkrb5support -lk5crypto -lcom_err -lresolv -ldl -lltdl -lutil -lldap_r";
 BUILDDIR="0";
-ADDCFLAG="-I=/usr/include/python2.7 -I=/usr/lib/perl5/5.16.2/${HOST}-thread-multi/CORE";
+ADDCFLAG="-fPIC -I=/usr/include/python2.7 -I=/usr/lib/perl5/5.16.2/${HOST}-thread-multi/CORE";
 ADDLDFLAG="-L=/usr/lib/perl5/5.16.2/${HOST}-thread-multi/CORE";
 OPT_arm64="--disable-spinlocks --without-perl --without-python";
-SYSROOTPATH="1";
+XSYSROOTPATH="1";
