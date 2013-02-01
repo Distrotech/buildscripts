@@ -7,6 +7,7 @@ ADDCFLAG="-I=/usr/include/gstreamer-0.10 -I=/usr/include/python2.7";
 FIXUPLIB="1";
 OPT_i686="-DPYTHON_INCLUDE_DIR:PATH=/build/i686/usr/include/python2.7";
 OPT_x86_32="-DPYTHON_INCLUDE_DIR:PATH=/build/x86_32/usr/include/python2.7";
+OPT_x86_64="-DPYTHON_INCLUDE_DIR:PATH=/build/x86_64/usr/include/python2.7";
 OPT_arm="-DPYTHON_INCLUDE_DIR:PATH=/build/arm/usr/include/python2.7";
 OPT_arm64="-DPYTHON_INCLUDE_DIR:PATH=/build/arm64/usr/include/python2.7";
 OPT_mips="-DPYTHON_INCLUDE_DIR:PATH=/build/mips/usr/include/python2.7";
