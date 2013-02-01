@@ -933,6 +933,10 @@ build_project() {
     fi;
   fi;
 
+  if [ -d ${DIST_ROOT}/${ARCHROOT}/${barch} ];then
+    rsync -avP ${DIST_ROOT}/${ARCHROOT}/${barch}/ ${DIST_ROOT}/ && rm -rf ${DIST_ROOT}/${ARCHROOT}
+  fi;
+
   if [ ${B_LIBDIRS} != "lib" ] && [ -d ${DIST_ROOT}/usr/${B_LIBDIRS}/python2.7 ];then
     if [ ! -d ${DIST_ROOT}/usr/lib/python2.7/ ];then
       mkdir -p ${DIST_ROOT}/usr/lib/python2.7/
