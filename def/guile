@@ -1,4 +1,4 @@
-VERSION="2.0.6"
+VERSION="2.0.7"
 VERSEP="-";
 PREFIX="/usr";
 OPT_i686="--with-libltdl-prefix=/build/i686/usr/lib --with-libgmp-prefix=/build/i686/usr/lib --with-libunistring-prefix=/build/i686/usr/lib --with-libreadline-prefix=/build/i686/usr/lib";
