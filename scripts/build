@@ -18,7 +18,7 @@ ARCHROOT=/build
 SVNURL=${SVNBASE}/distro/
 SVNUPDATE=0;
 AMDEF="1.11";
-BOOTCLEAN="";
+BOOTCLEAN="distclean";
 
 #Multiarch Definitions
 MARCH_x86_64="x86_32|i[3-6]86|x86_64"
@@ -48,6 +48,10 @@ while (( $# > 1 ));do
   esac;
   shift;
 done;
+
+if [ "${CLEANOPT}" ];then
+  BOOTCLEAN=${CLEANOPT};
+fi;
 
 #Is last man standing a arch ??
 if [ "${1}" ] && [[ ${1} =~ ${ARCHMPAT} ]];then
@@ -174,7 +178,13 @@ svn_load_pkg() {
     PKGSVNDIR=${1}
   fi;
   if [ ! -d ${SRCDIR}/${PKGSVNDIR} ];then
-    svn co ${SVNURL}/${PKGSVNDIR} ${SRCDIR}/${PKGSVNDIR} || return 1
+    if [ "${NOSVNROOT}" ] && [ "${NOSVNROOT}" == "1" ];then
+      svn co ${SVNURL}/${PKGSVNDIR} ${SRCDIR}/${PKGSVNDIR}-svn || return 1
+      svn export ${SRCDIR}/${PKGSVNDIR}-svn ${SRCDIR}/${PKGSVNDIR}
+      NONULLCONF=1;
+     else
+      svn co ${SVNURL}/${PKGSVNDIR} ${SRCDIR}/${PKGSVNDIR} || return 1
+    fi
     if [ "${NONULLCONF}" ] && [ "${NONULLCONF}" == "1" ];then
       return 0;
     fi;
@@ -187,6 +197,8 @@ svn_load_pkg() {
          svn up)
       fi
     fi;
+   elif [ "${NOSVNROOT}" ] && [ "${NOSVNROOT}" == "1" ];then
+     return 0;
    elif [ "${SVNUPDATE}" == "1" ];then
     svn up ${SRCDIR}/${PKGSVNDIR}
   fi;
@@ -404,8 +416,8 @@ imake_cross_build() {
 
 cmake_cross_build() {
 #  export LD_LIBRARY_PATH="${RPATH_LINK}"
-  export CC="${CC} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${RPATH_LINK}"
-  export CXX="${CXX} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${RPATH_LINK}"
+#  export CC="${CC} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${RPATH_LINK}"
+#  export CXX="${CXX} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${RPATH_LINK}"
   export LDFLAGS="${LDFLAGS} ${EXTRALIBS}"
 
   if [ "${2}" == "${NARCH}" ];then
@@ -414,15 +426,15 @@ cmake_cross_build() {
       (../bootstrap --prefix=/usr --mandir=share && make ${MAKE_J} && make install) || return 1
     fi;
     cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES="${EXTRALIBS}" \
-          -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" -DCMAKE_C_LINK_FLAGS="${LDFLAGS} ${EXTRALIBS}" \
+          -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" -DCMAKE_C_LINK_FLAGS="${LDFLAGS}" \
           -DCMAKE_INSTALL_RPATH:PATH="${RPATH_LINK}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} ${1}${CFGBIN}
    else
     cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES="${EXTRALIBS}" \
-          -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" -DCMAKE_C_LINK_FLAGS="${LDFLAGS} ${EXTRALIBS}" \
-          -DCMAKE_SYSTEM_NAME=Linux  -DCMAKE_FIND_ROOT_PATH=${SYSROOT}/ \
+          -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" -DCMAKE_C_LINK_FLAGS="${LDFLAGS}" \
+          -DCMAKE_SYSTEM_NAME=Linux  -DCMAKE_FIND_ROOT_PATH="${SYSROOT}/" \
           -DCMAKE_INSTALL_RPATH:PATH="${RPATH_LINK}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} \
-          -DCMAKE_C_COMPILER="${HOST}-gcc" -DCMAKE_C_COMPILER_ENV_VAR="${CC_SYSROOT}" \
-          -DCMAKE_CXX_COMPILER="${HOST}-g++" -DCMAKE_CXX_COMPILER_ENV_VAR="${CC_SYSROOT}" \
+          -DCMAKE_C_COMPILER=${HOST}-gcc -DCMAKE_C_COMPILER_ENV_VAR="${CC_SYSROOT}" \
+          -DCMAKE_CXX_COMPILER=${HOST}-g++ -DCMAKE_CXX_COMPILER_ENV_VAR="${CC_SYSROOT}" \
           -DGNU_HOST=${3} -DCMAKE_TOOLCHAIN_FILE=${SCRIPTDIR}/cmake_${2}.cross ${1}${CFGBIN}
   fi;
   cmake ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} ${1}${CFGBIN}
@@ -1617,12 +1629,16 @@ build_dependancies() {
     (CLEANOPT=distclean;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
   fi;
 
-  build_packages ${1} cairo pango gobject-introspection vala libdrm llvm intltool cmake talloc tevent libevent libverto \
+  build_packages ${1} cairo gobject-introspection pango vala libdrm llvm intltool cmake talloc tevent libevent libverto \
                        krb5 cups kmod module-init-tools LVM2 cryptsetup systemd Mesa glu glw mtdev || return 1
 
   #Continue X Build with GL/Mesa
   if [ -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
     (unset CLEANOPT;build_project Xorg ${1}) || return 1
+  fi;
+
+  if [ "${1}" == "${NARCH}" ];then
+    /sbin/ldconfig
   fi;
 
   build_packages ${1} fontforge freeglut pcsc-lite tiff atk  gdk-pixbuf gtk+ patch alsa-lib fastjar icedtea6 icedtea7 \
@@ -1636,8 +1652,8 @@ build_dependancies() {
                        libmodplug lame twolame libnut opencore-amr opus schroedinger libtheora utvideo openal xvidcore \
                        ptlib libcddb libcdio-cdda libcdio libcddb fltk libdaemon libnfnetlink libmnl libexif exif \
                        libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils \
-                       xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem bzip2 qt-4 avahi gnome-vfs \
-                       gstreamer libvisual gst-plugins-base djvulibre nspr nss automake-1.9 automake-1.10 \
+                       xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem bzip2 qt-4 avahi gnome-mime-data \
+                       gnome-vfs gstreamer libvisual gst-plugins-base djvulibre nspr nss automake-1.9 automake-1.10 \
                        automake-1.11 automake-1.12 automake-1.13 help2man autoconf || return 1
 
   #Time to build a static gcc bootstrap distributable
