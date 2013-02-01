@@ -106,6 +106,40 @@ arch_config() {
   esac;
 }
 
+mnt_archroot() {
+  if [ ! -d /usr/src/.svn ];then
+    if [ ! -d /usr/src ];then
+      mkdir -p /usr/src
+    fi;
+    svn co --depth=empty ${SVNURL}/ ${SRCDIR}/
+  fi;
+  if [ ! -d ${ARCHROOT}/${1}/usr/src/.svn ];then
+    mount --bind /usr/src ${ARCHROOT}/${1}/usr/src
+  fi;
+
+  if [ ! -d /dist/.svn ];then
+    if [ ! -d /dist ];then
+      mkdir /dist
+    fi;
+    svn co ${SVNBASE}/buildscripts/trunk/ /dist/
+  fi;
+  if [ ! -d ${ARCHROOT}/${1}/dist/.svn ];then
+    mount --bind /dist ${ARCHROOT}/${1}/dist
+  fi;
+
+  if [ ! -d ${ARCHROOT}/${1}/sys/dev ];then
+    mount --bind /sys ${ARCHROOT}/${1}/sys
+  fi;
+
+  if [ ! -d ${ARCHROOT}/${1}/proc/1 ];then
+    mount --bind /proc ${ARCHROOT}/${1}/proc
+  fi;
+
+  if [ ! -d ${ARCHROOT}/${1}/dev/pts ];then
+    mount --bind /dev ${ARCHROOT}/${1}/dev
+  fi;
+}
+
 #Check arch export common env variables
 check_create_arch() {
   #Set tupple  
@@ -128,6 +162,22 @@ check_create_arch() {
   HDIR=${BASEROOT}/${1}
   if [ ! -d ${HDIR} ];then
     mkdir -p ${HDIR}/usr/include
+  fi;
+
+  if [ ! -d ${ARCHROOT} ];then
+    mkdir -p ${ARCHROOT}
+  fi;
+
+  if [ "${1}" != "${NARCH}" ];then
+    for adir in / /dev /proc /sys /usr/src /usr/include /dist ${ARCHROOT};do
+      mkdir -p ${ARCHROOT}/${1}/${adir}
+    done
+    if [ ! -e ${ARCHROOT}/${1}${ARCHROOT}/${1} ];then
+      ln -s .. ${ARCHROOT}/${1}${ARCHROOT}/${1}
+    fi;
+    mnt_archroot ${1}
+   elif [ "${1}" == "${NARCH}" ] && [ ! -e ${ARCHROOT}/${NARCH} ];then
+    ln -s .. ${ARCHROOT}/${NARCH}
   fi;
 
   if [ -d ${SRCDIR}/linux/usr/include/linux ];then
@@ -1000,15 +1050,6 @@ build_glibc() {
     fi;
   fi;
 
-  if [ "${1}" != "${NARCH}" ] && [ ! -d ${ARCHROOT}/${1} ];then
-    mkdir -p ${ARCHROOT}/${1}
-   elif [ "${1}" == "${NARCH}" ];then
-    if [ ! -d ${ARCHROOT} ];then
-      mkdir -p ${ARCHROOT}
-    fi;
-    ln -s / ${ARCHROOT}/${NARCH}
-  fi;
-
   if [ ! -e /bin/pwd ] && [ -e /usr/bin/pwd ];then
     ln -s /usr/bin/pwd /bin/
   fi;
@@ -1575,16 +1616,42 @@ bootstrap_arch() {
   done;
 }
 
+setup_ldconf() {
+  for arch in $@;do
+    if [ "${arch}" == "${NARCH}" ];then
+      continue
+    fi
+    arch_config ${arch}
+    if [ ! -e /etc/ld.so.conf.d/${arch}.conf ];then
+      (cat <<EOF
+/build/${arch}/${SETLIBDIR}
+/build/${arch}/usr/${SETLIBDIR}
+/build/${arch}/usr/X11R7/${SETLIBDIR}
+EOF
+      ) > /etc/ld.so.conf.d/${arch}.conf
+    fi;
+  done;
+  /sbin/ldconfig
+}
+
 build_glibc_march() {
   #GCC C build to bootstrap multiarch
   case ${1} in
-    x86_32|x86_64)(bootstrap_arch i686 x86_32 x86_64) || return 1;;
+    x86_32|x86_64)(bootstrap_arch i686 x86_32 x86_64) || return 1
+           if [ "${1}" == "${NARCH}" ];then
+             (setup_ldconf i686 x86_32 x86_64)
+           fi;
+    ;;
     powerpc64)(bootstrap_arch powerpc powerpc64) || return 1;
            if [ -d ${ARCHROOT}/${1} ] && [ -e ${STATDIR}/powerpc/done/glibc ] && \
               [ ! -e ${ARCHROOT}/${1}/usr/lib/libc.so ];then
              rm /dist/status/powerpc/done/glibc
            fi;
-           (build_glibc powerpc powerpc-linux-gnu) || return 1;;
+           (build_glibc powerpc powerpc-linux-gnu) || return 1
+           if [ "${1}" == "${NARCH}" ];then
+             (setup_ldconf powerpc powerpc64)
+           fi;
+    ;;
     *)(bootstrap_arch ${1}) || return 1;;
   esac
 }
