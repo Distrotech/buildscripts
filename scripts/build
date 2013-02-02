@@ -169,7 +169,7 @@ check_create_arch() {
   fi;
 
   if [ "${1}" != "${NARCH}" ];then
-    for adir in / /root /dev /proc /sys /usr/src /usr/include /dist ${ARCHROOT};do
+    for adir in / /root /dev /proc /sys /usr/src /usr/include /dist /tmp ${ARCHROOT};do
       mkdir -p ${ARCHROOT}/${1}/${adir}
     done
     if [ ! -e ${ARCHROOT}/${1}${ARCHROOT}/${1} ];then
@@ -1273,23 +1273,22 @@ build_gcc_bootstrap() {
     CONFOPT="${BOOTOPT} ${SYSROOT}"
     CFLAGS=-fPIC
     CXXFLAGS=-fPIC
-    LDFLAGS="-static"
+    LDFLAGS="-static -L/usr/${TLIBDIR}"
     SDIROPT=-boot
-    MAKEOPT="LDFLAGS=-static";
    elif [ "${4}" == "shared" ];then
     MARCH=BOOTOPT_${1}
     CONFOPT="${SHAREDOPT} ${SYSROOT} ${CONFOPTX}"
     CFLAGS=-fPIC
     CXXFLAGS=-fPIC
     SDIROPT=-shared
-    MAKEOPT="";
+    LDFLAGS="-L/usr/${TLIBDIR}";
    elif [ ! "${4}" ] || [ "${4}" == "null" ];then
     MARCH=BOOTOPT_${1}
-    CONFOPT="${NULLOPT} ${SYSROOT}"
+    CONFOPT="${NULLOPT} ${SYSROOT} CC=${BUILD}-gcc CXX=${BUILD}-g++"
     CFLAGS=-fPIC
     CXXFLAGS=-fPIC
     SDIROPT=-null
-    MAKEOPT="";
+    LDFLAGS="";
    elif [ "${4}" == "cross" ];then
     if [ "${1}" == "${TARCH}" ];then
       return;
@@ -1304,7 +1303,6 @@ build_gcc_bootstrap() {
     CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${TLIBDIR}/jvm/gcj-jdk-${1} --enable-cxx-flags=-I=/usr/include
              CFLAGS=-I=/usr/include ${LANGOPT} ${SYSROOT}"
     SDIROPT=-cross
-    MAKEOPT="";
   fi;
   TARGPKG=${GCC}${SDIROPT}
 
@@ -1354,15 +1352,25 @@ build_gcc_bootstrap() {
     BUILDDIR=/
   fi;
 
+#  if [ -x /usr/bin/${HOST}-gcc ] && [ -x /usr/bin/${HOST}-g++ ];then
+#    CC=${HOST}-gcc
+#    CXX=${HOST}-g++
+#    SET_BUILD=${HOST}
+#   else
+#    CC=${BUILD}-gcc
+#    CXX=${BUILD}-g++
+#    SET_BUILD=${BUILD}
+#  fi;
+
   export CFLAGS CXXFLAGS LDFLAGS
   run_configure ${USELIBDIR} ${PROGPRE} --build=${BUILD} --host=${THOST} --target=${2} --with-build-sysroot=${BUILDDIR} \
-                ${CONFOPT} ${!MARCH} CC=${BUILD}-gcc CXX=${BUILD}-g++ || return 1
+                ${CONFOPT} ${!MARCH} || return 1
 
   if [ ! -d ${2}/libstdc++-v3 ];then
     mkdir -p ${2}/libstdc++-v3
   fi;
   cp /usr/bin/libtool ${2}/libstdc++-v3
-  make ${MAKE_J} ${MAKEOPT} || make ${MAKEOPT} || return 1
+  make ${MAKE_J} LDFLAGS="${LDFLAGS}" || make LDFLAGS="${LDFLAGS}" || return 1
   make DESTDIR=${GCCBOOTDEST} install || return 1
 
   #Setup some missing bits
@@ -1852,7 +1860,7 @@ bootstrap_toolchain() {
     build_dependancies ${NARCH} ${BUILD} || return 1
 
     #QEMU Static runtime emulator
-    (build_qemu_static)
+#    (build_qemu_static)
     return 0;
   fi;
 
