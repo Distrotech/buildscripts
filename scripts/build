@@ -663,7 +663,10 @@ build_project() {
   fi;
 
   AVER=VERSION_${barch}
-  VERSION=${!AVER-$VERSION}
+  if [ "${!AVER}" ];then
+    VERSION=${!AVER}
+  fi;
+  eval ${AVER}=""
 
   #For null config i need this set up early
   if [ "${AMVER}" ];then
@@ -1181,7 +1184,10 @@ build_bootstrap_binutils() {
   barch=${1}
   eval `cat ${DEFDIR}/binutils`;
   AVER=VERSION_${1}
-  VERSION=${!AVER-$VERSION}
+  if [ "${!AVER}" ];then
+    VERSION=${!AVER}
+  fi;
+  eval ${AVER}=""
   BINUTILS=binutils${VERSEP}${VERSION}
 
   if [ "${1}" == "${NARCH}" ];then
@@ -1238,7 +1244,10 @@ build_gcc_bootstrap() {
   barch=${1}
   eval `cat ${DEFDIR}/glibc`;
   AVER=VERSION_${1}
-  VERSION=${!AVER-$VERSION}
+  if [ "${!AVER}" ];then
+    VERSION=${!AVER}
+  fi;
+  eval ${AVER}=""
   GLIBC=glibc${VERSEP}${VERSION}
 
   if [ "${3}" ] && [ "${3}" != "${NARCH}" ];then
@@ -1254,7 +1263,10 @@ build_gcc_bootstrap() {
 
   eval `cat ${DEFDIR}/gcc`;
   AVER=VERSION_${1}
-  VERSION=${!AVER-$VERSION}
+  if [ "${!AVER}" ];then
+    VERSION=${!AVER}
+  fi;
+  eval ${AVER}=""
   GCC=gcc${VERSEP}${VERSION}
 
   if [ "${1}" != "${3}" ];then
@@ -1437,7 +1449,10 @@ build_qemu_static() {
   barch=${1}
   eval `cat ${DEFDIR}/qemu`;
   AVER=VERSION_${NARCH}
-  VERSION=${!AVER-$VERSION}
+  if [ "${!AVER}" ];then
+    VERSION=${!AVER}
+  fi;
+  eval ${AVER}=""
   QEMU=qemu${VERSEP}${VERSION}
 
   DIST_PKG=${TOOLPKG}/${NARCH}/${QEMU}-static.tar.xz
@@ -1481,7 +1496,10 @@ build_static_tool() {
   barch=${1}
   eval `cat ${DEFDIR}/${4}`;
   AVER=VERSION_${1}
-  VERSION=${!AVER-$VERSION}
+  if [ "${!AVER}" ];then
+    VERSION=${!AVER}
+  fi;
+  eval ${AVER}=""
   STATICTOOL=${4}${VERSEP}${VERSION}
 
   if [ -d ${TOOLDIR}/${1}/${STATICTOOL}-static ];then
