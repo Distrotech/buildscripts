@@ -2,3 +2,4 @@ VERSION="1.03"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+DONTBUILD="x86_32";
