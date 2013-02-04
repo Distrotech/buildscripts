@@ -243,6 +243,11 @@ svn_load_pkg() {
       if [ "${SRCDIR}" ] && [ "${PKGSVNDIR}" ] && [ -d ${SRCDIR}/${PKGSVNDIR} ];then
         (cd ${SRCDIR}/${PKGSVNDIR}
          sh ./configure;
+         #On failure run autoreconf
+         if [ $? != 0 ];then
+           autoreconf
+           sh ./configure;
+         fi;
          make distclean || rm -rf ${SRCDIR}/${PKGSVNDIR}/*
          svn up)
       fi
@@ -351,12 +356,19 @@ tar_package() {
      [ -d ${B_LIBDIRS} ] || [ -d usr/${B_LIBDIRS} ] || [ -d usr/X11R7/${B_LIBDIRS} ];then
     find . ! -regex ".*\/${B_LIBDIRS}\/.*\.a" -and ! -regex ".*\/${B_LIBDIRS}\/.*\.la" -and \
            ! -regex "${dbginfo}\/.*" -and ! -regex "${dbginfo}\/.*" -and \
+           ! -regex "\.\/usr\/${B_LIBDIRS}\/jvm\/jdk-.*" -and ! -regex "\.\/usr\/${B_LIBDIRS}\/jvm\/jre-.*" -and \
            ! -regex "\.\/usr\/${B_LIBDIRS}\/locale\/.*" -and -regex ".*\/${B_LIBDIRS}\/.*" |\
          cpio -ov -H tar |xz -9 > ${pkgpre}-libs.tar.xz
     find . -regex "\.\/include\/.*" -or -regex "\.\/usr\/include\/.*" -or \
            -regex "\.\/opt\/[a-zA-Z0-9\-_]+\/include\/.*" -or -regex "\.\/usr\/X11R7\/include\/.*" \
            -or -regex ".*\/${B_LIBDIRS}\/.*\.a" -or -regex ".*\/${B_LIBDIRS}\/.*\.la" |\
          cpio -ov -H tar |xz -9 > ${pkgpre}-dev.tar.xz
+    if [ -d /usr/${B_LIBDIRS}/jvm ];then
+      find . -regex "\.\/usr\/${B_LIBDIRS}\/jvm\/jre-.*"  |\
+           cpio -ov -H tar |xz -9 > ${pkgpre}-jre.tar.xz
+      find . -regex "\.\/usr\/${B_LIBDIRS}\/jvm\/jdk-.*"  |\
+           cpio -ov -H tar |xz -9 > ${pkgpre}-jdk.tar.xz
+    fi;
   fi;
 
   find . -regex "${dbginfo}\/.*" -and ! -regex ".*\/${B_LIBDIRS}\/\.dbg\/.*\.a" |\
@@ -1285,7 +1297,7 @@ build_gcc_bootstrap() {
     CONFOPT="${BOOTOPT} ${SYSROOT}"
     CFLAGS=-fPIC
     CXXFLAGS=-fPIC
-    LDFLAGS="-static -L/usr/${TLIBDIR}"
+    LDFLAGS="-static -L/usr/${B_LIBDIRS}"
     SDIROPT=-boot
    elif [ "${4}" == "shared" ];then
     MARCH=BOOTOPT_${1}
@@ -1293,7 +1305,7 @@ build_gcc_bootstrap() {
     CFLAGS=-fPIC
     CXXFLAGS=-fPIC
     SDIROPT=-shared
-    LDFLAGS="-L/usr/${TLIBDIR}";
+    LDFLAGS="-L/usr/${B_LIBDIRS}";
    elif [ ! "${4}" ] || [ "${4}" == "null" ];then
     MARCH=BOOTOPT_${1}
     CONFOPT="${NULLOPT} ${SYSROOT} CC=${BUILD}-gcc CXX=${BUILD}-g++"
@@ -1431,14 +1443,16 @@ build_gcc_bootstrap() {
         rsync -aP ${GCCBOOTDEST}/ /
         touch /usr/bin/${2}-gcc.boot
         rm /usr/bin/${2}-gcc.null
-       elif [ -e /usr/bin/${2}-gcc.boot ];then
-        if [ "${4}" == "multi" ] && [ ! -e /usr/bin/${2}-gcc.shared ];then
-          rsync -aP ${GCCBOOTDEST}/ /
-          touch /usr/bin/${2}-gcc.${4}
-         elif [ "${4}" == "shared" ];then
-          rsync -aP ${GCCBOOTDEST}/ /
-          touch /usr/bin/${2}-gcc.${4}
-        fi; 
+       elif [ -e /usr/bin/${2}-gcc.null ] && [ "${4}" == "shared" ];then
+        rsync -aP ${GCCBOOTDEST}/ /
+        touch /usr/bin/${2}-gcc.shared
+        rm /usr/bin/${2}-gcc.null
+        if [ -e ${STATDIR}/${1}/done/libtool ];then
+          rm ${STATDIR}/${1}/done/libtool
+        fi;
+       elif [ -e /usr/bin/${2}-gcc.boot ] && [ "${4}" == "shared" ];then
+        rsync -aP ${GCCBOOTDEST}/ /
+        touch /usr/bin/${2}-gcc.${4}
       fi;
     fi;
   fi;
@@ -1633,12 +1647,27 @@ bootstrap_arch() {
     #Build a full cross compiler if not native
     if [ "${arch}" != "${NARCH}" ];then
       build_packages ${arch} zlib libtool || exit 1
+
+      #Build shared compiler with support libs
+      (build_gcc_bootstrap ${arch} ${HOST} ${NARCH} shared) || return 1
+
+      #Rebuild libtool
+      build_packages ${arch} libtool || exit 1
+
+      #Build full cross compiler
       (build_gcc_bootstrap ${arch} ${HOST} ${NARCH} cross) || exit 1
+      case ${NARCH} in
+        x86_*)
+          case ${arch} in
+            i[3-6]86|x86_*)rsync -avP /usr/${B_LIBDIRS}/libstdc++* /usr/${HOST}/${B_LIBDIRS}/;;
+          esac;
+        ;;
+      esac;
     fi;
     #GCC needs system zlib glibc can use selinux/gd
     BOOTCLEAN=distclean
     build_packages ${arch} libtool pcre libsepol libselinux libpng libxml2 expat freetype fontconfig \
-                           jpeg gd glibc gmp mpfr mpc isl cloog gcc || exit 1) || return 1;
+                           jpeg gd glibc tzdata gmp mpfr mpc isl cloog gcc || exit 1) || return 1;
   done;
 }
 
@@ -1727,7 +1756,8 @@ build_dependancies() {
   fi;
 
   build_packages ${1} cairo gobject-introspection pango vala libdrm llvm intltool cmake talloc tevent libevent libverto \
-                       krb5 cups kmod module-init-tools LVM2 cryptsetup systemd Mesa glu glw mtdev || return 1
+                      krb5 ghostscript cups ijs poppler qpdf cups-filters kmod module-init-tools LVM2 cryptsetup \
+                      systemd Mesa glu glw mtdev || return 1
 
   #Continue X Build with GL/Mesa
   if [ -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
@@ -1814,7 +1844,6 @@ bootstrap_native() {
     touch /usr/bin/${BUILD}-gcc.boot
     (build_gcc_bootstrap ${NARCH} ${BUILD} ${NARCH} shared) || return 1
     rm /usr/bin/${BUILD}-gcc.boot /usr/bin/${BUILD}-gcc.shared
-    rm ${STATDIR}/${NARCH}/done/libtool
     for delstamp in libtool gmp mpfr mpc isl cloog;do
       if [ -e ${STATDIR}/${NARCH}/done/${delstamp} ];then
         rm ${STATDIR}/${NARCH}/done/${delstamp}
