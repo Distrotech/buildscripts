@@ -1,0 +1,8 @@
+VERSION="9.06";
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-system-libtiff --with-ijs --enable-shared --with-install-cups";
+ADDCFLAG="-fPIC";
+ALIAS="ghostscript";
+CFGPTH="ijs";
+CFGBIN="ijs/";
