@@ -1553,10 +1553,10 @@ build_static_tool() {
     cp ${ARCHROOT}/${1}/usr/bin/libtool ./
   fi;
 
-  #Texinfo hack
-  for gnulib in gnulib/lib/ tools/gnulib/lib/;do
+  #Texinfo hack Add po to the list too
+  for gnulib in gnulib/lib/ tools/gnulib/lib/ po;do
     if [ -d ${gnulib} ];then
-      make -C ${gnulib}
+      make ${MAKE_J} -C ${gnulib} || make -C ${gnulib}
     fi;
   done;
 
@@ -1781,7 +1781,7 @@ build_dependancies() {
                        libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils \
                        xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem qt-4 avahi gnome-mime-data \
                        gnome-vfs gstreamer libvisual gst-plugins-base djvulibre nspr nss automake-1.9 automake-1.10 \
-                       automake-1.11 automake-1.12 automake-1.13 help2man autoconf || return 1
+                       automake-1.11 automake-1.12 automake-1.13 help2man autoconf rrdtool || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
