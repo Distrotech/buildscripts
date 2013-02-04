@@ -1907,7 +1907,7 @@ bootstrap_toolchain() {
     build_dependancies ${NARCH} ${BUILD} || return 1
 
     #QEMU Static runtime emulator
-#    (build_qemu_static)
+    (build_qemu_static)
     return 0;
   fi;
 
