@@ -730,7 +730,7 @@ build_project() {
   if [ "${ADDPATH}" ];then
     PATH="${PATH}:${ADDPATH}"
   fi;
-  export PATH="${PATH}:/opt/qt-4/bin:${ADDPATH}"
+  export PATH="${PATH}:/opt/qt-4/bin:/opt/xfce/bin:/opt/xfce/sbin:${ADDPATH}"
   echo Building ${PKG}
 
   if [ ! "${CFGPTH}" ];then
@@ -829,13 +829,13 @@ build_project() {
     export QTDIR=/opt/qt-4
   fi;
 
-  CFLAGS="${ADDCFLAG} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/usr/lib/glib-2.0/include -I=/usr/include/glib-2.0 -I=/usr/include/gtk-2.0 -I=/usr/include/dbus-1.0 -I=/opt/qt-4/include";
+  CFLAGS="${ADDCFLAG} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/usr/lib/glib-2.0/include -I=/usr/include/glib-2.0 -I=/usr/include/gtk-2.0 -I=/usr/include/dbus-1.0 -I=/opt/qt-4/include -I=/opt/xfce/include";
 # -I=/usr/lib/perl5/5.16.2/${HOST}-thread-multi/CORE";
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
   export CXXFLAGS=${CFLAGS}
-  LDFLAGS="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} ${ADDLDFLAG}"
+  LDFLAGS="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} ${ADDLDFLAG}"
   if [ "${SETCPPTOC}" == "1" ];then
     CPPFLAGS=${CFLAGS};
   fi;
@@ -845,14 +845,14 @@ build_project() {
   fi;
   export FORCE_UNSAFE_CONFIGURE=1
 #    export PKG_CONFIG_SYSROOT_DIR="${SYSROOT}"
-  export PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig/";
+  export PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig";
 #  export PYTHONPATH="/usr/${B_LIBDIRS}/python2.7/site-packages/"
 
   RPATH_LINK="${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio:${SYSROOT}/opt/qt-4/${B_LIBDIRS}"
   RPLINK=" -Wl,--rpath-link=${RPATH_LINK}";
   XCCOPT="${XCCOPT} ${RPLINK}"
 
-  export CC_SYSROOT="--sysroot=${SYSROOT}/ ${XCCOPT} -L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} -I=/include -I=/usr/include -I=/usr/X11R7/include";
+  export CC_SYSROOT="--sysroot=${SYSROOT}/ ${XCCOPT} -L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/opt/xfce/include";
   CC="/usr/bin/${HOST}-gcc";
   CXX="/usr/bin/${HOST}-g++"
   LD="/usr/bin/${HOST}-ld"
