@@ -1,0 +1,4 @@
+VERSION="0.1.25"
+VERSEP="-";
+PREFIX="/opt/xfce";
+CONFOPT="";
