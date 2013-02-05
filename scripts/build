@@ -363,7 +363,7 @@ tar_package() {
            -regex "\.\/opt\/[a-zA-Z0-9\-_]+\/include\/.*" -or -regex "\.\/usr\/X11R7\/include\/.*" \
            -or -regex ".*\/${B_LIBDIRS}\/.*\.a" -or -regex ".*\/${B_LIBDIRS}\/.*\.la" |\
          cpio -ov -H tar |xz -9 > ${pkgpre}-dev.tar.xz
-    if [ -d /usr/${B_LIBDIRS}/jvm ];then
+    if [ -d usr/${B_LIBDIRS}/jvm ];then
       find . -regex "\.\/usr\/${B_LIBDIRS}\/jvm\/jre-.*"  |\
            cpio -ov -H tar |xz -9 > ${pkgpre}-jre.tar.xz
       find . -regex "\.\/usr\/${B_LIBDIRS}\/jvm\/jdk-.*"  |\
@@ -835,7 +835,7 @@ build_project() {
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
   export CXXFLAGS=${CFLAGS}
-  LDFLAGS="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} ${ADDLDFLAG}"
+  LDFLAGS="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} ${ADDLDFLAG}"
   if [ "${SETCPPTOC}" == "1" ];then
     CPPFLAGS=${CFLAGS};
   fi;
@@ -848,7 +848,7 @@ build_project() {
   export PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig";
 #  export PYTHONPATH="/usr/${B_LIBDIRS}/python2.7/site-packages/"
 
-  RPATH_LINK="${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio:${SYSROOT}/opt/qt-4/${B_LIBDIRS}"
+  RPATH_LINK="${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}"
   RPLINK=" -Wl,--rpath-link=${RPATH_LINK}";
   XCCOPT="${XCCOPT} ${RPLINK}"
 
@@ -1724,7 +1724,7 @@ build_dependancies() {
   fi;
 
   #Add required perl modules from cpan may not need libxml only expat !!!
-  for pmod in XML::Parser XML::SAX Font::TTF;do
+  for pmod in XML::Parser XML::SAX Font::TTF XML::Simple;do
     if [ ! -e ${STATDIR}/${1}/done/${pmod} ];then
       cpan -i ${pmod} && touch ${STATDIR}/${1}/done/${pmod}
     fi;
@@ -1768,25 +1768,27 @@ build_dependancies() {
     /sbin/ldconfig
   fi;
 
-  build_packages ${1} fontforge freeglut pcsc-lite atk  gdk-pixbuf gtk+ poppler qpdf cups-filters patch alsa-lib fastjar \
-                      icedtea6 icedtea7 yasm nasm fuse libunistring txt2man printproto portablexdr libpcap ppp libIDL \
-                      ORBit2 dbus-glib polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig \
-                      M2Crypto libnl-1 libnl crda ragel apr apr-iconv sqlite-autoconf keyutils neon apache-ant tcl8 tk8 \
-                      db unixODBC cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion libva gavl jasper \
-                      OpenCV frei0r libraw1394 audiofile esound libogg flac libvorbis libsndfile json-c fftw \
-                      libsamplerate speex orc pulseaudio SDL libdc1394 libavc1394 libiec61883 faac libaacplus \
-                      vo-aacenc vo-amrwbenc fribidi icu4c graphite2 harfbuzz libass libbluray celt libcaca gsm \
-                      libmodplug lame twolame libnut opencore-amr opus schroedinger libtheora utvideo openal xvidcore \
-                      ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink libmnl libexif exif \
+  build_packages ${1} fontforge freeglut pcsc-lite atk  gdk-pixbuf gtk+ poppler poppler-data qpdf cups-filters patch \
+                      alsa-lib fastjar icedtea6 icedtea7 yasm nasm fuse libunistring txt2man printproto portablexdr \
+                      libpcap ppp libIDL ORBit2 dbus-glib polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome \
+                      rtmpdump swig M2Crypto libnl-1 libnl crda ragel apr apr-iconv sqlite-autoconf keyutils neon \
+                      apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql apr-util httpd \
+                      subversion libva gavl jasper OpenCV frei0r libraw1394 audiofile esound libogg flac libvorbis \
+                      libsndfile json-c fftw libsamplerate speex orc pulseaudio SDL libdc1394 libavc1394 libiec61883 \
+                      faac libaacplus vo-aacenc vo-amrwbenc fribidi icu4c graphite2 harfbuzz libass libbluray celt \
+                      libcaca gsm libmodplug lame twolame libnut opencore-amr opus schroedinger libtheora utvideo openal \
+                      xvidcore ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink libmnl libexif exif \
                       libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils \
                       xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem qt-4 avahi gnome-mime-data \
                       gnome-vfs gstreamer libvisual gst-plugins-base djvulibre nspr nss automake-1.9 automake-1.10 \
                       automake-1.11 automake-1.12 automake-1.13 help2man autoconf rrdtool || return 1
 
   #XFCE
-  build_packages ${1} glade3 libnotify startup-notification libwnck gnome-keyring libxfce4util xfconf libxfce4ui garcon \
+  build_packages ${1} gnome-common glade3 libnotify startup-notification libwnck vte gnome-keyring gnome-desktop \
+                      libxfce4util xfconf libxfce4ui garcon \
                       exo xfce4-panel Thunar xfce4-settings xfce4-session xfwm4 xfdesktop xfce4-appfinder \
-                      gtk-xfce-engine || return 1
+                      gtk-xfce-engine Terminal xpdf icon-naming-utils gnome-icon-theme shared-mime-info eog aterm \
+                      file-roller wv abiword gcalctool gucharmap leafpad ffmpegthumbnailer tumbler || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
