@@ -1,0 +1,4 @@
+VERSION="3.0.0"
+VERSEP="-";
+PREFIX="/opt/xfce";
+CONFOPT="";
