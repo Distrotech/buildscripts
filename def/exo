@@ -1,4 +1,4 @@
 VERSION="0.8.0"
 VERSEP="-";
 PREFIX="/opt/xfce";
-CONFOPT="";
+CONFOPT="ac_cv_func_mmap_fixed_mapped=yes";
