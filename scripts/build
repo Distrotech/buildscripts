@@ -1756,8 +1756,8 @@ build_dependancies() {
   fi;
 
   build_packages ${1} cairo gobject-introspection pango vala libdrm llvm intltool cmake talloc tevent libevent libverto \
-                      krb5 ghostscript cups ijs poppler qpdf cups-filters kmod module-init-tools LVM2 cryptsetup \
-                      systemd Mesa glu glw mtdev || return 1
+                      krb5 tiff libdaemon avahi-nogui cups ghostscript ijs kmod \
+                      module-init-tools LVM2 cryptsetup systemd Mesa glu glw mtdev || return 1
 
   #Continue X Build with GL/Mesa
   if [ -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
@@ -1768,20 +1768,25 @@ build_dependancies() {
     /sbin/ldconfig
   fi;
 
-  build_packages ${1} fontforge freeglut pcsc-lite tiff atk  gdk-pixbuf gtk+ patch alsa-lib fastjar icedtea6 icedtea7 \
-                       yasm nasm fuse libunistring txt2man printproto portablexdr libpcap ppp libIDL ORBit2 dbus-glib \
-                       polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig M2Crypto libnl-1 libnl \
-                       crda ragel apr apr-iconv sqlite-autoconf keyutils neon apache-ant tcl8 tk8 db unixODBC \
-                       cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion libva gavl jasper \
-                       OpenCV frei0r libraw1394 audiofile esound libogg flac libvorbis libsndfile json-c fftw \
-                       libsamplerate speex orc pulseaudio SDL libdc1394 libavc1394 libiec61883 faac libaacplus \
-                       vo-aacenc vo-amrwbenc fribidi icu4c graphite2 harfbuzz libass libbluray celt libcaca gsm \
-                       libmodplug lame twolame libnut opencore-amr opus schroedinger libtheora utvideo openal xvidcore \
-                       ptlib libcddb libcdio-cdda libcdio libcddb fltk libdaemon libnfnetlink libmnl libexif exif \
-                       libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils \
-                       xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem qt-4 avahi gnome-mime-data \
-                       gnome-vfs gstreamer libvisual gst-plugins-base djvulibre nspr nss automake-1.9 automake-1.10 \
-                       automake-1.11 automake-1.12 automake-1.13 help2man autoconf rrdtool || return 1
+  build_packages ${1} fontforge freeglut pcsc-lite atk  gdk-pixbuf gtk+ poppler qpdf cups-filters patch alsa-lib fastjar \
+                      icedtea6 icedtea7 yasm nasm fuse libunistring txt2man printproto portablexdr libpcap ppp libIDL \
+                      ORBit2 dbus-glib polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig \
+                      M2Crypto libnl-1 libnl crda ragel apr apr-iconv sqlite-autoconf keyutils neon apache-ant tcl8 tk8 \
+                      db unixODBC cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion libva gavl jasper \
+                      OpenCV frei0r libraw1394 audiofile esound libogg flac libvorbis libsndfile json-c fftw \
+                      libsamplerate speex orc pulseaudio SDL libdc1394 libavc1394 libiec61883 faac libaacplus \
+                      vo-aacenc vo-amrwbenc fribidi icu4c graphite2 harfbuzz libass libbluray celt libcaca gsm \
+                      libmodplug lame twolame libnut opencore-amr opus schroedinger libtheora utvideo openal xvidcore \
+                      ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink libmnl libexif exif \
+                      libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils \
+                      xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem qt-4 avahi gnome-mime-data \
+                      gnome-vfs gstreamer libvisual gst-plugins-base djvulibre nspr nss automake-1.9 automake-1.10 \
+                      automake-1.11 automake-1.12 automake-1.13 help2man autoconf rrdtool || return 1
+
+  #XFCE
+  build_packages ${1} glade3 libnotify startup-notification libwnck gnome-keyring libxfce4util xfconf libxfce4ui garcon \
+                      exo xfce4-panel Thunar xfce4-settings xfce4-session xfwm4 xfdesktop xfce4-appfinder \
+                      gtk-xfce-engine || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
