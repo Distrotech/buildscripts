@@ -2,6 +2,6 @@ VERSION="4.0.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-EXTRALIBS="-lsigsegv -ldl";
-STATICMOPT="LDFLAGS=-static LIBSIGSEGV=-lsigsegv";
+EXTRALIBS="-ldl";
+STATICMOPT="LDFLAGS=-static";
 NONULLCONF="1";
