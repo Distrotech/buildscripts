@@ -1,0 +1,6 @@
+VERSION="4.14.3"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+ADDCFLAG="-fPIC";
