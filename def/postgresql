@@ -2,8 +2,9 @@ VERSION="9.2.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--datadir=/usr/share/postgresql --enable-depend --with-perl --with-python --with-krb5 --with-pam --with-openssl 
-         --with-ldap --with-libxml --with-libxslt --with-zlib --with-readline --enable-thread-safety --with-system-tzdata=/usr/share/zoneinfo
-         ac_cv_func_getpeereid=no ac_cv_func_strlcpy=no";
+         --with-ldap --with-libxml --with-libxslt --with-zlib --with-readline --enable-thread-safety 
+         --with-system-tzdata=/usr/share/zoneinfo ac_cv_func_getpeereid=no ac_cv_func_strlcpy=no 
+         ac_cv_have_func_strlcat=no";
 NOCCOPT="1";
 EXTRALIBS="-shared-libgcc -lz -llber -lsasl2 -lrt -llzma -lpthread -lkrb5 -lkrb5support -lk5crypto -lcom_err -lresolv -ldl -lltdl -lutil -lldap_r";
 BUILDDIR="0";
