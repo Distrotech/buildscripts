@@ -1,28 +1,59 @@
 #!/bin/bash
 
 GLIBCVER=2.17
+ANTVER=1.8.4
+GCCVER=4.8.0
+AUTOCONF=2.69
+AUTOMAKE=1.9.6
+QEMU=1.3.0
 
 NARCH=$( uname -m )
 
-if [ ! "${NARCH}" ] || [ ! -d /dist/pkg/build/${NARCH} ];then
+if [ "${1}" ];then
+  DARCH=${1}
+ else
+  DARCH=${NARCH}
+fi;
+
+if [ ! "${DARCH}" ] || [ ! -d /dist/pkg/build/${DARCH} ];then
   echo require arch
   exit;
 fi;
 
-STATICROOT=/dist/root/${NARCH}-static
+case ${DARCH} in
+	arm)STRIP=arm-linux-gnueabi-strip;;
+	arm64)STRIP=aarch64-linux-gnu-strip;;
+	mips64)STRIP=mips64-linux-gnuabi64-strip;;
+	x86_32)STRIP=x86_64-linux-gnux32-strip;;
+	*)STRIP=${DARCH}-linux-gnu-strip;;
+esac;
+
+STATICROOT=/dist/root/${DARCH}-static
 
 if [ -d ${STATICROOT} ];then
   rm -rf ${STATICROOT}
 fi;
-mkdir -p /dist/root/${NARCH}-static
+mkdir -p /dist/root/${DARCH}-static
 
-cd /dist/pkg/build/${NARCH}
+cd /dist/pkg/build/${DARCH}
 for pkg in `ls -d *static *boot` ;do
-  for subpkg in `ls ${pkg}/${pkg}.tar.xz ${pkg}/${pkg}-dev.tar.xz ${pkg}/${pkg}-libs.tar.xz 2>/dev/null`;do
+  for subpkg in `ls ${pkg}/${pkg}.tar.xz ${pkg}/${pkg}-libs.tar.xz ${pkg}/${pkg}-dev.tar.xz 2>/dev/null`;do
     tar -C ${STATICROOT} -xJf ${subpkg};
   done;
 done
-for devpkg in glibc-${GLIBCVER}/glibc-${GLIBCVER}-headers.tar.xz  glibc-${GLIBCVER}/glibc-${GLIBCVER}-static.tar.xz \
+
+if [ -e /dist/cross/${NARCH}/qemu-${QEMU}/usr/bin/qemu-${DARCH}-static ];then
+  cp /dist/cross/${NARCH}/qemu-${QEMU}/usr/bin/qemu-${DARCH}-static ${STATICROOT}/usr/bin
+fi;
+
+#Strip all the bits
+${STRIP} ${STATICROOT}/bin/* ${STATICROOT}/sbin/* ${STATICROOT}/usr/bin/* ${STATICROOT}/usr/sbin/*
+
+for devpkg in glibc-${GLIBCVER}/glibc-${GLIBCVER}-headers.tar.xz \
+              glibc-${GLIBCVER}/glibc-${GLIBCVER}-static.tar.xz \
+              /dist/pkg/${DARCH}/apache-ant-${ANTVER}/apache-ant-${ANTVER}-libs.tar.xz \
+              /dist/pkg/${DARCH}/autoconf-${AUTOCONF}/autoconf-${AUTOCONF}.tar.xz \
+              /dist/pkg/${DARCH}/automake-${AUTOMAKE}/automake-${AUTOMAKE}.tar.xz \
               kernel-headers.tar.xz /dist/pkg/java-jar.tar.xz;do
   if [ -f ${devpkg} ];then
     tar -C ${STATICROOT} -xJf ${devpkg};
@@ -47,10 +78,14 @@ for mdir in 1 2 3 4 5 6 7 8;do
   mkdir -p ${STATICROOT}/usr/share/man/man${mdir}
 done;
 
-#Install terminfo DB
-rsync -avRP /usr/share/terminfo ${STATICROOT}/
+#Install terminfo DB / Stub files / CPAN config
+rsync -avRP /usr/share/terminfo /usr/include/gnu/stubs-* /root/.cpan/CPAN/MyConfig.pm ${STATICROOT}/
 
+echo "nameserver ::1" > ${STATICROOT}/etc/resolv.conf
 if [ -e ${STATICROOT}.sqfs ];then
   rm ${STATICROOT}.sqfs
 fi;
+
+cp /dist/scripts/build ${STATICROOT}/usr/sbin/build_system
+
 mksquashfs ${STATICROOT}/* ${STATICROOT}.sqfs -comp xz
