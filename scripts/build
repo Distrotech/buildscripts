@@ -1788,7 +1788,7 @@ build_dependancies() {
                       libxfce4util xfconf libxfce4ui garcon \
                       exo xfce4-panel Thunar xfce4-settings xfce4-session xfwm4 xfdesktop xfce4-appfinder \
                       gtk-xfce-engine Terminal xpdf icon-naming-utils gnome-icon-theme shared-mime-info eog aterm \
-                      file-roller wv abiword gcalctool gucharmap leafpad ffmpegthumbnailer tumbler || return 1
+                      file-roller libgsf wv abiword gcalctool gucharmap leafpad ffmpegthumbnailer tumbler || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
