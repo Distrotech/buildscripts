@@ -1739,8 +1739,8 @@ build_dependancies() {
   fi;
 
   build_packages ${1} intltool popt rsync bzip2 openssl Python libxml2 libxslt gnome-doc-utils docbook-4.1.2 docbook-4.2 \
-                       docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus glib gtk-doc \
-                       pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg trousers slang \
+                       docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus dbus-python glib \
+                       gtk-doc pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg trousers slang \
                        wget || return 1
 
   if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
@@ -1784,11 +1784,14 @@ build_dependancies() {
                       automake-1.11 automake-1.12 automake-1.13 help2man autoconf rrdtool || return 1
 
   #XFCE
-  build_packages ${1} gnome-common glade3 libnotify startup-notification libwnck vte gnome-keyring gnome-desktop \
-                      libxfce4util xfconf libxfce4ui garcon \
+  build_packages ${1} gnome-common glade3 libnotify startup-notification libwnck py2cairo pygobject pygtk vte \
+                      gnome-keyring gnome-desktop libxfce4util xfconf libxfce4ui garcon \
                       exo xfce4-panel Thunar xfce4-settings xfce4-session xfwm4 xfdesktop xfce4-appfinder \
-                      gtk-xfce-engine Terminal xpdf icon-naming-utils gnome-icon-theme shared-mime-info eog aterm \
-                      file-roller libgsf wv abiword gcalctool gucharmap leafpad ffmpegthumbnailer tumbler || return 1
+                      gtk-xfce-engine Terminal thunar-volman xfce4-taskmanager xpdf icon-naming-utils gnome-icon-theme \
+                      shared-mime-info eog aterm file-roller libgsf wv abiword gcalctool gucharmap leafpad \
+                      ffmpegthumbnailer tumbler || return 1
+#XXX
+#PyQt-x11 sip
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
