@@ -1,7 +1,8 @@
-VERSION="3.1.src"
+VERSION="3.2.src"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-shared ac_cv_lib_dld_dld_link=no";
+CONFOPT="--enable-jit --with-intel-jitevents --enable-shared ac_cv_lib_dld_dld_link=no";
+OPT_x86_32="--target=x86_64-linux-gnux32";
 OPT_powerpc="--target=powerpc-linux-gnu";
 OPT_powerpc64="--target=powerpc-linux-gnu";
 OPT_mips="--target=mips-linux-gnu";
