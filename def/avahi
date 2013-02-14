@@ -2,6 +2,8 @@ VERSION="0.6.31"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-distro=none --disable-qt3 --disable-gtk3 --disable-mono --with-avahi-priv-access-group=avahi 
-         --with-autoipd-group=avahi --with-autoipd-user=avahi --disable-python";
+         --with-autoipd-group=avahi --with-autoipd-user=avahi";
 OPT_arm64="--enable-introspection=no --disable-qt4";
 CLEARFLAGS="1";
+OPT_x86_32="PYTHON=/build/x86_32/usr/bin/python";
+ADDLDFLAG="-L=/opt/qt-4/${B_LIBDIRS}";
