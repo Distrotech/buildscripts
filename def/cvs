@@ -1,7 +1,7 @@
 VERSION="1.12.13"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="cvs_cv_func_printf_ptr=yes";
 BUILDDIR="0";
 AMVER="1.9";
 NOSVNROOT="1";
