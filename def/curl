@@ -1,4 +1,4 @@
 VERSION="7.28.0"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-ares";
+CONFOPT="--enable-ares --with-ssl --with-gnutls --with-nss";
