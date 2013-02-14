@@ -561,7 +561,7 @@ autoconf_cross_build() {
   fi;
 
   #Disable shared libs for c++ libs where libstdc++ is not shared
-  if [ "${STDCSTATIC}" ] && [ ! -f /usr/${B_LIBDIRS}/libstdc++.so ];then
+  if [ "${STDCSTATIC}" ] && [ ! -f ${SYSROOT}/usr/${B_LIBDIRS}/libstdc++.so ];then
     STDOPTSX="${STDOPTSX} ${STDCSTATIC}";
   fi;
 
@@ -812,6 +812,7 @@ build_project() {
       if [ "${SYSROOTPATH}" == "1" ];then
         export PYTHON=${SYSROOT}/usr/bin/python
         export PYTHONHOME=${SYSROOT}/usr
+        export PYTHONPATH=${SYSROOT}/usr/${B_LIBDIRS}/gobject-introspection/giscanner:${SYSROOT}/usr/${B_LIBDIRS}/gobject-introspection
         export PATH="${SYSROOT}/sbin:${SYSROOT}/bin:${SYSROOT}/usr/sbin:${SYSROOT}/usr/bin:${SYSROOT}/usr/X11R7/bin:${SYSPATH}";
        else
         export PATH=${SYSPATH}
