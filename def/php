@@ -8,13 +8,15 @@ CONFOPT="--enable-static=no --with-config-file-path=/etc/php --with-openssl=shar
          --enable-oauth --localstatedir=/var --enable-bcmath=shared --with-ncurses=shared --with-gdbm=shared 
          --with-ndbm=shared --with-ldap=shared,/usr --with-imap-ssl --with-imap=shared,/usr --with-pic
          --with-gettext=shared --with-mcal=shared,/usr -with-curl=shared --with-pear=shared --with-mhash=shared 
-         --enable-mbstring --with-mbstrings --with-pgsql=shared --with-mcrypt=shared --with-jpeg-dir=shared 
+         --enable-mbstring --with-mbstrings --with-pgsql=shared --with-mcrypt --with-jpeg-dir=shared 
          --with-png-dir=shared --with-sqlite=shared --with-tiff-dir=shared --with-zlib-dir=shared --with-dbm=shared 
-         --with-rrd=/usr  --with-oauth=shared --with-pdo-sqlite=shared,/usr --with-unixODBC=/usr --enable-sockets=shared 
-         --enable-pcntl=shared --with-dom=shared --with-iconv=shared --enable-zip";
+         --with-ldap-sasl=/usr --with-rrd=shared,/usr  --with-oauth=shared --with-pdo-sqlite=shared,/usr 
+         --with-unixODBC=/usr --enable-sockets=shared --enable-pcntl=shared --with-dom=shared --with-iconv=shared 
+         --enable-zip --enable-intl --enable-mbregex";
 CLEARFLAGS="1";
-ADDCFLAG="-fPIC";
+ADDCFLAG="-fPIC -I=/usr/include/sasl";
 ADDLDFLAG="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS}"
 OPT_x86_64="--with-libdir=lib64 --with-apxs2=/build/x86_64/opt/apache2/bin/apxs";
 OPT_x86_32="--with-libdir=libx32 --with-apxs2=/build/x86_32/opt/apache2/bin/apxs";
 OPT_i686="--with-libdir=lib --with-apxs2=/build/i686/opt/apache2/bin/apxs";
+EXTRALIBS="-lutil -lresolv -lpthread -lrt";
