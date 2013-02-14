@@ -12,7 +12,7 @@ OPT_i686="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CONFI
 OPT_x86_32="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CONFIG=/build/x86_32/usr/bin/cups-config
           --with-mpfr=/usr/libx32";
 OPT_x86_64="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CONFIG=/build/x86_64/usr/bin/cups-config";
-EXTRALIBS="-lxcb -lXau -lXdmcp -ldl -lm";
+EXTRALIBS="-lxcb -lXau -lXdmcp -ldl -lm -lpthread -lrt";
 ADDCFLAG="-I=/usr/include/gio-unix-2.0 -I=/usr/include/cairo -I=/usr/include/freetype2
           -I=/usr/include/pango-1.0 -I=/usr/include/gdk-pixbuf-2.0 -I=/usr/include/glib-2.0
           -I=/usr/include/atk-1.0";
