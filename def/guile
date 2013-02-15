@@ -12,3 +12,4 @@ OPT_mips="--with-libltdl-prefix=/build/mips/usr/lib -with-libgmp-prefix=/build/m
 ADDWITHSYSROOT="1";
 DONTBUILD="x86_32 arm arm64 mips mips64 powerpc powerpc64";
 AMVER="1.12";
+NONULLCONF="1";
