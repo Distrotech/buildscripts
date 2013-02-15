@@ -2,4 +2,4 @@ VERSION="0.2.3"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-ADDCFLAG="-I=/usr/include/libxml2";
+ADDCFLAG="-I=/usr/include/libxml2 -Ilibbluray";
