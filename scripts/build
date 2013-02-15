@@ -1485,11 +1485,13 @@ build_qemu_static() {
 
   mkdir -p ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin
   for arch in arm mips ppc ppc64;do
-    uemu=${arch}-linux-user/qemu-${arch};
-    cp ${uemu} ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${arch}-static
+    if [ "${arch}" != "${NARCH}" ];then
+      uemu=${arch}-linux-user/qemu-${arch};
+      cp ${uemu} ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${arch}-static
+    fi;
   done
 
-  rsync -aP ${TOOLDIR}/${NARCH}/${QEMU}/ /
+  rsync -aP --exclude=/usr/bin/qemu-${NARCH}-static ${TOOLDIR}/${NARCH}/${QEMU}/ /
   (cd ${TOOLDIR}/${NARCH}/${QEMU};tar -cJf ${DIST_PKG} *)
 }
 
@@ -1780,12 +1782,12 @@ build_dependancies() {
                       libcaca gsm libmodplug lame twolame libnut opencore-amr opus schroedinger libtheora utvideo openal \
                       xvidcore ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink libmnl libexif exif \
                       libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils \
-                      xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem qt-4 avahi gnome-mime-data \
-                      gnome-vfs gstreamer libvisual gst-plugins-base djvulibre nspr nss automake-1.9 automake-1.10 \
-                      automake-1.11 automake-1.12 automake-1.13 help2man autoconf rrdtool || return 1
+                      xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem qt-4 py2cairo pygobject pygtk \
+                      avahi gnome-mime-data gnome-vfs gstreamer libvisual gst-plugins-base djvulibre nspr nss \
+                      automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf rrdtool || return 1
 
   #XFCE
-  build_packages ${1} gnome-common glade3 libnotify startup-notification libwnck py2cairo pygobject pygtk vte \
+  build_packages ${1} gnome-common glade3 libnotify startup-notification libwnck py2cairo pygobject vte \
                       gnome-keyring gnome-desktop libxfce4util xfconf libxfce4ui garcon \
                       exo xfce4-panel Thunar xfce4-settings xfce4-session xfwm4 xfdesktop xfce4-appfinder \
                       gtk-xfce-engine Terminal thunar-volman xfce4-taskmanager xpdf icon-naming-utils gnome-icon-theme \
@@ -1923,7 +1925,8 @@ bootstrap_toolchain() {
   fi;
 
   #Add QEMU static to build
-  if [ -d ${ARCHROOT}/${1}/usr/bin ] && [ "${QCPU}" ] && [ -f ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ];then
+  if [ -d ${ARCHROOT}/${1}/usr/bin ] && [ "${QCPU}" ] && [ "${1}" != "${NARCH}" ] && \
+     [ -f ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ];then
     if [ ! -f ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static ] || \
        [ ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static -nt ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static ];then
       cp ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static
