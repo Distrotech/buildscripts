@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="--enable-libgdbm-compat --enable-gdbm-export";
 SYSROOTFIXUP="1";
 ADDLDFLAG="-L../src";
+ADDCFLAG="-I../src";
