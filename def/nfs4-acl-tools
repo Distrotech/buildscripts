@@ -2,3 +2,4 @@ VERSION="0.3.3"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+BUILDDIR="0";
