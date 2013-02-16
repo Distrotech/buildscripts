@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export PYTHONHOME=/build/${1}/usr
+/build/${1}/usr/bin/python2.7 configure.py --confirm-license
+
+make ${MAKE_J}
+make DESTDIR=${3} install
