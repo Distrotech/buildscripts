@@ -1,8 +1,7 @@
 VERSION="3.6.10"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-cifsmount --with-cifsumount --with-pam --with-quotas --with-automount
-         --with-ads --with-pam_smbpass=yes --with-configdir=/etc/samba
+CONFOPT="--with-pam --with-quotas --with-automount --with-ads --with-pam_smbpass=yes --with-configdir=/etc/samba 
          --with-privatedir=/etc/samba/private --with-lockdir=/var/lock --with-piddir=/var/run
          --with-logfilebase=/var --enable-shared=yes --enable-shared-libs=yes --enable-debug=no --enable-static=no";
 CFGPTH="source3";
