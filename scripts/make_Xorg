@@ -1,9 +1,15 @@
 #!/bin/bash
 
 FILTER_arm="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
+FILTER_arm64="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)|(data/cursors)|(font/)";
+FILTER_mips="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
 
 FILT=FILTER_${1}
 FILTER=${!FILT}
+
+OPT_mips="--disable-loongson-mmi";
+AOPT=OPT_${1}
+ARCHOP=${!AOPT}
 
 sync_fin() {
   if [ ! -d ${1}/${PREFIX} ];then
@@ -14,7 +20,7 @@ sync_fin() {
   #Clean up failed pkg
   if [ "${2}" ] && [ "${2}" == "1" ];then
     clean="";
-    for pkg in `./util/modular/build.sh -L |grep -vE "(^driver/xf86-video-newport)|(^driver/xf86-video-sis)|(^mesa)${FILTER}"`;do
+    for pkg in `./util/modular/build.sh -L`;do
       if [ ! -e ${pkg}/config.log ] || [ ! -e tobuild ] || [ ./tobuild -nt ${pkg}/config.log ];then
         clean=${pkg};
       fi;
@@ -36,10 +42,12 @@ if [ "${1}" == "${NARCH}" ] && [ ! -d /build/${1} ];then
  else
   DESTDIR=/build/${1}/
 fi;
-export DESTDIR
+export DESTDIR PKG_CONFIG_PATH
 export DPATH=${DESTDIR}${PREFIX}
 export MAKEFLAGS=${MAKE_J}
 
+export ACLOCAL="aclocal-1.11";
+export AUTOMAKE="automake-1.11";
 
 export LD_LIBRARY_PATH=/usr/${B_LIBDIRS}:/${B_LIBDIRS}:${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${PREFIX}/${B_LIBDIRS}
 
@@ -48,7 +56,7 @@ if [ "${4}" ];then
   rm tobuild
 fi;
 
-(for pkg in `./util/modular/build.sh -L |grep -vE "(^driver/xf86-video-newport)|(^driver/xf86-video-sis)|(^mesa)"`;do
+(for pkg in `./util/modular/build.sh -L |grep -vE "(^driver/xf86-video-newport)|(^driver/xf86-video-sis)|(^mesa)${FILTER}"`;do
   if [ ! -e ${pkg}/config.log ] || [ ! -e tobuild ] || [ ./tobuild -nt ${pkg}/config.log ];then
     echo ${pkg};
   fi;
@@ -78,7 +86,7 @@ export CFLAGS_FOR_BUILD=-I.
 export LDFLAGS_FOR_BUILD=-L.
 export MANCONF="/etc/man.conf";
 
-./util/modular/build.sh --modfile ./tobuild ${PREFIX} || sync_fin ${3} 1
+./util/modular/build.sh --clone --modfile ./tobuild ${PREFIX} || sync_fin ${3} 1
 
 #LD Config
 mkdir -p ${3}/etc/ld.so.conf.d
