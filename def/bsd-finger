@@ -1,0 +1,7 @@
+VERSION="0.17"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+STDOPTS="--prefix=/usr";
+BUILDDIR="0";
+NOMAKEFLAGS="1";
