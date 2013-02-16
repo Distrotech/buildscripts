@@ -249,13 +249,18 @@ svn_load_pkg() {
            sh ./configure;
          fi;
          make distclean || rm -rf ${SRCDIR}/${PKGSVNDIR}/*
-         svn up)
+         svn up --accept tc)
       fi
     fi;
    elif [ "${NOSVNROOT}" ] && [ "${NOSVNROOT}" == "1" ];then
      return 0;
    elif [ "${SVNUPDATE}" == "1" ];then
-    svn up ${SRCDIR}/${PKGSVNDIR}
+    if [ "${NOSVNROOT}" ] && [ "${NOSVNROOT}" == "1" ];then
+      svn up --accept tc ${SRCDIR}/${PKGSVNDIR}-svn || return 1
+      svn export --force ${SRCDIR}/${PKGSVNDIR}-svn ${SRCDIR}/${PKGSVNDIR}
+     else
+      svn up --accept tc ${SRCDIR}/${PKGSVNDIR}
+    fi;
   fi;
 }
 
@@ -445,7 +450,7 @@ make_cc_destdir() {
    else
     /usr/bin/make ${MAKE_J} V=1 LDFLAGS="${LDFLAGS}" CFLAGS="${CFLAGS}" AR="${AR}" RANLIB=${RANLIB} LD="${LD}" \
       CXX="${CXX} ${CC_SYSROOT}" CC="${CC} ${CC_SYSROOT}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
-      /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} install || return 1
+      /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
     RES=$?
     if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
       /usr/bin/make V=1 LDFLAGS="${LDFLAGS}" CFLAGS="${CFLAGS}" AR="${AR}" RANLIB=${RANLIB} LD="${LD}" \
@@ -531,7 +536,7 @@ autoconf_cross_build() {
    else
     export CC="${CC} ${CC_SYSROOT}"
     export CXX="${CXX} ${CC_SYSROOT}"
-    export AS="${CC} ${CFLAGS}"
+    export AS="${AS} ${CFLAGS}"
     export CC="${CC}"
     export CXX="${CXX}"
   fi;
@@ -1470,6 +1475,7 @@ build_qemu_static() {
   eval ${AVER}=""
   QEMU=qemu${VERSEP}${VERSION}
 
+  export PKG_CONFIG_PATH="/${NLIBDIR}/pkgconfig:/usr/${NLIBDIR}/pkgconfig:/opt/apache2/${NLIBDIR}/pkgconfig:/usr/share/${NLIBDIR}/pkgconfig:/usr/X11R7/${NLIBDIR}/pkgconfig:/lib/pkgconfig:/usr/lib/pkgconfig:/opt/qt-4/${NLIBDIR}/pkgconfig:/opt/xfce/${NLIBDIR}/pkgconfig";
   DIST_PKG=${TOOLPKG}/${NARCH}/${QEMU}-static.tar.xz
   if [ -d ${TOOLDIR}/${NARCH}/${QEMU} ] && [ -f ${DIST_PKG} ];then
     return
