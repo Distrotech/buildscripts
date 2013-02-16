@@ -3,3 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
+MAKEOPTS="LOCKINGTEST=/tmp";
+CLEARFLAGS="1";
+MAKEITARGETS="install-suid";
