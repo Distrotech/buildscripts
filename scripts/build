@@ -536,7 +536,7 @@ autoconf_cross_build() {
    else
     export CC="${CC} ${CC_SYSROOT}"
     export CXX="${CXX} ${CC_SYSROOT}"
-    export AS="${AS} ${CFLAGS}"
+    export AS="${AS}";
     export CC="${CC}"
     export CXX="${CXX}"
   fi;
