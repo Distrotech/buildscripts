@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 ADDCFLAG="-fPIC";
+NOSVNROOT="1";
