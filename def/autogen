@@ -5,3 +5,4 @@ CONFOPT="libopts_cv_with_libregex=yes";
 ADDCFLAG="-I=/usr/include/guile/2.0";
 OPT_mips="--target=mips-linux-gnu";
 DONTBUILD="arm arm64 mips mips64 powerpc powerpc64 x86_32";
+NOSVNROOT="1";
