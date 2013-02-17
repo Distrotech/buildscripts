@@ -2,3 +2,4 @@ VERSION="1.6.6"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+AMVER="1.9";
