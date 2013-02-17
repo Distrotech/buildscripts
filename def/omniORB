@@ -1,0 +1,6 @@
+VERSION="4.1.6"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ADDCFLAG="-I=/usr/include/python2.7";
+CLEARFLAGS="1";
