@@ -1,0 +1,7 @@
+VERSION="3.2.6"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+STDOPTS="--prefix=/usr --mandir=/usr/share/man";
+BUILDDIR="0";
+NOCCOPT="1";
