@@ -2,6 +2,6 @@ VERSION="3.2.6"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-STDOPTS="--prefix=/usr --mandir=/usr/share/man";
+STDOPTS="--prefix=/usr --mandir=/usr/share/man --without-tcl --enable-devlibs";
 BUILDDIR="0";
 NOCCOPT="1";
