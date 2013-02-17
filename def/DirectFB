@@ -1,0 +1,4 @@
+VERSION="1.6.3"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="ac_cv_path_MAN2HTML=false";
