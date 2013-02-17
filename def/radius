@@ -1,0 +1,4 @@
+VERSION="1.6.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--without-guile";
