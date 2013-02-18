@@ -1,0 +1,7 @@
+VERSION="1.82"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+STDOPTS="--prefix=/usr --yes";
+NOCCOPT="1";
+BUILDDIR="0";
