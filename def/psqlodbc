@@ -1,0 +1,5 @@
+VERSION="09.01.0200"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+LIBDIRPRE="psqlodbc";
