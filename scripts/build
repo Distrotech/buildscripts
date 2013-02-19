@@ -549,7 +549,7 @@ autoconf_cross_build() {
 
 #  export LD_LIBRARY_PATH="${RPATH_LINK}"
   if [ ! "${STDOPTS}" ];then
-    STDOPTSX="--prefix=${PREFIX} --sysconfdir=/etc/${SYSCONFPRE} --mandir=${PREFIX}/share/man --localstatedir=/var --infodir=${PREFIX}/share/info" 
+    STDOPTSX="--prefix=${PREFIX} --sysconfdir=/etc/${SYSCONFPRE} --mandir=${PREFIX}/share/man --localstatedir=/var${STATEDIRPRE} --infodir=${PREFIX}/share/info" 
     if [ "${B_LIBDIRS}" ];then
       STDOPTSX="${STDOPTSX} --libdir=${PREFIX}/${B_LIBDIRS}";
       if [ "${LIBDIRPRE}" ];then
