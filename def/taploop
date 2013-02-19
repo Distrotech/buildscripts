@@ -1,5 +1,5 @@
 VERSION="trunk"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--enable-framework-install";
 BUILDDIR="0";
