@@ -1,5 +1,5 @@
 VERSION="1.2.7"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--with-kernel-dir=/usr/include";
 BUILDDIR="0";
