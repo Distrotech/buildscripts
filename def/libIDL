@@ -9,4 +9,4 @@ OPT_mips="libIDL_cv_long_long_format=%llu";
 OPT_mips64="libIDL_cv_long_long_format=%llu";
 OPT_powerpc="libIDL_cv_long_long_format=%llu";
 OPT_powerpc64="libIDL_cv_long_long_format=%llu";
-OPT_i686="libIDL_cv_long_long_format=%llu";
+OPT_i686="libIDL_cv_long_long_format=ll";
