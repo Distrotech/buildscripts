@@ -1,5 +1,6 @@
 VERSION="1.26"
 VERSEP="-";
-PREFIX="/usr";
+PREFIX="/";
 CONFOPT="";
 BUILDDIR="0";
+MAKE_J="-j1";
