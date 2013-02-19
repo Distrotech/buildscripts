@@ -1,5 +1,6 @@
 VERSION="0.99.21"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--enable-vtysh --enable-isisd --enable-user=daemon --enable-group=daemon";
 SYSCONFPRE="quagga";
+STATEDIRPRE="/run";
