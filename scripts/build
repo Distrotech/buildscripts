@@ -938,6 +938,9 @@ build_project() {
    elif [ -e ${TOPDIR}${CFGBIN}./setup.py ];then
     python setup.py clean --all
     python ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
+   elif [ -e ${TOPDIR}${CFGBIN}./Makefile.PL ];then
+     perl Makefile.PL ${CONFOPT}
+     make_cc_destdir
    elif [ ! -e ${TOPDIR}${CFGBIN}configure ] &&
         [ ! -e configure ] &&
         [ ! -e ${TOPDIR}configure ] &&
