@@ -5,3 +5,4 @@ CONFOPT="--enable-natt --enable-dpd --enable-stats --enable-frag --enable-hybrid
          --enable-adminport --with-libpam --enable-security-context=no";
 SYSCONFPRE="racoon";
 EXTRALIBS="-lrt";
+AMVER="1.12";
