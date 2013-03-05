@@ -1,4 +1,4 @@
 VERSION="1.2.15"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--disable-video-svga";
+CONFOPT="--disable-video-svga --enable-video-x11 --enable-x11-shared --enable-video-directfb";
