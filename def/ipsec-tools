@@ -6,3 +6,4 @@ CONFOPT="--enable-natt --enable-dpd --enable-stats --enable-frag --enable-hybrid
 SYSCONFPRE="racoon";
 EXTRALIBS="-lrt";
 AMVER="1.12";
+NOSVNROOT="1";
