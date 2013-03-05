@@ -2,3 +2,4 @@ VERSION="0.0.9"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+DONTBUILD="i686 x86_32 x86_64 arm arm64 powerpc powerpc64 mips mips64";
