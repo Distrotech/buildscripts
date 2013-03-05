@@ -1,0 +1,7 @@
+VERSION="2.0.4b"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+STDOPTS="--prefix=/usr";
+BUILDDIR="0";
+NOCCOPT="1";
