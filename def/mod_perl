@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 BUILDDIR="0";
 CONFOPT="MP_APXS=${SYSROOT}/opt/apache2/bin/apxs  MP_APR_CONFIG=${SYSROOT}/opt/apache2/bin/apr-1-config";
+SYSROOTPATH="1";
