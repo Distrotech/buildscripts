@@ -1586,7 +1586,7 @@ build_static_tool() {
 
   #Postconfig hook
   if [ -e ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-config ];then
-    sh ${SRCDIR}/${4}/{STATICTOOL}/.build-info/post-config ${1} ${SRCDIR}/${4}/${STATICTOOL} ${TOOLDIR}/${1}/${STATICTOOL}-static
+    sh ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-config ${1} ${SRCDIR}/${4}/${STATICTOOL} ${TOOLDIR}/${1}/${STATICTOOL}-static
   fi;
 
   make ${MAKE_J} ${STATICMOPT} || make ${STATICMOPT} || return 0
