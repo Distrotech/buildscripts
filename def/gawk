@@ -3,5 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 EXTRALIBS="-ldl";
-STATICMOPT="LDFLAGS=-static";
+STATICMOPT="LDFLAGS=-static LIBSIGSEGV=-lsigsegv";
 NONULLCONF="1";
