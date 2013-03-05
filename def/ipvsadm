@@ -4,3 +4,4 @@ PREFIX="/";
 CONFOPT="";
 BUILDDIR="0";
 MAKE_J="-j1";
+ADDCFLAG="-fPIC";
