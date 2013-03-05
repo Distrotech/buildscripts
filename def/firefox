@@ -1,0 +1,4 @@
+VERSION="19.0.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-branding=browser/branding/official/";
