@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-I=/usr/include/python2.7";
 CLEARFLAGS="1";
+BUILDDIR="0";
