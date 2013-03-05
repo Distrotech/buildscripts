@@ -1,7 +1,10 @@
 #!/bin/bash
 
-SVNIP=192.168.25.1
+SVNIP=127.0.0.1
 SVNBASE=http://${SVNIP}/svn
+
+XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml'
+LANG=en_ZA.UTF8
 
 #Setup layout path
 SRCDIR=/usr/src
@@ -25,6 +28,8 @@ MARCH_x86_64="x86_32|i[3-6]86|x86_64"
 MARCH_x86_32=${MARCH_x86_64}
 MARCH_powerpc64="powerpc|powerpc64"
 
+export XML_CATALOG_FILES LANG
+
 #Parse cmdline opts
 #Adding a arch here may require you adding tupple/kernel arch/libdirs and bellow in arch_config
 ALLARCHLIST="i686 arm x86_64 x86_32 mips mips64 powerpc powerpc64";
@@ -33,7 +38,7 @@ ALLARCH="0";
 
 ARCHLIST="";
 CLEANOPT="";
-MAKE_J="-j6"
+MAKE_J="-j10"
 
 while (( $# > 1 ));do
   case ${1} in
@@ -566,8 +571,8 @@ autoconf_cross_build() {
   fi;
 
   #Disable shared libs for c++ libs where libstdc++ is not shared
-  if [ "${STDCSTATIC}" ] && [ ! -f ${SYSROOT}/usr/${B_LIBDIRS}/libstdc++.so ];then
-    STDOPTSX="${STDOPTSX} ${STDCSTATIC}";
+  if [ "${STDCSTATIC}" ] && [ ! -f ${SYSROOT}/usr/${B_LIBDIRS}/libstdc++.so ] && [ ! -f /usr/${3}/lib/libstdc++.so ];then
+      STDOPTSX="${STDOPTSX} ${STDCSTATIC}";
   fi;
 
   if [ "${ADDBUILDSYSROOT}" == "1" ] && [ -d ${ARCHROOT}/${2} ] && [ ! -h ${ARCHROOT}/${1} ];then
@@ -925,6 +930,7 @@ build_project() {
   if [ -x ${SCRIPTDIR}/make_${PROJECT} ];then
     export CC="${CC} ${CC_SYSROOT}"
     export CXX="${CXX} ${CC_SYSROOT}"
+    export MAKE_J
     ${SCRIPTDIR}/make_${PROJECT} ${barch} ${HOST} ${DIST_ROOT} ${CLEANOPT} || return 1
    elif [ -e ${TOPDIR}${CFGBIN}configure ];then
     if [ ! -x ${TOPDIR}${CFGBIN}configure ];then
@@ -1750,10 +1756,10 @@ build_dependancies() {
     done;
   fi;
 
-  build_packages ${1} intltool popt rsync bzip2 openssl Python libxml2 libxslt gnome-doc-utils docbook-4.1.2 docbook-4.2 \
-                       docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus dbus-python glib \
-                       gtk-doc pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg trousers slang \
-                       wget || return 1
+  build_packages ${1} intltool popt rsync bzip2 openssl Python libxml2 libxslt gnome-doc-utils \
+                      docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which \
+                      libffi dbus glib gtk-doc pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg \
+                      trousers slang wget || return 1
 
   if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
     rm /usr/lib64/libblkid.a /usr/lib64/libuuid.a /usr/lib64/libblkid.la /usr/lib64/libuuid.la >/dev/null 2>&1
@@ -1782,18 +1788,19 @@ build_dependancies() {
 
   build_packages ${1} fontforge freeglut pcsc-lite atk  gdk-pixbuf gtk+ poppler poppler-data qpdf cups-filters patch \
                       alsa-lib fastjar icedtea6 icedtea7 yasm nasm fuse libunistring txt2man printproto portablexdr \
-                      libpcap ppp libIDL ORBit2 dbus-glib polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome \
-                      rtmpdump swig M2Crypto libnl-1 libnl crda ragel apr apr-iconv sqlite-autoconf keyutils neon \
-                      apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql apr-util httpd \
-                      subversion libva gavl jasper OpenCV frei0r libraw1394 audiofile esound libogg flac libvorbis \
-                      libsndfile json-c fftw libsamplerate speex orc pulseaudio SDL libdc1394 libavc1394 libiec61883 \
-                      faac libaacplus vo-aacenc vo-amrwbenc fribidi icu4c graphite2 harfbuzz libass libbluray celt \
-                      libcaca gsm libmodplug lame twolame libnut opencore-amr opus schroedinger libtheora utvideo openal \
-                      xvidcore ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink libmnl libexif exif \
-                      libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils \
-                      xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem qt-4 py2cairo pygobject pygtk \
-                      avahi gnome-mime-data gnome-vfs gstreamer libvisual gst-plugins-base djvulibre nspr nss \
-                      automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf rrdtool || return 1
+                      libpcap ppp libIDL ORBit2 dbus-glib dbus-python polkit GConf libbonobo gc guile libmad Xaw3d gv \
+                      polkit-gnome rtmpdump swig M2Crypto libnl-1 libnl crda ragel apr apr-iconv sqlite-autoconf \
+                      keyutils neon apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql \
+                      apr-util httpd subversion libva gavl jasper OpenCV frei0r libraw1394 audiofile esound libogg \
+                      flac libvorbis libsndfile json-c fftw libsamplerate speex orc pulseaudio SDL libdc1394 \
+                      libavc1394 libiec61883 faac libaacplus vo-aacenc vo-amrwbenc fribidi icu4c graphite2 harfbuzz \
+                      libass libbluray celt libcaca gsm libmodplug lame twolame libnut opencore-amr opus schroedinger \
+                      libtheora utvideo openal xvidcore ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink \
+                      libmnl libexif exif libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables \
+                      usbutils xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem qt-4 py2cairo \
+                      pygobject pygtk avahi gnome-mime-data gnome-vfs gstreamer libvisual gst-plugins-base djvulibre \
+                      nspr nss automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf \
+                      rrdtool || return 1
 
   #XFCE
   build_packages ${1} gnome-common glade3 libnotify startup-notification libwnck py2cairo pygobject vte \
@@ -1881,7 +1888,7 @@ bootstrap_native() {
 
   #Bootstrap native arch with deps for GCC [libjava] if gcc not built
   if [ ! -e ${STATDIR}/${NARCH}/done/unzip ];then
-    build_packages ${NARCH} gettext xz libxml2 libxslt libffi Python docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
+    build_packages ${NARCH} gettext xz libxml2 libxslt libffi gdbm Python docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
                             docbook-4.5 docbook-xsl xmlto OpenSP openjade glib pkg-config gtk-doc libcroco zip unzip || return 1
   fi;
 
