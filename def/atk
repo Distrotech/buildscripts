@@ -5,3 +5,4 @@ CONFOPT="";
 CONFOPT="--enable-introspection=yes";
 CLEARFLAGS="1";
 OPT_arm64="--enable-introspection=no";
+EXTRALIBS="-lpthread -lrt -ldl";

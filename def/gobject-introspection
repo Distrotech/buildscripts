@@ -7,7 +7,7 @@ ADDCFLAG="-I=/usr/include/glib-2.0 -I=/usr/include/gio-unix-2.0 -I=/usr/include/
 CLEARFLAGS="1";
 MAKEOPTS="V=1";
 NOCCOPT="1";
-EXTRALIBS="-lglib-2.0 -lgmodule-2.0 -lgobject-2.0 -lgthread-2.0 -lgio-2.0";
+EXTRALIBS="-lglib-2.0 -lgmodule-2.0 -lgobject-2.0 -lgthread-2.0 -lgio-2.0 -lpthread -lrt -lresolv -ldl";
 OPT_i686="PYTHON=/build/i686/usr/bin/python2.7";
 OPT_x86_32="PYTHON=/build/x86_32/usr/bin/python2.7";
 OPT_x86_64="PYTHON=/build/x86_64/usr/bin/python2.7";
