@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 FIXUPLIB="1";
+DONTBUILD="x86_32";
