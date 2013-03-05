@@ -5,3 +5,4 @@ CONFOPT="--with-pam --disable-strip";
 ADDCC="0";
 NOCCOPT="1";
 CLEARFLAGS="1";
+EXTRALIBS="-lpthread -lrt";

@@ -9,3 +9,4 @@ XPOST="ln -s gdk-pixbuf-2.0/gdk-pixbuf /usr/include/gdk-pixbuf";
 AMVER="1.13";
 CLEARFLAGS="1";
 OPT_arm64="--enable-introspection=no";
+EXTRALIBS="-ldl";
