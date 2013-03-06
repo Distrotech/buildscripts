@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#sh ./bootstrap.sh
-#./b2 gcc-${1}
+sh ./bootstrap.sh
+./b2 gcc-${1}
 
 if true;then
   if [ ! -d ${3}/usr/${B_LIBDIRS} ];then
