@@ -2,3 +2,4 @@ VERSION="24.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+NOSVNROOT="1";
