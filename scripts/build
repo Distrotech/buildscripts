@@ -3,7 +3,7 @@
 SVNIP=127.0.0.1
 SVNBASE=http://${SVNIP}/svn
 
-XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml'
+XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /usr/share/docbook2X/xslt/catalog.xml'
 LANG=en_ZA.UTF8
 
 #Setup layout path
@@ -1742,7 +1742,7 @@ build_dependancies() {
   fi;
 
   #Add required perl modules from cpan may not need libxml only expat !!!
-  for pmod in XML::Parser XML::SAX Font::TTF XML::Simple;do
+  for pmod in XML::Parser XML::SAX Font::TTF XML::Simple Archive::Zip;do
     if [ ! -e ${STATDIR}/${1}/done/${pmod} ];then
       cpan -i ${pmod} && touch ${STATDIR}/${1}/done/${pmod}
     fi;
@@ -1801,10 +1801,12 @@ build_dependancies() {
                       pygobject pygtk avahi gnome-mime-data gnome-vfs gstreamer libvisual gst-plugins-base djvulibre \
                       nspr nss automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf \
                       rrdtool || return 1
+  #Libre Office
+  build_packages ${1} boost clucene-core libzip mdds libixion liborcus
 
   #XFCE
   build_packages ${1} gnome-common glade3 libnotify startup-notification libwnck py2cairo pygobject vte \
-                      gnome-keyring gnome-desktop libxfce4util xfconf libxfce4ui garcon \
+                      gnome-keyring gnome-desktop libopenraw libxfce4util xfconf libxfce4ui garcon \
                       exo xfce4-panel Thunar xfce4-settings xfce4-session xfwm4 xfdesktop xfce4-appfinder \
                       gtk-xfce-engine Terminal thunar-volman xfce4-taskmanager xpdf icon-naming-utils gnome-icon-theme \
                       shared-mime-info eog aterm file-roller libgsf wv abiword gcalctool gucharmap leafpad \
