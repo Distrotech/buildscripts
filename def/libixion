@@ -3,3 +3,4 @@ VERSEP="_";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
+EXTRALIBS="-lboost_system";
