@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#sh ./bootstrap.sh
+#./b2 gcc-${1}
+
+if true;then
+  if [ ! -d ${3}/usr/${B_LIBDIRS} ];then
+    mkdir -p ${3}/usr/${B_LIBDIRS}
+  fi;
+  if [ ! -d ${3}/usr/include ];then
+    mkdir -p ${3}/usr/include
+  fi;
+  rsync -avP stage/lib/ ${3}/usr/${B_LIBDIRS}/
+  rsync -avP boost ${3}/usr/include/
+fi;
