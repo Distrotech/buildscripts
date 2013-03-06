@@ -1,4 +1,11 @@
 VERSION="19.0.1"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-branding=browser/branding/official/";
+STDOPTS="--prefix=/usr --libdir=/usr/${B_LIBDIRS} --mandir=/usr/share/man --localstatedir=/var --infodir=/usr/share/info";
+CONFOPT="--with-branding=browser/branding/official/ --enable-system-hunspell --with-system-nspr --with-system-nss 
+         --with-system-libevent -x-includes=/usr/X11R7/include --x-libraries=/usr/X11R7/${B_LIBDIRS}
+         --with-system-zlib --with-system-bz2 --enable-system-ffi --with-system-libvpx --enable-system-pixman";
+ADDCFLAG="-I=/usr/X11R7/include";
+NOCCOPT="1";
+CLEARFLAGS="1";
+ADDCC="0";
