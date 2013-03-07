@@ -6,3 +6,4 @@ BUILDDIR="0";
 ADDCFLAG="-I=/usr/include/cairo -I=/usr/include/libxml2 -I=/usr/include/libcroco-0.6 -I=/usr/include/gdk-pixbuf-2.0
           -I=/usr/include/vala-0.18 -I=/usr/include/pango-1.0 -I=/usr/include/atk-1.0";
 AMVER="1.12";
+CLEARFLAGS="1";
