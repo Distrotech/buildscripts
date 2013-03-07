@@ -1773,7 +1773,7 @@ build_dependancies() {
     (CLEANOPT=distclean;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
   fi;
 
-  build_packages ${1} cairo gobject-introspection pango vala libdrm llvm intltool cmake talloc tevent libevent libverto \
+  build_packages ${1} cairo gobject-introspection harfbuzz pango vala libdrm llvm intltool cmake talloc tevent libevent libverto \
                       krb5 tiff libdaemon avahi-nogui cups ghostscript ijs kmod \
                       module-init-tools LVM2 cryptsetup systemd Mesa glu glw mtdev || return 1
 
@@ -1793,7 +1793,7 @@ build_dependancies() {
                       keyutils neon apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql \
                       apr-util httpd subversion libva gavl jasper OpenCV frei0r libraw1394 audiofile esound libogg \
                       flac libvorbis libsndfile json-c fftw libsamplerate speex orc pulseaudio SDL libdc1394 \
-                      libavc1394 libiec61883 faac libaacplus vo-aacenc vo-amrwbenc fribidi icu4c graphite2 harfbuzz \
+                      libavc1394 libiec61883 faac libaacplus vo-aacenc vo-amrwbenc fribidi icu4c graphite2  \
                       libass libbluray celt libcaca gsm libmodplug lame twolame libnut opencore-amr opus schroedinger \
                       libtheora utvideo openal xvidcore ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink \
                       libmnl libexif exif libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables \
@@ -1809,7 +1809,7 @@ build_dependancies() {
                       gnome-keyring gnome-desktop libopenraw libxfce4util xfconf libxfce4ui garcon \
                       exo xfce4-panel Thunar xfce4-settings xfce4-session xfwm4 xfdesktop xfce4-appfinder \
                       gtk-xfce-engine Terminal thunar-volman xfce4-taskmanager xpdf icon-naming-utils gnome-icon-theme \
-                      shared-mime-info eog aterm file-roller libgsf wv abiword gcalctool gucharmap leafpad \
+                      shared-mime-info eog aterm file-roller libgsf wv hunspell enchant abiword gcalctool gucharmap leafpad \
                       ffmpegthumbnailer tumbler || return 1
 #XXX
 #PyQt-x11 sip
