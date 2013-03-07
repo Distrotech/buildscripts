@@ -8,3 +8,4 @@ ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/cairo -I=/usr/include";
 NONULLCONF="1";
 CLEARFLAGS="1";
 OPT_arm64="--enable-introspection=no";
+AMVER="1.13";
