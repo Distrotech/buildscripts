@@ -3,4 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-boost=/build/${barch}/usr";
 CLEARFLAGS="1";
-EXTRALIBS="-lboost_unit_test_framework";
+EXTRALIBS="-lboost_unit_test_framework -lpthread -lrt -ldl";
