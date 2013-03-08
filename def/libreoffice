@@ -1,4 +1,4 @@
-ANT_HOME="/usr/lib64/jvm/apache-ant-1.8.4";
+ANT_HOME="/usr/${NLIBDIR}/jvm/apache-ant-1.8.4";
 JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-1.7.0_09";
 VERSION="4.0.1.2"
 VERSEP="-";
