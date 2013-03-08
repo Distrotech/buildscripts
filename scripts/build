@@ -946,7 +946,7 @@ build_project() {
     python ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
    elif [ -e ${TOPDIR}${CFGBIN}./Makefile.PL ];then
      perl Makefile.PL ${CONFOPT}
-     make_cc_destdir
+     make ${MAKE_J} && make DESTDIR=${DIST_ROOT} install
    elif [ -e ${TOPDIR}${CFGBIN}./Build.PL ];then
      perl Build.PL destdir=${DIST_ROOT} ${CONFOPT}
      ./Build && ./Build install
