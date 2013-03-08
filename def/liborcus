@@ -1,5 +1,5 @@
 VERSION="0.3.0"
 VERSEP="_";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--with-boost-libdir=/build/${barch}/${B_LIBDIRS} --with-boost-system=boost_system";
 EXTRALIBS="-lpthread -lrt -ldl";
