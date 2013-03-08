@@ -51,6 +51,10 @@ export AUTOMAKE="automake-1.11";
 
 export LD_LIBRARY_PATH=/usr/${B_LIBDIRS}:/${B_LIBDIRS}:${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${PREFIX}/${B_LIBDIRS}
 
+if [ ! -d ./util/modular ];then
+  git clone git://anongit.freedesktop.org/git/xorg/util/modular util/modular
+fi;
+
 if [ "${4}" ];then
   ./util/modular/build.sh -L |awk '{printf "make -C %s distclean\n",$1}' |sh
   rm tobuild
