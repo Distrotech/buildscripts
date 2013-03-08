@@ -947,6 +947,9 @@ build_project() {
    elif [ -e ${TOPDIR}${CFGBIN}./Makefile.PL ];then
      perl Makefile.PL ${CONFOPT}
      make_cc_destdir
+   elif [ -e ${TOPDIR}${CFGBIN}./Build.PL ];then
+     perl Build.PL destdir=${DIST_ROOT} ${CONFOPT}
+     ./Build && ./Build install
    elif [ ! -e ${TOPDIR}${CFGBIN}configure ] &&
         [ ! -e configure ] &&
         [ ! -e ${TOPDIR}configure ] &&
