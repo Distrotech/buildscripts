@@ -1,7 +1,7 @@
 VERSION="1.14.4"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-default-audio=alsa";
+CONFOPT="--with-default-audio=alsa --disable-lfs-alias";
 BUILDDIR="0";
 ADDCFLAG="-I=/usr/include/SDL/ -D_FILE_OFFSET_BITS=64";
 OPT_x86_32="--with-cpu=x86-64 --disable-lfs-alias";
