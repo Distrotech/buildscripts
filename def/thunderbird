@@ -1,0 +1,8 @@
+VERSION="17.0.3"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-system-sqlite --with-system-libevent --with-system-libvpx --with-system-nspr --with-system-nss
+         --disable-crashreporter --disable-installer --disable-updater --disable-debug --disable-tests 
+         --enable-optimize  --enable-gio --enable-official-branding --enable-safe-browsing --enable-url-classifier
+         --enable-system-ffi --enable-system-pixman  --with-pthreads --with-system-bz2 --with-system-jpeg 
+         --with-system-png --with-system-zlib";
