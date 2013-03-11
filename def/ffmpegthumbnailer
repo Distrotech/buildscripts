@@ -2,3 +2,4 @@ VERSION="2.0.8"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+EXTRALIBS="-lpthread";
