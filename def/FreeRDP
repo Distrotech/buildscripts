@@ -1,5 +1,16 @@
 VERSION="stable-1.0"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
-BUILDDIR="0";
+CONFOPT="-DXINERAMA_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libXinerama.so
+         -DX11_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libX11.so
+         -DXKBFILE_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libxkbfile.so
+         -DXEXT_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libXext.so
+         -DXCURSOR_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libXcursor.so
+         -DXV_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libXv.so
+         -DXEXT_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
+         -DXCURSOR_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
+         -DX11_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
+         -DXV_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
+         -DXINERAMA_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
+         -DXKBFILE_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include";
+
