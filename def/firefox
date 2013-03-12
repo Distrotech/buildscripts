@@ -6,6 +6,7 @@ CONFOPT="--with-branding=browser/branding/official/ --enable-system-hunspell --w
          --with-system-libevent -x-includes=/usr/X11R7/include --x-libraries=/usr/X11R7/${B_LIBDIRS}
          --with-system-zlib --with-system-bz2 --enable-system-ffi --with-system-libvpx --enable-system-pixman";
 ADDCFLAG="-I=/usr/X11R7/include";
+ADDLDFLAG="-L=/usr/X11R7/${B_LIBDIRS}";
 NOCCOPT="1";
 CLEARFLAGS="1";
 ADDCC="0";
