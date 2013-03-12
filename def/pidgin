@@ -1,4 +1,4 @@
 VERSION="2.10.7"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--disable-gtkspell --disable-vv --disable-meanwhile --disable-nm";
