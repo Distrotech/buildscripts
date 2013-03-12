@@ -1,8 +1,13 @@
 VERSION="17.0.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-system-sqlite --with-system-libevent --with-system-libvpx --with-system-nspr --with-system-nss
-         --disable-crashreporter --disable-installer --disable-updater --disable-debug --disable-tests 
-         --enable-optimize  --enable-gio --enable-official-branding --enable-safe-browsing --enable-url-classifier
-         --enable-system-ffi --enable-system-pixman  --with-pthreads --with-system-bz2 --with-system-jpeg 
-         --with-system-png --with-system-zlib";
+CONFOPT="--with-system-libevent --with-system-libvpx --with-system-nspr --with-system-nss
+         --with-system-cairo --disable-crashreporter --disable-installer --disable-updater
+         --enable-official-branding --enable-safe-browsing --enable-url-classifier --enable-system-ffi
+         --enable-system-pixman --with-system-bz2 --with-system-jpeg --with-system-zlib --enable-gio
+         --x-includes=/usr/X11R7/include --x-libraries=/usr/X11R7/${B_LIBDIRS} --with-pthreads";
+ADDCFLAG="-I=/usr/X11R7/include";
+ADDLDCFLAG="-L=/usr/X11R7/${B_LIBDIRS}";
+NOCCOPT="1";
+CLEARFLAGS="1";
+ADDCC="0";
