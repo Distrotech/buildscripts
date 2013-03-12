@@ -7,10 +7,12 @@ CONFOPT="-DXINERAMA_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libX
          -DXEXT_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libXext.so
          -DXCURSOR_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libXcursor.so
          -DXV_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libXv.so
+         -DXSHM_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libXShm.so
          -DXEXT_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
          -DXCURSOR_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
          -DX11_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
          -DXV_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
+         -DXSHM_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
          -DXINERAMA_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
          -DXKBFILE_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include";
 
