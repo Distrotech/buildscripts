@@ -1,4 +1,4 @@
-VERSION="2.32.1"
+VERSION="3.0.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="ac_cv_file__dev_random=yes";
+CONFOPT="--with-gtk=2 --without-root-certs ac_cv_file__dev_random=yes";
