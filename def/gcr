@@ -1,4 +1,0 @@
-VERSION="3.7.5"
-VERSEP="-";
-PREFIX="/usr";
-CONFOPT="--without-gtk";
