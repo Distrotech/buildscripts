@@ -5,7 +5,7 @@ CONFOPT="--with-system-libevent --with-system-libvpx --with-system-nspr --with-s
          --with-system-cairo --disable-crashreporter --disable-installer --disable-updater
          --enable-official-branding --enable-safe-browsing --enable-url-classifier --enable-system-ffi
          --enable-system-pixman --with-system-bz2 --with-system-jpeg --with-system-zlib --enable-gio
-         --x-includes=/usr/X11R7/include --x-libraries=/usr/X11R7/${B_LIBDIRS} --with-pthreads";
+         --x-includes=/usr/X11R7/include --x-libraries=/usr/X11R7/${B_LIBDIRS} --with-pthreads --enable-calendar";
 ADDCFLAG="-I=/usr/X11R7/include";
 ADDLDCFLAG="-L=/usr/X11R7/${B_LIBDIRS}";
 NOCCOPT="1";
