@@ -235,10 +235,12 @@ svn_load_pkg() {
   if [ ! -d ${SRCDIR}/${PKGSVNDIR} ];then
     if [ "${NOSVNROOT}" ] && [ "${NOSVNROOT}" == "1" ];then
       svn co ${SVNURL}/${PKGSVNDIR} ${SRCDIR}/${PKGSVNDIR}-svn || return 1
+      find ${SRCDIR}/${PKGSVNDIR}-svn -name configure -or -name Makefile.in |awk '{printf "touch %s\n",$1}' |sh
       svn export ${SRCDIR}/${PKGSVNDIR}-svn ${SRCDIR}/${PKGSVNDIR}
       NONULLCONF=1;
      else
       svn co ${SVNURL}/${PKGSVNDIR} ${SRCDIR}/${PKGSVNDIR} || return 1
+      find ${SRCDIR}/${PKGSVNDIR} -name configure -or -name Makefile.in |awk '{printf "touch %s\n",$1}' |sh
     fi
     if [ "${NONULLCONF}" ] && [ "${NONULLCONF}" == "1" ];then
       return 0;
@@ -1814,6 +1816,9 @@ build_dependancies() {
                       gtk-xfce-engine Terminal thunar-volman xfce4-taskmanager xpdf icon-naming-utils gnome-icon-theme \
                       shared-mime-info eog aterm file-roller libgsf wv hunspell enchant abiword gcalctool gucharmap leafpad \
                       ffmpegthumbnailer tumbler || return 1
+  #Linphone
+  build_packages ${1} ortp mediastreamer bcg729 msamr msilbc msx264 mssilk libopensip2 libeXosip2 linphone || return 1
+
 #XXX
 #PyQt-x11 sip
 
@@ -1870,7 +1875,7 @@ bootstrap_native() {
 
   #Bootstrap native arch buildtools
   build_packages ${NARCH} binutils groff perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 \
-                          help2man autoconf zlib patch ||return 1
+                          help2man autoconf zlib libcap patch ||return 1
 
   #build shared gcc to get shared libstdc++/libada/libgcc [C/C++/ADA]
   if [ ! -e /usr/${NLIBDIR}/libstdc++.so ];then
