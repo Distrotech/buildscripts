@@ -2,3 +2,5 @@ VERSION="0.0.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+AMVER="1.13";
+ADDCFLAG="-I=/usr/include/opencore-amrnb -I=/usr/include/opencore-amrwb";
