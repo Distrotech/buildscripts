@@ -1817,7 +1817,7 @@ build_dependancies() {
                       shared-mime-info eog aterm file-roller libgsf wv hunspell enchant abiword gcalctool gucharmap leafpad \
                       ffmpegthumbnailer tumbler || return 1
   #Linphone
-  build_packages ${1} ortp mediastreamer bcg729 msamr msilbc msx264 mssilk libopensip2 libeXosip2 linphone || return 1
+  build_packages ${1} ortp mediastreamer bcg729 msamr msilbc msx264 mssilk libopensip2 libeXosip2 glib-networking libsoup linphone || return 1
 
 #XXX
 #PyQt-x11 sip
