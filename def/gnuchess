@@ -1,0 +1,4 @@
+VERSION="6.0.3"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
