@@ -1,4 +1,4 @@
 VERSION="4.10.0"
 VERSEP="-";
-PREFIX="/usr";
+PREFIX="/opt/xfce";
 CONFOPT="";
