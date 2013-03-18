@@ -1,4 +1,4 @@
-VERSION="2.2.0"
+VERSION="2.5.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
@@ -6,3 +6,4 @@ CONFOPT="--enable-introspection=yes";
 CLEARFLAGS="1";
 OPT_arm64="--enable-introspection=no";
 EXTRALIBS="-lpthread -lrt -ldl";
+AMVER="1.13";
