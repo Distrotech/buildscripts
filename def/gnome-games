@@ -2,3 +2,5 @@ VERSION="2.32.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+AMVER="1.10";
+CLEARFLAGS="1";
