@@ -1,4 +1,6 @@
 VERSION="1.1.6"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--enable-maintainer-flags=no";
+ADDCFLAG="-DG_CONST_RETURN=const";
+CLEARFLAGS="1";
