@@ -1,4 +1,5 @@
 VERSION="2.0.5"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--disable-lua";
+ADDCFLAG="-fPIC -O2";
