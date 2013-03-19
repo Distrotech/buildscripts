@@ -1,0 +1,8 @@
+VERSION="1.9.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+ADDCFLAG="-I/usr/src/glew/glew${VERSEP}${VERSION}/include";
+ADDLDFLAG="-I/usr/src/glew/glew${VERSEP}${VERSION}/lib";
+LDISCC="1";
