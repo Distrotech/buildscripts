@@ -2,3 +2,4 @@ VERSION="1.5.26"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+OPT_x86_64="--enable-win64";
