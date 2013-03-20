@@ -19,7 +19,7 @@ SCRIPTDIR=${DISTDIR}/scripts
 PKGBUILDDIR=${DISTDIR}/build
 ARCHROOT=/build
 SVNURL=${SVNBASE}/distro/
-SVNUPDATE=0;
+SVNUPDATE=1;
 AMDEF="1.11";
 BOOTCLEAN="distclean";
 
@@ -1102,7 +1102,9 @@ build_glibc() {
   #building without gcc do so without SSP
   if [ ! -x /usr/bin/${2}-g++ ];then
     #dont build we are stuck on rerun ??
-    if [ -e /${USELIBDIR}/libc.so.6 ];then
+    if [ "${1}" == "${NARCH}" ] && [ -e /${USELIBDIR}/libc.so.6 ];then
+      return 0;
+     elif [ "${1}" != "${NARCH}" ] && [ -e ${ARCHROOT}/${USELIBDIR}/libc.so.6 ];then
       return 0;
     fi;
     build_project glibc ${1} libc_cv_ssp=no
@@ -1152,6 +1154,8 @@ build_glibc() {
       rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${BASEROOT}/x86_64/
       rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${ARCHROOT}/x86_32/
       rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${BASEROOT}/x86_32/
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${ARCHROOT}/i686/
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${BASEROOT}/i686/
     ;;
     x86_32)
       if [ ! -d ${ARCHROOT}/x86_64 ];then
@@ -1737,9 +1741,8 @@ build_glibc_march() {
 build_dependancies() {
   #Base dependancies
   build_packages ${1} groff gdbm perl gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
-                      bison diffutils flex attr acl pcre libsepol libselinux file gengetopt libidn libtasn1 p11-kit \
-                      nettle gnutls libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap coreutils \
-                      readline bash xz expat || return 1
+    bison diffutils flex attr acl pcre libsepol libselinux file gengetopt libidn libtasn1 p11-kit nettle gnutls \
+    libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap coreutils readline bash xz expat || return 1
 
   #Dont build libxml2 if there is a python in / may not be one in /build/.../
   if [ ! -d /usr/lib/python2.7 ];then
@@ -1747,7 +1750,7 @@ build_dependancies() {
   fi;
 
   #Add required perl modules from cpan may not need libxml only expat !!!
-  for pmod in XML::Parser XML::SAX Font::TTF XML::Simple Archive::Zip;do
+  for pmod in XML::Parser XML::SAX Font::TTF XML::Simple Archive::Zip Pod::Simple::Search;do
     if [ ! -e ${STATDIR}/${1}/done/${pmod} ];then
       cpan -i ${pmod} && touch ${STATDIR}/${1}/done/${pmod}
     fi;
@@ -1761,26 +1764,25 @@ build_dependancies() {
     done;
   fi;
 
-  build_packages ${1} intltool popt rsync bzip2 openssl Python libxml2 libxslt gnome-doc-utils \
-                      docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which \
-                      libffi dbus glib gtk-doc pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg \
-                      trousers slang wget || return 1
+  build_packages ${1} intltool popt rsync bzip2 openssl Python libxml2 libxslt gnome-doc-utils docbook-4.1.2 docbook-4.2 \
+    docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus glib gtk-doc pkg-config libcroco \
+    libassuan libksba pth libusb libusb-compat gnupg trousers slang wget || return 1
 
   if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
     rm /usr/lib64/libblkid.a /usr/lib64/libuuid.a /usr/lib64/libblkid.la /usr/lib64/libuuid.la >/dev/null 2>&1
   fi;
 
   build_packages ${1} util-linux nano rsync grep less gzip tar pkg-config cpio iana-etc xmlto xmltoman giflib freetype \
-                       fontconfig fonttools lcms2 jpeg libpng openjpeg libmng OpenSP c-ares curl git || return 1
+    fontconfig fonttools lcms2 jpeg libpng tiff openjpeg libmng OpenSP c-ares curl git || return 1
 
   #This will fail due to Mesa so dont bail only do it on first pass use build_project directly
   if [ ! -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
     (CLEANOPT=distclean;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
   fi;
 
-  build_packages ${1} cairo gobject-introspection harfbuzz pango vala libdrm llvm intltool cmake talloc tevent libevent libverto \
-                      krb5 tiff libdaemon avahi-nogui cups ghostscript ijs kmod \
-                      module-init-tools LVM2 cryptsetup systemd Mesa glu glw mtdev || return 1
+  build_packages ${1} cairo gobject-introspection icu4c graphite2 harfbuzz pango vala libdrm intltool cmake llvm talloc \
+    tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript ijs kmod  module-init-tools LVM2 cryptsetup \
+    libmicrohttpd systemd Mesa glu glw mtdev fontforge freeglut pcsc-lite atk gdk-pixbuf gtk+ || return 1
 
   #Continue X Build with GL/Mesa
   if [ -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
@@ -1792,32 +1794,33 @@ build_dependancies() {
   fi;
 
   build_packages ${1} fontforge freeglut pcsc-lite atk  gdk-pixbuf gtk+ poppler poppler-data qpdf cups-filters patch \
-                      alsa-lib fastjar icedtea6 icedtea7 yasm nasm fuse libunistring txt2man printproto portablexdr \
-                      libpcap ppp libIDL ORBit2 dbus-glib dbus-python polkit GConf libbonobo gc guile libmad Xaw3d gv \
-                      polkit-gnome rtmpdump swig M2Crypto libnl-1 libnl crda ragel apr apr-iconv sqlite-autoconf \
-                      keyutils neon apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql \
-                      apr-util httpd subversion libva gavl jasper OpenCV frei0r libraw1394 audiofile esound libogg \
-                      flac libvorbis libsndfile json-c fftw libsamplerate speex orc pulseaudio SDL libdc1394 \
-                      libavc1394 libiec61883 faac libaacplus vo-aacenc vo-amrwbenc fribidi icu4c graphite2  \
-                      libass libbluray celt libcaca gsm libmodplug lame twolame libnut opencore-amr opus schroedinger \
-                      libtheora utvideo openal xvidcore ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink \
-                      libmnl libexif exif libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables \
-                      usbutils xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem qt-4 py2cairo \
-                      pygobject pygtk avahi gnome-mime-data gnome-vfs gstreamer libvisual gst-plugins-base djvulibre \
-                      nspr nss automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf \
-                      rrdtool || return 1
+    alsa-lib fastjar icedtea6 icedtea7 yasm nasm fuse libunistring txt2man printproto portablexdr libnl-1 libnl libpcap \
+    ppp libIDL ORBit2 dbus-glib dbus-python polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig \
+    M2Crypto crda ragel apr apr-iconv sqlite-autoconf keyutils neon apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp \
+    openldap mysql postgresql apr-util httpd subversion libva gavl jasper libraw1394 orc libogg libvorbis gnome-mime-data \
+    gnome-vfs libvisual gstreamer v4l-utils OpenCV frei0r audiofile esound flac libvorbis libsndfile json-c fftw \
+    libsamplerate speex pulseaudio SDL libdc1394 libtheora gst-plugins-base libavc1394 libiec61883 faac libaacplus \
+    vo-aacenc vo-amrwbenc fribidi libass libbluray celt libcaca gsm libmodplug lame twolame libnut opencore-amr opus \
+    schroedinger utvideo openal xvidcore ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink libmnl libexif \
+    exif libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils xavs x264 libvpx v4l-utils \
+    fdk-aac ffmpeg h323plus gnugk t38modem qt-4 py2cairo pygobject libglade pygtk nspr nss automake-1.9 automake-1.10 \
+    automake-1.11 automake-1.12 automake-1.13 help2man autoconf rrdtool avahi djvulibre libarchive libao cogl json-glib \
+    net-snmp sane-backends libvdpau LibVNCServer i2c-tools openexr ImageMagick libungif libiodbc tdb libcanberra \
+    libgnome-keyring pangox-compat mhash libmcrypt || return 1
+
   #Libre Office
   build_packages ${1} boost clucene-core libzip mdds libixion liborcus
 
   #XFCE
-  build_packages ${1} gnome-common glade3 libnotify startup-notification libwnck py2cairo pygobject vte \
-                      gnome-keyring gnome-desktop libopenraw libxfce4util xfconf libxfce4ui garcon \
-                      exo xfce4-panel Thunar xfce4-settings xfce4-session xfwm4 xfdesktop xfce4-appfinder \
-                      gtk-xfce-engine Terminal thunar-volman xfce4-taskmanager xpdf icon-naming-utils gnome-icon-theme \
-                      shared-mime-info eog aterm file-roller libgsf wv hunspell enchant abiword gcalctool gucharmap leafpad \
-                      ffmpegthumbnailer tumbler || return 1
+  build_packages ${1} gnome-common glade3 libnotify startup-notification libwnck py2cairo pygobject vte gnome-keyring \
+    gnome-desktop libopenraw libxfce4util xfconf libxfce4ui garcon exo xfce4-panel Thunar xfce4-settings xfce4-session \
+    xfwm4 xfdesktop xfce4-appfinder  gtk-xfce-engine Terminal thunar-volman xfce4-taskmanager xpdf icon-naming-utils \
+    gnome-icon-theme shared-mime-info eog aterm file-roller libgsf wv hunspell enchant abiword gcalctool gucharmap \
+    leafpad ffmpegthumbnailer tumbler || return 1
+
   #Linphone
-  build_packages ${1} ortp mediastreamer bcg729 msamr msilbc msx264 mssilk libopensip2 libeXosip2 glib-networking libsoup linphone || return 1
+  build_packages ${1} ortp spandsp mediastreamer bcg729 msamr libilbc msilbc msx264 mssilk libosip2 libeXosip2 \
+    glib-networking libsoup linphone || return 1
 
 #XXX
 #PyQt-x11 sip
@@ -1928,6 +1931,15 @@ bootstrap_toolchain() {
       fi;
     done
   done;
+
+  #bin tools in build dir
+  if [ -d /build/${1} ];then
+    for bintool in `ls /build/${1}/usr/${HOST}/bin/`;do
+      if [ ! -e /build/${1}/usr/bin/${HOST}-${bintool} ];then
+        ln -s /usr/${HOST}/bin/${bintool} /build/${1}/usr/bin/${HOST}-${bintool}
+      fi;
+    done;
+  fi;
 
   #Gnat tools symlinks
   for gnatt in gnatlink gnatmake gnatbind gnatls;do
