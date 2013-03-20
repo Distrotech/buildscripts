@@ -1,6 +1,7 @@
 VERSION="13"
 VERSEP="-";
 PREFIX="/usr";
+JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-1.7.0_09";
 CONFOPT="--enable-external-ffmpeg --enable-external-libraries --disable-rsxs";
 BUILDDIR="0";
 EXTRALIBS="-lpthread";
