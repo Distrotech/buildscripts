@@ -1,0 +1,8 @@
+VERSION="13"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-external-ffmpeg --enable-external-libraries --disable-rsxs";
+BUILDDIR="0";
+EXTRALIBS="-lpthread";
+AMVER="1.11";
+NOCCOPT="1";
