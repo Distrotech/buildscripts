@@ -1,6 +1,6 @@
 VERSION="0.0.9"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-boost=/build/${barch}/usr";
+CONFOPT="--with-boost=/build/${barch}/usr boost_cv_lib_unit_test_framework=yes";
 CLEARFLAGS="1";
-EXTRALIBS="-lboost_unit_test_framework -lpthread -lrt -ldl";
+EXTRALIBS="-L=/usr/${B_LIBDIRS} -lboost_unit_test_framework -lpthread -lrt -ldl";
