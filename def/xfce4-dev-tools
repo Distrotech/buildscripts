@@ -1,0 +1,5 @@
+VERSION="4.10.0"
+VERSEP="-";
+PREFIX="/opt/xfce";
+CONFOPT="";
+BUILDDIR="0";
