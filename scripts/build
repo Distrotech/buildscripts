@@ -185,6 +185,10 @@ check_create_arch() {
     ln -s .. ${ARCHROOT}/${NARCH}
   fi;
 
+  if [ -d /usr/${HOST}/${B_LIBDIRS} ] && [ ! -e ${ARCHROOT}/${1}/usr/${HOST}/${B_LIBDIRS}/libstdc++.so ];then
+    rsync -aPR /usr/${HOST}/${B_LIBDIRS} ${ARCHROOT}/${1}/
+  fi;
+
   if [ -d ${SRCDIR}/linux/usr/include/linux ];then
     if [ ! -d ${HDIR}/usr/include ] || [ ! -f ${TOOLPKG}/${1}/kernel-headers.tar.xz ] || \
        [ ${SRCDIR}/linux/usr/include/linux -nt ${HDIR}/usr/include/linux ];then
@@ -573,7 +577,7 @@ autoconf_cross_build() {
   fi;
 
   #Disable shared libs for c++ libs where libstdc++ is not shared
-  if [ "${STDCSTATIC}" ] && [ ! -f ${SYSROOT}/usr/${B_LIBDIRS}/libstdc++.so ] && [ ! -f /usr/${3}/lib/libstdc++.so ];then
+  if [ "${STDCSTATIC}" ] && [ ! -f ${SYSROOT}/usr/${B_LIBDIRS}/libstdc++.so ] && [ ! -f /usr/${3}/${B_LIBDIRS}/libstdc++.so ];then
       STDOPTSX="${STDOPTSX} ${STDCSTATIC}";
   fi;
 
