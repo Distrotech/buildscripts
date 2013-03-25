@@ -1508,7 +1508,8 @@ build_qemu_static() {
   setup_build_dir ${NARCH} qemu ${QEMU} ${NARCH}
 
   run_configure ${NLIBDIR} --static --disable-system --disable-user --enable-linux-user --disable-werror \
-                --target-list=arm-linux-user,mips-linux-user,ppc-linux-user,ppc64-linux-user --cc=${BUILD}-gcc || return 1
+                --target-list=arm-linux-user,mips-linux-user,mips64-linux-user,ppc-linux-user,ppc64-linux-user \
+                --cc=${BUILD}-gcc || return 1
   make ${MAKE_J} || make || return 1
 
   mkdir -p ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin
