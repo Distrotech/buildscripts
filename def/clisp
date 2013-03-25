@@ -7,3 +7,4 @@ OPT_mips64="--libdir=/usr/lib64";
 OPT_powerpc64="--libdir=/usr/lib64";
 OPT_x86_32="--libdir=/usr/libx32";
 BUILDDIR="0";
+DONTBUILD="x86_32";
