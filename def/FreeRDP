@@ -14,5 +14,11 @@ CONFOPT="-DXINERAMA_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libX
          -DXV_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
          -DXSHM_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
          -DXINERAMA_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
-         -DXKBFILE_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include";
+         -DXKBFILE_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
+         -DOPENSSL_SSL_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libssl.so
+         -DOPENSSL_CRYPTO_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libcrypto.so
+         -DZLIB_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libz.so
+         -DWITH_PULSEAUDIO:BOOL=ON -DWITH_PCSC:BOOL=ON
+         -DCUPS_LIBRARIES:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libcups.so
+         -DALSA_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libasound.so";
 
