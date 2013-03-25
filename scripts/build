@@ -1499,6 +1499,11 @@ build_qemu_static() {
 
   export PKG_CONFIG_PATH="/${NLIBDIR}/pkgconfig:/usr/${NLIBDIR}/pkgconfig:/opt/apache2/${NLIBDIR}/pkgconfig:/usr/share/${NLIBDIR}/pkgconfig:/usr/X11R7/${NLIBDIR}/pkgconfig:/lib/pkgconfig:/usr/lib/pkgconfig:/opt/qt-4/${NLIBDIR}/pkgconfig:/opt/xfce/${NLIBDIR}/pkgconfig";
   DIST_PKG=${TOOLPKG}/${NARCH}/${QEMU}-static.tar.xz
+
+  if [ ${DEFDIR}/qemu -nt ${TOOLDIR}/${NARCH}/${QEMU} ];then
+    rm -rf ${TOOLDIR}/${NARCH}/${QEMU}
+  fi;
+
   if [ -d ${TOOLDIR}/${NARCH}/${QEMU} ] && [ -f ${DIST_PKG} ];then
     return
   fi;
@@ -1513,7 +1518,7 @@ build_qemu_static() {
   make ${MAKE_J} || make || return 1
 
   mkdir -p ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin
-  for arch in arm mips ppc ppc64;do
+  for arch in arm mips mips64 ppc ppc64;do
     if [ "${arch}" != "${NARCH}" ];then
       uemu=${arch}-linux-user/qemu-${arch};
       cp ${uemu} ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${arch}-static
