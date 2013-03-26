@@ -11,3 +11,4 @@ ADDLDFLAG="-L=/usr/X11R7/${B_LIBDIRS}";
 NOCCOPT="1";
 CLEARFLAGS="1";
 ADDCC="0";
+OPT_x86_32="--target=x86_64-linux-gnux32 --disable-methodjit";

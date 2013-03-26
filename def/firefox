@@ -11,5 +11,5 @@ NOCCOPT="1";
 CLEARFLAGS="1";
 ADDCC="0";
 OPT_x86_64="--target=x86_64-linux-gnu";
-OPT_x86_32="--target=x86_64-linux-gnux32";
+OPT_x86_32="--target=x86_64-linux-gnux32 --disable-methodjit";
 OPT_i686="--target=i686-linux-gnu";
