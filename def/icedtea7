@@ -1,4 +1,4 @@
-VERSION="2.3.4"
+VERSION="2.3.8"
 VERSEP="-";
 PREFIX="/usr";
 ANT_HOME="/usr/${NLIBDIR}/jvm/apache-ant-1.8.4";
@@ -14,4 +14,4 @@ MOPT_x86_64="CXX=x86_64-linux-gnu-g++ CPP=x86_64-linux-gnu-g++ CC=x86_64-linux-g
 DONTBUILD="arm64 mips mips64 powerpc powerpc64 x86_32";
 NOCROSS="1";
 NOCCOPT="1";
-AMVER="1.12";
+AMVER="1.13";
