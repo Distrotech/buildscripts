@@ -10,4 +10,15 @@ CONFOPT="-DWITH_TELEPATHY:BOOL=OFF
          -DVTE_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libvte.so
          -DZLIB_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libz.so
          -DGNOMEKEYRING_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libgnome-keyring.so
+         -DATK_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libatk-1.0.so
+         -DGDKPIXBUF_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libgdk_pixbuf-2.0.so
+         -DGLIB2_INCLUDE_DIR_PART2:PATH=/build/${barch}/usr/${B_LIBDIRS}/glib-2.0/include
+         -DXKBFILE_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libxkbfile.so
+         -DFREERDP_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libfreerdp-core.so
+         -DFREERDP_CHANNELS_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libfreerdp-channels.so
+         -DFREERDP_CODEC_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libfreerdp-codec.so
+         -DFREERDP_GDI_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libfreerdp-gdi.so
+         -DFREERDP_KBD_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libfreerdp-kbd.so
+         -DFREERDP_RAIL_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libfreerdp-rail.so
+         -DX11_X11_LIB:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libX11.so
          -DGCRYPT_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libgcrypt.so";
