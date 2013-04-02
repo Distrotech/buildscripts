@@ -1,0 +1,4 @@
+VERSION="3.32.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-deprecated-warning-flags=no";
