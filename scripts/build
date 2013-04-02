@@ -971,8 +971,13 @@ build_project() {
    elif [ -e ${TOPDIR}${CFGBIN}./Imakefile ];then
     imake_cross_build ${barch} || return 1;
    elif [ -e ${TOPDIR}${CFGBIN}./setup.py ];then
-    /build/${barch}/usr/bin/python setup.py clean --all
-    /build/${barch}/usr/bin/python ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
+    if [ "${NARCH}" == "${barch}" ];then
+      python setup.py clean --all
+      python ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
+     else
+      /build/${barch}/usr/bin/python setup.py clean --all
+      /build/${barch}/usr/bin/python ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
+    fi;
    elif [ -e ${TOPDIR}${CFGBIN}./Makefile.PL ];then
      perl Makefile.PL ${CONFOPT}
      make ${MAKE_J} && make DESTDIR=${DIST_ROOT} install
@@ -1837,7 +1842,14 @@ build_dependancies() {
     /sbin/ldconfig
   fi;
 
-  build_packages ${1} poppler poppler-data qpdf cups-filters patch alsa-lib fastjar icedtea7 yasm nasm fuse libunistring \
+  build_packages ${1} poppler poppler-data qpdf cups-filters patch alsa-lib fastjar 
+
+  #Build openjdk on native
+  if [ ${NARCH} == "${1}" ];then
+    build_packages ${1} icedtea7
+  fi;
+
+  build_packages ${1} icedtea7 yasm nasm fuse libunistring \
     txt2man printproto portablexdr libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib dbus-python polkit GConf libbonobo \
     gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig M2Crypto crda ragel apr apr-iconv sqlite-autoconf keyutils neon \
     apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion libva gavl \
@@ -1853,7 +1865,7 @@ build_dependancies() {
     pangox-compat mhash libmcrypt || return 1
 
   #Libre Office
-  build_packages ${1} boost clucene-core libzip mdds libixion liborcus
+  build_packages ${1} clucene-core libzip mdds libixion liborcus
 
   #XFCE
   build_packages ${1} gnome-common glade3 libnotify startup-notification libwnck py2cairo pygobject vte gnome-keyring \
