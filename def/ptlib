@@ -7,3 +7,4 @@ CONFOPT="--enable-exceptions --enable-plugins --enable-video --enable-stun --ena
 BUILDDIR="0";
 LDISCC="1";
 MAKEALL="optshared";
+NODIET="1";
