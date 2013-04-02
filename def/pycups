@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
+MAKEOPTS="PYTHON=/build/${barch}/usr/bin/python";
