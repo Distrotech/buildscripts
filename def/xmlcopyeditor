@@ -2,4 +2,6 @@ VERSION="1.2.0.9"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+CONFOPTX="--with-wx-config=/build/${barch}/usr/bin/wx-config";
 ADDCFLAG="-I=/usr/include/wx-2.9";
+ADDWITHSYSROOT="1";
