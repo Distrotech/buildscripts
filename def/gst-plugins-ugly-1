@@ -1,0 +1,10 @@
+VERSION="1.0.6"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--x-libraries=/usr/X11/${B_LIBDIRS} --x-includes=/usr/X11R7/include";
+ADDCFLAG="-I=/usr/include/gstreamer-0.10 -I=/usr/include/libxml2 -I=/usr/include/orc-0.4 -I=/usr/include/gnome-vfs-2.0
+          -I=/usr/include/libvisual-0.4 -I=/usr/include/pango-1.0 -I=/usr/include/cairo -I=/usr/X11R7/include
+          -I=/usr/include/opencore-amrnb -I=/usr/include/opencore-amrwb";
+LDISCC="1";
+CLEARFLAGS="1";
+ALIAS="gst-plugins-ugly";

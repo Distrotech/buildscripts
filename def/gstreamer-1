@@ -1,0 +1,10 @@
+VERSION="1.0.6"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-shared";
+ADDLDFLAG="-lm -lpthread";
+ADDCFLAG="-I=/usr/include/libxml2 -I=/usr/include/glib-2.0";
+NOCCOPT="1";
+CLEARFLAGS="1";
+EXTRALIBS="-lm -lz -llzma";
+ALIAS="gstreamer";
