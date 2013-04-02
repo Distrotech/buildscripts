@@ -12,5 +12,6 @@ OPT_x86_32="--enable-shared=yes --enable-static=no";
 ADDCC="0";
 ADDCFLAG="-I=/usr/include/libdrm -fPIC";
 ADDLDFLAG="-L/usr/src/Mesa/Mesa-${VERSION}/lib";
+MAKEOPTS="HOSTCC_LDFLAGS=-L/usr/${NLIBDIR}"
 LDISCC="1";
 EXTRALIBS="-lstdc++";
