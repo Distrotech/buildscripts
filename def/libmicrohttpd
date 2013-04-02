@@ -2,3 +2,4 @@ VERSION="0.9.25"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+NONULLCONF="1";
