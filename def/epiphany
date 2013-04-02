@@ -1,0 +1,4 @@
+VERSION="2.30.6"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--without-ca-file --enable-introspection=no";
