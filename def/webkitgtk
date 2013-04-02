@@ -1,0 +1,4 @@
+VERSION="1.8.3"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-webkit1 --with-gtk=2.0";
