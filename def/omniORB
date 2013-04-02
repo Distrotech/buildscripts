@@ -1,7 +1,7 @@
 VERSION="4.1.6"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="PYTHON=/build/${barch}/usr/bin/python";
 ADDCFLAG="-I=/usr/include/python2.7";
 CLEARFLAGS="1";
 BUILDDIR="0";
