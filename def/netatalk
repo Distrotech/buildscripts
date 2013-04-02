@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-zeroconf --with-pic --enable-fhs --with-cnid-cdb-backend --with-pam
          --with-shadow --with-kerberos --with-ldap";
+CONFOPTX="--with-bdb=/build/${barch}/usr/";
