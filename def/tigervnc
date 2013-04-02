@@ -26,4 +26,4 @@ OPT_i686="-DJPEG_LIBRARY=/build/i686/usr/lib/libjpeg.so -DFONTCONFIG_LIB=/build/
          -DX11_Xext_LIB=/build/i686/usr/X11R7/lib/libXext.so -DX11_XTest_LIB=/build/i686/usr/X11R7/lib/libXtst.so
          -DX11_Xft_LIB=/build/i686/usr/X11R7/lib/libXft.so -DX11_Xinerama_LIB=/build/i686/usr/X11R7/lib/libXinerama.so
          -DX11_Xfixes_LIB=/build/i686/usr/X11R7/lib/libXfixes.so -DX11_Xcursor_LIB=/build/i686/usr/X11R7/lib/libXcursor.so";
-
+ADDCFLAG="-fPIC";
