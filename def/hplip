@@ -1,6 +1,7 @@
 VERSION="3.12.11"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="PYTHON=/build/${barch}/usr/bin/python";
 BUILDDIR="0";
 NOSVNROOT="1";
+ADDCFLAG="-I=/usr/include/python2.7";
