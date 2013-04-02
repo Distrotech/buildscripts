@@ -1,14 +1,16 @@
 VERSION="17.0.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-system-libevent --with-system-libvpx --with-system-nspr --with-system-nss
-         --with-system-cairo --disable-crashreporter --disable-installer --disable-updater
-         --enable-official-branding --enable-safe-browsing --enable-url-classifier --enable-system-ffi
-         --enable-system-pixman --with-system-bz2 --with-system-jpeg --with-system-zlib --enable-gio
-         --x-includes=/usr/X11R7/include --x-libraries=/usr/X11R7/${B_LIBDIRS} --with-pthreads --enable-calendar";
+CONFOPT="--with-system-libevent --with-system-libvpx --with-system-nspr --with-system-nss --with-system-cairo 
+         --disable-crashreporter --disable-installer --disable-updater --enable-official-branding --enable-safe-browsing 
+         --enable-url-classifier --enable-system-ffi --enable-system-pixman --with-system-bz2 --with-system-jpeg 
+         --with-system-zlib --enable-gio --x-includes=/usr/X11R7/include --x-libraries=/usr/X11R7/${B_LIBDIRS} 
+         --with-pthreads --enable-calendar";
 ADDCFLAG="-I=/usr/X11R7/include";
 ADDLDFLAG="-L=/usr/X11R7/${B_LIBDIRS}";
 NOCCOPT="1";
 CLEARFLAGS="1";
 ADDCC="0";
 OPT_x86_32="--target=x86_64-linux-gnux32 --disable-methodjit";
+DONTBUILD="x86_32";
+MAKEOPTS="PYTHON=/build/${barch}/usr/bin/python";
