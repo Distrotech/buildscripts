@@ -2,3 +2,5 @@ VERSION="0.1.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+CONFOPT="PYTHON=/build/${barch}/usr/bin/python";
+ADDCFLAG="-I=/usr/include/python2.7";
