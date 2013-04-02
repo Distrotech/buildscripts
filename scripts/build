@@ -20,6 +20,7 @@ PKGBUILDDIR=${DISTDIR}/build
 ARCHROOT=/build
 SVNURL=${SVNBASE}/distro/
 SVNUPDATE=1;
+DIETBUILD=1;
 AMDEF="1.11";
 BOOTCLEAN="distclean";
 
@@ -118,8 +119,20 @@ mnt_archroot() {
     fi;
     svn co --depth=empty ${SVNURL}/ ${SRCDIR}/
   fi;
+
+  if [ ! -d /sys/module/wrapfs ];then
+    modprobe wrapfs
+    if [ -d /sys/module/wrapfs ];then
+      BINDFS="-t wrapfs";
+     else
+      BINDFS="--bind";
+    fi;
+   else
+    BINDFS="-t wrapfs";
+  fi;
+
   if [ ! -d ${ARCHROOT}/${1}/usr/src/.svn ];then
-    mount --bind /usr/src ${ARCHROOT}/${1}/usr/src
+    mount ${BINDFS} /usr/src ${ARCHROOT}/${1}/usr/src
   fi;
 
   if [ ! -d /dist/.svn ];then
@@ -129,19 +142,20 @@ mnt_archroot() {
     svn co ${SVNBASE}/buildscripts/trunk/ /dist/
   fi;
   if [ ! -d ${ARCHROOT}/${1}/dist/.svn ];then
-    mount --bind /dist ${ARCHROOT}/${1}/dist
+    mount ${BINDFS} /dist ${ARCHROOT}/${1}/dist
   fi;
 
   if [ ! -d ${ARCHROOT}/${1}/sys/dev ];then
-    mount --bind /sys ${ARCHROOT}/${1}/sys
+    mount -t sysfs sysfs_${1} ${ARCHROOT}/${1}/sys
   fi;
 
   if [ ! -d ${ARCHROOT}/${1}/proc/1 ];then
-    mount --bind /proc ${ARCHROOT}/${1}/proc
+    mount -t proc proc_${1} ${ARCHROOT}/${1}/proc
   fi;
 
   if [ ! -d ${ARCHROOT}/${1}/dev/pts ];then
-    mount --bind /dev ${ARCHROOT}/${1}/dev
+    mount -t devtmpfs dev_${1} ${ARCHROOT}/${1}/dev
+    mount -t devpts devpts_${1} ${ARCHROOT}/${1}/dev/pts
   fi;
 }
 
@@ -173,7 +187,14 @@ check_create_arch() {
     mkdir -p ${ARCHROOT}
   fi;
 
-  if [ "${1}" != "${NARCH}" ];then
+  if [ "${1}" != "${NARCH}" ] || [ -d ${ARCHROOT}/${1} ];then
+    if [ ! -d ${ARCHROOT}/${1}/etc ];then
+      mkdir -p ${ARCHROOT}/${1}/etc
+      ln -s ../proc/self/mounts ${ARCHROOT}/${1}/etc/mtab
+      rsync -avRP /etc/passwd /etc/shadow /etc/group /etc/xml/catalog* /etc/xml/docbook-xsl.xml  /etc/xml/docbook.xml ${ARCHROOT}/${1}
+      echo "domainname $(domainname)" > ${ARCHROOT}/${1}/etc/resolv.conf
+      echo "nameserver ::1" >> ${ARCHROOT}/${1}/etc/resolv.conf
+    fi;
     for adir in / /root /dev /proc /sys /usr/src /usr/include /dist /tmp ${ARCHROOT};do
       mkdir -p ${ARCHROOT}/${1}/${adir}
     done
@@ -344,6 +365,8 @@ tar_package() {
 
   if [ ! -d ${2}/${3} ];then
     mkdir -p ${2}/${3}
+   else
+    touch ${2}/${3}
   fi;
 
   (cd ${1}
@@ -511,8 +534,8 @@ cmake_cross_build() {
           -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" -DCMAKE_C_LINK_FLAGS="${LDFLAGS}" \
           -DCMAKE_SYSTEM_NAME=Linux  -DCMAKE_FIND_ROOT_PATH="${SYSROOT}/" \
           -DCMAKE_INSTALL_RPATH:PATH="${RPATH_LINK}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} \
-          -DCMAKE_C_COMPILER=${HOST}-gcc -DCMAKE_C_COMPILER_ENV_VAR="${CC_SYSROOT}" \
-          -DCMAKE_CXX_COMPILER=${HOST}-g++ -DCMAKE_CXX_COMPILER_ENV_VAR="${CC_SYSROOT}" \
+          -DCMAKE_C_COMPILER=/usr/bin/${HOST}-gcc -DCMAKE_C_COMPILER_ENV_VAR="${CC_SYSROOT}" \
+          -DCMAKE_CXX_COMPILER=/usr/bin/${HOST}-g++ -DCMAKE_CXX_COMPILER_ENV_VAR="${CC_SYSROOT}" \
           -DGNU_HOST=${3} -DCMAKE_TOOLCHAIN_FILE=${SCRIPTDIR}/cmake_${2}.cross ${1}${CFGBIN}
   fi;
   cmake ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} ${1}${CFGBIN}
@@ -948,8 +971,8 @@ build_project() {
    elif [ -e ${TOPDIR}${CFGBIN}./Imakefile ];then
     imake_cross_build ${barch} || return 1;
    elif [ -e ${TOPDIR}${CFGBIN}./setup.py ];then
-    python setup.py clean --all
-    python ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
+    /build/${barch}/usr/bin/python setup.py clean --all
+    /build/${barch}/usr/bin/python ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
    elif [ -e ${TOPDIR}${CFGBIN}./Makefile.PL ];then
      perl Makefile.PL ${CONFOPT}
      make ${MAKE_J} && make DESTDIR=${DIST_ROOT} install
@@ -1026,14 +1049,16 @@ build_project() {
     rsync -avP ${DIST_ROOT}/${ARCHROOT}/${barch}/ ${DIST_ROOT}/ && rm -rf ${DIST_ROOT}/${ARCHROOT}
   fi;
 
-  if [ ${B_LIBDIRS} != "lib" ] && [ -d ${DIST_ROOT}/usr/${B_LIBDIRS}/python2.7 ];then
-    if [ ! -d ${DIST_ROOT}/usr/lib/python2.7/ ];then
-      mkdir -p ${DIST_ROOT}/usr/lib/python2.7/
+  for pylib in python2.7 python3.3;do
+    if [ ${B_LIBDIRS} != "lib" ] && [ -d ${DIST_ROOT}/usr/${B_LIBDIRS}/${pylib} ];then
+      if [ ! -d ${DIST_ROOT}/usr/lib/${pylib}/ ];then
+        mkdir -p ${DIST_ROOT}/usr/lib/${pylib}/
+      fi;
+      rsync -avP ${DIST_ROOT}/usr/${B_LIBDIRS}/${pylib}/ ${DIST_ROOT}/usr/lib/${pylib}/
+      rm -rf ${DIST_ROOT}/usr/${B_LIBDIRS}/${pylib}/
+      ln -s /usr/lib/${pylib} ${DIST_ROOT}/usr/${B_LIBDIRS}/${pylib}
     fi;
-    rsync -avP ${DIST_ROOT}/usr/${B_LIBDIRS}/python2.7/ ${DIST_ROOT}/usr/lib/python2.7/
-    rm -rf ${DIST_ROOT}/usr/${B_LIBDIRS}/python2.7/
-    ln -s /usr/lib/python2.7 ${DIST_ROOT}/usr/${B_LIBDIRS}/python2.7
-  fi;
+  done;
 
   #Postinstall hook
   if [ -e ${SRCDIR}/${PSOURCEDIR}/.build-info/post-install ];then
@@ -1059,6 +1084,20 @@ build_project() {
   if [ -d ${ARCHROOT}/${barch} ] && [ ! -h ${ARCHROOT}/${barch} ];then
     ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${barch}/
   fi;
+
+  if [ ! "${NODIET}" ];then
+    NODIET=0;
+  fi;
+
+  (if [ "${DIETBUILD}" == "1" ] && [ "${NODIET}" != "1" ];then
+    if [ "${BUILDDIR}" == "1" ];then
+      cd ..
+      rm -rf build-${barch}
+     else
+      (/usr/bin/make ${MAKEOPTS} ${ARCHOPT} distclean || /usr/bin/make ${MAKEOPTS} ${ARCHOPT} clean
+      /usr/bin/make distclean || /usr/bin/make clean) > /dev/null 2>&1
+    fi;
+  fi;) || true
 }
 
 setup_build_dir() {
@@ -1499,11 +1538,6 @@ build_qemu_static() {
 
   export PKG_CONFIG_PATH="/${NLIBDIR}/pkgconfig:/usr/${NLIBDIR}/pkgconfig:/opt/apache2/${NLIBDIR}/pkgconfig:/usr/share/${NLIBDIR}/pkgconfig:/usr/X11R7/${NLIBDIR}/pkgconfig:/lib/pkgconfig:/usr/lib/pkgconfig:/opt/qt-4/${NLIBDIR}/pkgconfig:/opt/xfce/${NLIBDIR}/pkgconfig";
   DIST_PKG=${TOOLPKG}/${NARCH}/${QEMU}-static.tar.xz
-
-  if [ ${DEFDIR}/qemu -nt ${TOOLDIR}/${NARCH}/${QEMU} ];then
-    rm -rf ${TOOLDIR}/${NARCH}/${QEMU}
-  fi;
-
   if [ -d ${TOOLDIR}/${NARCH}/${QEMU} ] && [ -f ${DIST_PKG} ];then
     return
   fi;
@@ -1518,7 +1552,7 @@ build_qemu_static() {
   make ${MAKE_J} || make || return 1
 
   mkdir -p ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin
-  for arch in arm mips mips64 ppc ppc64;do
+  for arch in arm mips ppc ppc64;do
     if [ "${arch}" != "${NARCH}" ];then
       uemu=${arch}-linux-user/qemu-${arch};
       cp ${uemu} ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${arch}-static
@@ -1752,7 +1786,7 @@ build_dependancies() {
   #Base dependancies
   build_packages ${1} groff gdbm perl gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
     bison diffutils flex attr acl pcre libsepol libselinux file gengetopt libidn libtasn1 p11-kit nettle gnutls \
-    libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap coreutils readline bash xz expat || return 1
+    libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap libcap-ng coreutils readline bash xz expat || return 1
 
   #Dont build libxml2 if there is a python in / may not be one in /build/.../
   if [ ! -d /usr/lib/python2.7 ];then
@@ -1774,9 +1808,9 @@ build_dependancies() {
     done;
   fi;
 
-  build_packages ${1} intltool popt rsync bzip2 openssl Python libxml2 libxslt gnome-doc-utils docbook-4.1.2 docbook-4.2 \
+  build_packages ${1} intltool popt rsync bzip2 openssl Python ply libxml2 libxslt gnome-doc-utils docbook-4.1.2 docbook-4.2 \
     docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus glib gtk-doc pkg-config libcroco \
-    libassuan libksba pth libusb libusb-compat gnupg trousers slang wget || return 1
+    libassuan libksba pth libusb libusb-compat gnupg trousers onig slang wget || return 1
 
   if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
     rm /usr/lib64/libblkid.a /usr/lib64/libuuid.a /usr/lib64/libblkid.la /usr/lib64/libuuid.la >/dev/null 2>&1
@@ -1803,34 +1837,38 @@ build_dependancies() {
     /sbin/ldconfig
   fi;
 
-  build_packages ${1} fontforge freeglut pcsc-lite atk  gdk-pixbuf gtk+ poppler poppler-data qpdf cups-filters patch \
-    alsa-lib fastjar icedtea6 icedtea7 yasm nasm fuse libunistring txt2man printproto portablexdr libnl-1 libnl libpcap \
-    ppp libIDL ORBit2 dbus-glib dbus-python polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig \
-    M2Crypto crda ragel apr apr-iconv sqlite-autoconf keyutils neon apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp \
-    openldap mysql postgresql apr-util httpd subversion libva gavl jasper libraw1394 orc libogg libvorbis gnome-mime-data \
-    gnome-vfs libvisual gstreamer v4l-utils OpenCV frei0r audiofile esound flac libvorbis libsndfile json-c fftw \
-    libsamplerate speex pulseaudio SDL libdc1394 libtheora gst-plugins-base libavc1394 libiec61883 faac libaacplus \
-    vo-aacenc vo-amrwbenc fribidi libass libbluray celt libcaca gsm libmodplug lame twolame libnut opencore-amr opus \
-    schroedinger utvideo openal xvidcore ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink libmnl libexif \
-    exif libnetfilter_conntrack libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils xavs x264 libvpx v4l-utils \
-    fdk-aac ffmpeg h323plus gnugk t38modem qt-4 py2cairo pygobject libglade pygtk nspr nss automake-1.9 automake-1.10 \
-    automake-1.11 automake-1.12 automake-1.13 help2man autoconf rrdtool avahi djvulibre libarchive libao cogl json-glib \
-    net-snmp sane-backends libvdpau LibVNCServer i2c-tools openexr ImageMagick libungif libiodbc tdb libcanberra \
-    libgnome-keyring pangox-compat mhash libmcrypt || return 1
+  build_packages ${1} poppler poppler-data qpdf cups-filters patch alsa-lib fastjar icedtea7 yasm nasm fuse libunistring \
+    txt2man printproto portablexdr libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib dbus-python polkit GConf libbonobo \
+    gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig M2Crypto crda ragel apr apr-iconv sqlite-autoconf keyutils neon \
+    apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion libva gavl \
+    jasper libraw1394 orc libogg libvorbis gnome-mime-data gnome-vfs libvisual gstreamer gstreamer-1 v4l-utils OpenCV \
+    frei0r audiofile esound flac libvorbis libsndfile json-c fftw libsamplerate speex pulseaudio SDL libdc1394 libtheora \
+    gst-plugins-base gst-plugins-base-1 libavc1394 libiec61883 faac libaacplus vo-aacenc vo-amrwbenc fribidi libass \
+    libbluray celt libcaca gsm libmodplug lame twolame libnut opencore-amr opus schroedinger utvideo openal xvidcore \
+    ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink libmnl libexif exif libnetfilter_conntrack libtimidity \
+    libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk \
+    t38modem qt-4 py2cairo pygobject libglade pygtk nspr nss automake-1.9 automake-1.10 automake-1.11 automake-1.12 \
+    automake-1.13 help2man autoconf rrdtool avahi djvulibre libarchive libao cogl json-glib pciutils net-snmp \
+    sane-backends libvdpau LibVNCServer i2c-tools openexr ImageMagick libungif libiodbc tdb libcanberra libgnome-keyring \
+    pangox-compat mhash libmcrypt || return 1
 
   #Libre Office
   build_packages ${1} boost clucene-core libzip mdds libixion liborcus
 
   #XFCE
   build_packages ${1} gnome-common glade3 libnotify startup-notification libwnck py2cairo pygobject vte gnome-keyring \
-    gnome-desktop libopenraw libxfce4util xfconf libxfce4ui garcon exo xfce4-panel Thunar xfce4-settings xfce4-session \
-    xfwm4 xfdesktop xfce4-appfinder  gtk-xfce-engine Terminal thunar-volman xfce4-taskmanager xpdf icon-naming-utils \
-    gnome-icon-theme shared-mime-info eog aterm file-roller libgsf wv hunspell enchant abiword gcalctool gucharmap \
-    leafpad ffmpegthumbnailer tumbler || return 1
+    gnome-desktop libopenraw libxklavier libxfce4util xfconf libxfce4ui garcon exo xfce4-panel Thunar xfce4-settings \
+    xfce4-session xfwm4 xfdesktop xfce4-appfinder  gtk-xfce-engine Terminal thunar-volman xfce4-taskmanager xpdf \
+    icon-naming-utils gnome-icon-theme shared-mime-info eog aterm file-roller libgsf wv hunspell enchant abiword \
+    gcalctool gucharmap leafpad ffmpegthumbnailer tumbler || return 1
 
   #Linphone
   build_packages ${1} ortp spandsp mediastreamer bcg729 msamr libilbc msilbc msx264 mssilk libosip2 libeXosip2 \
     glib-networking libsoup linphone || return 1
+
+  #Evolution/Epiphany
+  build_packages ${1} libgdata libical libgweather libpst geoclue libsecret libwebp gtkimageview gtkhtml libunique \
+    evolution-data-server evolution webkitgtk epiphany || return 1
 
 #XXX
 #PyQt-x11 sip
@@ -1887,8 +1925,9 @@ bootstrap_native() {
   fi;
 
   #Bootstrap native arch buildtools
-  build_packages ${NARCH} binutils groff perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 \
-                          help2man autoconf zlib libcap patch ||return 1
+  build_packages ${NARCH} binutils groff gdbm perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 \
+    help2man autoconf zlib gmp libidn libtasn1 p11-kit nettle gnutls libgpg-error libgcrypt libprelude pcre libsepol \
+    libselinux Linux-PAM libcap libcap-ng patch ||return 1
 
   #build shared gcc to get shared libstdc++/libada/libgcc [C/C++/ADA]
   if [ ! -e /usr/${NLIBDIR}/libstdc++.so ];then
@@ -1911,8 +1950,8 @@ bootstrap_native() {
 
   #Bootstrap native arch with deps for GCC [libjava] if gcc not built
   if [ ! -e ${STATDIR}/${NARCH}/done/unzip ];then
-    build_packages ${NARCH} gettext xz libxml2 libxslt libffi gdbm Python docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
-                            docbook-4.5 docbook-xsl xmlto OpenSP openjade glib pkg-config gtk-doc libcroco zip unzip || return 1
+    build_packages ${NARCH} xz libxml2 gettext libxslt libffi gdbm Python docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
+      docbook-4.5 docbook-xsl xmlto OpenSP openjade expat dbus glib pkg-config gtk-doc libcroco zip unzip || return 1
   fi;
 
   #Rebuild some packages with python/shared gcc
