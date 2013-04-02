@@ -21,4 +21,5 @@ CONFOPT="-DWITH_TELEPATHY:BOOL=OFF
          -DFREERDP_KBD_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libfreerdp-kbd.so
          -DFREERDP_RAIL_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libfreerdp-rail.so
          -DX11_X11_LIB:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libX11.so
+         -DAVAHI_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libavahi-core.so
          -DGCRYPT_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libgcrypt.so";
