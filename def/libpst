@@ -1,0 +1,4 @@
+VERSION="0.6.58"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-libpst-shared PYTHON=/build/${barch}/usr/bin/python";
