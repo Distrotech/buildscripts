@@ -4,3 +4,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 DONTBUILD="arm arm64 powerpc powerpc64 mips mips64 x86_32";
+OPT_x86_64="--enable-win64";
+OPT_i686="";
+NOCROSS="1";
