@@ -11,6 +11,8 @@ ADDLDFLAG="-L=/usr/X11R7/${B_LIBDIRS}";
 NOCCOPT="1";
 CLEARFLAGS="1";
 ADDCC="0";
+OPT_x86_64="--target=x86_64-linux-gnu";
+OPT_i686="--target=i686-linux-gnu";
 OPT_x86_32="--target=x86_64-linux-gnux32 --disable-methodjit";
 DONTBUILD="x86_32";
 MAKEOPTS="PYTHON=/build/${barch}/usr/bin/python";
