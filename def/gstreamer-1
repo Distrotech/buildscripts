@@ -8,3 +8,4 @@ NOCCOPT="1";
 CLEARFLAGS="1";
 EXTRALIBS="-lm -lz -llzma";
 ALIAS="gstreamer";
+OPT_arm="--enable-introspection=no";
