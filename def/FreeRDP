@@ -25,4 +25,4 @@ CONFOPT="-DXINERAMA_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libX
          -DAVCODEC_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libavcodec.so
          -DAVUTIL_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libavutil.so
          -DALSA_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libasound.so";
-
+FIXUPLIB="1";
