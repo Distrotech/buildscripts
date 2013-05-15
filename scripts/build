@@ -123,16 +123,17 @@ mnt_archroot() {
   if [ ! -d /sys/module/wrapfs ];then
     modprobe wrapfs
     if [ -d /sys/module/wrapfs ];then
-      BINDFS="-t wrapfs";
+      BINDFS="mount -t wrapfs";
      else
-      BINDFS="--bind";
+      BINDFS="mount --bind";
     fi;
    else
-    BINDFS="-t wrapfs";
+    BINDFS="mount -t wrapfs";
   fi;
 
+  BINDFS="bindfs";
   if [ ! -d ${ARCHROOT}/${1}/usr/src/.svn ];then
-    mount ${BINDFS} /usr/src ${ARCHROOT}/${1}/usr/src
+    ${BINDFS} /usr/src ${ARCHROOT}/${1}/usr/src
   fi;
 
   if [ ! -d /dist/.svn ];then
@@ -142,7 +143,7 @@ mnt_archroot() {
     svn co ${SVNBASE}/buildscripts/trunk/ /dist/
   fi;
   if [ ! -d ${ARCHROOT}/${1}/dist/.svn ];then
-    mount ${BINDFS} /dist ${ARCHROOT}/${1}/dist
+    ${BINDFS} /dist ${ARCHROOT}/${1}/dist
   fi;
 
   if [ ! -d ${ARCHROOT}/${1}/sys/dev ];then
@@ -193,13 +194,17 @@ check_create_arch() {
       ln -s ../proc/self/mounts ${ARCHROOT}/${1}/etc/mtab
       rsync -avRP /etc/passwd /etc/shadow /etc/group /etc/xml/catalog* /etc/xml/docbook-xsl.xml  /etc/xml/docbook.xml ${ARCHROOT}/${1}
       echo "domainname $(domainname)" > ${ARCHROOT}/${1}/etc/resolv.conf
+      echo "search $(domainname)" >> ${ARCHROOT}/${1}/etc/resolv.conf
       echo "nameserver ::1" >> ${ARCHROOT}/${1}/etc/resolv.conf
+      if [ -e ${PKGDISTDIR}/java-jar.tar.xz ];then
+        tar -C ${ARCHROOT}/${1} -xf ${PKGDISTDIR}/java-jar.tar.xz
+      fi;
     fi;
-    for adir in / /root /dev /proc /sys /usr/src /usr/include /dist /tmp ${ARCHROOT};do
+    for adir in / /root /dev /proc /sys /usr/src /dist /tmp ${ARCHROOT};do
       mkdir -p ${ARCHROOT}/${1}/${adir}
     done
-    if [ ! -e ${ARCHROOT}/${1}${ARCHROOT}/${1} ];then
-      ln -s .. ${ARCHROOT}/${1}${ARCHROOT}/${1}
+    if [ ! -e ${ARCHROOT}/${1}/${ARCHROOT}/${1} ];then
+      ln -s .. ${ARCHROOT}/${1}/${ARCHROOT}/${1}
     fi;
     mnt_archroot ${1}
    elif [ "${1}" == "${NARCH}" ] && [ ! -e ${ARCHROOT}/${NARCH} ];then
@@ -394,15 +399,21 @@ tar_package() {
   if [ -d include ] || [ -d usr/include ] || [ -d usr/X11R7/include ] || [ -d opt ] || \
      [ -d ${B_LIBDIRS} ] || [ -d usr/${B_LIBDIRS} ] || [ -d usr/X11R7/${B_LIBDIRS} ];then
     find . ! -regex ".*\/${B_LIBDIRS}\/.*\.a" -and ! -regex ".*\/${B_LIBDIRS}\/.*\.la" -and \
-           ! -regex "${dbginfo}\/.*" -and ! -regex "${dbginfo}\/.*" -and \
+           ! -regex "${dbginfo}\/.*" -and ! -regex "${dbginfo}\/.*" -and ! -regex "\.\/usr\/${B_LIBDIRS}\/go.*" -and \
            ! -regex "\.\/usr\/${B_LIBDIRS}\/jvm\/jdk-.*" -and ! -regex "\.\/usr\/${B_LIBDIRS}\/jvm\/jre-.*" -and \
-           ! -regex "\.\/usr\/${B_LIBDIRS}\/locale\/.*" -and -regex ".*\/${B_LIBDIRS}\/.*" |\
+           ! -regex "\.\/usr\/${B_LIBDIRS}\/gcc.*" -and ! -regex "\.\/usr\/${B_LIBDIRS}\/locale\/.*" -and \
+           ! -regex "\.\/usr\/${B_LIBDIRS}\/thunderbird-devel-.*" -and \
+           ! -regex "\.\/usr\/${B_LIBDIRS}\/firefox-devel-.*" -and ! -regex "\.\/usr\/${B_LIBDIRS}\/locale\/.*" -and \
+           -regex ".*\/${B_LIBDIRS}\/.*" |\
          cpio -ov -H tar |xz -9 > ${pkgpre}-libs.tar.xz
     find . -regex "\.\/include\/.*" -or -regex "\.\/usr\/include\/.*" -or \
-           -regex "\.\/opt\/[a-zA-Z0-9\-_]+\/include\/.*" -or -regex "\.\/usr\/X11R7\/include\/.*" \
-           -or -regex ".*\/${B_LIBDIRS}\/.*\.a" -or -regex ".*\/${B_LIBDIRS}\/.*\.la" |\
+           -regex "\.\/opt\/[a-zA-Z0-9\-_]+\/include\/.*" -or -regex "\.\/usr\/X11R7\/include\/.*" -or \
+           -regex ".*\/${B_LIBDIRS}\/.*\.a" -or -regex "\.\/usr\/${B_LIBDIRS}\/go.*" -or \
+           -regex "\.\/usr\/${B_LIBDIRS}\/thunderbird-devel-.*" -or \
+           -regex "\.\/usr\/${B_LIBDIRS}\/firefox-devel-.*" -or \
+           -regex "\.\/usr\/${B_LIBDIRS}\/gcc.*" -or -regex ".*\/${B_LIBDIRS}\/.*\.la" |\
          cpio -ov -H tar |xz -9 > ${pkgpre}-dev.tar.xz
-    if [ -d usr/${B_LIBDIRS}/jvm ];then
+    if [ -d usr/${B_LIBDIRS}/jvm ] && [ ! -d usr/${B_LIBDIRS}/jvm/gcj-jdk ];then
       find . -regex "\.\/usr\/${B_LIBDIRS}\/jvm\/jre-.*"  |\
            cpio -ov -H tar |xz -9 > ${pkgpre}-jre.tar.xz
       find . -regex "\.\/usr\/${B_LIBDIRS}\/jvm\/jdk-.*"  |\
@@ -1070,6 +1081,15 @@ build_project() {
     sh ${SRCDIR}/${PSOURCEDIR}/.build-info/post-install ${barch} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT}
   fi;
 
+  #Dist conf process dist configs
+  if [ "${DISTCONF}" ];then
+    for dconf in ${DISTCONF};do
+      if [ -f ${DIST_ROOT}/etc/${dconf} ];then
+        mv ${DIST_ROOT}/etc/${dconf} ${DIST_ROOT}/etc/${dconf}.dist
+      fi;
+    done;
+  fi
+
   #Build Distributibils
   tar_package ${DIST_ROOT} ${PKGDISTDIR}/${barch} ${PKG} > /dev/null 2>&1
 
@@ -1310,6 +1330,11 @@ build_bootstrap_binutils() {
   make ${MAKE_J} ${MAKEOPT} all || make ${MAKEOPT} all || return 1
   make DESTDIR=${DIST_ROOT} all install || return 1
 
+  if [ "${DIETBUILD}" == "1" ];then
+     cd ${SRCDIR}/binutils/${BINUTILS}
+     rm -rf build-${NARCH}-${1}
+  fi;
+
   if [ "${1}" != "${NARCH}" ];then
     if [ ! -e /usr/bin/${2}-ld ];then
       rsync -aP ${DIST_ROOT}/ /
@@ -1377,7 +1402,7 @@ build_gcc_bootstrap() {
     CFLAGS=-fPIC
     CXXFLAGS=-fPIC
     SDIROPT=-shared
-    LDFLAGS="-L/usr/${B_LIBDIRS}";
+    LDFLAGS="-L/usr/${B_LIBDIRS} -L/usr/${NLIBDIR}";
    elif [ ! "${4}" ] || [ "${4}" == "null" ];then
     MARCH=BOOTOPT_${1}
     CONFOPT="${NULLOPT} ${SYSROOT} CC=${BUILD}-gcc CXX=${BUILD}-g++"
@@ -1474,6 +1499,11 @@ build_gcc_bootstrap() {
     sh ${SRCDIR}/gcc/${GCC}/.build-info/post-install ${1} ${SRCDIR}/gcc/${GCC} ${GCCBOOTDEST}
   fi;
 
+  if [ "${DIETBUILD}" == "1" ];then
+     cd ${SRCDIR}/gcc/${GCC}
+     rm -rf build-${TARCH}-${1}${SDIROPT}
+  fi;
+
 #Build javac
 #gcj -Wl,-Bsymbolic -findirect-dispatch --main=org.eclipse.jdt.internal.compiler.batch.Main \
 #    /usr/share/java/ecj-3.5.2.jar -o ${3}/usr/bin/javac 
@@ -1564,6 +1594,11 @@ build_qemu_static() {
     fi;
   done
 
+  if [ "${DIETBUILD}" == "1" ];then
+     cd ${SRCDIR}/qemu/${QEMU}
+     rm -rf build-${NARCH}-${1}
+  fi;
+
   rsync -aP --exclude=/usr/bin/qemu-${NARCH}-static ${TOOLDIR}/${NARCH}/${QEMU}/ /
   (cd ${TOOLDIR}/${NARCH}/${QEMU};tar -cJf ${DIST_PKG} *)
 }
@@ -1591,6 +1626,8 @@ build_static_tool() {
   fi;
   eval ${AVER}=""
   STATICTOOL=${4}${VERSEP}${VERSION}
+
+  PATH=${PATH}:.
 
   if [ -d ${TOOLDIR}/${1}/${STATICTOOL}-static ];then
     return
@@ -1648,7 +1685,7 @@ build_static_tool() {
   fi;
 
   make ${MAKE_J} ${STATICMOPT} || make ${STATICMOPT} || return 0
-  make DESTDIR=${TOOLDIR}/${1}/${STATICTOOL}-static install
+  make DESTDIR=${TOOLDIR}/${1}/${STATICTOOL}-static install || return 0
 
   #Postinstall hook
   if [ -e ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install ];then
@@ -1661,6 +1698,11 @@ build_static_tool() {
      else
       rsync -avP ${TOOLDIR}/${1}/${STATICTOOL}-static/usr/${3}/*.a /usr/${3}/
     fi;
+  fi;
+
+  if [ "${DIETBUILD}" == "1" ];then
+     cd ${SRCDIR}/${4}/${STATICTOOL}
+     rm -rf build-${1}-static
   fi;
 
   tar_package ${TOOLDIR}/${1}/${STATICTOOL}-static ${TOOLPKG}/${1} ${STATICTOOL}-static > /dev/null 2>&1
@@ -1791,7 +1833,7 @@ build_dependancies() {
   #Base dependancies
   build_packages ${1} groff gdbm perl gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
     bison diffutils flex attr acl pcre libsepol libselinux file gengetopt libidn libtasn1 p11-kit nettle gnutls \
-    libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap libcap-ng coreutils readline bash xz expat || return 1
+    libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap coreutils readline bash xz expat || return 1
 
   #Dont build libxml2 if there is a python in / may not be one in /build/.../
   if [ ! -d /usr/lib/python2.7 ];then
@@ -1805,17 +1847,18 @@ build_dependancies() {
     fi;
   done
 
+  build_packages ${1} intltool popt rsync bzip2 nspr nss openssl Python libcap-ng ply libxml2 libxslt gnome-doc-utils \
+    docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus glib \
+    gtk-doc pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg trousers onig slang wget || return 1
+
   #Rebuild libxml2 with Python support
-  if [ {STATDIR}/${1}/done/libxml2 -nt {STATDIR}/${1}/done/Python ] || \
-     [ {STATDIR}/${1}/done/libxslt -nt {STATDIR}/${1}/done/Python ];then
-    for delstamp in Python libxml2 libxslt;do
+  if [ ${STATDIR}/${1}/done/Python -nt ${STATDIR}/${1}/done/libxml2 ] || \
+     [ ${STATDIR}/${1}/done/Python -nt ${STATDIR}/${1}/done/libxslt ];then
+    for delstamp in libxml2 libxslt;do
       rm ${STATDIR}/${1}/done/${delstamp}
     done;
+    build_packages ${1} libxml2 libxslt || return 1
   fi;
-
-  build_packages ${1} intltool popt rsync bzip2 openssl Python ply libxml2 libxslt gnome-doc-utils docbook-4.1.2 docbook-4.2 \
-    docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus glib gtk-doc pkg-config libcroco \
-    libassuan libksba pth libusb libusb-compat gnupg trousers onig slang wget || return 1
 
   if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
     rm /usr/lib64/libblkid.a /usr/lib64/libuuid.a /usr/lib64/libblkid.la /usr/lib64/libuuid.la >/dev/null 2>&1
@@ -1845,24 +1888,23 @@ build_dependancies() {
   build_packages ${1} poppler poppler-data qpdf cups-filters patch alsa-lib fastjar 
 
   #Build openjdk on native
-  if [ ${NARCH} == "${1}" ];then
-    build_packages ${1} icedtea7
+  if [ "${NARCH}" == "${1}" ];then
+    build_packages ${1} icedtea7 || return 1
   fi;
 
-  build_packages ${1} icedtea7 yasm nasm fuse libunistring \
-    txt2man printproto portablexdr libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib dbus-python polkit GConf libbonobo \
-    gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig M2Crypto crda ragel apr apr-iconv sqlite-autoconf keyutils neon \
-    apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion libva gavl \
-    jasper libraw1394 orc libogg libvorbis gnome-mime-data gnome-vfs libvisual gstreamer gstreamer-1 v4l-utils OpenCV \
-    frei0r audiofile esound flac libvorbis libsndfile json-c fftw libsamplerate speex pulseaudio SDL libdc1394 libtheora \
-    gst-plugins-base gst-plugins-base-1 libavc1394 libiec61883 faac libaacplus vo-aacenc vo-amrwbenc fribidi libass \
-    libbluray celt libcaca gsm libmodplug lame twolame libnut opencore-amr opus schroedinger utvideo openal xvidcore \
-    ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink libmnl libexif exif libnetfilter_conntrack libtimidity \
-    libnetfilter_cttimeout ilmbase gss librsvg iptables usbutils xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk \
-    t38modem qt-4 py2cairo pygobject libglade pygtk nspr nss automake-1.9 automake-1.10 automake-1.11 automake-1.12 \
-    automake-1.13 help2man autoconf rrdtool avahi djvulibre libarchive libao cogl json-glib pciutils net-snmp \
-    sane-backends libvdpau LibVNCServer i2c-tools openexr ImageMagick libungif libiodbc tdb libcanberra libgnome-keyring \
-    pangox-compat mhash libmcrypt || return 1
+  build_packages ${1} yasm nasm fuse libunistring txt2man printproto portablexdr libnl-1 libnl libpcap ppp libIDL ORBit2 \
+    dbus-glib dbus-python polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig M2Crypto crda ragel \
+    apr apr-iconv sqlite-autoconf keyutils neon apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql \
+    postgresql apr-util httpd subversion libva gavl jasper libraw1394 orc libogg libvorbis gnome-mime-data gnome-vfs \
+    libvisual gstreamer gstreamer-1 v4l-utils OpenCV frei0r audiofile esound flac libvorbis libsndfile json-c fftw \
+    libsamplerate speex pulseaudio SDL libdc1394 libtheora gst-plugins-base gst-plugins-base-1 libavc1394 libiec61883 \
+    faac libaacplus vo-aacenc vo-amrwbenc fribidi libass libbluray celt libcaca gsm libmodplug lame twolame libnut \
+    opencore-amr opus schroedinger utvideo openal xvidcore ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink \
+    libmnl libexif exif libnetfilter_conntrack libao libtimidity libnetfilter_cttimeout ilmbase gss librsvg iptables \
+    usbutils xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem qt-4 py2cairo pygobject libglade pygtk \
+    automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf rrdtool avahi djvulibre \
+    libarchive cogl json-glib pciutils net-snmp sane-backends libvdpau LibVNCServer i2c-tools openexr ImageMagick \
+    libungif libiodbc tdb libcanberra libgnome-keyring pangox-compat mhash libmcrypt boost || return 1
 
   #Libre Office
   build_packages ${1} clucene-core libzip mdds libixion liborcus
@@ -1872,15 +1914,15 @@ build_dependancies() {
     gnome-desktop libopenraw libxklavier libxfce4util xfconf libxfce4ui garcon exo xfce4-panel Thunar xfce4-settings \
     xfce4-session xfwm4 xfdesktop xfce4-appfinder  gtk-xfce-engine Terminal thunar-volman xfce4-taskmanager xpdf \
     icon-naming-utils gnome-icon-theme shared-mime-info eog aterm file-roller libgsf wv hunspell enchant abiword \
-    gcalctool gucharmap leafpad ffmpegthumbnailer tumbler || return 1
+    gtkspell gcalctool gucharmap leafpad ffmpegthumbnailer tumbler || return 1
 
   #Linphone
   build_packages ${1} ortp spandsp mediastreamer bcg729 msamr libilbc msilbc msx264 mssilk libosip2 libeXosip2 \
-    glib-networking libsoup linphone || return 1
+    gsettings-desktop-schemas glib-networking libsoup linphone || return 1
 
   #Evolution/Epiphany
   build_packages ${1} libgdata libical libgweather libpst geoclue libsecret libwebp gtkimageview gtkhtml libunique \
-    evolution-data-server evolution webkitgtk epiphany || return 1
+    evolution-data-server clutter clutter-gtk evolution webkitgtk epiphany || return 1
 
 #XXX
 #PyQt-x11 sip
@@ -2066,7 +2108,7 @@ failpkg() {
 loop_on_dir() {
   configstatdir ${1}
   for pkg in `ls ${DEFDIR}`;do
-    if [ -e ${STATDIR}/${1}/done/${pkg} ];then
+    if [ -e ${STATDIR}/${1}/done/${pkg} ] && [ ${STATDIR}/${1}/done/${pkg} -nt ${DEFDIR}/${pkg} ];then
       continue;
     fi;
     (if check_package ${pkg};then
