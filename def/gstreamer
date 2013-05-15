@@ -7,3 +7,4 @@ ADDCFLAG="-I=/usr/include/libxml2 -I=/usr/include/glib-2.0";
 NOCCOPT="1";
 CLEARFLAGS="1";
 EXTRALIBS="-lm -lz -llzma";
+OPT_arm="--enable-introspection=no";
