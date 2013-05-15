@@ -2,3 +2,4 @@ VERSION="0.97.6"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+DISTCONF="freshclam.conf clamd.conf";

@@ -7,4 +7,4 @@ LIBDIRPRE="radius";
 OPT_i686="ac_cv_prog_MYSQL_CONFIG=/build/i686/usr/bin/mysql_config";
 OPT_x86_32="ac_cv_prog_MYSQL_CONFIG=/build/x86_32/usr/bin/mysql_config";
 OPT_arm="ac_cv_prog_MYSQL_CONFIG=/build/arm/usr/bin/mysql_config";
-
+DISTCONF="raddb/clients.conf raddb/proxy.conf raddb/radiusd.conf raddb/sql.conf";
