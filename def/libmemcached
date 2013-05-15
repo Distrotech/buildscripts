@@ -2,3 +2,4 @@ VERSION="1.0.16"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+OPT_i686="--target=i686-linux-gnu";
