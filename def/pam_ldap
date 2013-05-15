@@ -4,4 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 EXTRALIBS="-lltdl -lutil -lssl -lcrypto -ldl -lsasl2";
-AMVER="1.9";
+AMVER="1.11";
