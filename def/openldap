@@ -14,3 +14,4 @@ OPT_i686="--with-yielding-select ac_cv_func_memcmp_working=yes";
 OPT_x86_64="--with-yielding-select";
 OPT_x86_32="--with-yielding-select ac_cv_func_memcmp_working=yes";
 EXTRALIBS="-ldl -lltdl -lutil";
+DISTCONF="openldap/ldap.conf openldap/slapd.conf";

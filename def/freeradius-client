@@ -2,3 +2,4 @@ VERSION="1.1.6"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+DISTCONF="radiusclient/port-id-map radiusclient/radiusclient.conf radiusclient/servers";
