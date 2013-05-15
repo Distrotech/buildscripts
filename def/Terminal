@@ -1,4 +1,4 @@
 VERSION="0.4.8"
 VERSEP="-";
 PREFIX="/opt/xfce";
-CONFOPT="";
+CONFOPT="--datarootdir=/usr/share";
