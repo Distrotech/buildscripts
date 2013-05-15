@@ -8,7 +8,9 @@ CONFOPT="--with-junit=/usr/share/java/junit-4.10.jar --with-system-hunspell --wi
          --with-system-lcms2 --with-system-libxml --with-system-icu --with-system-openldap --with-system-poppler 
          --with-system-mysql --with-system-postgresql --with-system-sane --with-system-curl 
          --with-system-neon --with-system-cppunit --with-system-libpng --with-system-clucene 
-         --with-system-mdds --with-system-orcus";
+         --with-system-mdds --with-system-orcus --enable-python=system";
+OPT_x86_32="--enable-debug";
 BUILDDIR="0";
 EXTRALIBS="-lpthread -lrt -ldl";
 ADDLDFLAG="${EXTRALIBS}";
+DONTBUILD="x86_32";
