@@ -5,4 +5,3 @@ CONFOPT="--disable-strict --enable-external-mediastreamer --enable-external-ortp
 AMVER="1.13";
 ADDCFLAG="-I=/usr/X11R7/include";
 ADDLDFLAG="-L=/usr/X11R7/${B_LIBDIRS}";
-EXTRALIBS="-lavcodec";
