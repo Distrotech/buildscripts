@@ -1,5 +1,6 @@
-VERSION="2.4.39"
+VERSION="2.4.44"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-I=/usr/include/cairo";
+AMVER="1.13";
