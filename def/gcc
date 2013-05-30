@@ -1,4 +1,4 @@
-VERSION="4.8.0"
+VERSION="4.8.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-ecj-jar=/usr/share/java/ecj-3.5.2.jar --enable-lto --enable-cloog-backend=isl --enable-java-home 
