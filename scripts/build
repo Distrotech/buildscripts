@@ -265,12 +265,10 @@ svn_load_pkg() {
   if [ ! -d ${SRCDIR}/${PKGSVNDIR} ];then
     if [ "${NOSVNROOT}" ] && [ "${NOSVNROOT}" == "1" ];then
       svn co ${SVNURL}/${PKGSVNDIR} ${SRCDIR}/${PKGSVNDIR}-svn || return 1
-      find ${SRCDIR}/${PKGSVNDIR}-svn -name configure -or -name Makefile.in |awk '{printf "touch %s\n",$1}' |sh
       svn export ${SRCDIR}/${PKGSVNDIR}-svn ${SRCDIR}/${PKGSVNDIR}
       NONULLCONF=1;
      else
       svn co ${SVNURL}/${PKGSVNDIR} ${SRCDIR}/${PKGSVNDIR} || return 1
-      find ${SRCDIR}/${PKGSVNDIR} -name configure -or -name Makefile.in |awk '{printf "touch %s\n",$1}' |sh
     fi
     if [ "${NONULLCONF}" ] && [ "${NONULLCONF}" == "1" ];then
       return 0;
@@ -299,6 +297,7 @@ svn_load_pkg() {
       svn up --accept tc ${SRCDIR}/${PKGSVNDIR}
     fi;
   fi;
+  find ${SRCDIR}/${PKGSVNDIR} -name configure -or -name Makefile.in |awk '{printf "touch %s\n",$1}' |sh
 }
 
 check_package() {
@@ -1784,7 +1783,7 @@ bootstrap_arch() {
     fi;
     #GCC needs system zlib glibc can use selinux/gd
     BOOTCLEAN=distclean
-    build_packages ${arch} libtool pcre libsepol libselinux libpng libxml2 expat freetype fontconfig \
+    build_packages ${arch} libtool pcre libsepol libselinux libpng expat libxml2 freetype fontconfig \
                            jpeg gd glibc tzdata gmp mpfr mpc isl cloog gcc || exit 1) || return 1;
   done;
 }
@@ -1837,7 +1836,7 @@ build_dependancies() {
 
   #Dont build libxml2 if there is a python in / may not be one in /build/.../
   if [ ! -d /usr/lib/python2.7 ];then
-    build_packages ${1} libxml2 libxslt || return 1
+    build_packages ${1} expat libxml2 libxslt || return 1
   fi;
 
   #Add required perl modules from cpan may not need libxml only expat !!!
@@ -1847,7 +1846,7 @@ build_dependancies() {
     fi;
   done
 
-  build_packages ${1} intltool popt rsync bzip2 nspr nss openssl Python libcap-ng ply libxml2 libxslt gnome-doc-utils \
+  build_packages ${1} intltool popt rsync bzip2 nspr sqlite-autoconf nss openssl Python libcap-ng ply expat libxml2 libxslt gnome-doc-utils \
     docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus glib \
     gtk-doc pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg trousers onig slang wget || return 1
 
@@ -1872,9 +1871,9 @@ build_dependancies() {
     (CLEANOPT=distclean;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
   fi;
 
-  build_packages ${1} cairo gobject-introspection icu4c graphite2 harfbuzz pango vala libdrm intltool cmake llvm talloc \
-    tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript ijs kmod  module-init-tools LVM2 cryptsetup \
-    libmicrohttpd systemd Mesa glu glw mtdev fontforge freeglut pcsc-lite atk gdk-pixbuf gtk+ || return 1
+  build_packages ${1} cairo gobject-introspection icu4c cmake graphite2 ragel harfbuzz pango vala libdrm intltool llvm \
+    talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript ijs kmod  module-init-tools LVM2 \
+    cryptsetup libmicrohttpd systemd Mesa glu glw mtdev fontforge freeglut pcsc-lite atk gdk-pixbuf gtk+ || return 1
 
   #Continue X Build with GL/Mesa
   if [ -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
@@ -1892,17 +1891,17 @@ build_dependancies() {
     build_packages ${1} icedtea7 || return 1
   fi;
 
-  build_packages ${1} yasm nasm fuse libunistring txt2man printproto portablexdr libnl-1 libnl libpcap ppp libIDL ORBit2 \
-    dbus-glib dbus-python polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig M2Crypto crda ragel \
+  build_packages ${1} yasm nasm fuse libunistring txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 \
+    dbus-glib dbus-python polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig M2Crypto crda \
     apr apr-iconv sqlite-autoconf keyutils neon apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql \
     postgresql apr-util httpd subversion libva gavl jasper libraw1394 orc libogg libvorbis gnome-mime-data gnome-vfs \
-    libvisual gstreamer gstreamer-1 v4l-utils OpenCV frei0r audiofile esound flac libvorbis libsndfile json-c fftw \
-    libsamplerate speex pulseaudio SDL libdc1394 libtheora gst-plugins-base gst-plugins-base-1 libavc1394 libiec61883 \
+    libvisual gstreamer gstreamer-1 v4l-utils audiofile esound flac libvorbis libsndfile json-c fftw \
+    libsamplerate speex pulseaudio SDL libdc1394 OpenCV frei0r libtheora gst-plugins-base gst-plugins-base-1 libavc1394 libiec61883 \
     faac libaacplus vo-aacenc vo-amrwbenc fribidi libass libbluray celt libcaca gsm libmodplug lame twolame libnut \
     opencore-amr opus schroedinger utvideo openal xvidcore ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink \
     libmnl libexif exif libnetfilter_conntrack libao libtimidity libnetfilter_cttimeout ilmbase gss librsvg iptables \
     usbutils xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem qt-4 py2cairo pygobject libglade pygtk \
-    automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man autoconf rrdtool avahi djvulibre \
+    autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man rrdtool avahi djvulibre \
     libarchive cogl json-glib pciutils net-snmp sane-backends libvdpau LibVNCServer i2c-tools openexr ImageMagick \
     libungif libiodbc tdb libcanberra libgnome-keyring pangox-compat mhash libmcrypt boost || return 1
 
@@ -1911,14 +1910,16 @@ build_dependancies() {
 
   #XFCE
   build_packages ${1} gnome-common glade3 libnotify startup-notification libwnck py2cairo pygobject vte gnome-keyring \
-    gnome-desktop libopenraw libxklavier libxfce4util xfconf libxfce4ui garcon exo xfce4-panel Thunar xfce4-settings \
+    gnome-desktop libopenraw iso-codes libxklavier libxfce4util xfconf libxfce4ui garcon exo xfce4-panel Thunar xfce4-settings \
     xfce4-session xfwm4 xfdesktop xfce4-appfinder  gtk-xfce-engine Terminal thunar-volman xfce4-taskmanager xpdf \
     icon-naming-utils gnome-icon-theme shared-mime-info eog aterm file-roller libgsf wv hunspell enchant abiword \
-    gtkspell gcalctool gucharmap leafpad ffmpegthumbnailer tumbler || return 1
+    gcalctool gucharmap leafpad ffmpegthumbnailer tumbler || return 1
+#    gtkspell'
 
   #Linphone
   build_packages ${1} ortp spandsp mediastreamer bcg729 msamr libilbc msilbc msx264 mssilk libosip2 libeXosip2 \
-    gsettings-desktop-schemas glib-networking libsoup linphone || return 1
+  glib-networking libsoup linphone || return 1
+#    gsettings-desktop-schemas 
 
   #Evolution/Epiphany
   build_packages ${1} libgdata libical libgweather libpst geoclue libsecret libwebp gtkimageview gtkhtml libunique \
@@ -1979,9 +1980,8 @@ bootstrap_native() {
   fi;
 
   #Bootstrap native arch buildtools
-  build_packages ${NARCH} binutils groff gdbm perl automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 \
-    help2man autoconf zlib gmp libidn libtasn1 p11-kit nettle gnutls libgpg-error libgcrypt libprelude pcre libsepol \
-    libselinux Linux-PAM libcap libcap-ng patch ||return 1
+  build_packages ${NARCH} binutils groff findutils gdbm perl autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 \
+    help2man zlib gmp gengetopt libidn libtasn1 p11-kit flex || return 1
 
   #build shared gcc to get shared libstdc++/libada/libgcc [C/C++/ADA]
   if [ ! -e /usr/${NLIBDIR}/libstdc++.so ];then
@@ -2002,9 +2002,12 @@ bootstrap_native() {
     fi;
   fi;
 
+  build_packages ${NARCH} nettle gnutls libgpg-error libgcrypt libprelude pcre libsepol \
+    libselinux portablexdr libtirpc Linux-PAM  ||return 1
+
   #Bootstrap native arch with deps for GCC [libjava] if gcc not built
   if [ ! -e ${STATDIR}/${NARCH}/done/unzip ];then
-    build_packages ${NARCH} xz libxml2 gettext libxslt libffi gdbm Python docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
+    build_packages ${NARCH} xz libxml2 gettext libxslt libffi gdbm Python libcap libcap-ng patch docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
       docbook-4.5 docbook-xsl xmlto OpenSP openjade expat dbus glib pkg-config gtk-doc libcroco zip unzip || return 1
   fi;
 
