@@ -1,0 +1,5 @@
+VERSION="2.9.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--disable-tests";
+AMVER="1.13";

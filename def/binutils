@@ -1,7 +1,4 @@
 VERSION="2.23.2";
-VERSION_arm="2.22";
-VERSION_powerpc="2.22";
-VERSION_powerpc64="2.22";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-gold --disable-werror --enable-lto --enable-64-bit-bfd --enable-initfini-array";

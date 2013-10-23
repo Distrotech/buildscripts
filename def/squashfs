@@ -1,5 +1,5 @@
-VERSION="20130604"
-VERSEP="-";
+VERSION="4.2"
+VERSEP="";
 PREFIX="/usr";
 CONFOPT="";
 CFGPTH="/squashfs-tools/";

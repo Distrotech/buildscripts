@@ -1,0 +1,6 @@
+VERSION="1.5E"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+GITBRANCH="master

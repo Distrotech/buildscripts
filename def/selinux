@@ -1,0 +1,7 @@
+VERSION="20130423"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+ADDCFLAGS="-I../../libsepol/include -I../libsepol/include -I../../libselinux/include";
+ADDLDFLAG="-L../../libsepol/src -L../../libselinux/src -L../libsepol/src";

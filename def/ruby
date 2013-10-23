@@ -1,0 +1,8 @@
+VERSION="2.0.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+OPT_i686="--target=i686-linux-gnu";
+OPT_arm64="--target=aarch64-linux-gnu";
+MAKEOPTS="LIBRUBYARG=libruby-static.a";
+BUILDDIR="0";

@@ -1,0 +1,5 @@
+VERSION="3.3.8"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--disable-gui";
+GITBRANCH="master";
