@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for mod in programs man manual macros;do
+  ./build ${mod}
+  ./build install ${mod} ${3}
+done;

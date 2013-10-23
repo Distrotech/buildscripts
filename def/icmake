@@ -1,0 +1,7 @@
+VERSION="7.20.00"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+CFGPTH="icmake";
+CFGBIN="icmake/";

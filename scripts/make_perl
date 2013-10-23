@@ -5,8 +5,7 @@ rm Policy.sh config.sh > /dev/null 2>&1
 
 ./Configure -e -d -s -Dusethreads -Dprefix=/usr -Dcc=/usr/bin/${HOST}-gcc -A append:cc=" --sysroot=${SYSROOT} -fPIC" \
             -A libpth="/${B_LIBDIRS} /usr/${B_LIBDIRS} /usr/X11R7/${B_LIBDIRS}" \
-            -Dlocincpth="/usr/include /usr/X11R7/include" -Darchname=${HOST}
-
+            -Dlocincpth="/usr/include /usr/X11R7/include" -Darchname=${HOST} -Duselargefiles
 
 make ${MAKE_J} || make ${MAKE_J} || make || exit 1
 if [ "${SYSROOT}" ];then

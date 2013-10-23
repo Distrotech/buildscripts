@@ -1,0 +1,7 @@
+VERSION="3.00.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+CFGPTH="yodl";
+CFGBIN="yodl/";
+BUILDDIR="0";

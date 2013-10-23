@@ -1279,7 +1279,9 @@ build_glibc() {
 run_configure() {
   CONFLIBDIR=${1}
   shift;
-  ../configure --libdir=/usr/${CONFLIBDIR} --prefix=${PREFIX} --sysconfdir=/etc --mandir=/usr/share/man \
+  CPATH=${1}
+  shift;
+  ${CPATH}/configure --libdir=/usr/${CONFLIBDIR} --prefix=${PREFIX} --sysconfdir=/etc --mandir=/usr/share/man \
                --infodir=/usr/share/info --localstatedir=/var $@ || return 1
 }
 
@@ -1320,7 +1322,7 @@ build_bootstrap_binutils() {
 
   setup_build_dir ${1} binutils ${BINUTILS} ${NARCH}
   export MAKEOPT
-  run_configure ${B_LIBDIRS} ${PROGPRE} --target=${2} --build=${BUILD} --host=${BUILD} \
+  run_configure ${B_LIBDIRS} .. ${PROGPRE} --target=${2} --build=${BUILD} --host=${BUILD} \
                 ${CONFOPT} ${ARCHOPT} ${CSYSROOT} CC=${BUILD}-gcc || return 1
   make ${MAKE_J} configure-host || return 1
   make ${MAKE_J} -C bfd ${MAKEOPT} all || return 1
@@ -1483,7 +1485,7 @@ build_gcc_bootstrap() {
 #  fi;
 
   export CFLAGS CXXFLAGS LDFLAGS
-  run_configure ${USELIBDIR} ${PROGPRE} --build=${BUILD} --host=${THOST} --target=${2} --with-build-sysroot=${BUILDDIR} \
+  run_configure ${USELIBDIR} .. ${PROGPRE} --build=${BUILD} --host=${THOST} --target=${2} --with-build-sysroot=${BUILDDIR} \
                 ${CONFOPT} ${!MARCH} || return 1
 
   if [ ! -d ${2}/libstdc++-v3 ];then
@@ -1580,7 +1582,7 @@ build_qemu_static() {
   (svn_load_pkg qemu ${QEMU}) || return 1
   setup_build_dir ${NARCH} qemu ${QEMU} ${NARCH}
 
-  run_configure ${NLIBDIR} --static --disable-system --disable-user --enable-linux-user --disable-werror \
+  run_configure ${NLIBDIR} .. --static --disable-system --disable-user --enable-linux-user --disable-werror \
                 --target-list=arm-linux-user,mips-linux-user,mips64-linux-user,ppc-linux-user,ppc64-linux-user \
                 --cc=${BUILD}-gcc || return 1
   make ${MAKE_J} || make || return 1
@@ -1653,9 +1655,17 @@ build_static_tool() {
     CFGPTH="";
   fi;
   mkdir ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}/build-${1}-static 
-  cd ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}/build-${1}-static
 
-  run_configure ${3} --build=${BUILD} --host=${2} ${STATICOPT} ${ARCHOPT} || return 0
+  if [ "${BUILDDIR}" ] && [ "${BUILDDIR}" == "0" ];then
+    CPATH=".";
+    cd ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}
+    make clean;make distclean
+  else
+    cd ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}/build-${1}-static
+    CPATH="..";
+  fi;
+
+  run_configure ${3} ${CPATH} --build=${BUILD} --host=${2} ${STATICOPT} ${ARCHOPT} || return 0
 
   if [ "${4}" == "binutils" ];then
     make ${MAKE_J} configure-host
@@ -1699,10 +1709,10 @@ build_static_tool() {
     fi;
   fi;
 
-  if [ "${DIETBUILD}" == "1" ];then
+  (if [ "${DIETBUILD}" == "1" ];then
      cd ${SRCDIR}/${4}/${STATICTOOL}
      rm -rf build-${1}-static
-  fi;
+  fi;) || true
 
   tar_package ${TOOLDIR}/${1}/${STATICTOOL}-static ${TOOLPKG}/${1} ${STATICTOOL}-static > /dev/null 2>&1
 }
@@ -1717,7 +1727,7 @@ static_toolbuild() {
     TARGET=${BUILD}
   fi;
   for stool in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
-      pkg-config util-linux m4 cpio diffutils libtool gperf krb5 subversion binutils;do
+      pkg-config util-linux m4 cpio diffutils libtool gperf krb5 subversion binutils git;do
     (build_static_tool ${1} ${TARGET} ${TLIBDIR} ${stool})
   done;
 }

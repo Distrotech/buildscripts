@@ -1,0 +1,6 @@
+VERSION="102"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-pamdir=/usr/${B_LIBDIRS}/security";
+MAKEOPTS="SWIG=swig";
+GITBRANCH="masr

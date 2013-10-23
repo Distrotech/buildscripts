@@ -1,0 +1,5 @@
+VERSION=""
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ADDCFLAG="-I=/usr/include/freetype2";
