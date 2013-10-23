@@ -4,3 +4,5 @@ PREFIX="/usr";
 CONFOPT="--with-gpm --enable-widec --with-shared --enable-ext-colors --enable-ext-mouse --enable-overwrite --without-ada";
 ALIAS="ncurses";
 ADDCC="0";
+GITBRANCH="master";
+GITREPO="ncurses";

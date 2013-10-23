@@ -1,4 +1,4 @@
-VERSION="1.9.1"
+VERSION="1.10"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-libgdbm-compat --enable-gdbm-export";

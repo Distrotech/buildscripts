@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 OPT_arm="--with-gcc-arch=arm TARGET=ARM TARGETDIR=arm";
 OPT_x86_64="--with-gcc-arch=x86_64";
+GITBRANCH="v3.0.13";

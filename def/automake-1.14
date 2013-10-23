@@ -1,7 +1,6 @@
-VERSION="6"
+VERSION="0"
 VERSEP=".";
 PREFIX="/usr";
 CONFOPT="";
-AMVER="1.13";
 GITREPO="automake";
-GITBRANCH="v1.11.6";
+GITBRANCH="v1.14";

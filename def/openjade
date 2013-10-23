@@ -9,3 +9,4 @@ OPT_x86_64="--enable-splibdir=/build/x86_64/usr/lib64";
 OPT_arm="--enable-splibdir=/build/arm/usr/lib";
 OPT_arm64="--enable-splibdir=/build/arm64/usr/lib";
 SYSROOTFIXUP="1";
+GITBRANCH="master";

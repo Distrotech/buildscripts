@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-easy-bindings --without-python --without-perl";
 NONULLCONF="1";
+GITBRANCH="master";

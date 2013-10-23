@@ -1,4 +1,6 @@
-VERSION="1.6.4"
+VERSION="1.7.6"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--without-x";
+GITBRANCH="dbus-1.7.6";
+ADDWITHSYSROOT="1";
