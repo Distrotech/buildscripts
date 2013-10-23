@@ -1,7 +1,8 @@
 VERSION="1.12.0";
 VERSEP="-";
 PREFIX="/usr";
-ANT_HOME="/usr/lib64/jvm/apache-ant-1.8.4";
+JAVA_HOME="/usr/${B_LIBDIRS}/jvm/jdk-1.6.0_24-b24";
+ANT_HOME="/usr/${B_LIBDIRS}/jvm/apache-ant-1.8.4";
 CONFOPT="--with-ecj-jar=/usr/share/java/ecj-3.5.2.jar --with-jdk-home=/usr/${NLIBDIR}/jvm/gcj-jdk
          --with-rhino=/usr/share/java/js.jar --with-gcj=/usr/bin/gcj";
 CONFOPTX="--with-jdk-home=/usr/${NLIBDIR}/jvm/jdk-1.6.0_27-b27 --disable-bootstrap";
