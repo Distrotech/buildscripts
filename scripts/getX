@@ -1,0 +1,6 @@
+mkdir -p /usr/src/Xorg/Xorg-git
+cd /usr/src/Xorg/Xorg-git
+git clone git://anongit.freedesktop.org/git/xorg/util/macros
+cd macros/
+./autogen.sh --prefix=/usr/X11R7
+git clone git://anongit.freedesktop.org/git/xorg/util/modular util/modular
