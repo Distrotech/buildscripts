@@ -13,3 +13,4 @@ OPT_mips="--host=mips-linux-gnu --libdir=/usr/lib";
 OPT_mips64="--host=mips64-linux-gnuabi64 --libdir=/usr/lib64";
 STDOPTS="--prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var";
 FIXUPLIB="1";
+GITBRANCH="master";

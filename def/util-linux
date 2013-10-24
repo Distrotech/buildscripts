@@ -1,4 +1,4 @@
-VERSION="2.22.1"
+VERSION="2.23.1"
 VERSEP="-";
 PREFIX="/";
 CONFOPT="--enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 

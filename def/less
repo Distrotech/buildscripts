@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="ac_cv_lib_ncurses_initscr=no";
 STATICMOPT="LDFLAGS=-static";
+GITBRANCH="master";
