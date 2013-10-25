@@ -1,4 +1,4 @@
-VERSION="v1_24_0"
+ VERSION="v1_24_0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-localgsm PTLIBDIR=/usr/src/ptlib/ptlib-2.10.1 ac_cv_lib_avcodec_mpeg4_encoder=yes
@@ -8,3 +8,4 @@ ADDCFLAG="-I../include";
 FIXUPLIB="1";
 ADDCC="0";
 MAKEALL="optshared";
+GITBRANCH="master";

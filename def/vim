@@ -1,5 +1,5 @@
-VERSION="73"
-VERSEP="";
+VERSION="7.3-1213"
+VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-tlib=ncursesw";
 BUILDDIR="0";

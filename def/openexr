@@ -1,5 +1,7 @@
-VERSION="1.7.1"
+VERSION="2.0.0";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-I=/usr/include/OpenEXR/";
+CFGPTH="OpenEXR";
+CFGBIN="OpenEXR/"

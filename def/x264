@@ -1,4 +1,4 @@
-VERSION="snapshot-20120913-2245"
+VERSION="git"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-shared --enable-pic";

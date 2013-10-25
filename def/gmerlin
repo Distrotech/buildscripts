@@ -2,3 +2,6 @@ VERSION="1.4.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--without-doxygen";
+GITBRANCH="distrotech-gmerlin"
+CFGPTH="gavl";
+CFGBIN="gavl/";

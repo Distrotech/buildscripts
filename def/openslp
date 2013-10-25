@@ -3,3 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 AMVER="1.9";
+CFGPTH="openslp";
+CFGBIN="openslp/";

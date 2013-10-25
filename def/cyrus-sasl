@@ -1,4 +1,4 @@
-VERSION="2.1.25"
+VERSION="2.1.26"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--without-ldap --disable-ldapdb --enable-login --with-configdir=/etc/sasl2";

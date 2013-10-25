@@ -8,4 +8,3 @@ CLEARFLAGS="1";
 OPT_x86_32="PYTHON=/build/x86_32/usr/bin/python";
 ADDLDFLAG="-L=/opt/qt-4/${B_LIBDIRS}";
 DISTCONF="avahi/avahi-daemon.conf";
-GITREPO="avahi";

@@ -1,4 +1,4 @@
-VERSION="1.2.10"
+VERSION="1.2.12"
 VERSEP="-";
 PREFIX="/usr";
 STDOPTS="--prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var";
@@ -14,3 +14,7 @@ OPT_i686="--libdir=/usr/lib";
 OPT_x86_32="--libdir=/usr/libx32";
 OPT_x86_64="--libdir=/usr/lib64";
 NOCCOPT="1";
+GITBRANCH="tdb-1.2.12";
+GITREPO="samba";
+CFGPTH="lib/tdb";
+CFGBIN="tdb/"

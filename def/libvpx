@@ -1,4 +1,4 @@
-VERSION="v1.1.0"
+VERSION="1.2.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-vp8 --enable-pic --enable-shared --enable-static";

@@ -1,4 +1,4 @@
-VERSION="0.10"
+VERSION="0.11"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="ac_cv_func_malloc_0_nonnull=yes";

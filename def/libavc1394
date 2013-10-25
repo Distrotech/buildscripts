@@ -1,4 +1,6 @@
-VERSION="0.5.3"
+VERSION="0.5.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+CFGPTH="libavc1394";
+CFGBIN="libavc1394/";

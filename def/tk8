@@ -16,3 +16,4 @@ OPT_powerpc="tcl_cv_strtod_buggy=no";
 OPT_powerpc64="tcl_cv_strtod_buggy=no";
 OPT_i686="tcl_cv_strtod_buggy=no";
 OPT_x86_32="tcl_cv_strtod_buggy=no";
+GITBRANCH="master";

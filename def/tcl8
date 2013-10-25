@@ -5,3 +5,4 @@ CONFOPT="";
 CFGPTH="build_unix";
 CFGBIN="unix/";
 BUILDDIR="0";
+GITBRANCH="master";

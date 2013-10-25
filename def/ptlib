@@ -8,3 +8,4 @@ BUILDDIR="0";
 LDISCC="1";
 MAKEALL="optshared";
 NODIET="1";
+GITBRANCH="master";

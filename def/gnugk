@@ -12,3 +12,4 @@ NOCCOPT="1";
 ADDCC="1";
 LDISCC="1";
 MAKEALL="optshared";
+GITBRANCH="master";

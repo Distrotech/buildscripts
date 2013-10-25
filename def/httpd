@@ -27,3 +27,4 @@ MOPT_mips64="LIBTOOL=/build/mips64/usr/build-1/libtool";
 MOPT_powerpc="LIBTOOL=/build/powerpc/usr/build-1/libtool";
 MOPT_powerpc64="LIBTOOL=/build/powerpc64/usr/build-1/libtool";
 MOPT_x86_32="LIBTOOL=/build/x86_32/usr/build-1/libtool";
+GITBRANCH="master";

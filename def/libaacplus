@@ -12,3 +12,4 @@ OPT_powerpc64="ac_cv_file__bin_bash=/bin/bash";
 OPT_i686="ac_cv_file__bin_bash=/bin/bash";
 OPT_x86_32="ac_cv_file__bin_bash=/bin/bash";
 MAKE_J="";
+GITBRANCH="master";

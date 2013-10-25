@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-1.7.0_60";
+GITBRANCH="master";

@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 ALIAS="libcdio";
 BUILDDIR="0";
+GITBRANCH="distrotech-libcdio-cdda";

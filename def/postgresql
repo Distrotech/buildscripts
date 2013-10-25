@@ -1,4 +1,4 @@
-VERSION="9.2.2"
+VERSION="9.2.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--datadir=/usr/share/postgresql --enable-depend --with-perl --with-python --with-krb5 --with-pam --with-openssl 

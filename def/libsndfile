@@ -1,6 +1,7 @@
-VERSION="1.0.25"
+VERSION="1.0.26p5"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 AMVER="1.13";
 ADDLDFLAG="-shared-libgcc";
+BUILDDIR="0";

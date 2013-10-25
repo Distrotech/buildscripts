@@ -16,3 +16,4 @@ ADDCFLAG="-I=/opt/apache/include";
 ADDLFLAG="/dist/${barch}/subversion${VERSEP}${VERSION}/usr/lib";
 STATICOPT="--disable-shared --without-berkeley-db --enable-all-static --without-apxs LDFLAGS=-static"
 STATICMOPT="LDFLAGS=-all-static";
+GITBRANCH="master";

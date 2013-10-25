@@ -9,3 +9,4 @@ NOMAKEFLAGS="1";
 MAKEALL="optshared";
 LDISCC="1";
 ADDLDFLAG="-lstdc++";
+GITBRANCH="master";
