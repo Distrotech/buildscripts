@@ -1,5 +1,5 @@
 ANT_HOME="/usr/${NLIBDIR}/jvm/apache-ant-1.8.4";
-JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-1.7.0_09";
+JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-1.7.0_60";
 VERSION="4.0.1.2"
 VERSEP="-";
 PREFIX="/usr";

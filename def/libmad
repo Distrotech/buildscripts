@@ -6,3 +6,4 @@ OPT_mips="--enable-fpm=mips";
 OPT_mips64="--enable-fpm=mips";
 ADDWITHSYSROOT="1";
 NOCCOPT="1";
+GITBRANCH="master";

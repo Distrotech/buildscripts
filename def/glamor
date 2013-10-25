@@ -1,0 +1,5 @@
+VERSION="0.5.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--disable-selective-werror";
+GITBRANCH="v0.5.1";

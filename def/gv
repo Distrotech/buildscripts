@@ -1,5 +1,7 @@
-VERSION="3.7.3"
+VERSION="3.7.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 OPT_i686="--x-includes==/usr/X11R7/include --x-libraries==/usr/X11R7/lib";
+CFGPTH="gv";
+CFGBIN="gv/";

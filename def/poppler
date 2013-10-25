@@ -1,8 +1,8 @@
-VERSION="0.22.0"
+VERSION="0.22.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-xpdf-headers --enable-libcurl --enable-zlib --enable-introspection=no";
-EXTRALIBS="-ldl -lpng15";
+EXTRALIBS="-ldl -lpng16";
 ADDWITHSYSROOT="1";
 ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/openjpeg-1.5 -I=/usr/include/cairo -I=/usr/include/pango-1.0
           -I=/usr/include/gdk-pixbuf-2.0 -I=/usr/include/atk-1.0";

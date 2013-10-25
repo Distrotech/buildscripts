@@ -1,7 +1,7 @@
 VERSION="5.3.21"
 VERSEP="-";
 PREFIX="/usr";
-JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-1.7.0_09";
+JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-1.7.0_60";
 CONFOPT="--enable-compat185 --enable-shared=yes --enable-dbm --enable-cxx --enable-tcl --enable-java";
 CFGPTH="build_unix";
 CFGBIN="/dist/";

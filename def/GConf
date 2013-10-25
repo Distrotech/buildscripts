@@ -1,4 +1,4 @@
-VERSION="2.32.4"
+VERSION="2.32.5"
 VERSEP="-";
 CONFOPT="INTLTOOL_PERL=/usr/bin/perl";
 PREFIX="/usr";

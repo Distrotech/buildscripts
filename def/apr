@@ -29,3 +29,4 @@ OPT_arm64="ac_cv_file__dev_zero=yes ac_cv_func_setpgrp_void=yes apr_cv_process_s
          ac_cv_struct_rlimit=yes";
 NOCROSS="1";
 CLEARFLAGS="1";
+GITBRANCH="master";
