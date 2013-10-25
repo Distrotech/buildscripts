@@ -16,3 +16,4 @@ SYSROOTFIXUP="1";
 MAKEOPTS="KEEP_SYMBOLS=1";
 ADDCC="0";
 DONTBUILD="arm64 mips mips64 powerpc powerpc64";
+GITBRANCH="release_33";

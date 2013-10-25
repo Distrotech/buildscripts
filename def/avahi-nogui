@@ -7,3 +7,4 @@ OPT_arm64="--enable-introspection=no";
 CLEARFLAGS="1";
 ALIAS="avahi";
 DISTCONF="avahi/avahi-daemon.conf";
+GITREPO="avahi";

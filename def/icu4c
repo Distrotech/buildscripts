@@ -13,3 +13,4 @@ OPTX_i686="--with-cross-build=/usr/src/icu4c/icu4c-49.1.2/build-${NARCH}";
 OPTX_x86_32="--with-cross-build=/usr/src/icu4c/icu4c-49.1.2/build-${NARCH}";
 OPTX_x86_64="--with-cross-build=/usr/src/icu4c/icu4c-49.1.2/build-${NARCH}";
 NODIET="1";
+GITBRANCH="master";

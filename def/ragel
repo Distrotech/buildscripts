@@ -1,4 +1,4 @@
-VERSION="6.7"
+VERSION="6.8"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="ac_cv_file______DIST=yes";

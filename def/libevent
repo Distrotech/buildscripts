@@ -1,4 +1,4 @@
-VERSION="2.0.20-stable"
+VERSION="2.0.21"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";

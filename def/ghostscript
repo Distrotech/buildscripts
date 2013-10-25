@@ -13,3 +13,4 @@ OPT_powerpc="cross_compiling=yes";
 OPT_powerpc64="cross_compiling=yes";
 OPT_x86_32="cross_compiling=yes";
 OPT_i686="cross_compiling=yes";
+GITBRANCH="master";

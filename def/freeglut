@@ -1,5 +1,7 @@
-VERSION="2.8.0"
+VERSION="2.8.1-RC1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 LDISCC="0";
+CFGPTH="freeglut";
+CFGBIN="freeglut/";

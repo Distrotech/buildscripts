@@ -7,3 +7,5 @@ ALIAS="ghostscript";
 CFGPTH="ijs";
 CFGBIN="ijs/";
 AMVER="1.9";
+GITBRANCH="master";
+GITREPO="ghostscript";
