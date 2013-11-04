@@ -6,3 +6,4 @@ ADDCC="0";
 NOCCOPT="1";
 CLEARFLAGS="1";
 EXTRALIBS="-lpthread -lrt";
+GITBRANCH="master";

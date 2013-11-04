@@ -2,10 +2,10 @@ VERSION="1.1"
 VERSEP="-";
 PREFIX="/usr";
 STDOPTS="--prefix=/usr --mandir=/usr/share/man";
-CONFOPT="--disable-ffmpeg_a";
+CONFOPT="--disable-ffmpeg_a --disable-dvdread-internal";
 NOCCOPT="1";
 BUILDDIR="0";
-OPT_x86_64="--sysroot=/build/x86_64 --libdir=/usr/lib64 --shlibdir=/usr/lib64";
+OPT_x86_64="--libdir=/usr/lib64";
 OPT_i686="--enable-cross-compile --sysroot=/build/i686 --arch=i686 --target-os=linux
           --cross-prefix=i686-linux-gnu- --cpu=i686 --extra-cflags=-m32";
 OPT_arm="--target=arm-linux --enable-cross-compile --sysroot=/build/arm --arch=arm --target-os=linux 

@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 MAKEOPTS="SQLITE3_LIB=-lsqlite3 ODBC_LIB=-lodbcinst";
+GITBRANCH="master";

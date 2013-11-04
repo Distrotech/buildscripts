@@ -1,4 +1,4 @@
-VERSION="0.99.21"
+VERSION="0.99.22.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-vtysh --enable-isisd --enable-user=daemon --enable-group=daemon";

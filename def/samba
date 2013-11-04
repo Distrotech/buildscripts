@@ -1,4 +1,4 @@
-VERSION="3.6.10"
+VERSION="3.6.16"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-pam --with-quotas --with-automount --with-ads --with-pam_smbpass=yes --with-configdir=/etc/samba 

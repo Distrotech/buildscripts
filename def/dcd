@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 ADDCFLAG="-I=/usr/include/musicbrainz5";
+GITBRANCH="master";

@@ -1,4 +1,4 @@
-VERSION="2.6.3"
+VERSION="2.6.5"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-all --with-cgi --without-avahi --without-powerman --without-ipmi --with-snmp-libs=-lnetsnmp

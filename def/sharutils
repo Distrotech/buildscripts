@@ -2,3 +2,4 @@ VERSION="4.11.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+GITBRANCH="master";

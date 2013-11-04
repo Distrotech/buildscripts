@@ -3,3 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
+GITBRANCH="master";
+NOMAKEFLAGS="1";

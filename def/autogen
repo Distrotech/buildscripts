@@ -1,4 +1,4 @@
-VERSION="5.17"
+VERSION="5.17.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="libopts_cv_with_libregex=yes";

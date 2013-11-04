@@ -3,7 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-examples --enable-introspection=no";
 ADDCFLAG="-I=/usr/include/gstreamer-1.0 -I=/usr/include/libxml2 -I=/usr/include/orc-0.4 -I=/usr/include/gnome-vfs-2.0
-          -I=/usr/include/libvisual-0.4 -I=/usr/include/pango-1.0 -I=/usr/include/cairo";
+          -I=/usr/include/libvisual-0.4 -I=/usr/include/pango-1.0 -I=/usr/include/cairo -fPIC";
 LDISCC="1";
 ALIAS="gst-plugins-base";
 GITBRANCH="distrotech-gst-plugins-base1";

@@ -5,3 +5,7 @@ CONFOPT="";
 BUILDDIR="0";
 NOMAKEFLAGS="1";
 FIXUPLIB="1";
+GITREPO="ebtables";
+GITBRANCH="distrotech-arptables-v0.0.4";
+CFGPTH="userspace/arptables";
+CFGBIN="arptables/";

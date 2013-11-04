@@ -7,3 +7,4 @@ SYSCONFPRE="racoon";
 EXTRALIBS="-lrt";
 AMVER="1.12";
 NOSVNROOT="1";
+GITBRANCH="master";

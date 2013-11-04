@@ -1,4 +1,4 @@
-VERSION="1.2.6"
+VERSION="1.2.8"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="-with-tcp-wrappers=no --with-statduser=nobody --with-gnu-ld --enable-mount --enable-ipv6 --with-krb5 --disable-gss";

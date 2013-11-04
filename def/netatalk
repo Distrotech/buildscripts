@@ -1,4 +1,4 @@
-VERSION="3.0.2"
+VERSION="3.0.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-zeroconf --with-pic --enable-fhs --with-cnid-cdb-backend --with-pam

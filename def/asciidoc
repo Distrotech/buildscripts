@@ -1,6 +1,5 @@
-VERSION="3.0.1"
+VERSION="8.6.8"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-GITBRANCH="master";

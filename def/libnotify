@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 NOSVNROOT="1";
+BUILDDIR="0";

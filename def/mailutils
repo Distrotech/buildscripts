@@ -1,4 +1,4 @@
-VERSION="2.2"
+VERSION="2.99.98"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--without-guile --without-fribidi";

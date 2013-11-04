@@ -1,4 +1,4 @@
-VERSION="git"
+VERSION="4.8"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";

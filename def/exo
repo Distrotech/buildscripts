@@ -1,4 +1,4 @@
-VERSION="0.8.0"
+VERSION="0.10.2"
 VERSEP="-";
 PREFIX="/opt/xfce";
 CONFOPT="--datarootdir=/usr/share ac_cv_func_mmap_fixed_mapped=yes";

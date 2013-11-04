@@ -1,5 +1,4 @@
-VERSION="git";
-VERSION_arm="7.5";
+VERSION="7.6";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-werror";

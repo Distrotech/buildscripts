@@ -1,6 +1,6 @@
-VERSION="1.8.3"
+VERSION="1.12.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-I=/usr/include/fuse";
-AMVER="1.9";
+BUILDDIR="0";

@@ -1,4 +1,4 @@
-VERSION="1.8.2-tls"
+VERSION="1.9.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
@@ -10,4 +10,5 @@ MOPT_mips="ARCH=mips";
 MOPT_mips64="ARCH=mips";
 MOPT_powerpc="ARCH=ppc";
 MOPT_powerpc64="ARCH=ppc64";
-
+NOMAKEFLAGS="1";
+LDISCC="1";

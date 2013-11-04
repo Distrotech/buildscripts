@@ -1,7 +1,9 @@
-VERSION="4.0.3"
+VERSION="20130513"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-pty-mode=630 --with-pty-group=15 --enable-colors256 --enable-rxvt_osc --enable-pam --enable-locale
          --with-sys-screenrc=/etc/screenrc";
 BUILDDIR="0";
 OPT_arm="ac_cv_search_strerror=no";
+CFGPTH="src";
+CFGBIN="src/";

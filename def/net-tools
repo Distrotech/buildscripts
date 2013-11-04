@@ -1,7 +1,7 @@
-VERSION="1.60"
+VERSION="2.10-alpha"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 NOMAKEFLAGS="1";
-MAKEOPTS="SE_PC_LIBS=-lselinux";
+GITBRANCH="master";

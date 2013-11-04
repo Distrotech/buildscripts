@@ -5,3 +5,4 @@ CONFOPT="";
 STDOPTS="--prefix=/usr --mandir=/usr/share/man --without-tcl --enable-devlibs";
 BUILDDIR="0";
 NOCCOPT="1";
+GITBRANCH="master";

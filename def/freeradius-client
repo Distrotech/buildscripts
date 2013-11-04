@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 DISTCONF="radiusclient/port-id-map radiusclient/radiusclient.conf radiusclient/servers";
+GITBRANCH="master";

@@ -5,3 +5,4 @@ CONFOPT="--enable-widec --with-ncursesw";
 ADDFILTER="makefile";
 NOCCOPT="1";
 ADDCC="0";
+GITBRANCH="master";

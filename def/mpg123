@@ -1,4 +1,4 @@
-VERSION="1.14.4"
+VERSION="1.15.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-default-audio=alsa --disable-lfs-alias";

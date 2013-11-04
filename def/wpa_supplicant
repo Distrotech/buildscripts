@@ -1,4 +1,4 @@
-VERSION="1.0"
+VERSION="2.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
@@ -6,3 +6,4 @@ BUILDDIR="0";
 CFGPTH="wpa_supplicant";
 NOMAKEFLAGS="1";
 FIXUPLIB="1";
+ALIAS="hostapd";

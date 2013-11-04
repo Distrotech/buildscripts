@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 NOMAKEFLAGS="1";
+GITBRANCH="master";

@@ -1,7 +1,9 @@
-VERSION="v2.0.10-4"
+VERSION="2.0.10-4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 NOMAKEFLAGS="1";
 FIXUPLIB="1";
+CFGPTH="userspace/ebtables2";
+CFGBIN="ebtables2/";

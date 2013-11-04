@@ -1,4 +1,4 @@
-VERSION="1.2.9"
+VERSION="20130616"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--sysconfdir=/etc/chilli --enable-dhcpopt --enable-ieee8023 --enable-pppoe --enable-l2tpppp --enable-eapol

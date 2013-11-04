@@ -1,4 +1,4 @@
-VERSION="1.0.2"
+VERSION="1.0.10"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
@@ -10,4 +10,4 @@ OPT_powerpc="ac_cv_header_cppunit_TestRunner_h=no";
 OPT_powerpc64="ac_cv_header_cppunit_TestRunner_h=no";
 OPT_i686="ac_cv_header_cppunit_TestRunner_h=no";
 OPT_x86_32="ac_cv_header_cppunit_TestRunner_h=no";
-
+BUILDDIR="0";

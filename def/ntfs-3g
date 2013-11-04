@@ -2,3 +2,4 @@ VERSION="ntfsprogs-2012.1.15"
 VERSEP="_";
 PREFIX="/usr";
 CONFOPT="";
+GITBRANCH="master";
