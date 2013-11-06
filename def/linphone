@@ -1,4 +1,4 @@
-VERSION="3.5.2"
+VERSION="3.6.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-strict --enable-external-mediastreamer --enable-external-ortp";

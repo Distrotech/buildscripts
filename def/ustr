@@ -3,4 +3,3 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-GITBRANCH="v1.0.4";

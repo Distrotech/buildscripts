@@ -13,5 +13,5 @@ OPT_x86_32="--with-plugindir=/usr/libx32/sasl2";
 ADDCFLAG="-fPIC";
 NOCCOPT="1";
 FIXUPLIB="1";
-NONULLCONF="1";
-NOSVNROOT="1";
+AMVER="1.13";
+BUILDDIR="0";

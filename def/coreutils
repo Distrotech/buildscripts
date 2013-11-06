@@ -15,6 +15,6 @@ OPT_powerpc64="--enable-no-install-program=arch,hostname";
 MAKEOPTS="NARCH=${NARCH}";
 ADDCC="0";
 STATICOPT="LDFLAGS=-static FORCE_UNSAFE_CONFIGURE=1";
-STATICMOPT="NARCH=${NARCH}";
+STATICMOPT="NARCH=${NARCH} pkglibexec_PROGRAMS=";
 AMVER="1.13";
 NODIET="1";

@@ -1,4 +1,4 @@
-VERSION="2.23.1"
+VERSION="2.24"
 VERSEP="-";
 PREFIX="/";
 CONFOPT="--enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 
@@ -7,8 +7,8 @@ CONFOPT="--enable-ddate --enable-arch --enable-last --enable-line --enable-mesg 
 ADDCFLAG="-std=gnu99 -fPIC";
 NOCCOPT="1";
 ADDWITHSYSROOT="1";
-STATICOPT="--enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 
-         --enable-vipw --enable-newgrp --enable-chfn-chsh --enable-write --enable-socket-activation
-         --with-selinux --without-udev --without-slang LDFLAGS=-static";
+STATICOPT="--disable-shared --enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 
+         --enable-vipw --enable-newgrp --enable-chfn-chsh --enable-write --enable-socket-activation --disable-chfn-chsh
+         --with-selinux --without-udev --without-slang --disable-login --disable-su --disable-runuser LDFLAGS=-static";
 STATICMOPT="LDFLAGS=-all-static";
 AMVER="1.12";

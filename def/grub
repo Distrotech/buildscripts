@@ -15,6 +15,5 @@ MOPT_i686="CROSSBINPATH=../build_x86_64/";
 MOPT_x86_32="CROSSBINPATH=../build_x86_64/";
 DONTBUILD="arm arm64 mips mips64 powerpc powerpc64";
 AMVER="1.13";
-NOSVNROOT="1";
 EXTRALIBS="-lpthread -lrt -ldl";
 GITBRANCH="master";
