@@ -1,4 +1,4 @@
-VERSION="2.17";
+VERSION="2.18";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-add-ons --enable-multi-arch --enable-static-nss";

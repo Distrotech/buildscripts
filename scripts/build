@@ -296,9 +296,10 @@ echo      git clone --depth 1 -b distrotech-${4}${2} ${GITURL}/${4}.git ${SRCDIR
   fi;
 
   if [ -x /usr/bin/find ] || [ -x /bin/find ];then
-    find ${SRCDIR}/${PKGITDIR} -name configure -or -name Makefile.in -or -regex '.*\.info$' |awk '{printf "touch %s\n",$1}' |sh
+    find ${SRCDIR}/${PKGGITDIR} -name aclocal.m4 -or -name configure -or -name Makefile.in -or name autoconf.h.in -or -regex '.*\.info$' |awk '{printf "touch %s\n",$1}' |sh
    else
-    touch configure Makefile.in */Makefile.in
+    (cd ${SRCDIR}/${PKGGITDIR}
+    touch aclocal.m4 */aclocal.m4 configure Makefile.in */Makefile.in autoconf.h.in */autoconf.h.in)
   fi;
 }
 
