@@ -1,7 +1,7 @@
 #!/bin/bash
 
-SVNIP=127.0.0.1
-SVNBASE=http://${SVNIP}/svn
+GITIP=[2002:29dd:626::1]
+GITBASE=git://${GITIP}
 
 XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /usr/share/docbook2X/xslt/catalog.xml'
 LANG=en_ZA.UTF8
@@ -18,8 +18,8 @@ BASEROOT=${DISTDIR}/root
 SCRIPTDIR=${DISTDIR}/scripts
 PKGBUILDDIR=${DISTDIR}/build
 ARCHROOT=/build
-SVNURL=${SVNBASE}/distro/
-SVNUPDATE=1;
+GITURL=${GITBASE}
+GITUPDATE=1;
 DIETBUILD=1;
 AMDEF="1.11";
 BOOTCLEAN="distclean";
@@ -113,13 +113,6 @@ arch_config() {
 }
 
 mnt_archroot() {
-  if [ ! -d /usr/src/.svn ];then
-    if [ ! -d /usr/src ];then
-      mkdir -p /usr/src
-    fi;
-    svn co --depth=empty ${SVNURL}/ ${SRCDIR}/
-  fi;
-
   if [ ! -d /sys/module/wrapfs ];then
     modprobe wrapfs
     if [ -d /sys/module/wrapfs ];then
@@ -131,19 +124,14 @@ mnt_archroot() {
     BINDFS="mount -t wrapfs";
   fi;
 
-  BINDFS="bindfs";
-  if [ ! -d ${ARCHROOT}/${1}/usr/src/.svn ];then
-    ${BINDFS} /usr/src ${ARCHROOT}/${1}/usr/src
-  fi;
-
-  if [ ! -d /dist/.svn ];then
-    if [ ! -d /dist ];then
-      mkdir /dist
+  if [ ! -d ${DISTDIR}/.git ];then
+    if [ ! -d ${DISTDIR} ];then
+      mkdir ${DISTDIR}
     fi;
-    svn co ${SVNBASE}/buildscripts/trunk/ /dist/
+    git clone ${GITURL}/buildscripts.git ${DISTDIR}/
   fi;
-  if [ ! -d ${ARCHROOT}/${1}/dist/.svn ];then
-    ${BINDFS} /dist ${ARCHROOT}/${1}/dist
+  if [ ! -d ${ARCHROOT}/${1}/${DISTDIR}/.git ];then
+    ${BINDFS} ${DISTDIR} ${ARCHROOT}/${1}/${DISTDIR}
   fi;
 
   if [ ! -d ${ARCHROOT}/${1}/sys/dev ];then
@@ -188,6 +176,14 @@ check_create_arch() {
     mkdir -p ${ARCHROOT}
   fi;
 
+  if [ "${1}" != "${NARCH}" ];then
+    for incdir in /usr/X11R7/include /usr/lib/glib-2.0 /opt/Xfce/include /usr/include/gtk-2.0;do
+      if [ ! -d ${incdir} ];then
+        mkdir -p ${incdir}
+      fi;
+    done;
+  fi;
+
   if [ "${1}" != "${NARCH}" ] || [ -d ${ARCHROOT}/${1} ];then
     if [ ! -d ${ARCHROOT}/${1}/etc ];then
       mkdir -p ${ARCHROOT}/${1}/etc
@@ -200,7 +196,7 @@ check_create_arch() {
         tar -C ${ARCHROOT}/${1} -xf ${PKGDISTDIR}/java-jar.tar.xz
       fi;
     fi;
-    for adir in / /root /dev /proc /sys /usr/src /dist /tmp ${ARCHROOT};do
+    for adir in / /root /dev /proc /sys /usr/src ${DISTDIR} /tmp ${ARCHROOT};do
       mkdir -p ${ARCHROOT}/${1}/${adir}
     done
     if [ ! -e ${ARCHROOT}/${1}/${ARCHROOT}/${1} ];then
@@ -253,55 +249,61 @@ check_create_arch() {
   fi;
 }
 
-svn_load_pkg() {
-  if [ "${2}" ];then
-    if [ ! -d ${SRCDIR}/${1} ];then
-      svn co --depth=empty ${SVNURL}/${1} ${SRCDIR}/${1} || return 1
+git_load_pkg() {
+  PKGGITDIR=${1}/${1}${2}
+
+  if [ ! -d ${SRCDIR}/${PKGGITDIR} ];then
+    if [ ! -d ${SRCDIR}/Xorg/Xorg-git ];then
+      mkdir -p ${SRCDIR}/Xorg/Xorg-git
     fi;
-    PKGSVNDIR=${1}/${2}
-   else
-    PKGSVNDIR=${1}
-  fi;
-  if [ ! -d ${SRCDIR}/${PKGSVNDIR} ];then
-    if [ "${NOSVNROOT}" ] && [ "${NOSVNROOT}" == "1" ];then
-      svn co ${SVNURL}/${PKGSVNDIR} ${SRCDIR}/${PKGSVNDIR}-svn || return 1
-      svn export ${SRCDIR}/${PKGSVNDIR}-svn ${SRCDIR}/${PKGSVNDIR}
-      NONULLCONF=1;
+    if [ "${3}" ];then
+echo      git clone --depth 1 -b ${3} ${GITURL}/${4}.git ${SRCDIR}/${PKGGITDIR}
+      git clone --depth 1 -b ${3} ${GITURL}/${4}.git ${SRCDIR}/${PKGGITDIR}
      else
-      svn co ${SVNURL}/${PKGSVNDIR} ${SRCDIR}/${PKGSVNDIR} || return 1
-    fi
+echo      git clone --depth 1 -b distrotech-${4}${2} ${GITURL}/${4}.git ${SRCDIR}/${PKGGITDIR}
+      git clone --depth 1 -b distrotech-${4}${2} ${GITURL}/${4}.git ${SRCDIR}/${PKGGITDIR}
+    fi;
+
     if [ "${NONULLCONF}" ] && [ "${NONULLCONF}" == "1" ];then
       return 0;
     fi;
     #some packages are retards null config them
-    if [ -e ${SRCDIR}/${PKGSVNDIR}/configure.ac ] || [ -e ${SRCDIR}/${PKGSVNDIR}/configure.in ];then
-      if [ "${SRCDIR}" ] && [ "${PKGSVNDIR}" ] && [ -d ${SRCDIR}/${PKGSVNDIR} ];then
-        (cd ${SRCDIR}/${PKGSVNDIR}
-         sh ./configure;
-         #On failure run autoreconf
-         if [ $? != 0 ];then
-           autoreconf
-           sh ./configure;
-         fi;
-         make distclean || rm -rf ${SRCDIR}/${PKGSVNDIR}/*
-         svn up --accept tc)
-      fi
-    fi;
+#    if [ -e ${SRCDIR}/${PKGGITDIR}/configure.ac ] || [ -e ${SRCDIR}/${PKGGITDIR}/configure.in ];then
+#      if [ "${SRCDIR}" ] && [ "${PKGGITDIR}" ] && [ -d ${SRCDIR}/${PKGGITDIR} ];then
+#        (cd ${SRCDIR}/${PKGGITDIR}
+#         sh ./configure;
+#         #On failure run autoreconf
+#         if [ $? != 0 ];then
+#           autoreconf -f
+#           sh ./configure;
+#         fi;
+#         if [ -d .git ];then
+#           git reset --hard;git clean -x -f -d
+#          else
+#           make distclean
+#         fi;)
+#      fi;
+#    fi;
    elif [ "${NOSVNROOT}" ] && [ "${NOSVNROOT}" == "1" ];then
      return 0;
-   elif [ "${SVNUPDATE}" == "1" ];then
-    if [ "${NOSVNROOT}" ] && [ "${NOSVNROOT}" == "1" ];then
-      svn up --accept tc ${SRCDIR}/${PKGSVNDIR}-svn || return 1
-      svn export --force ${SRCDIR}/${PKGSVNDIR}-svn ${SRCDIR}/${PKGSVNDIR}
-     else
-      svn up --accept tc ${SRCDIR}/${PKGSVNDIR}
-    fi;
+#   elif [ "${GITUPDATE}" == "1" ];then
+#    if [ "${NOGITROOT}" ] && [ "${NOGITROOT}" == "1" ];then
+#      svn up --accept tc ${SRCDIR}/${PKGSVNDIR}-svn || return 1
+#      svn export --force ${SRCDIR}/${PKGSVNDIR}-svn ${SRCDIR}/${PKGSVNDIR}
+#     else
+#      svn up --accept tc ${SRCDIR}/${PKGSVNDIR}
+#    fi;
   fi;
-  find ${SRCDIR}/${PKGSVNDIR} -name configure -or -name Makefile.in |awk '{printf "touch %s\n",$1}' |sh
+
+  if [ -x /usr/bin/find ] || [ -x /bin/find ];then
+    find ${SRCDIR}/${PKGITDIR} -name configure -or -name Makefile.in -or -regex '.*\.info$' |awk '{printf "touch %s\n",$1}' |sh
+   else
+    touch configure Makefile.in */Makefile.in
+  fi;
 }
 
 check_package() {
-  #Help out on bad project XXXX SVN check/fetch
+  #Help out on bad project XXXX GIT check/fetch
   if [ ! -e ${DEFDIR}/${1} ];then
     (cat <<EOF
 
@@ -730,6 +732,7 @@ build_project() {
   eval ${AVER}=""
 
   #For null config i need this set up early
+  export ACLOCAL_PATH=/usr/share/aclocal:/usr/share/xfce4/dev-tools/m4macros:./m4
   if [ "${AMVER}" ];then
     ACLOCAL=aclocal-${AMVER}
     AUTOMAKE=automake-${AMVER}
@@ -738,7 +741,17 @@ build_project() {
     AUTOMAKE=automake-${AMDEF}
   fi;
   export ACLOCAL AUTOMAKE
-  svn_load_pkg ${PROJECT} ${PROJECT}${VERSEP}${VERSION}
+  if [ ! "${GITREPO}" ];then
+    export GITREPO=${PROJECT}
+  fi;
+  if [ ! "${GITBRANCH}" ];then
+    export GITBRANCH="distrotech-${GITREPO}${VERSEP}${VERSION}";
+  fi
+  if [ ${PROJECT} != "Xorg" ];then
+    git_load_pkg ${PROJECT} ${VERSEP}${VERSION} ${GITBRANCH} ${GITREPO}
+   else
+     mkdir -p ${SRCDIR}/${PROJECT}/${PROJECT}${VERSEP}${VERSION}
+  fi;
 
   if [ "${VERSION}" ];then
     if [ -d ${SRCDIR}/${PROJECT}/${PROJECT}${VERSEP}${VERSION} ];then
@@ -786,6 +799,9 @@ build_project() {
     cd ${SRCDIR}/${PSOURCEDIR}
     TOPDIR=./
    else
+    if [ ! -d ${SRCDIR}/${PSOURCEDIR}/${CFGPTH} ];then
+      mkdir -p ${SRCDIR}/${PSOURCEDIR}/${CFGPTH}
+    fi;
     cd ${SRCDIR}/${PSOURCEDIR}/${CFGPTH}
     TOPDIR=../
   fi;
@@ -971,12 +987,12 @@ build_project() {
     export CXX="${CXX} ${CC_SYSROOT}"
     export MAKE_J
     ${SCRIPTDIR}/make_${PROJECT} ${barch} ${HOST} ${DIST_ROOT} ${CLEANOPT} || return 1
-   elif [ -e ${TOPDIR}${CFGBIN}configure ];then
+   elif [ -e ${TOPDIR}${CFGBIN}configure ] && [ "${PROJECT}" != "cmake" ];then
     if [ ! -x ${TOPDIR}${CFGBIN}configure ];then
       chmod 755 ${TOPDIR}${CFGBIN}configure
     fi;
     autoconf_cross_build ${TOPDIR} ${barch} ${HOST} || return 1;
-   elif [ -e ${TOPDIR}${CFGBIN}./cmake ] || [ -e ${TOPDIR}${CFGBIN}/CMakeLists.txt ];then
+   elif [ -e ${TOPDIR}${CFGBIN}./cmake ] || [ -e ${TOPDIR}${CFGBIN}/CMakeLists.txt ] || [ "${PROJECT}" == "cmake" ];then
     cmake_cross_build ${TOPDIR} ${barch} ${HOST} || return 1;
    elif [ -e ${TOPDIR}${CFGBIN}./Imakefile ];then
     imake_cross_build ${barch} || return 1;
@@ -1279,9 +1295,9 @@ build_glibc() {
 run_configure() {
   CONFLIBDIR=${1}
   shift;
-  CPATH=${1}
+  CONFPTH=${1}
   shift;
-  ${CPATH}/configure --libdir=/usr/${CONFLIBDIR} --prefix=${PREFIX} --sysconfdir=/etc --mandir=/usr/share/man \
+  ${CONFPTH}/configure --libdir=/usr/${CONFLIBDIR} --prefix=${PREFIX} --sysconfdir=/etc --mandir=/usr/share/man \
                --infodir=/usr/share/info --localstatedir=/var $@ || return 1
 }
 
@@ -1307,7 +1323,7 @@ build_bootstrap_binutils() {
     return 0
   fi;
 
-  svn_load_pkg binutils ${BINUTILS} || return 1
+  git_load_pkg binutils ${VERSEP}${VERSION} distrotech-${BINUTILS} binutils || return 1
   ARCHOPTV=OPT_${1}
   ARCHOPT=${!ARCHOPTV}
 
@@ -1453,7 +1469,9 @@ build_gcc_bootstrap() {
 #      CONFOPT="${CONFOPT} --with-stage1-ldflags=-L${GCCLDIR} --with-boot-ldflags=-L${GCCLDIR} CFLAGS=-B${GCCLDIR}";
 #    fi;
 #  fi;
-  svn_load_pkg gcc ${GCC}
+
+  git_load_pkg gcc ${VERSEP}${VERSION} distrotech-${GCC} gcc
+
   setup_build_dir ${1} gcc ${GCC} ${TARCH} ${SDIROPT}
 
   #Use GLIBC/Kern headers only [Virgin] / Build dir / sysroot
@@ -1571,15 +1589,16 @@ build_qemu_static() {
   fi;
   eval ${AVER}=""
   QEMU=qemu${VERSEP}${VERSION}
+  export PREFIX
 
   export PKG_CONFIG_PATH="/${NLIBDIR}/pkgconfig:/usr/${NLIBDIR}/pkgconfig:/opt/apache2/${NLIBDIR}/pkgconfig:/usr/share/${NLIBDIR}/pkgconfig:/usr/X11R7/${NLIBDIR}/pkgconfig:/lib/pkgconfig:/usr/lib/pkgconfig:/opt/qt-4/${NLIBDIR}/pkgconfig:/opt/xfce/${NLIBDIR}/pkgconfig";
   DIST_PKG=${TOOLPKG}/${NARCH}/${QEMU}-static.tar.xz
   if [ -d ${TOOLDIR}/${NARCH}/${QEMU} ] && [ -f ${DIST_PKG} ];then
     return
   fi;
-  svn_load_pkg qemu ${QEMU}
+  git_load_pkg qemu ${VERSEP}${VERSION} distrotech-${QEMU}
 
-  (svn_load_pkg qemu ${QEMU}) || return 1
+  (git_load_pkg qemu ${QEMU}) || return 1
   setup_build_dir ${NARCH} qemu ${QEMU} ${NARCH}
 
   run_configure ${NLIBDIR} .. --static --disable-system --disable-user --enable-linux-user --disable-werror \
@@ -1636,7 +1655,13 @@ build_static_tool() {
 
   echo "Building ${4}"
 
-  svn_load_pkg ${4} ${STATICTOOL} || return 0
+  if [ ! "${GITREPO}" ];then
+    export GITREPO=${4}
+  fi;
+  if [ ! "${GITBRANCH}" ];then
+    export GITBRANCH="distrotech-${STATICTOOL}";
+  fi
+  git_load_pkg ${4} ${VERSEP}${VERSION} ${GITBRANCH} ${GITREPO}
 
   if [ -d ${SRCDIR}/${4}/${STATICTOOL}/build-${1}-static ];then
     rm -rf ${SRCDIR}/${4}/${STATICTOOL}/build-${1}-static
@@ -1654,18 +1679,17 @@ build_static_tool() {
    else
     CFGPTH="";
   fi;
-  mkdir ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}/build-${1}-static 
 
   if [ "${BUILDDIR}" ] && [ "${BUILDDIR}" == "0" ];then
-    CPATH=".";
     cd ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}
-    make clean;make distclean
-  else
+    CFG_BIN=.
+   else
+    mkdir ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}/build-${1}-static 
     cd ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}/build-${1}-static
-    CPATH="..";
+    CFG_BIN=..
   fi;
 
-  run_configure ${3} ${CPATH} --build=${BUILD} --host=${2} ${STATICOPT} ${ARCHOPT} || return 0
+  run_configure ${3} ${CFG_BIN} --build=${BUILD} --host=${2} ${STATICOPT} ${ARCHOPT} || return 0
 
   if [ "${4}" == "binutils" ];then
     make ${MAKE_J} configure-host
@@ -1694,7 +1718,7 @@ build_static_tool() {
   fi;
 
   make ${MAKE_J} ${STATICMOPT} || make ${STATICMOPT} || return 0
-  make DESTDIR=${TOOLDIR}/${1}/${STATICTOOL}-static install || return 0
+  make ${STATICMOPT} DESTDIR=${TOOLDIR}/${1}/${STATICTOOL}-static install || return 0
 
   #Postinstall hook
   if [ -e ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install ];then
@@ -1709,10 +1733,10 @@ build_static_tool() {
     fi;
   fi;
 
-  (if [ "${DIETBUILD}" == "1" ];then
+  if [ "${DIETBUILD}" == "1" ];then
      cd ${SRCDIR}/${4}/${STATICTOOL}
      rm -rf build-${1}-static
-  fi;) || true
+  fi;
 
   tar_package ${TOOLDIR}/${1}/${STATICTOOL}-static ${TOOLPKG}/${1} ${STATICTOOL}-static > /dev/null 2>&1
 }
@@ -1727,7 +1751,7 @@ static_toolbuild() {
     TARGET=${BUILD}
   fi;
   for stool in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
-      pkg-config util-linux m4 cpio diffutils libtool gperf krb5 subversion binutils git;do
+      pkg-config util-linux diffutils libtool gperf m4 cpio git;do
     (build_static_tool ${1} ${TARGET} ${TLIBDIR} ${stool})
   done;
 }
@@ -1793,7 +1817,7 @@ bootstrap_arch() {
     fi;
     #GCC needs system zlib glibc can use selinux/gd
     BOOTCLEAN=distclean
-    build_packages ${arch} libtool pcre libsepol libselinux libpng expat libxml2 freetype fontconfig \
+    build_packages ${arch} libtool pcre selinux libpng expat libxml2 freetype fontconfig \
                            jpeg gd glibc tzdata gmp mpfr mpc isl cloog gcc || exit 1) || return 1;
   done;
 }
@@ -1827,7 +1851,7 @@ build_glibc_march() {
     powerpc64)(bootstrap_arch powerpc powerpc64) || return 1;
            if [ -d ${ARCHROOT}/${1} ] && [ -e ${STATDIR}/powerpc/done/glibc ] && \
               [ ! -e ${ARCHROOT}/${1}/usr/lib/libc.so ];then
-             rm /dist/status/powerpc/done/glibc
+             rm ${STATDIR}/powerpc/done/glibc
            fi;
            (build_glibc powerpc powerpc-linux-gnu) || return 1
            if [ "${1}" == "${NARCH}" ];then
@@ -1840,9 +1864,9 @@ build_glibc_march() {
 
 build_dependancies() {
   #Base dependancies
-  build_packages ${1} groff gdbm perl gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv gawk m4 \
-    bison diffutils flex attr acl pcre libsepol libselinux file gengetopt libidn libtasn1 p11-kit nettle gnutls \
-    libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap coreutils readline bash xz expat || return 1
+  build_packages ${1} groff gdbm perl gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv \
+    m4 diffutils attr acl pcre selinux file gengetopt libidn libtasn1 p11-kit nettle gnutls \
+    libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap bison flex gawk coreutils readline bash xz expat openssl wget || return 1
 
   #Dont build libxml2 if there is a python in / may not be one in /build/.../
   if [ ! -d /usr/lib/python2.7 ];then
@@ -1850,7 +1874,7 @@ build_dependancies() {
   fi;
 
   #Add required perl modules from cpan may not need libxml only expat !!!
-  for pmod in XML::Parser XML::SAX Font::TTF XML::Simple Archive::Zip Pod::Simple::Search;do
+  for pmod in XML::Parser XML::SAX Font::TTF XML::Simple Archive::Zip Pod::Simple::Search YAML Apache::TestConfig;do
     if [ ! -e ${STATDIR}/${1}/done/${pmod} ];then
       cpan -i ${pmod} && touch ${STATDIR}/${1}/done/${pmod}
     fi;
@@ -1874,16 +1898,23 @@ build_dependancies() {
   fi;
 
   build_packages ${1} util-linux nano rsync grep less gzip tar pkg-config cpio iana-etc xmlto xmltoman giflib freetype \
-    fontconfig fonttools lcms2 jpeg libpng tiff openjpeg libmng OpenSP c-ares curl git || return 1
+    fontconfig fonttools lcms2 jpeg libpng tiff libmng OpenSP c-ares curl git || return 1
 
   #This will fail due to Mesa so dont bail only do it on first pass use build_project directly
   if [ ! -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
     (CLEANOPT=distclean;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
+    if [ "${1}" == "${NARCH}" ];then
+      /sbin/ldconfig
+    fi;
   fi;
 
-  build_packages ${1} cairo gobject-introspection icu4c cmake graphite2 ragel harfbuzz pango vala libdrm intltool llvm \
-    talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript ijs kmod  module-init-tools LVM2 \
-    cryptsetup libmicrohttpd systemd Mesa glu glw mtdev fontforge freeglut pcsc-lite atk gdk-pixbuf gtk+ || return 1
+  build_packages ${1} cairo gobject-introspection icu4c cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala libdrm intltool llvm \
+    talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  module-init-tools LVM2 \
+    cryptsetup libmicrohttpd systemd Mesa glu glw glew mtdev fontforge atk gdk-pixbuf glamor || return 1
+
+  gdk-pixbuf-query-loaders --update-cache
+  pango-querymodules --update-cache
+  build_packages ${1} gtk+ freeglut pcsc-lite || return 1
 
   #Continue X Build with GL/Mesa
   if [ -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
@@ -1892,47 +1923,70 @@ build_dependancies() {
 
   if [ "${1}" == "${NARCH}" ];then
     /sbin/ldconfig
+    #install icmake on native for yodl
+    build_packages ${1} icmake || return 1
   fi;
 
-  build_packages ${1} poppler poppler-data qpdf cups-filters patch alsa-lib fastjar 
+  build_packages ${1} poppler poppler-data qpdf cups-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
+    txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib dbus-python GConf libbonobo libatomic_ops gc guile \
+    libmad Xaw3d gv rtmpdump mozjs polkit polkit-gnome yodl swig M2Crypto wireless-regdb crda|| return 1
 
   #Build openjdk on native
   if [ "${NARCH}" == "${1}" ];then
     build_packages ${1} icedtea7 || return 1
   fi;
 
-  build_packages ${1} yasm nasm fuse libunistring txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 \
-    dbus-glib dbus-python polkit GConf libbonobo gc guile libmad Xaw3d gv polkit-gnome rtmpdump swig M2Crypto crda \
-    apr apr-iconv sqlite-autoconf keyutils neon apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql \
-    postgresql apr-util httpd subversion libva gavl jasper libraw1394 orc libogg libvorbis gnome-mime-data gnome-vfs \
-    libvisual gstreamer gstreamer-1 v4l-utils audiofile esound flac libvorbis libsndfile json-c fftw \
+  build_packages ${1} apr apr-iconv sqlite-autoconf keyutils neon apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql \
+    postgresql apr-util httpd subversion libva gmerlin jasper libraw1394 orc libogg libvorbis gnome-mime-data gnome-vfs \
+    libvisual gstreamer gstreamer-1 v4l-utils audiofile esound flac libsndfile json-c fftw \
     libsamplerate speex pulseaudio SDL libdc1394 OpenCV frei0r libtheora gst-plugins-base gst-plugins-base-1 libavc1394 libiec61883 \
     faac libaacplus vo-aacenc vo-amrwbenc fribidi libass libbluray celt libcaca gsm libmodplug lame twolame libnut \
-    opencore-amr opus schroedinger utvideo openal xvidcore ptlib libcddb libcdio-cdda libcdio libcddb fltk libnfnetlink \
+    opencore-amr opus schroedinger utvideo openal xvidcore ptlib libcddb libcdio-cdda libcdio fltk libnfnetlink \
     libmnl libexif exif libnetfilter_conntrack libao libtimidity libnetfilter_cttimeout ilmbase gss librsvg iptables \
-    usbutils xavs x264 libvpx v4l-utils fdk-aac ffmpeg h323plus gnugk t38modem qt-4 py2cairo pygobject libglade pygtk \
-    autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 help2man rrdtool avahi djvulibre \
+    usbutils xavs x264 libvpx fdk-aac ffmpeg h323plus gnugk t38modem qt-4 py2cairo pygobject libglade pygtk \
+    autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 help2man rrdtool avahi djvulibre \
     libarchive cogl json-glib pciutils net-snmp sane-backends libvdpau LibVNCServer i2c-tools openexr ImageMagick \
-    libungif libiodbc tdb libcanberra libgnome-keyring pangox-compat mhash libmcrypt boost || return 1
+    libungif libiodbc tdb libcanberra libgnome-keyring pangox-compat mhash libmcrypt vim || return 1
 
-  #Libre Office
-  build_packages ${1} clucene-core libzip mdds libixion liborcus
+  #Core Utilities
+  build_packages ${1} arptables autofs cdrtools cifs-utils dialog dosfstools e2fsprogs ebtables ethtool gptfdisk htop \
+    inetutils iproute2 ipsec-tools ipvsadm iw grub lesspipe linux_logo lm_sensors lsof lynx lzo mgetty minicom mktemp mtools \
+    net-tools newt nfs4-acl-tools libnfsidmap nfs-utils ntfs-3g ntp openssh parted procinfo-ng procps psmisc squashfs \
+    strace sudo sysfsutils sysklogd sysvinit tcpdump tftp-hpa unrar uudeview usbhid-dump vlan watchdog wireless_tools \
+    xorriso apg archivemount bc bindfs bsd-finger cdde dcron dmraid ecryptfs-utils ed fbset fdutils fetchmail \
+    foomatic-filters globe hdparm hfsutils joe logcheck logrotate mailutils libpipeline man-db man-pages mdadm mrouted \
+    mcelog mt-st p7zip phoon pimd procmail quagga quota-tools radvd rp-pppoe screen sdparm setserial sharutils \
+    usb-modeswitch usb-modeswitch-data xterm Pyrex bzr cdrdao bash-completion libgusb colord cvs dash dcd dmake faad2 frox \
+    gaa gdb gpm igmpproxy iksemel imap ippool ipv6calc kbd keepalived lksctp-tools libid3tag madplay man2html mercurial \
+    mrtg nmap openl2tp freeradius-server freeradius-client memcached libmemcached opensips openvpn pine psqlodbc rpcbind \
+    sendmail sox sqliteodbc stund hostapd wpa_supplicant libnetfilter_cthelper libnetfilter_queue conntrack-tools \
+    libnetfilter_acct libnetfilter_log nfacct ulogd mpg123 || return 1
+
+  build_packages ${1} gnustep-make gnustep-base SOPE acpid bind clamav coova-chilli dhcp dovecot freetds hylafax mcrypt mm  \
+    nss-mdns nss_ldap pam_ldap proftpd radius samba sipsak squid squidGuard tnef webalizer wine libdvdcss libdvdread \
+    libdvdnav MPlayer clucene-core libzip mdds boost libixion liborcus || return 1
 
   #XFCE
-  build_packages ${1} gnome-common glade3 libnotify startup-notification libwnck py2cairo pygobject vte gnome-keyring \
-    gnome-desktop libopenraw iso-codes libxklavier libxfce4util xfconf libxfce4ui garcon exo xfce4-panel Thunar xfce4-settings \
-    xfce4-session xfwm4 xfdesktop xfce4-appfinder  gtk-xfce-engine Terminal thunar-volman xfce4-taskmanager xpdf \
-    icon-naming-utils gnome-icon-theme shared-mime-info eog aterm file-roller libgsf wv hunspell enchant abiword \
-    gcalctool gucharmap leafpad ffmpegthumbnailer tumbler || return 1
-#    gtkspell'
+#Thunar xfce4-settings xfce4-session xfwm4 xfdesktop xfce4-appfinder gtk-xfce-engine Terminal thunar-volman xfce4-taskmanager 
+#file-roller needs autogen doc dropping
+  build_packages ${1} gnome-common glade libnotify startup-notification shared-mime-info libwnck vte gnome-keyring \
+    gnome-desktop libopenraw iso-codes libxkbfile libxklavier xfce4-dev-tools libxfce4util xfconf libxfce4ui \
+    garcon exo xfce4-panel \
+    xpdf icon-naming-utils gnome-icon-theme eog aterm file-roller libgsf \
+    wv hunspell enchant abiword libart libgnome libgnomecanvas libbonoboui libgnomeui gcalctool gucharmap leafpad \
+    ffmpegthumbnailer tumbler glib-networking libsoup gsettings-desktop-schemas alsa-oss alsa-plugins alsa-tools \
+    alsa-utils TiMidity calamaris dirac ruby netatalk mod_perl mod_python nut omniORB dtc qemu asciidoc || return 1
+#    gtkspell openr2 dblatex
+
+  if [ -x /usr/bin/gmcs ];then
+    build_packages ${1} mono || return 1
+  fi;
 
   #Linphone
-  build_packages ${1} ortp spandsp mediastreamer bcg729 msamr libilbc msilbc msx264 mssilk libosip2 libeXosip2 \
-  glib-networking libsoup linphone || return 1
-#    gsettings-desktop-schemas 
+  build_packages ${1} oRTP spandsp mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk libosip2 exosip linphone || return 1
 
   #Evolution/Epiphany
-  build_packages ${1} libgdata libical libgweather libpst geoclue libsecret libwebp gtkimageview gtkhtml libunique \
+  build_packages ${1} libgdata libgweather libpst geoclue libsecret libical libwebp gtkhtml gtkimageview libunique \
     evolution-data-server clutter clutter-gtk evolution webkitgtk epiphany || return 1
 
 #XXX
@@ -1947,8 +2001,11 @@ build_dependancies() {
   #Shared GCC C/C++/ADA distributable
   (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
 
+
   #Build tools needed for compiling
   static_toolbuild ${1} ${2}
+
+return 1
 }
 
 sync_ml_libs() {
@@ -1990,8 +2047,8 @@ bootstrap_native() {
   fi;
 
   #Bootstrap native arch buildtools
-  build_packages ${NARCH} binutils groff findutils gdbm perl autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 \
-    help2man zlib gmp gengetopt libidn libtasn1 p11-kit flex || return 1
+  build_packages ${NARCH} binutils groff gdbm perl help2man findutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 \
+    automake-1.14 help2man zlib gmp gengetopt libidn libtasn1 libffi p11-kit || return 1
 
   #build shared gcc to get shared libstdc++/libada/libgcc [C/C++/ADA]
   if [ ! -e /usr/${NLIBDIR}/libstdc++.so ];then
@@ -2004,7 +2061,7 @@ bootstrap_native() {
         rm ${STATDIR}/${NARCH}/done/${delstamp}
       fi;
     done;
-    if [ -e /usr/${NLIBDIR}/libgmp.a ];then
+   if [ -e /usr/${NLIBDIR}/libgmp.a ];then
       rm /usr/${NLIBDIR}/libgmp.a
     fi;
     if [ -e ${ARCHROOT}/${NARCH}/usr/${NLIBDIR}/libgmp.a ];then
@@ -2012,25 +2069,25 @@ bootstrap_native() {
     fi;
   fi;
 
-  build_packages ${NARCH} nettle gnutls libgpg-error libgcrypt libprelude pcre libsepol \
-    libselinux portablexdr libtirpc Linux-PAM  ||return 1
+  build_packages ${NARCH} nettle ncursesw ncurses gettext texinfo gnutls libgpg-error libgcrypt pcre ustr \
+    flex bison libprelude bzip2 selinux portablexdr libtirpc Linux-PAM  ||return 1
 
   #Bootstrap native arch with deps for GCC [libjava] if gcc not built
   if [ ! -e ${STATDIR}/${NARCH}/done/unzip ];then
-    build_packages ${NARCH} xz libxml2 gettext libxslt libffi gdbm Python libcap libcap-ng patch docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
+    build_packages ${NARCH} xz libxml2 libxslt libffi gdbm Python libcap libcap-ng patch docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
       docbook-4.5 docbook-xsl xmlto OpenSP openjade expat dbus glib pkg-config gtk-doc libcroco zip unzip || return 1
   fi;
 
   #Rebuild some packages with python/shared gcc
   if [ ! -e ${STATDIR}/${NARCH}/done/gcc ];then
-    for delstamp in glibc libxml2 libxslt;do
+    for delstamp in glibc libxml2 libxslt texinfo selinux;do
       if [ -e ${STATDIR}/${NARCH}/done/${delstamp} ];then
         rm ${STATDIR}/${NARCH}/done/${delstamp}
       fi;
-    done;
+    done; 
   fi;
   (BOOTCLEAN=distclean;build_packages ${NARCH} libtool gmp mpfr mpc isl cloog) || return 1
-
+ 
   #Build multi arch stack for native
   (build_glibc_march ${NARCH}) || return 1
 }
@@ -2145,11 +2202,11 @@ buildall_arch() {
   done;
 }
 
-if [ ! -d /dist/def ] || [ ! -d /dist/scripts ];then
-  svn co ${SVNBASE}/buildscripts/trunk/ /dist/
+if [ ! -d ${DEFDIR} ] || [ ! -d ${DISTDIR}/scripts ];then
+  git clone ${GITURL}/buildscripts.git ${DISTDIR}/
 fi;
 
-#XXX find packages smarter use svn
+#XXX find packages smarter use git
 for pkg in binutils gcc glibc qemu;do
   if [ ! -e ${DEFDIR}/${pkg} ];then
     echo "Missing cross build definitions requires binutils gcc glibc";
@@ -2187,7 +2244,7 @@ for barch in ${ARCHLIST};do
   #ensure the tool chain is in place
   bootstrap_toolchain ${barch} || continue;
 
-  #Build multiple packages XXX add svn bits
+  #Build multiple packages XXX add git bits
   if (( $# > 1 ));then
     for bproject in $@;do
       if check_package ${bproject};then

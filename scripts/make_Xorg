@@ -15,6 +15,13 @@ sync_fin() {
   if [ ! -d ${1}/${PREFIX} ];then
     mkdir -p ${1}/${PREFIX}
   fi;
+
+  #LD Cache
+  if [ ! -d ${3}/etc/ld.so.conf.d ];then
+    mkdir -p ${3}/etc/ld.so.conf.d
+  fi;
+  echo "/usr/X11R7/${B_LIBDIRS}" > ${3}/etc/ld.so.conf.d/xwin.conf
+
   rsync -avP ${DESTDIR}${PREFIX}/ ${1}/${PREFIX}/
 
   #Clean up failed pkg
@@ -65,8 +72,8 @@ fi;
     echo ${pkg};
   fi;
 done) > tobuild.tmp
-cp tobuild.tmp tobuild
-touch tobuild
+#cp tobuild.tmp tobuild
+#touch tobuild
 
 if [ "${NARCH}" == "x86_64" ];then
   case ${1} in
@@ -90,12 +97,5 @@ export LDFLAGS_FOR_BUILD=-L.
 export MANCONF="/etc/man.conf";
 
 ./util/modular/build.sh --clone --modfile ./tobuild ${PREFIX} || sync_fin ${3} 1
-
-#LD Config
-mkdir -p ${3}/etc/ld.so.conf.d
-echo "/usr/X11R7/${B_LIBDIRS}" > ${3}/etc/ld.so.conf.d/xwin.conf
-if [ "${1}" == "${NARCH}" ];then
-  /sbin/ldconfig
-fi;
 
 sync_fin ${3} 0

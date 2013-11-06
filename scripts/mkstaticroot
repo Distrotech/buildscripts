@@ -68,7 +68,7 @@ for sysdir in proc sys dev root tmp usr/src dist etc/xml;do
   mkdir -p ${STATICROOT}/${sysdir}
 done;
 
-cp /etc/passwd /etc/group ${STATICROOT}/etc
+cp /etc/passwd /etc/group /etc/hosts ${STATICROOT}/etc
 if [ -x /usr/bin/xmlcatalog ];then
   xmlcatalog --noout --create ${STATICROOT}/etc/xml/docbook.xml
   xmlcatalog --noout --create ${STATICROOT}/etc/xml/docbook-xsl.xml
