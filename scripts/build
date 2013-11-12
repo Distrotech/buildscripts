@@ -1,4 +1,4 @@
-3#!/bin/bash
+#!/bin/bash
 
 GITIP=[2002:29dd:626::1]
 GITBASE=git://${GITIP}
@@ -2101,7 +2101,7 @@ bootstrap_native() {
 
   #Bootstrap native arch buildtools
   build_packages ${NARCH} binutils groff gdbm perl help2man findutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 \
-    automake-1.14 help2man zlib gmp gengetopt libidn libtasn1 libffi p11-kit || return 1
+    automake-1.14 help2man zlib libtool gmp gengetopt libidn libtasn1 libffi || return 1
 
   #build shared gcc to get shared libstdc++/libada/libgcc [C/C++/ADA]
   if [ ! -e /usr/${NLIBDIR}/libstdc++.so ];then
@@ -2124,7 +2124,7 @@ bootstrap_native() {
     rm ${STATDIR}/${NARCH}/done/gmp
   fi;
 
-  build_packages ${NARCH} gmp nettle ncursesw ncurses gettext texinfo gnutls libgpg-error libgcrypt pcre ustr \
+  build_packages ${NARCH} gmp ncursesw ncurses gettext p11-kit nettle texinfo gnutls libgpg-error libgcrypt pcre ustr \
     flex bison libprelude bzip2 selinux portablexdr libtirpc Linux-PAM  ||return 1
 
   #Bootstrap native arch with deps for GCC [libjava] if gcc not built
