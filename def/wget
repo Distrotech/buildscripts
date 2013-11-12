@@ -1,4 +1,4 @@
-VERSION="1.14"
+VERSION="1.14a"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-ssl=openssl ac_cv_libssl=yes";

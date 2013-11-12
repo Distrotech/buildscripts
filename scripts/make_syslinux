@@ -8,4 +8,8 @@ if [ "${4}" ];then
   make ${4}
 fi;
 
-make BUILD_CC="${CC}" CC="/usr/bin/gcc -m32 --sysroot=/" LD=/usr/bin/ld  INSTALLROOT=${3} all install
+make BUILD_CC="${CC}" CC="/usr/bin/gcc -m32 --sysroot=/build/i686 -I=/include" LD="/usr/bin/ld -L=/${B_LIBDIRS}" all
+make BUILD_CC="${CC}" CC="/usr/bin/gcc -m32 --sysroot=/build/i686 -I=/include" LD="/usr/bin/ld -L=/${B_LIBDIRS}" INSTALLROOT=${3} install
+
+#make all
+#make INSTALLROOT=${3} install

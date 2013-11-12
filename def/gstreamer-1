@@ -1,4 +1,4 @@
-VERSION="1.0.7"
+VERSION="1.0.9"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-shared";
@@ -9,5 +9,3 @@ CLEARFLAGS="1";
 EXTRALIBS="-lm -lz -llzma";
 ALIAS="gstreamer";
 OPT_arm="--enable-introspection=no";
-GITBRANCH="distrotech-gstreamer1";
-

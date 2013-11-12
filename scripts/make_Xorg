@@ -22,20 +22,18 @@ sync_fin() {
   fi;
   echo "/usr/X11R7/${B_LIBDIRS}" > ${3}/etc/ld.so.conf.d/xwin.conf
 
-  rsync -avP ${DESTDIR}${PREFIX}/ ${1}/${PREFIX}/
+  rsync -a ${DESTDIR}${PREFIX}/ ${1}/${PREFIX}/
 
   #Clean up failed pkg
   if [ "${2}" ] && [ "${2}" == "1" ];then
-    clean="";
-    for pkg in `./util/modular/build.sh -L`;do
-      if [ ! -e ${pkg}/config.log ] || [ ! -e tobuild ] || [ ./tobuild -nt ${pkg}/config.log ];then
-        clean=${pkg};
+    for pkgfail in `awk -F: '$1 == "FAIL" {printf "%s\n",substr($2,2)}' ${1}.done`;do
+      if [ -e ${pkgfail}/Makefile ];then
+        make -C ${pkgfail} clean distclean
       fi;
-    done
-    if [ "${clean}" ];then
-      make -C ${clean} clean distclean
-      rm ${clean}/config.log
-    fi;
+      if [ -e ${pkgfail}/config.log ];then
+        rm ${pkgfail}/config.log
+      fi;
+    done;
   fi;
 
   exit ${2}
@@ -63,17 +61,14 @@ if [ ! -d ./util/modular ];then
 fi;
 
 if [ "${4}" ];then
-  ./util/modular/build.sh -L |awk '{printf "make -C %s distclean\n",$1}' |sh
-  rm tobuild
+  ./util/modular/build.sh -L |awk '{printf "if [ -e %s/Makefile ];then make -C %s distclean;fi\n",$1, $1}' |sh
+  rm ${1}.tobuild
+#${1}.done
 fi;
 
 (for pkg in `./util/modular/build.sh -L |grep -vE "(^driver/xf86-video-newport)|(^driver/xf86-video-sis)|(^mesa)${FILTER}"`;do
-  if [ ! -e ${pkg}/config.log ] || [ ! -e tobuild ] || [ ./tobuild -nt ${pkg}/config.log ];then
-    echo ${pkg};
-  fi;
-done) > tobuild.tmp
-#cp tobuild.tmp tobuild
-#touch tobuild
+  echo ${pkg};
+done) > ${1}.tobuild
 
 if [ "${NARCH}" == "x86_64" ];then
   case ${1} in
@@ -96,6 +91,6 @@ export CFLAGS_FOR_BUILD=-I.
 export LDFLAGS_FOR_BUILD=-L.
 export MANCONF="/etc/man.conf";
 
-./util/modular/build.sh --clone --modfile ./tobuild ${PREFIX} || sync_fin ${3} 1
+./util/modular/build.sh --clone --autoresume ./${1}.done --modfile ./${1}.tobuild ${PREFIX} || sync_fin ${3} 1
 
 sync_fin ${3} 0

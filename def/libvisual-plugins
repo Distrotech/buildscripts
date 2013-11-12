@@ -1,8 +1,9 @@
-VERSION="0.4.0"
+VERSION="0.5.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-ADDCFLAG="-I=/usr/include/cairo -I=/usr/include/libvisual-0.4 -I=/usr/include/pango-1.0
-          -I=/usr/include/gdk-pixbuf-2.0";
-AMVER="1.9";
+CFGPTH="libvisual-plugins";
+CFGBIN="libvisual-plugins/";
+AMVER="1.14";
+ALIAS="libvisual";

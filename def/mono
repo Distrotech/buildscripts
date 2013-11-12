@@ -1,7 +1,8 @@
-VERSION="3.0.12"
+VERSION="3.2.4"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-tls mono_cv_clang=no mono_cv_uscore=no --with-sigaltstack=yes";
+CONFOPT="";
+XCONFOPT="--with-tls mono_cv_clang=no mono_cv_uscore=no --with-sigaltstack=yes";
 OPT_arm="CFLAGS=-DARM_FPU_NONE";
 NOCCOPT="1";
 ADDCC="0";

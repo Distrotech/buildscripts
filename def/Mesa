@@ -3,17 +3,14 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-pic";
 BUILDDIR="0";
-OPT_arm="--enable-shared=yes --enable-static=no --with-dri-drivers=nouveau,r200,radeon,swrast";
-OPT_mips="--enable-shared=yes --enable-static=no --with-dri-drivers=nouveau,r200,radeon,swrast";
-OPT_mips64="--enable-shared=yes --enable-static=no --with-dri-drivers=nouveau,r200,radeon,swrast";
-OPT_powerpc="--enable-shared=yes --enable-static=no --with-dri-drivers=nouveau,r200,radeon,swrast";
-OPT_powerpc64="--enable-shared=yes --enable-static=no --with-dri-drivers=nouveau,r200,radeon,swrast";
-OPT_x86_32="--enable-shared=yes --enable-static=no";
-OPT_x86_64="--enable-shared=yes --disable-static";
+OPT_arm="--with-dri-drivers=nouveau,r200,radeon,swrast";
+OPT_mips="--with-dri-drivers=nouveau,r200,radeon,swrast";
+OPT_mips64="--with-dri-drivers=nouveau,r200,radeon,swrast";
+OPT_powerpc="--with-dri-drivers=nouveau,r200,radeon,swrast";
+OPT_powerpc64="--with-dri-drivers=nouveau,r200,radeon,swrast";
 ADDCC="0";
 ADDCFLAG="-I=/usr/include/libdrm -fPIC";
 ADDLDFLAG="-L/usr/src/Mesa/Mesa-${VERSION}/lib";
 MAKEOPTS="HOSTCC_LDFLAGS=-L/usr/${NLIBDIR}"
 LDISCC="1";
 EXTRALIBS="-lstdc++";
-GITBRANCH="mesa-9.2.2"

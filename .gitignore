@@ -1,3 +1,5 @@
-pkg
-root
-status
+/pkg
+/root
+/status
+/build
+/cross

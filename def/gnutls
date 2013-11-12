@@ -1,4 +1,4 @@
-VERSION="3.1.5"
+VERSION="3.2.6"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-rpath";
@@ -13,3 +13,5 @@ OPT_x86_64="--with-libnettle-prefix=/build/x86_64/usr/";
 OPT_x86_32="--with-libnettle-prefix=/build/x86_32/usr/";
 ADDWITHSYSROOT="1";
 ADDCFLAG="-I=/usr/include/p11-kit-1 -I=/usr/include/guile/2.0";
+BUILDDIR="0";
+AMVER="1.12";

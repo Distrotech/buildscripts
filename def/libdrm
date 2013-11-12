@@ -1,7 +1,6 @@
-VERSION="2.4.47"
+VERSION="2.4.46"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-I=/usr/include/cairo";
 AMVER="1.13";
-GITBRANCH="2.4.47";

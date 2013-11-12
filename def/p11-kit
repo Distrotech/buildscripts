@@ -1,5 +1,4 @@
 VERSION="0.20.1"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--disable-rpath --without-trust-paths";
-GITBRANCH="0.20.1";
+CONFOPT="--disable-rpath --without-trust-paths --without-libffi";

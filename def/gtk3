@@ -1,0 +1,6 @@
+VERSION="3.10.3"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-gtk2-dependency --enable-broadway-backend --enable-x11-backend";
+GITREPO="gtk";
+AMVER="1.14";

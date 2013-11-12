@@ -2,3 +2,5 @@ VERSION="1.12.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+CFGPTH="cppunit";
+CFGBIN="cppunit/";

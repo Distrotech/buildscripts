@@ -1,6 +1,7 @@
 VERSION="1.8.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-webkit1 --disable-webkit2 --with-gtk=2.0";
+CONFOPT="";
 GITBRANCH="master";
 BUILDDIR="0";
+AMVER="1.14";

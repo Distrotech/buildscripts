@@ -3,4 +3,4 @@ VERSEP=".";
 PREFIX="/usr";
 CONFOPT="";
 GITREPO="automake";
-GITBRANCH="v1.14";
+GITBRANCH="distrotech-automake-1.14.0";

@@ -1,0 +1,5 @@
+VERSION="0.34.9"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+GITREPO="vte";

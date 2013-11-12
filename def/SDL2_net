@@ -1,0 +1,5 @@
+VERSION="2.0.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ALIAS="SDL_net";

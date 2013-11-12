@@ -1,0 +1,7 @@
+VERSION="20131111"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+NOCCOPT="1";
+BUILDDIR="0";
+ADDCFLAG="-fpermissive";

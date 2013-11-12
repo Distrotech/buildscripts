@@ -2,3 +2,4 @@ VERSION="trunk"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-framework-install";
+GITBRANCH="master";

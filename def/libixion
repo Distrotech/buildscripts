@@ -1,7 +1,7 @@
-VERSION="git"
+VERSION="0.5"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 EXTRALIBS="-lboost_system";
-AMVER="1.12";
+AMVER="1.11";

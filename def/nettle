@@ -1,6 +1,5 @@
-VERSION="2.5"
+VERSION="2.7.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-GITBRANCH="master";

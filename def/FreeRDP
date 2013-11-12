@@ -1,4 +1,4 @@
-VERSION="stable-1.0"
+VERSION="1.0.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="-DXINERAMA_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libXinerama.so

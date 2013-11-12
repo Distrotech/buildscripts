@@ -1,4 +1,4 @@
-VERSION="7.6";
+VERSION="7.6.1";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-werror";

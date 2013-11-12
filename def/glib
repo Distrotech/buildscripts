@@ -1,4 +1,4 @@
-VERSION="2.39.0"
+VERSION="2.38.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-static --enable-shared --disable-libelf";

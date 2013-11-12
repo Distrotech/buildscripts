@@ -1,4 +1,4 @@
-VERSION="0.22.4"
+VERSION="0.24.3"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-xpdf-headers --enable-libcurl --enable-zlib --enable-introspection=no";

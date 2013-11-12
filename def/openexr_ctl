@@ -1,0 +1,8 @@
+VERSION="1.0.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ALIAS="CTL";
+CFGPTH="OpenEXR_CTL";
+CFGBIN="OpenEXR_CTL/";
+

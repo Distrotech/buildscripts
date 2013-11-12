@@ -1,4 +1,4 @@
-VERSION="2.02.98";
+VERSION="2.02.99";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-pkgconfig --enable-applib --enable-cmdlib --enable-static_link --enable-dmeventd";

@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 GITBRANCH="master";
+AMVER="1.14";

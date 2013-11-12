@@ -4,4 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 EXTRALIBS="-ldl";
 STATICMOPT="LDFLAGS=-static LIBSIGSEGV=-lsigsegv";
-NONULLCONF="1";
+BUILDDIR="0";

@@ -3,6 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-AMVER="1.9";
+AMVER="1.14";
 CFGPTH="libvisual";
 CFGBIN="libvisual/";

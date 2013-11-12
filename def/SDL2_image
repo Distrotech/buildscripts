@@ -1,0 +1,6 @@
+VERSION="2.0.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ALIAS="SDL_image";
+AMVER="1.14";

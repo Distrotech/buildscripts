@@ -1,4 +1,5 @@
-VERSION="git"
+VERSION="0.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+GITBRANCH="master";

@@ -1,4 +1,4 @@
-VERSION="5.3.21"
+VERSION="5.4.20"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-static=no --with-config-file-path=/etc/php --with-openssl=shared --enable-dbase=shared

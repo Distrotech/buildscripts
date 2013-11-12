@@ -11,5 +11,5 @@ SYSROOTFIXUP="1";
 NOCCOPT="1";
 STDCSTATIC="--disable-shared LDFLAGS=-static";
 DONTBUILD="arm64";
-GITBRANCH="rel-5.1.3";
 GITREPO="gmp-5.1";
+GITBRANCH="distrotech-gmp-5.1.3";

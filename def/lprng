@@ -1,4 +1,4 @@
-VERSION="3.8.B"
+VERSION="3.8.C"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-shared --with-openssl --with-ssl_ca_file=/etc/ipsec.d/cacerts/cacert.pem --with-ssl_ca_key=/etc/openssl/private/cakey.pem 
