@@ -1,7 +1,7 @@
-VERSION="2.4.7"
+VERSION="2.4.6.2"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="-DWITH_FFMPEG:BOOL=OFF";
+CONFOPT="-DWITH_FFMPEG:BOOL=OFF -DWITH_GTK:BOOL=OFF";
 BUILDDIR="1";
 ADDCFLAG="-I=/usr/include/gstreamer-0.10 -I=/usr/include/python2.7";
 FIXUPLIB="1";
