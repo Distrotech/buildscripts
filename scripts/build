@@ -1,7 +1,7 @@
 #!/bin/bash
 
 GITIP=192.30.252.130
-GITBASE=git://${GITIP}
+GITBASE=git://${GITIP}/Distrotech
 
 XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /usr/share/docbook2X/xslt/catalog.xml'
 LANG=en_ZA.UTF8
@@ -191,6 +191,10 @@ check_create_arch() {
       mkdir -p ${ARCHROOT}/${1}/${incdir}
     fi;
   done;
+
+  if [ ! -d ${ARCHROOT}/${1}/usr/lib/glib-2.0/include ];then
+    mkdir -p ${ARCHROOT}/${1}/usr/lib/glib-2.0/include
+  fi;
 
   if [ "${1}" != "${NARCH}" ] || [ -d ${ARCHROOT}/${1} ];then
     if [ ! -d ${ARCHROOT}/${1}/etc ];then
@@ -1000,12 +1004,11 @@ build_project() {
   fi;
   mkdir -p ${DIST_ROOT}
 
-  export LDFLAGS CPPFLAGS CXXFLAGS CFLAGS
+  export LDFLAGS CPPFLAGS CXXFLAGS CFLAGS MAKE_J
 
   if [ -x ${SCRIPTDIR}/make_${PROJECT} ];then
     export CC="${CC} ${CC_SYSROOT}"
     export CXX="${CXX} ${CC_SYSROOT}"
-    export MAKE_J
     ${SCRIPTDIR}/make_${PROJECT} ${barch} ${HOST} ${DIST_ROOT} ${CLEANOPT} || return 1
    elif [ -e ${TOPDIR}${CFGBIN}configure ] && [ "${PROJECT}" != "cmake" ];then
     if [ ! -x ${TOPDIR}${CFGBIN}configure ];then
@@ -1834,10 +1837,11 @@ bootstrap_arch() {
         ;;
       esac;
     fi;
+
     #GCC needs system zlib glibc can use selinux/gd
     BOOTCLEAN=distclean
     build_packages ${arch} libtool pcre ustr bzip2 libaudit selinux libpng expat libxml2 freetype fontconfig \
-      jpeg gd glibc tzdata gmp mpfr mpc isl cloog gcc ncurses ncursesw slang nettle libtasn1 \
+      jpeg tiff gd glibc tzdata gmp mpfr mpc isl cloog gcc ncurses ncursesw slang nettle libtasn1 \
       libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude libtirpc flex Linux-PAM \
       util-linux || exit 1) || return 1;
 
@@ -1931,23 +1935,39 @@ build_dependancies() {
     fi;
   fi;
 
-  build_packages ${1} cairo gobject-introspection icu4c cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala libdrm intltool llvm \
-    talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  module-init-tools LVM2 \
-    cryptsetup libmicrohttpd systemd Mesa glu glw glew mtdev fontforge atk gdk-pixbuf libssh foomatic-filters || return 1
+  build_packages ${1} cairo gobject-introspection icu4c cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala \
+    libdrm intltool llvm talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
+    module-init-tools LVM2 cryptsetup libmicrohttpd systemd Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh || return 1
 
   gdk-pixbuf-query-loaders --update-cache
   pango-querymodules --update-cache
   build_packages ${1} gtk+ freeglut pcsc-lite || return 1
 
   #GTK3
-  build_packages ${1} wayland libxkbcommon at-spi2-core at-spi2-atk gtk3 || return 1
+  build_packages ${1} wayland libxkbcommon at-spi2-core at-spi2-atk || return 1
+
+  #we need gdk-pixbuf/librsvg built with gtk3 to build gtk33 bootstrap it [dont build demos/tests/examples on 1st pass]
+  if [ ! -d /usr/${B_LIBDIRS}/gtk-3.0 ] && [ "${1}" == "${NARCH}" ];then
+    build_packages ${1} gtk3 || return 1
+    to_redo="gdk-pixbuf librsvg gtk3";
+    for redo in ${to_redo};do
+      rm ${STATDIR}/${1}/done/${redo}
+    done
+    build_packages ${1} ${to_redo} || return 1
+   else
+    build_packages ${1} gtk3 || return 1
+  fi;
+
 
   gtk-query-immodules-3.0 --update-cache
   glib-compile-schemas /usr/share/glib-2.0/schemas
 
   #Continue X Build with GL/Mesa
-  if [ -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/glamor ];then
-    (unset CLEANOPT;build_project Xorg ${1};build_project glamor ${1})
+  if [ -e ${STATDIR}/${1}/fail/Xorg ];then
+    if [ ! -e ${STATDIR}/${1}/done/glamor ];then
+      (unset CLEANOPT;build_project Xorg ${1})
+      (build_project glamor ${1}) || return 1
+    fi;
     (unset CLEANOPT;build_project Xorg ${1}) || return 1
   fi;
 
@@ -1957,8 +1977,8 @@ build_dependancies() {
     build_packages ${1} icmake || return 1
   fi;
 
-  build_packages ${1} glamor poppler poppler-data qpdf cups-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
-    txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib dbus-python GConf libbonobo libatomic_ops gc guile \
+  build_packages ${1} glamor Xorg poppler poppler-data qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
+    txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib dbus-python GConf libbonobo libatomic_ops gc guile guile-2.1 autogen \
     libmad Xaw3d gv rtmpdump mozjs polkit polkit-gnome yodl swig M2Crypto wireless-regdb crda|| return 1
 
   #Build openjdk on native
@@ -1972,7 +1992,7 @@ build_dependancies() {
     libsamplerate speex pulseaudio SDL SDL2 libdc1394 OpenCV frei0r libtheora gst-plugins-base gst-plugins-base-1 libavc1394 libiec61883 \
     faac libaacplus vo-aacenc vo-amrwbenc fribidi libass libbluray celt libcaca gsm modplug lame twolame libnut \
     opencore-amr opus schroedinger utvideo openal xvidcore ptlib libcddb libcdio-cdda libcdio fltk libnfnetlink \
-    libmnl libexif exif libnetfilter_conntrack libao libtimidity libnetfilter_cttimeout ilmbase gss librsvg iptables \
+    libmnl libexif exif libnetfilter_conntrack libao libtimidity libnetfilter_cttimeout ilmbase gss iptables \
     usbutils xavs x264 libvpx fdk-aac libmpeg2 a52dec ffmpeg h323plus gnugk t38modem qt-4 py2cairo pygobject libglade pygtk \
     autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 help2man rrdtool avahi djvulibre \
     libarchive cogl json-glib pciutils net-snmp sane-backends libvdpau LibVNCServer i2c-tools openexr ImageMagick \
