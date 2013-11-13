@@ -1,0 +1,4 @@
+VERSION="3.3"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="-DCLANG_PATH_TO_LLVM_BUILD:PATH=/usr/src/llvm/llvm-${VERSION}/build-${barch} -DCLANG_PATH_TO_LLVM_SOURCE:PATH=/usr/src/llvm/llvm-${VERSION}";
