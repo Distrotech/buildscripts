@@ -1,0 +1,5 @@
+VERSION="2.3.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--without-python";
+AMVER="1.14";
