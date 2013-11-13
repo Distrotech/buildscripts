@@ -22,7 +22,9 @@ sync_fin() {
   fi;
   echo "/usr/X11R7/${B_LIBDIRS}" > ${3}/etc/ld.so.conf.d/xwin.conf
 
-  rsync -a ${DESTDIR}${PREFIX}/ ${1}/${PREFIX}/
+  if [ "${NARCH}" == "${BARCH}" ];then
+    rsync -a ${DESTDIR}${PREFIX}/ /${PREFIX}/
+  fi;
 
   #Clean up failed pkg
   if [ "${2}" ] && [ "${2}" == "1" ];then
@@ -41,13 +43,10 @@ sync_fin() {
 
 NARCH=`uname -m`
 
+export BARCH=${1}
 export PREFIX=/usr/X11R7
-if [ "${1}" == "${NARCH}" ] && [ ! -d /build/${1} ];then
-  DESTDIR=/
- else
-  DESTDIR=/build/${1}/
-fi;
-export DESTDIR PKG_CONFIG_PATH
+export DESTDIR=/build/${1}
+export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:${DESTDIR}${PREFIX}/${B_LIBDIRS}/pkgconfig
 export DPATH=${DESTDIR}${PREFIX}
 export MAKEFLAGS=${MAKE_J}
 
@@ -62,8 +61,8 @@ fi;
 
 if [ "${4}" ];then
   ./util/modular/build.sh -L |awk '{printf "if [ -e %s/Makefile ];then make -C %s distclean;fi\n",$1, $1}' |sh
-  rm ${1}.tobuild
-#${1}.done
+  rm ${1}.tobuild ${1}.done
+  touch ${1}.done
 fi;
 
 (for pkg in `./util/modular/build.sh -L |grep -vE "(^driver/xf86-video-newport)|(^driver/xf86-video-sis)|(^mesa)${FILTER}"`;do
@@ -94,3 +93,4 @@ export MANCONF="/etc/man.conf";
 ./util/modular/build.sh --clone --autoresume ./${1}.done --modfile ./${1}.tobuild ${PREFIX} || sync_fin ${3} 1
 
 sync_fin ${3} 0
+
