@@ -1,9 +1,8 @@
 VERSION="2.30.1"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-x11 enable_gio_sniffing=yes";
+XCONFOPT="--with-x11 enable_gio_sniffing=yes";
 ADDCC="0";
-CLEARLAGS="1";
 NOCCOPT="1";
 AMVER="1.13";
 CLEARFLAGS="1";

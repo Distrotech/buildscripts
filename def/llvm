@@ -1,4 +1,4 @@
-VERSION="3.2.src"
+VERSION="3.3"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-jit --enable-shared ac_cv_lib_dld_dld_link=no";
@@ -16,4 +16,3 @@ SYSROOTFIXUP="1";
 MAKEOPTS="KEEP_SYMBOLS=1";
 ADDCC="0";
 DONTBUILD="arm64 mips mips64 powerpc powerpc64";
-GITBRANCH="release_33";

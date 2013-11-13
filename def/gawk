@@ -5,3 +5,4 @@ CONFOPT="";
 EXTRALIBS="-ldl";
 STATICMOPT="LDFLAGS=-static LIBSIGSEGV=-lsigsegv";
 BUILDDIR="0";
+AMVER="1.14";

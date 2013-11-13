@@ -1,8 +1,7 @@
-VERSION="20130423"
+VERSION="20131030_4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-ADDCFLAGS="-I../../libsepol/include -I../libsepol/include -I../../libselinux/include -fPIC";
-ADDLDFLAG="-L../../libsepol/src -L../../libselinux/src -L../libsepol/src -lpthread";
 FIXUPLIB="1";
+NOMAKEFLAGS="1";

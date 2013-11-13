@@ -6,3 +6,4 @@ BUILDDIR=0;
 ADDCFLAG="-I=/usr/X11R7/include/pixman-1 -I=/usr/include/freetype2 -I=/usr/include/poppler/glib
           -I=/usr/include/librsvg-2.0 -I=/usr/include/gdk-pixbuf-2.0";
 NOCCOPT="1";
+AMVER="1.14";

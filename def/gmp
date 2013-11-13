@@ -13,4 +13,3 @@ STDCSTATIC="--disable-shared LDFLAGS=-static";
 DONTBUILD="arm64";
 GITREPO="gmp-5.1";
 AMVER="1.14";
-BUILDDIR="0";
