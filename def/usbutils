@@ -3,6 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-ADDCFLAG="-I../include";
 EXTRALIBS="-lrt -lpthread";
-ADDCFLAG="-I=/usr/include/libusb-1.0";
+ADDCFLAG="-I../include -I=/usr/include/libusb-1.0";
+AMVER="1.14";
