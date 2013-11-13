@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GITIP=[2002:29dd:626::1]
+GITIP=192.30.252.130
 GITBASE=git://${GITIP}
 
 XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /usr/share/docbook2X/xslt/catalog.xml'
@@ -114,12 +114,16 @@ arch_config() {
 
 mnt_archroot() {
   if [ ! -d /sys/module/wrapfs ];then
-    modprobe wrapfs
-    if [ -d /sys/module/wrapfs ];then
-      BINDFS="mount -t wrapfs";
+    if [ -x /sbin/modprobe ];then
+      modprobe wrapfs
+      if [ -d /sys/module/wrapfs ];then
+        BINDFS="mount -t wrapfs";
+       else
+        BINDFS="mount --bind";
+      fi;
      else
       BINDFS="mount --bind";
-    fi;
+     fi;
    else
     BINDFS="mount -t wrapfs";
   fi;
@@ -193,9 +197,13 @@ check_create_arch() {
       mkdir -p ${ARCHROOT}/${1}/etc
       ln -s ../proc/self/mounts ${ARCHROOT}/${1}/etc/mtab
       rsync -avRP /etc/passwd /etc/shadow /etc/group /etc/xml/catalog* /etc/xml/docbook-xsl.xml  /etc/xml/docbook.xml ${ARCHROOT}/${1}
-      echo "domainname $(domainname)" > ${ARCHROOT}/${1}/etc/resolv.conf
-      echo "search $(domainname)" >> ${ARCHROOT}/${1}/etc/resolv.conf
-      echo "nameserver ::1" >> ${ARCHROOT}/${1}/etc/resolv.conf
+      if [ -x /bin/domainname ];then
+        echo "domainname $(domainname)" > ${ARCHROOT}/${1}/etc/resolv.conf
+        echo "search $(domainname)" >> ${ARCHROOT}/${1}/etc/resolv.conf
+        echo "nameserver ::1" >> ${ARCHROOT}/${1}/etc/resolv.conf
+       else
+        echo "nameserver ::1" > ${ARCHROOT}/${1}/etc/resolv.conf
+      fi;
       if [ -e ${PKGDISTDIR}/java-jar.tar.xz ];then
         tar -C ${ARCHROOT}/${1} -xf ${PKGDISTDIR}/java-jar.tar.xz
       fi;
@@ -1828,7 +1836,7 @@ bootstrap_arch() {
     fi;
     #GCC needs system zlib glibc can use selinux/gd
     BOOTCLEAN=distclean
-    build_packages ${arch} libtool pcre ustr bzip2 selinux libpng expat libxml2 freetype fontconfig \
+    build_packages ${arch} libtool pcre ustr bzip2 libaudit selinux libpng expat libxml2 freetype fontconfig \
       jpeg gd glibc tzdata gmp mpfr mpc isl cloog gcc ncurses ncursesw slang nettle libtasn1 \
       libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude libtirpc flex Linux-PAM \
       util-linux || exit 1) || return 1;
@@ -1879,7 +1887,7 @@ build_glibc_march() {
 build_dependancies() {
   #Base dependancies
   build_packages ${1} groff gdbm perl gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv \
-    m4 diffutils attr acl pcre selinux file gengetopt libidn libtasn1 p11-kit nettle gnutls \
+    m4 diffutils attr acl pcre libaudit selinux file gengetopt libidn libtasn1 p11-kit nettle gnutls \
     libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap bison flex gawk coreutils readline bash xz expat openssl wget iana-etc || return 1
 
   #Dont build libxml2 if there is a python in / may not be one in /build/.../
@@ -1938,7 +1946,7 @@ build_dependancies() {
   glib-compile-schemas /usr/share/glib-2.0/schemas
 
   #Continue X Build with GL/Mesa
-  if [ -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
+  if [ -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/glamor ];then
     (unset CLEANOPT;build_project Xorg ${1};build_project glamor ${1})
     (unset CLEANOPT;build_project Xorg ${1}) || return 1
   fi;
@@ -2125,7 +2133,7 @@ bootstrap_native() {
   fi;
 
   build_packages ${NARCH} gmp ncursesw ncurses gettext p11-kit nettle texinfo gnutls libgpg-error libgcrypt pcre ustr \
-    flex bison libprelude bzip2 selinux portablexdr libtirpc Linux-PAM  ||return 1
+    flex bison libprelude bzip2 libaudit selinux portablexdr libtirpc Linux-PAM  ||return 1
 
   #Bootstrap native arch with deps for GCC [libjava] if gcc not built
   if [ ! -e ${STATDIR}/${NARCH}/done/unzip ];then
@@ -2135,7 +2143,7 @@ bootstrap_native() {
 
   #Rebuild some packages with python/shared gcc
   if [ ! -e ${STATDIR}/${NARCH}/done/gcc ];then
-    for delstamp in glibc libxml2 libxslt texinfo selinux;do
+    for delstamp in glibc libxml2 libxslt texinfo libaudit selinux;do
       if [ -e ${STATDIR}/${NARCH}/done/${delstamp} ];then
         rm ${STATDIR}/${NARCH}/done/${delstamp}
       fi;
