@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#GITIP=[2002:29dd:626::1]
 GITIP=192.30.252.130
 GITBASE=git://${GITIP}/Distrotech
 
@@ -114,7 +115,7 @@ arch_config() {
 
 mnt_archroot() {
   if [ ! -d /sys/module/wrapfs ];then
-    if [ -x /sbin/modprobe ];then
+    if [ -x /sbin/modprobe ] && [ -e /lib/modules/`uname -r`/modules.dep ];then
       modprobe wrapfs
       if [ -d /sys/module/wrapfs ];then
         BINDFS="mount -t wrapfs";
@@ -272,18 +273,20 @@ git_load_pkg() {
     if [ ! -d ${SRCDIR}/Xorg/Xorg-git ];then
       mkdir -p ${SRCDIR}/Xorg/Xorg-git
     fi;
-    if [ "${3}" ];then
-echo      git clone --depth 1 -b ${3} ${GITURL}/${4}.git ${SRCDIR}/${PKGGITDIR}
-      git clone --depth 1 -b ${3} ${GITURL}/${4}.git ${SRCDIR}/${PKGGITDIR}
-     else
-echo      git clone --depth 1 -b distrotech-${4}${2} ${GITURL}/${4}.git ${SRCDIR}/${PKGGITDIR}
-      git clone --depth 1 -b distrotech-${4}${2} ${GITURL}/${4}.git ${SRCDIR}/${PKGGITDIR}
-    fi;
 
+    if [ "${3}" ];then
+      GIT_TAG=${3}
+     else
+      GIT_TAG=distrotech-${4}${2}
+    fi;
+    echo Cloning branch/tag ${GIT_TAG} of repository ${4}
+    git clone --depth 1 -b ${GIT_TAG} ${GITURL}/${4}.git ${SRCDIR}/${PKGGITDIR}
+
+    #some packages are retards null config them
     if [ "${NONULLCONF}" ] && [ "${NONULLCONF}" == "1" ];then
       return 0;
     fi;
-    #some packages are retards null config them
+
 #    if [ -e ${SRCDIR}/${PKGGITDIR}/configure.ac ] || [ -e ${SRCDIR}/${PKGGITDIR}/configure.in ];then
 #      if [ "${SRCDIR}" ] && [ "${PKGGITDIR}" ] && [ -d ${SRCDIR}/${PKGGITDIR} ];then
 #        (cd ${SRCDIR}/${PKGGITDIR}
@@ -1158,7 +1161,11 @@ build_project() {
       rm -rf build-${barch}
      else
       (/usr/bin/make ${MAKEOPTS} ${ARCHOPT} distclean || /usr/bin/make ${MAKEOPTS} ${ARCHOPT} clean
-      /usr/bin/make distclean || /usr/bin/make clean) > /dev/null 2>&1
+      /usr/bin/make distclean || /usr/bin/make clean
+      if [ -d .git ];then
+        git reset --hard
+        git clean -x -f -d
+      fi;) > /dev/null 2>&1
     fi;
   fi;) || true
 }
@@ -1863,7 +1870,7 @@ EOF
       ) > /etc/ld.so.conf.d/${arch}.conf
     fi;
   done;
-  /sbin/ldconfig
+  /sbin/ldconfig >/dev/null 2>&1
 }
 
 build_glibc_march() {
@@ -1931,16 +1938,16 @@ build_dependancies() {
     (CLEANOPT=distclean
      build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
     if [ "${1}" == "${NARCH}" ];then
-      /sbin/ldconfig
+      /sbin/ldconfig >/dev/null 2>&1
     fi;
   fi;
 
   build_packages ${1} cairo gobject-introspection icu4c cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala \
-    libdrm intltool llvm talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
+    libdrm intltool llvm clang talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
     module-init-tools LVM2 cryptsetup libmicrohttpd systemd Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh || return 1
 
-  gdk-pixbuf-query-loaders --update-cache
-  pango-querymodules --update-cache
+  (gdk-pixbuf-query-loaders --update-cache
+  pango-querymodules --update-cache) >/dev/null 2>&1
   build_packages ${1} gtk+ freeglut pcsc-lite || return 1
 
   #GTK3
@@ -1959,8 +1966,8 @@ build_dependancies() {
   fi;
 
 
-  gtk-query-immodules-3.0 --update-cache
-  glib-compile-schemas /usr/share/glib-2.0/schemas
+  (gtk-query-immodules-3.0 --update-cache
+  glib-compile-schemas /usr/share/glib-2.0/schemas) >/dev/null 2>&1
 
   #Continue X Build with GL/Mesa
   if [ -e ${STATDIR}/${1}/fail/Xorg ];then
@@ -1972,13 +1979,13 @@ build_dependancies() {
   fi;
 
   if [ "${1}" == "${NARCH}" ];then
-    /sbin/ldconfig
+    /sbin/ldconfig >/dev/null 2>&1
     #install icmake on native for yodl
     build_packages ${1} icmake || return 1
   fi;
 
   build_packages ${1} glamor Xorg poppler poppler-data qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
-    txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib dbus-python GConf libbonobo libatomic_ops gc guile guile-2.1 autogen \
+    txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib dbus-python GConf libbonobo libatomic_ops gc guile autogen \
     libmad Xaw3d gv rtmpdump mozjs polkit polkit-gnome yodl swig M2Crypto wireless-regdb crda|| return 1
 
   #Build openjdk on native
@@ -2020,7 +2027,8 @@ build_dependancies() {
   build_packages ${1} gnome-common glade libnotify startup-notification shared-mime-info libwnck vte gnome-keyring \
     gnome-desktop libopenraw iso-codes libxkbfile libxklavier xpdf icon-naming-utils gnome-icon-theme eog aterm file-roller \
     libgsf wv hunspell enchant abiword libart libgnome libgnomecanvas libbonoboui libgnomeui gcalctool gucharmap leafpad \
-    ffmpegthumbnailer glib-networking libsoup gsettings-desktop-schemas gtk-engines gnome-themes-standard evince || return 1
+    ffmpegthumbnailer glib-networking libsoup gsettings-desktop-schemas gtk-engines gnome-themes-standard libsecret \
+    libunique evince || return 1
 
   #Linphone
   build_packages ${1} oRTP spandsp mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk libosip2 exosip linphone || return 1
@@ -2036,13 +2044,10 @@ build_dependancies() {
     thunar-volman xfce4-taskmanager xfce4-dict xfce4-mixer xfwm4-themes xfce4-icon-theme \
     tango-icon-theme hicolor-icon-theme gnome-themes || return 1
 
-#REMOVE XXXX THIS CONDITIONAL
-  if [ "0" == "1" ];then
+#XXX
   #Evolution/Epiphany
-  build_packages ${1} libgdata libgweather libpst geoclue libsecret libical libwebp gtkhtml gtkimageview libunique \
+  build_packages ${1} libgdata libgweather libpst geoclue libical libwebp gtkhtml gtkimageview \
     evolution-data-server clutter clutter-gtk evolution webkitgtk epiphany || return 1
-    return 1;
-  fi;
 
   #Mono if bootstrap good
   if [ -x /usr/bin/gmcs ];then
@@ -2061,7 +2066,7 @@ build_dependancies() {
     gnuchess ctl CTL openexr_ctl openexr_viewers xmlcopyeditor dia || return 1
 
   #Other Packages
-  build_packages ${1} memtest86 syslinux liberation-fonts dejavu-fonts unifoundry psutils php-src docutils po4a isoquery || return 1
+  build_packages ${1} memtest86 liberation-fonts dejavu-fonts unifoundry psutils php-src docutils po4a isoquery syslinux|| return 1
 
   #DirectFB
   build_packages ${1} flux DirectFB SDL_net SDL_image smpeg SDL_mixer SDL2_net SDL2_image smpeg2 SDL2_mixer || return 1
@@ -2125,6 +2130,7 @@ bootstrap_native() {
   #Build Native Arch Libs
   if [ ! -e /${NLIBDIR}/libc.so.6 ];then
     (build_glibc ${NARCH} ${BUILD}) || return 1
+    /sbin/ldconfig >/dev/null 2>&1
   fi;
 
   #Bootstrap native arch buildtools
