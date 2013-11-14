@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/";
 CONFOPT="";
 BUILDDIR="0";
+DISTCONF="watchdog.conf";
