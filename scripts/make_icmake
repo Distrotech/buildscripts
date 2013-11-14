@@ -1,4 +1,0 @@
-#!/bin/bash
-
-./icm_bootstrap /build/${1}
-./icm_install all ${3}
