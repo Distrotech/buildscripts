@@ -225,14 +225,14 @@ check_create_arch() {
   fi;
 
   if [ -d /usr/${HOST}/${B_LIBDIRS} ] && [ ! -e ${ARCHROOT}/${1}/usr/${HOST}/${B_LIBDIRS}/libstdc++.so ];then
-    rsync -aPR /usr/${HOST}/${B_LIBDIRS} ${ARCHROOT}/${1}/
+    rsync -aR /usr/${HOST}/${B_LIBDIRS} ${ARCHROOT}/${1}/
   fi;
 
   if [ -d ${SRCDIR}/linux/usr/include/linux ];then
     if [ ! -d ${HDIR}/usr/include ] || [ ! -f ${TOOLPKG}/${1}/kernel-headers.tar.xz ] || \
        [ ${SRCDIR}/linux/usr/include/linux -nt ${HDIR}/usr/include/linux ];then
       
-      rsync -aP --include=asm-${KARCH} --include=asm-generic --exclude=.install --exclude=..install.cmd \
+      rsync -a --include=asm-${KARCH} --include=asm-generic --exclude=.install --exclude=..install.cmd \
                 --exclude=.check --exclude=..check.cmd \
                 --exclude=asm* ${SRCDIR}/linux/usr/include/ ${HDIR}/usr/include/
       if [ -e ${HDIR}/usr/include/asm ] && [ ! -h ${HDIR}/usr/include/asm ];then
@@ -245,7 +245,7 @@ check_create_arch() {
         if [ ! -d ${ARCHROOT}/${1}/usr/include ];then
           mkdir -p ${ARCHROOT}/${1}/usr/include
         fi;
-        rsync -avP ${HDIR}/usr/include/ ${ARCHROOT}/${1}/usr/include/ >/dev/null
+        rsync -a ${HDIR}/usr/include/ ${ARCHROOT}/${1}/usr/include/ >/dev/null
       fi;
 
       (cd ${SRCDIR}/linux
@@ -262,7 +262,7 @@ check_create_arch() {
   #Sync root too arch if no includes
   if [ -d ${ARCHROOT}/${1} ] && [ ! -d ${ARCHROOT}/${1}/usr/include ];then
     mkdir -p ${ARCHROOT}/${1}/usr/include
-    rsync -aP ${HDIR}/usr/include/ ${ARCHROOT}/${1}/usr/include/
+    rsync -a ${HDIR}/usr/include/ ${ARCHROOT}/${1}/usr/include/
   fi;
 }
 
@@ -976,6 +976,7 @@ build_project() {
   export RANLIB="${HOST}-ranlib"
   export OBJCOPY="${HOST}-objcopy"
   export STRIP="${HOST}-strip"
+  export YACC="bison -y"
 
   if [ ${BUILDDIR} == "1" ];then
     if [ ! -d build-${barch} ];then
