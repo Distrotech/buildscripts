@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ "${1}" == "${NARCH}" ];then
+  perl Build.PL
+  ./Build
+  ./Build destdir=${3} install
+ else
+  exit 1
+fi
