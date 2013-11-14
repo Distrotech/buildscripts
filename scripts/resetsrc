@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ls -d /usr/src/*/* |awk '{printf "if [ -d %s/.git ];then (cd %s;git reset --hard;git clean -x -f -d;git pull);fi\n", $1,$1}' |sh
