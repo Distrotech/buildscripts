@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 GITREPO="CTL";
 GITBRANCH="ctl-1.5";
+FIXUPLIB="1";

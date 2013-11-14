@@ -5,3 +5,4 @@ CONFOPT="";
 EXTRALIBS="-llzma";
 GITREPO="openjpeg";
 GITBRANCH="distrotech-openjpeg-1";
+FIXUPLIB="1";

@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 EXTRALIBS="-llzma";
+FIXUPLIB="1";
