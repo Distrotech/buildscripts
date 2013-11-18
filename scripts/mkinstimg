@@ -1,0 +1,50 @@
+qemu-img create dts-install 8G
+parted -s dts-install mklabel msdos
+parted -s dts-install "mkpart primary 1 -1"
+parted dts-install set 1 boot on
+FLOOP=$(losetup -f)
+if [ ! "${FLOOP}" ];then
+  exit 1;
+fi;
+
+losetup -o 1048576 ${FLOOP} dts-install
+TMPDIR=$(mktemp -d)
+mkdosfs -F 32 -n DTS_INSTALL ${FLOOP}
+mount ${FLOOP} ${TMPDIR}
+mkdir ${TMPDIR}/syslinux
+
+for slinfile in syslinux64.exe syslinux.com syslinux.exe vesamenu.c32;do
+  if [ -e /usr/share/syslinux/${slinfile} ];then
+    cp /usr/share/syslinux/${slinfile} ${TMPDIR}/syslinux
+  fi;
+done
+
+(cat <<EOF
+DEFAULT vesamenu.c32 
+TIMEOUT 50
+ONTIMEOUT install-x86_64
+PROMPT 0
+NOESCAPE 1
+MENU TITLE Distrotech Solutions
+MENU BACKGROUND background.jpg
+
+LABEL install-x86_64
+  MENU LABEL Distrotech 64bit (Install)
+  KERNEL /distrotech/x86_64/vmlinuz
+  APPEND ro root=/dev/loop0 initrd=/distrotech/x86_64/initrd.img dts_opt=squashfs quiet
+LABEL rescue-x86_64
+  MENU LABEL Distrotech 64bit (Rescue)
+  KERNEL /distrotech/x86_64/vmlinuz
+  APPEND ro root=/dev/loop0 initrd=/distrotech/x86_64/initrd.img dts_opt=squashfs S
+EOF
+) > ${TMPDIR}/syslinux/syslinux.cfg
+
+if [ -e /boot/grub/background.jpg ];then
+  cp /boot/grub/background.jpg ${TMPDIR}/syslinux/
+fi;
+
+umount ${TMPDIR}
+
+syslinux -i -d syslinux ${FLOOP}
+losetup -d ${FLOOP}
+dd if=/usr/share/syslinux/mbr.bin of=dts-install conv=notrunc
