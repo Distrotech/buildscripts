@@ -5,3 +5,4 @@ CONFOPT="";
 CONFOPTX="--with-wx-config=/build/${barch}/usr/bin/wx-config";
 ADDCFLAG="-I=/usr/include/wx-3.0";
 ADDWITHSYSROOT="1";
+CHROOTBUILD="1";

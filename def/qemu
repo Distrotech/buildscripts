@@ -7,3 +7,4 @@ OPT_x86_64="--libdir=/usr/lib64";
 OPT_x86_32="--libdir=/usr/libx32";
 NOCCOPT="1";
 ADDCFLAG="-I=/usr/X11R7/include/";
+CHROOTBUILD="1";

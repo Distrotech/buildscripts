@@ -5,4 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 CFGPTH="dejavu-fonts";
 CFGBIN="dejavu-fonts/";
-
+CHROOTBUILD="1";
