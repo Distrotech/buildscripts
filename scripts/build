@@ -10,15 +10,15 @@ LANG=en_ZA.UTF8
 #Setup layout path
 SRCDIR=/usr/src
 DISTDIR=/dist
+ARCHROOT=/build
 STATDIR=${DISTDIR}/status
 DEFDIR=${DISTDIR}/def
 PKGDISTDIR=${DISTDIR}/pkg
-TOOLPKG=${PKGDISTDIR}/build
+TOOLPKG=${PKGDISTDIR}${ARCHROOT}
 TOOLDIR=${DISTDIR}/cross
 BASEROOT=${DISTDIR}/root
 SCRIPTDIR=${DISTDIR}/scripts
-PKGBUILDDIR=${DISTDIR}/build
-ARCHROOT=/build
+PKGBUILDDIR=${DISTDIR}${ARCHROOT}
 GITURL=${GITBASE}
 GITUPDATE=1;
 DIETBUILD=1;
@@ -216,8 +216,8 @@ check_create_arch() {
     for adir in / /root /dev /proc /sys /usr/src ${DISTDIR} /tmp ${ARCHROOT};do
       mkdir -p ${ARCHROOT}/${1}/${adir}
     done
-    if [ ! -e ${ARCHROOT}/${1}/${ARCHROOT}/${1} ];then
-      ln -s .. ${ARCHROOT}/${1}/${ARCHROOT}/${1}
+    if [ ! -e ${ARCHROOT}/${1}${ARCHROOT}/${1} ];then
+      ln -s .. ${ARCHROOT}/${1}${ARCHROOT}/${1}
     fi;
     mnt_archroot ${1}
    elif [ "${1}" == "${NARCH}" ] && [ ! -e ${ARCHROOT}/${NARCH} ];then
@@ -1028,8 +1028,8 @@ build_project() {
       python setup.py clean --all
       python ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
      else
-      /build/${barch}/usr/bin/python setup.py clean --all
-      /build/${barch}/usr/bin/python ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
+      ${ARCHROOT}/${barch}/usr/bin/python setup.py clean --all
+      ${ARCHROOT}/${barch}/usr/bin/python ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
     fi;
    elif [ -e ${TOPDIR}${CFGBIN}./Makefile.PL ];then
      perl Makefile.PL ${CONFOPT}
@@ -1103,8 +1103,8 @@ build_project() {
     fi;
   fi;
 
-  if [ -d ${DIST_ROOT}/${ARCHROOT}/${barch} ];then
-    rsync -avP ${DIST_ROOT}/${ARCHROOT}/${barch}/ ${DIST_ROOT}/ && rm -rf ${DIST_ROOT}/${ARCHROOT}
+  if [ -d ${DIST_ROOT}${ARCHROOT}/${barch} ];then
+    rsync -avP ${DIST_ROOT}${ARCHROOT}/${barch}/ ${DIST_ROOT}/ && rm -rf ${DIST_ROOT}${ARCHROOT}
   fi;
 
   for pylib in python2.7 python3.3;do
@@ -1556,10 +1556,10 @@ build_gcc_bootstrap() {
 
 #Build javac
 #gcj -Wl,-Bsymbolic -findirect-dispatch --main=org.eclipse.jdt.internal.compiler.batch.Main \
-#    /usr/share/java/ecj-3.5.2.jar -o ${3}/usr/bin/javac 
+#    /usr/share/java/ecj-3.5.2.jar -o ${3}/usr/bin/javac
 #x86_64-linux-gnu-gcj -mx32 -Wl,-Bsymbolic -findirect-dispatch --main=org.eclipse.jdt.internal.compiler.batch.Main
 #/usr/share/java/ecj-3.5.2.jar -L/dist/build/x86_64/gcc-git/usr/libx32 -lgcj -lgcj_bc -o /usr/bin/javac-x3
-  
+
   if [ "${1}" == "${TARCH}" ];then
     ln -s gcc ${GCCBOOTDEST}/usr/bin/cc
     tar_package ${GCCBOOTDEST} ${TOOLPKG}/${TARCH} ${TARGPKG} > /dev/null 2>&1
@@ -1864,9 +1864,9 @@ setup_ldconf() {
     arch_config ${arch}
     if [ ! -e /etc/ld.so.conf.d/${arch}.conf ];then
       (cat <<EOF
-/build/${arch}/${SETLIBDIR}
-/build/${arch}/usr/${SETLIBDIR}
-/build/${arch}/usr/X11R7/${SETLIBDIR}
+${ARCHROOT}/${arch}/${SETLIBDIR}
+${ARCHROOT}/${arch}/usr/${SETLIBDIR}
+${ARCHROOT}/${arch}/usr/X11R7/${SETLIBDIR}
 EOF
       ) > /etc/ld.so.conf.d/${arch}.conf
     fi;
@@ -2196,10 +2196,10 @@ bootstrap_toolchain() {
   done;
 
   #bin tools in build dir
-  if [ -d /build/${1} ];then
-    for bintool in `ls /build/${1}/usr/${HOST}/bin/`;do
-      if [ ! -e /build/${1}/usr/bin/${HOST}-${bintool} ];then
-        ln -s /usr/${HOST}/bin/${bintool} /build/${1}/usr/bin/${HOST}-${bintool}
+  if [ -d ${ARCHROOT}/${1} ];then
+    for bintool in `ls ${ARCHROOT}/${1}/usr/${HOST}/bin/`;do
+      if [ ! -e ${ARCHROOT}/${1}/usr/bin/${HOST}-${bintool} ];then
+        ln -s /usr/${HOST}/bin/${bintool} ${ARCHROOT}/${1}/usr/bin/${HOST}-${bintool}
       fi;
     done;
   fi;
