@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="--disable-unicode";
 ADDCC="0";
 BUILDDIR="0";
+AMVER="1.14";

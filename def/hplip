@@ -6,3 +6,4 @@ BUILDDIR="0";
 NOSVNROOT="1";
 ADDCFLAG="-I=/usr/include/python2.7";
 GITBRANCH="master";
+AMVER="1.13";

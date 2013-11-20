@@ -14,4 +14,4 @@ OPT_x86_32="--with-libnettle-prefix=/build/x86_32/usr/";
 ADDWITHSYSROOT="1";
 ADDCFLAG="-I=/usr/include/p11-kit-1 -I=/usr/include/guile/2.0";
 BUILDDIR="0";
-AMVER="1.12";
+AMVER="1.14";

@@ -3,5 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-AMVER="1.11";
+AMVER="1.14";
 GITBRANCH="master";
