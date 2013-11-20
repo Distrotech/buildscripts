@@ -6,3 +6,4 @@ BUILDDIR="0";
 ADDCFLAG="-I=/usr/include/python2.7";
 NOCCOPT="1";
 OPT_arm64="--disable-python";
+AMVER="1.13";
