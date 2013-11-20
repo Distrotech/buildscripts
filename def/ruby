@@ -6,3 +6,4 @@ OPT_i686="--target=i686-linux-gnu";
 OPT_arm64="--target=aarch64-linux-gnu";
 MAKEOPTS="LIBRUBYARG=libruby-static.a";
 BUILDDIR="0";
+CHROOTBUILD="1";

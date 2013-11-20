@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 AMVER="1.13";
 GITBRANCH="master";
+CHROOTBUILD="1";
