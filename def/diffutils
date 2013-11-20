@@ -4,5 +4,5 @@ PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-std=c99";
 MAKEOPTS="WERROR_CFLAGS=";
-STATICOPT="LDFLAGS=-static";
+STATICOPT="LDFLAGS=-static --disable-gcc-warnings";
 XSTATICMOPT="LDFLAGS=-static LIBCSTACK=-lc LIBSIGSEGV=-lsigsegv";
