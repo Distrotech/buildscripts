@@ -9,6 +9,7 @@ NOCCOPT="1";
 ADDWITHSYSROOT="1";
 STATICOPT="--disable-shared --enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 
          --enable-vipw --enable-newgrp --enable-chfn-chsh --enable-write --enable-socket-activation --disable-chfn-chsh
-         --with-selinux --without-udev --without-slang --disable-login --disable-su --disable-runuser LDFLAGS=-static";
+         --with-selinux --without-udev --without-slang --disable-login --disable-su --disable-runuser --without-ncurses
+         --without-slang LDFLAGS=-static";
 STATICMOPT="LDFLAGS=-all-static";
 AMVER="1.12";
