@@ -9,7 +9,7 @@ OPT_x86_64="--libdir=/usr/lib64";
 OPT_i686="--enable-cross-compile --sysroot=/build/i686 --arch=i686 --target-os=linux
           --cross-prefix=i686-linux-gnu- --cpu=i686 --extra-cflags=-m32";
 OPT_arm="--target=arm-linux --enable-cross-compile --sysroot=/build/arm --arch=arm --target-os=linux 
-         --cross-prefix=arm-linux-gnueabi-  
+         --cross-prefix=arm-linux-gnueabihf-  
          --extra-ldflags=-Wl,--rpath-link=/build/arm/usr/lib:/build/arm/lib:/build/arm/usr/X11R7/lib
          --host-cc=/usr/bin/gcc --disable-vidix --disable-runtime-cpudetection";
 OPT_x86_32="--enable-cross-compile --sysroot=/build/x86_32 --arch=x86_64 --target-os=linux 

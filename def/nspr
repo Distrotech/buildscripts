@@ -9,7 +9,7 @@ BUILDDIR="0";
 NOCCOPT="1";
 OPT_x86_64="--enable-64bit";
 OPT_x86_32="--enable-64bit";
-OPT_arm="--host=arm-linux-gnueabi --target=arm-linux-gnueabi";
+OPT_arm="--host=arm-linux-gnueabihf --target=arm-linux-gnueabihf";
 OPT_arm64="--host=aarch64-linux-gnu --target=aarch64-linux-gnu --enable-64bit";
 NOCCOPT="1";
 DONTBUILD="arm64";

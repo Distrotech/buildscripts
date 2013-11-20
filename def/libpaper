@@ -2,13 +2,13 @@ VERSION="1.1.24+nmu2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-OPT_arm="--host=arm-linux-gnueabi";
+OPT_arm="--host=arm-linux-gnueabihf";
 OPT_arm64="--host=aarch64-linux-gnu";
 OPT_mips="--host=mips-linux-gnu";
 OPT_mips64="--host=mips64-linux-gnuabi64";
 OPT_powerpc="--host=powerpc-linux-gnu";
 OPT_powerpc64="--host=powerpc64-linux-gnu";
-OPT_x86_64="--host=arm-linux-gnueabi";
+OPT_x86_64="--host=x86_64-linux-gnu";
 STDOPTS="--prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var --enable-dynamic";
 SYSROOTFIXUP="1";
 FIXUPLIB="1";

@@ -10,6 +10,6 @@ NOCROSS="1";
 MOPT_x86_32="CXX=/usr/bin/x86_64-linux-gnux32-g++ CPP=/usr/bin/x86_64-linux-gnux32-g++  CC=/usr/bin/x86_64-linux-gnux32-gcc";
 MOPT_x86_64="CXX=/usr/bin/x86_64-linux-gnu-g++ CPP=/usr/bin/x86_64-linux-gnu-g++  CC=/usr/bin/x86_64-linux-gnu-gcc";
 MOPT_i686="CXX=/usr/bin/i686-linux-gnu-g++ CPP=/usr/bin/i686-linux-gnu-g++  CC=/usr/bin/i686-linux-gnu-gcc";
-MOPT_arm="CXX=/usr/bin/arm-linux-gnueabi-g++ CPP=/usr/bin/arm-linux-gnueabi-g++  CC=/usr/bin/arm-linux-gnueabi-gcc";
+MOPT_arm="CXX=/usr/bin/arm-linux-gnueabihf-g++ CPP=/usr/bin/arm-linux-gnueabihf-g++  CC=/usr/bin/arm-linux-gnueabihf-gcc";
 OPT_x86_32="--enable-zero";
 DONTBUILD="i686 x86_32 x86_64 arm arm64 powerpc powerpc64 mips mips64";

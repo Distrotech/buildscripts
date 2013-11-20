@@ -18,7 +18,7 @@ CONFOPT="--enable-nonfree --enable-shared --enable-vdpau --enable-bzlib --enable
 OPT_i686="--enable-cross-compile --sysroot=/build/i686 --arch=i686 --target-os=linux --cross-prefix=i686-linux-gnu- 
           --cpu=i686 --extra-cflags=-m32 --extra-ldflags=-m32 --host-cc=/usr/bin/gcc
           --enable-libopencv --enable-frei0r --enable-libv4l2";
-OPT_arm="--enable-cross-compile --sysroot=/build/arm --arch=arm --target-os=linux --cross-prefix=arm-linux-gnueabi-
+OPT_arm="--enable-cross-compile --sysroot=/build/arm --arch=arm --target-os=linux --cross-prefix=arm-linux-gnueabihf-
          --extra-ldflags=-Wl,--rpath-link=/build/arm/usr/lib:/build/arm/lib:/build/arm/usr/X11R7/lib
          --host-cc=/usr/bin/gcc --enable-libv4l2";
 OPT_x86_32="--enable-cross-compile --sysroot=/build/x86_32 --arch=x86_64 --target-os=linux 

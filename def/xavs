@@ -9,7 +9,7 @@ OPT_mips="--host=mips-linux-gnu --enable-shared --enable-pic";
 OPT_mips64="--host=mips64-linux-gnuabi64 --enable-shared --enable-pic";
 OPT_powerpc="--host=powerpc-linux-gnu --enable-shared";
 OPT_powerpc64="--host=powerpc-linux-gnu --enable-shared";
-OPT_arm="--host=arm-linux-gnueabi --enable-shared";
+OPT_arm="--host=arm-linux-gnueabihf --enable-shared";
 OPT_arm64="--host=aarch64-linux-gnu --enable-shared --enable-pic";
 BUILDDIR="0";
 XADDCFLAG="-fPIC";
