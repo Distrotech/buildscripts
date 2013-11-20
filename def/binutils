@@ -1,7 +1,7 @@
 VERSION="2.24";
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-gold --disable-werror --enable-lto --enable-64-bit-bfd --enable-initfini-array";
+CONFOPT="--disable-werror --enable-lto --enable-64-bit-bfd --enable-initfini-array";
 SYSROOTFIXUP="0";
 CLEARFLAGS="1";
 NOCCOPT="1";
@@ -9,4 +9,4 @@ ADDCC="0";
 ADDWITHSYSROOT="1";
 ADDBUILDSYSROOT="1";
 STATICMOPT="LDFLAGS=-all-static";
-STATICOPT="--with-sysroot=/ --disable-werror --enable-lto --enable-64-bit-bfd --enable-initfini-array LDFLAGS=-static";
+STATICOPT="--with-sysroot=/ --disable-werror --enable-lto --enable-64-bit-bfd --enable-initfini-array --disable-gold LDFLAGS=-static";
