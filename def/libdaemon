@@ -1,4 +1,4 @@
 VERSION="0.14"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="ac_cv_func_setpgrp_void=false";

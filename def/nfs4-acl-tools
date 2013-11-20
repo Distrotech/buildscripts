@@ -1,6 +1,6 @@
 VERSION="0.3.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="LIBTOOL=/build/${barch}/usr/bin/libtool";
 BUILDDIR="0";
 NOCCOPT="1";
