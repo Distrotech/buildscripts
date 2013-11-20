@@ -21,7 +21,7 @@ if [ ! "${DARCH}" ] || [ ! -d /dist/pkg/build/${DARCH} ];then
 fi;
 
 case ${DARCH} in
-	arm)STRIP=arm-linux-gnueabi-strip;;
+	arm*)STRIP=arm-linux-gnueabihf-strip;;
 	arm64)STRIP=aarch64-linux-gnu-strip;;
 	mips64)STRIP=mips64-linux-gnuabi64-strip;;
 	x86_32)STRIP=x86_64-linux-gnux32-strip;;
@@ -55,6 +55,7 @@ ${STRIP} ${STATICROOT}/bin/* ${STATICROOT}/sbin/* ${STATICROOT}/usr/bin/* ${STAT
 
 for devpkg in glibc-${GLIBCVER}/glibc-${GLIBCVER}-headers.tar.xz \
               glibc-${GLIBCVER}/glibc-${GLIBCVER}-static.tar.xz \
+              glibc-${GLIBCVER}/glibc-${GLIBCVER}-libs.tar.xz \
               /dist/pkg/${DARCH}/apache-ant-${ANTVER}/apache-ant-${ANTVER}-libs.tar.xz \
               /dist/pkg/${DARCH}/autoconf-${AUTOCONF}/autoconf-${AUTOCONF}.tar.xz \
               /dist/pkg/${DARCH}/automake-${AUTOMAKE}/automake-${AUTOMAKE}.tar.xz \
@@ -83,7 +84,13 @@ for mdir in 1 2 3 4 5 6 7 8;do
 done;
 
 #Install terminfo DB / Stub files / CPAN config
-rsync -avRP /usr/share/terminfo /usr/include/gnu/stubs-* /root/.cpan/CPAN/MyConfig.pm ${STATICROOT}/
+if [ -d /usr/share/terminfo ];then
+  rsync -avRP /usr/share/terminfo /usr/include/gnu/stubs-* /root/.cpan/CPAN/MyConfig.pm ${STATICROOT}/
+fi;
+
+if [ -d /lib/terminfo ];then
+  rsync -avRP /lib/terminfo /usr/include/gnu/stubs-* /root/.cpan/CPAN/MyConfig.pm ${STATICROOT}/
+fi;
 
 echo "nameserver ::1" > ${STATICROOT}/etc/resolv.conf
 if [ -e ${STATICROOT}.sqfs ];then

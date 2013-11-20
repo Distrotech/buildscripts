@@ -1719,7 +1719,7 @@ build_static_tool() {
     cd ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}
     CFG_BIN=.
    else
-    mkdir ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}/build-${1}-static 
+    mkdir ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}/build-${1}-static
     cd ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}/build-${1}-static
     CFG_BIN=..
   fi;
@@ -1735,11 +1735,13 @@ build_static_tool() {
   fi;
 
   #Texinfo hack Add po to the list too
-  for gnulib in gnulib/lib/ tools/gnulib/lib/ po;do
-    if [ -d ${gnulib} ];then
-      make ${MAKE_J} -C ${gnulib} || make -C ${gnulib} || return 1
-    fi;
-  done;
+  if [ "${4}" == "texinfo" ];then
+    for gnulib in gnulib/lib/ tools/gnulib/lib/ po;do
+      if [ -d ${gnulib} ];then
+        make ${MAKE_J} -C ${gnulib} || make -C ${gnulib} || return 1
+      fi;
+    done;
+  fi;
 
   if [ ! "${SYSROOTFIXUP}" ];then
     SYSROOTFIXUP="1";
@@ -2323,11 +2325,13 @@ buildall_static() {
 
   echo "GCC"
   (export CC=gcc-4.6;
-   export GCCFLAGS=-mfloat-abi=hard;
   build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
 
   echo "Static tools"
   static_toolbuild ${1} || return 1
+
+  echo "Packages for static root"
+  build_packages ${1} apache-ant automake-1.9 autoconf || return 1
   return;
 }
 
