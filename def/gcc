@@ -1,6 +1,7 @@
 VERSION="4.8.1"
 VERSEP="-";
 PREFIX="/usr";
+ARM7OPTS="--with-arch=armv7-a --with-fpu=vfpv3-d16 --with-float=hard --with-mode=thumb";
 CONFOPT="--with-ecj-jar=/usr/share/java/ecj-3.5.2.jar --enable-lto --enable-cloog-backend=isl --enable-java-home 
          --with-system-zlib";
 OPT_x86_64="--target=x86_64-linux-gnu  --with-multilib-list=m32,m64,mx32 --with-sysroot=/
@@ -9,8 +10,8 @@ OPT_x86_32="--target=x86_64-linux-gnux32 --with-multilib-list=m32,m64,mx32 --wit
             --with-jvm-root-dir=/usr/libx32/jvm/gcj-jdk --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 OPT_i686="--target=i686-linux-gnu --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk
           --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
-OPT_arm="--target=arm-linux-gnueabihf --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk
-         --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada --with-fpu=vfpv4 --with-float=hard";
+OPT_arm="--target=arm7lh-linux-gnueabi --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk
+         --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada ${ARM7OPTS}";
 OPT_arm64="--target=aarch64-linux-gnu --disable-multilib --with-sysroot=/ 
            --enable-languages=c,c++,fortran,lto,objc,obj-c++,ada";
 OPT_mips64="--target=mips64-linux-gnuabi64 --with-sysroot=/ --with-abi=64 --with-arch-32=mips32 
@@ -34,10 +35,11 @@ BOOTOPT="${BASEOPT} ${BASEOPT2} --enable-languages=c,c++,ada";
 SHAREDOPT="${BASEOPT} --enable-languages=c,c++,ada --disable-multilib";
 BOOTOPT_mips="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
 BOOTOPT_mips64="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=64";
-BOOTOPT_arm="--with-fpu=vfpv4 --with-float=hard";
+BOOTOPT_arm="${ARM7OPTS}";
 CROSSOPT_x86_32="--with-multilib-list=m32,m64,mx32";
 CROSSOPT_x86_64="--with-multilib-list=m32,m64,mx32";
-CROSSOPT_arm64="--disable-multilib --disable-libatomic --with-fpu=vfpv4 --with-float=hard";
+CROSSOPT_arm="${ARM7OPTS}";
+CROSSOPT_arm64="--disable-multilib --disable-libatomic";
 CROSSOPT_mips="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
 CROSSOPT_mips64="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=64";
 LANG_i686="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
@@ -49,5 +51,4 @@ LANG_mips="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_mips64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_powerpc="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_powerpc64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
-#ARM --with-mode=thumb --with-arch=armv7-a --with-fpu=vfpv3-d16
 ADDBUILDSYSROOT="1";
