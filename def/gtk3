@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="--enable-gtk2-dependency --enable-broadway-backend --enable-x11-backend";
 GITREPO="gtk";
 AMVER="1.14";
+CHROOTBUILD="1";

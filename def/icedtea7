@@ -7,7 +7,7 @@ CONFOPT="--with-jdk-home=/usr/${NLIBDIR}/jvm/gcj-jdk --with-ecj-jar=/usr/share/j
 CONFOPTX="--disable-bootstrap --with-jdk-home=/usr/${NLIBDIR}/jvm/jdk-1.7.0_60";
 OPT_x86_32="--enable-zero";
 OPT_arm="--enable-zero";
-MOPT_i686="CXX=i686-linux-gnu-g++ CPP=i686-linux-gnu-g++ CC=i686-linux-gnu-gcc";
+MOPT_i686="CXX=i686-linux-gnu-g++ CPP=i686-linux-gnu-g++ CC=i686-linux-gnu-gcc ARCH=i586";
 MOPT_arm="CXX=/usr/bin/arm-linux-gnueabihf-g++ CPP=/usr/bin/arm-linux-gnueabihf-g++ CC=/usr/bin/arm-linux-gnueabihf-gcc";
 MOPT_x86_32="CXX=x86_64-linux-gnux32-g++ CPP=x86_64-linux-gnux32-g++ CC=x86_64-linux-gnux32-gcc ARCH=ilp32";
 MOPT_x86_64="CXX=x86_64-linux-gnu-g++ CPP=x86_64-linux-gnu-g++ CC=x86_64-linux-gnu-gcc";
@@ -15,3 +15,4 @@ DONTBUILD="arm64 mips mips64 powerpc powerpc64";
 NOCROSS="1";
 NOCCOPT="1";
 AMVER="1.13";
+CHROOTBUILD="1";
