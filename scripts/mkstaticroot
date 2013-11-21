@@ -9,6 +9,10 @@ AUTOMAKE=1.9.6
 
 NARCH=$( uname -m )
 
+case ${NARCH} in
+  arm*)NARCH=arm;;
+esac;
+
 if [ "${1}" ];then
   DARCH=${1}
  else
@@ -21,11 +25,19 @@ if [ ! "${DARCH}" ] || [ ! -d /dist/pkg/build/${DARCH} ];then
 fi;
 
 case ${DARCH} in
-	arm*)STRIP=arm-linux-gnueabi-strip;;
-	arm64)STRIP=aarch64-linux-gnu-strip;;
-	mips64)STRIP=mips64-linux-gnuabi64-strip;;
-	x86_32)STRIP=x86_64-linux-gnux32-strip;;
-	*)STRIP=${DARCH}-linux-gnu-strip;;
+  arm*)STRIP=arm-linux-gnueabi-strip;;
+  arm64)STRIP=aarch64-linux-gnu-strip;;
+  mips64)STRIP=mips64-linux-gnuabi64-strip;;
+  x86_32)STRIP=x86_64-linux-gnux32-strip;;
+  *)STRIP=${DARCH}-linux-gnu-strip;;
+esac;
+
+#Determine kernel arch
+case ${1} in
+  x86_*|i[3-6]86)LINARCH="x86";;
+  arm64)LINARCH=arm64;;
+  *64)LINARCH=${1::-2};;
+  *)LINARCH=${1};
 esac;
 
 if [ ${2} ];then
@@ -37,7 +49,8 @@ fi;
 if [ -d ${STATICROOT} ];then
   rm -rf ${STATICROOT}
 fi;
-mkdir -p ${STATICROOT}
+mkdir -p ${STATICROOT}/etc
+touch ${STATICROOT}/etc/.static
 
 cd /dist/pkg/build/${DARCH}
 for pkg in `ls -d *static *boot` ;do
@@ -56,6 +69,7 @@ ${STRIP} ${STATICROOT}/bin/* ${STATICROOT}/sbin/* ${STATICROOT}/usr/bin/* ${STAT
 for devpkg in glibc-${GLIBCVER}/glibc-${GLIBCVER}-headers.tar.xz \
               glibc-${GLIBCVER}/glibc-${GLIBCVER}-static.tar.xz \
               glibc-${GLIBCVER}/glibc-${GLIBCVER}-libs.tar.xz \
+              glibc-${GLIBCVER}/glibc-${GLIBCVER}.tar.xz \
               /dist/pkg/${DARCH}/apache-ant-${ANTVER}/apache-ant-${ANTVER}-libs.tar.xz \
               /dist/pkg/${DARCH}/autoconf-${AUTOCONF}/autoconf-${AUTOCONF}.tar.xz \
               /dist/pkg/${DARCH}/automake-${AUTOMAKE}/automake-${AUTOMAKE}.tar.xz \
@@ -64,6 +78,10 @@ for devpkg in glibc-${GLIBCVER}/glibc-${GLIBCVER}-headers.tar.xz \
     tar -C ${STATICROOT} -xJf ${devpkg};
   fi;
 done;
+
+if [ ! -e ${STATICROOT}/usr/include/asm ];then
+  ln -s asm-${LINARCH} ${STATICROOT}/usr/include/asm
+fi;
 
 for sysdir in proc sys dev root tmp usr/src dist etc/xml;do
   mkdir -p ${STATICROOT}/${sysdir}
@@ -98,5 +116,7 @@ if [ -e ${STATICROOT}.sqfs ];then
 fi;
 
 cp /dist/scripts/build ${STATICROOT}/usr/sbin/build_system
+
+chroot ${STATICROOT} /sbin/ldconfig
 
 mksquashfs ${STATICROOT}/* ${STATICROOT}.sqfs -comp xz
