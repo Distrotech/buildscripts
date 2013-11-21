@@ -12,4 +12,4 @@ MOPT_powerpc="ARCH=ppc";
 MOPT_powerpc64="ARCH=ppc64";
 NOMAKEFLAGS="1";
 LDISCC="1";
-SYSROOTPATH="1";
+CHROOTBUILD="1";
