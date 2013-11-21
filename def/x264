@@ -2,5 +2,6 @@ VERSION="git"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-shared --enable-pic";
+OPT_x86_32="--disable-asm";
 MAKETARGETS="lib-shared";
 ADDCC="0";
