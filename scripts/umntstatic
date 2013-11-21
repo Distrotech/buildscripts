@@ -4,10 +4,15 @@ if [ "${1}" ];then
   DARCH=${1};
  else
   DARCH=$( uname -m )
+  case ${DARCH} in
+    arm*)DARCH=arm;;
+  esac;
 fi;
 
 ROOT=/dist/root/${DARCH}-static
 
 for bind in dev proc sys proc/sys/fs/binfmt_misc usr/src/linux;do
-  umount ${ROOT}/${bind}
+  if [ -d ${ROOT}/${bind} ];then
+    umount ${ROOT}/${bind}
+  fi;
 done;
