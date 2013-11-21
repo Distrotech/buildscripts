@@ -99,7 +99,7 @@ arch_config() {
   #Set build tupple
   case ${1} in
     arm64)TUPPLE=aarch64-linux-gnu;;
-    arm)TUPPLE=arm-linux-gnueabihf;;
+    arm)TUPPLE=arm7lh-linux-gnueabi;;
     mips64)TUPPLE=mips64-linux-gnuabi64;;
     x86_32)TUPPLE=x86_64-linux-gnux32;;
     *)TUPPLE=${1}-linux-gnu;;

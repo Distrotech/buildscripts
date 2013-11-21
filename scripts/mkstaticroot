@@ -21,7 +21,7 @@ if [ ! "${DARCH}" ] || [ ! -d /dist/pkg/build/${DARCH} ];then
 fi;
 
 case ${DARCH} in
-	arm*)STRIP=arm-linux-gnueabihf-strip;;
+	arm*)STRIP=arm7lh-linux-gnueabi-strip;;
 	arm64)STRIP=aarch64-linux-gnu-strip;;
 	mips64)STRIP=mips64-linux-gnuabi64-strip;;
 	x86_32)STRIP=x86_64-linux-gnux32-strip;;
