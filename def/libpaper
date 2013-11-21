@@ -2,7 +2,7 @@ VERSION="1.1.24+nmu2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-OPT_arm="--host=arm7lh-linux-gnueabi";
+OPT_arm="--host=arm-linux-gnueabi";
 OPT_arm64="--host=aarch64-linux-gnu";
 OPT_mips="--host=mips-linux-gnu";
 OPT_mips64="--host=mips64-linux-gnuabi64";

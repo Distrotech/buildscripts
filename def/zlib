@@ -5,7 +5,7 @@ CONFOPT="";
 STDOPTS="--prefix=/usr/ --localstatedir=/var";
 OPT_i686="--host=i686-linux-gnu --build=x86_64-linux-gnu";
 OPT_x86_32="--host=x86_64-linux-gnux32 --build=x86_64-linux-gnu";
-OPT_arm="--host=arm7lh-linux-gnueabi --build=x86_64-linux-gnu -DCMAKE_C_COMPILER=arm7lh-linux-gnueabi-gcc";
+OPT_arm="--host=arm-linux-gnueabi --build=x86_64-linux-gnu -DCMAKE_C_COMPILER=arm-linux-gnueabi-gcc";
 OPT_x86_64="--host=x86_64-linux-gnu --build=x86_64-linux-gnu";
 FIXUPLIB="1";
 LDISCC="0";

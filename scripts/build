@@ -99,7 +99,7 @@ arch_config() {
   #Set build tupple
   case ${1} in
     arm64)TUPPLE=aarch64-linux-gnu;;
-    arm)TUPPLE=arm7lh-linux-gnueabi;;
+    arm)TUPPLE=arm-linux-gnueabi;;
     mips64)TUPPLE=mips64-linux-gnuabi64;;
     x86_32)TUPPLE=x86_64-linux-gnux32;;
     *)TUPPLE=${1}-linux-gnu;;
@@ -227,7 +227,7 @@ check_create_arch() {
   if [ -d ${SRCDIR}/linux/usr/include/linux ];then
     if [ ! -d ${HDIR}/usr/include ] || [ ! -f ${TOOLPKG}/${1}/kernel-headers.tar.xz ] || \
        [ ${SRCDIR}/linux/usr/include/linux -nt ${HDIR}/usr/include/linux ];then
-      
+
       rsync -a --include=asm-${KARCH} --include=asm-generic --exclude=.install --exclude=..install.cmd \
                 --exclude=.check --exclude=..check.cmd \
                 --exclude=asm* ${SRCDIR}/linux/usr/include/ ${HDIR}/usr/include/

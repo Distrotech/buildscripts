@@ -6,7 +6,7 @@ BUILDDIR="0";
 OPT_x86_32="--target=x86_64-linux-gnux32 --with-DIR_LIBDATA=/usr/libx32/fax --with-DIR_LIB=/usr/libx32";
 OPT_x86_64="--target=x86_64-linux-gnu --with-DIR_LIBDATA=/usr/lib64/fax --with-DIR_LIB=/usr/lib64";
 OPT_i686="--target=i686-linux-gnu";
-OPT_arm="--target=arm7lh-linux-gnueabi";
+OPT_arm="--target=arm-linux-gnueabi";
 OPT_arm64="--target=aarch64-linux-gnu --with-DIR_LIBDATA=/usr/lib64/fax --with-DIR_LIB=/usr/lib64";
 OPT_mips="--target=mips-linux-gnu";
 OPT_mips64="--target=mips64-linux-gnuabi64 --with-DIR_LIBDATA=/usr/lib64/fax --with-DIR_LIB=/usr/lib64";
