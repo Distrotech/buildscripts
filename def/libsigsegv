@@ -7,3 +7,4 @@ OPT_x86_64="CFG_FAULT=fault-linux-i386.h";
 OPT_i686="CFG_FAULT=fault-linux-i386.h";
 AMVER="1.12";
 DONTBUILD="arm64";
+NOCROSS="1";
