@@ -2140,7 +2140,7 @@ bootstrap_native() {
   fi;
 
   #Build Native Arch Libs
-  if [ ! -e /etc/.static ];then
+  if [ -e /etc/.static ];then
     (build_glibc ${NARCH} ${BUILD}) || return 1
     /sbin/ldconfig >/dev/null 2>&1
     rm /etc/.static
@@ -2308,7 +2308,7 @@ buildall_static() {
   check_create_arch ${1}
 
   #GCC tools symlinks
-  for gcct in nm gnatlink gnatmake gnatbind gnatls gcc g++;do
+  for gcct in nm gnatlink gnatmake gnatbind gnatls strip gcc g++;do
     if [ -x /usr/bin/${gcct} ] && [ ! -e /usr/bin/${2}-${gcct} ];then
       ln -s ${gcct} /usr/bin/${2}-${gcct}
     fi;
