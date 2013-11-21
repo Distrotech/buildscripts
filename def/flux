@@ -2,3 +2,4 @@ VERSION="1.4.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-libdirect";
+CHROOTBUILD="1";
