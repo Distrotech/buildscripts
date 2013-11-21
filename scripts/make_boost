@@ -2,7 +2,7 @@
 
 unset CFLAGS CXXFLAGS CC
 
-for acpp in x86_64-linux-gnu x86_64-linux-gnux32;do
+for acpp in x86_64-linux-gnu x86_64-linux-gnux32 i686-linux-gnu;do
   touch /usr/bin/${acpp}-g++
 done
 
@@ -21,7 +21,7 @@ if true;then
   rsync -avP boost ${3}/usr/include/
 fi;
 
-for acpp in x86_64-linux-gnu x86_64-linux-gnux32;do
+for acpp in x86_64-linux-gnu x86_64-linux-gnux32 i686-linux-gnu;do
   if [ ! -s /usr/bin/${acpp}-g++ ];then
     rm /usr/bin/${acpp}-g++
   fi;
