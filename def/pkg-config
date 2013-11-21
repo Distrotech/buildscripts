@@ -2,5 +2,5 @@ VERSION="0.28"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-STATICOPT="LDFLAGS=-static LIBS=-lpthread"
+STATICOPT="LDFLAGS=-static LIBS=-lpthread CFLAGS=-I=/usr/${B_LIBDIRS}/glib-2.0/include"
 STATICMOPT="LDFLAGS=-all-static";
