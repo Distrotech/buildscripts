@@ -66,9 +66,9 @@ fi;
 #Strip all the bits
 ${STRIP} ${STATICROOT}/bin/* ${STATICROOT}/sbin/* ${STATICROOT}/usr/bin/* ${STATICROOT}/usr/sbin/*
 
-for devpkg in glibc-${GLIBCVER}/glibc-${GLIBCVER}-headers.tar.xz \
-              glibc-${GLIBCVER}/glibc-${GLIBCVER}-static.tar.xz \
+for devpkg in /dist/pkg/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}-dev.tar.xz \
               /dist/pkg/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}-libs.tar.xz \
+              /dist/pkg/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}-conf.tar.xz \
               /dist/pkg/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}.tar.xz \
               /dist/pkg/${DARCH}/apache-ant-${ANTVER}/apache-ant-${ANTVER}-libs.tar.xz \
               /dist/pkg/${DARCH}/autoconf-${AUTOCONF}/autoconf-${AUTOCONF}.tar.xz \
@@ -103,11 +103,19 @@ done;
 
 #Install terminfo DB / Stub files / CPAN config
 if [ -d /usr/share/terminfo ];then
-  rsync -avRP /usr/share/terminfo /usr/include/gnu/stubs-* /root/.cpan/CPAN/MyConfig.pm ${STATICROOT}/
+  rsync -avRP /usr/share/terminfo ${STATICROOT}/
 fi;
-
 if [ -d /lib/terminfo ];then
-  rsync -avRP /lib/terminfo /usr/include/gnu/stubs-* /root/.cpan/CPAN/MyConfig.pm ${STATICROOT}/
+  rsync -avRP /lib/terminfo ${STATICROOT}/
+fi;
+rsync -avRP /usr/include/gnu/stubs-* /usr/share/terminfo ${STATICROOT}/
+
+if [ ! -e /root/.cpan/CPAN/MyConfig.pm ];then
+  cpan -i XML::Parser
+fi
+
+if [ -e /root/.cpan/CPAN/MyConfig.pm ];then
+  rsync -aR /root/.cpan/CPAN/MyConfig.pm ${STATICROOT}/
 fi;
 
 echo "nameserver ::1" > ${STATICROOT}/etc/resolv.conf
@@ -116,6 +124,9 @@ if [ -e ${STATICROOT}.sqfs ];then
 fi;
 
 cp /dist/scripts/build ${STATICROOT}/usr/sbin/build_system
+mkdir ${STATICROOT}/build
+ln -s ..  ${STATICROOT}/build/${DARCH}
+
 
 chroot ${STATICROOT} /sbin/ldconfig
 
