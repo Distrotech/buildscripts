@@ -1131,11 +1131,10 @@ build_project() {
   #Build Distributibils
   tar_package ${DIST_ROOT} ${PKGDISTDIR}/${barch} ${PKG} > /dev/null 2>&1
 
-  if [ "${BOOTSTRAP_STATIC}" == "0" ];then
-    if [ "${barch}" == "${NARCH}" ];then
-      if [ -d ${DIST_ROOT} ];then
-        ${RSYNC} -avP ${DIST_ROOT}/ /
-      fi;
+  if [ "${BOOTSTRAP_STATIC}" == "0" ] && [ "${barch}" == "${NARCH}" ];then
+    if [ -d ${DIST_ROOT} ];then
+      ${RSYNC} -avP ${DIST_ROOT}/ /
+    fi;
 #     elif [ "${barch}" == "x86_32" ] && [ "${NARCH}" == "x86_64" ];then
 #      if [ -d ${DIST_ROOT}/${B_LIBDIRS} ];then
 #        ${RSYNC} -avP ${DIST_ROOT}/${B_LIBDIRS} /
@@ -1143,11 +1142,10 @@ build_project() {
 #      if [ -d ${DIST_ROOT}/usr/${B_LIBDIRS} ];then
 #        ${RSYNC} -avP ${DIST_ROOT}/usr/${B_LIBDIRS} /usr/
 #      fi;
-    fi;
+  fi;
 
-    if [ -d ${ARCHROOT}/${barch} ] && [ ! -h ${ARCHROOT}/${barch} ];then
-      ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${barch}/
-    fi;
+  if [ -d ${ARCHROOT}/${barch} ] && [ ! -h ${ARCHROOT}/${barch} ];then
+    ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${barch}/
   fi;
 
   if [ ! "${NODIET}" ];then
@@ -1312,13 +1310,16 @@ build_glibc() {
       ln -s asm-${KARCH} /usr/${2}/include/asm
     fi;
   fi;
-  rsync -a usr/include /usr/${2}/include
 
-  #C Lib Stubs
-  if [ ! -d  /usr/${2}/${USELIBDIR} ];then
-    mkdir -p /usr/${2}/${USELIBDIR}
+  if [ "${BOOTSTRAP_STATIC}" == "0" ];then
+    rsync -a usr/include /usr/${2}/include
+
+    #C Lib Stubs
+    if [ ! -d  /usr/${2}/${USELIBDIR} ];then
+      mkdir -p /usr/${2}/${USELIBDIR}
+    fi;
+    rsync -avP usr/${USELIBDIR}/*.o /usr/${2}/${USELIBDIR}/
   fi;
-  rsync -avP usr/${USELIBDIR}/*.o /usr/${2}/${USELIBDIR}/
 
   tar -cJf ${TOOLPKG}/${1}/${PKG}/${PKG}-static.tar.xz usr/${USELIBDIR}/*.o usr/${USELIBDIR}/*.a usr/include
 }
@@ -1345,7 +1346,11 @@ build_bootstrap_binutils() {
 
   if [ "${1}" == "${NARCH}" ];then
     DIST_ROOT=${TOOLDIR}/${NARCH}/${BINUTILS}-static
-    CSYSROOT="--with-sysroot=/"
+    if [ "${BOOTSTRAP_STATIC}" == "0" ];then
+      CSYSROOT="--with-sysroot=/"
+     else
+      CSYSROOT="--with-sysroot=${ARCHROOT}/${1}"
+    fi
    else
     DIST_ROOT=${TOOLDIR}/${NARCH}/${1}/${BINUTILS}
     CSYSROOT="--with-sysroot=${ARCHROOT}/${1}"
@@ -1399,6 +1404,13 @@ build_bootstrap_binutils() {
     tar_package ${DIST_ROOT} ${TOOLPKG}/${NARCH}/${1} ${BINUTILS} > /dev/null 2>&1
    else
     tar_package ${DIST_ROOT} ${TOOLPKG}/${NARCH} ${BINUTILS}-static > /dev/null 2>&1
+    rsync -a ${DIST_ROOT}/ ${BASEROOT}/${1}/
+    if [ ! -e ${ARCHROOT}/${1}/usr/bin/ld ];then
+      rsync -a ${DIST_ROOT}/ ${ARCHROOT}/${1}/
+    fi
+    if [ ! -e /usr/${2}/bin/ld ];then
+      rsync -a ${DIST_ROOT}/usr/${2}/ /usr/${2}/
+    fi
   fi;
 }
 
@@ -1431,7 +1443,7 @@ build_gcc_bootstrap() {
   eval ${AVER}=""
   GCC=gcc${VERSEP}${VERSION}
 
-  if [ "${1}" != "${3}" ];then
+  if [ "${1}" != "${3}" ] || [ "${BOOTSTRAP_STATIC}" == "1" ];then
     SYSROOT="--with-sysroot=${ARCHROOT}/${1} ${CONFOPTX}";
     BUILDROOT=${ARCHROOT}/${1}
    else
@@ -1442,12 +1454,16 @@ build_gcc_bootstrap() {
       BUILDROOT=""
     fi
   fi;
+
   if [ ! "${4}" ] || [ "${4}" == "static" ];then
     MARCH=BOOTOPT_${1}
-    CONFOPT="${BOOTOPT} ${SYSROOT}"
+    CONFOPT="${BOOTOPT} ${SYSROOT} --with-boot-ldflags=-static"
     CFLAGS="${GCCFLAGS} -fPIC"
     CXXFLAGS="${GCCFLAGS} -fPIC"
-    LDFLAGS="-static -L/usr/${B_LIBDIRS}"
+    LDFLAGS="-static ${GCCLFLAGS}"
+    if [ "${1}" == "${NARCH}" ] && [ -x ${BASEROOT}/${1}/usr/${2}/bin/ld ];then
+      CONFOPT="${CONFOPT} --with-ld=${BASEROOT}/${1}/usr/${2}/bin/ld"
+    fi;
     SDIROPT=-boot
    elif [ "${4}" == "shared" ];then
     MARCH=BOOTOPT_${1}
@@ -1529,7 +1545,10 @@ build_gcc_bootstrap() {
    else
     BUILDDIR=/
   fi;
-
+  LDFLAGS_FOR_TARGET="-L${BUILDDIR}/usr/${TLIBDIR} -L${BUILDDIR}/${TLIBDIR}";
+  if [ "${1}" == "${NARCH}" ] && [ ! -x /usr/${2}/bin/ld ];then
+    LDFLAGS_FOR_TARGET="${LDFLAGS_FOR_TARGET} -B${BUILDDIR}/usr/${2}/bin";
+  fi;
 #  if [ -x /usr/bin/${HOST}-gcc ] && [ -x /usr/bin/${HOST}-g++ ];then
 #    CC=${HOST}-gcc
 #    CXX=${HOST}-g++
@@ -1542,13 +1561,14 @@ build_gcc_bootstrap() {
 
   export CFLAGS CXXFLAGS LDFLAGS
   run_configure ${USELIBDIR} .. ${PROGPRE} --build=${BUILD} --host=${THOST} --target=${2} --with-build-sysroot=${BUILDDIR} \
-                ${CONFOPT} ${!MARCH} || return 1
+                ${CONFOPT} ${!MARCH} ${GCCOPTS} || return 1
 
   if [ ! -d ${2}/libstdc++-v3 ];then
     mkdir -p ${2}/libstdc++-v3
   fi;
   cp /usr/bin/libtool ${2}/libstdc++-v3
-  make ${MAKE_J} LDFLAGS="${LDFLAGS}" || make LDFLAGS="${LDFLAGS}" || return 1
+  make ${MAKE_J} LDFLAGS="${LDFLAGS}" LDFLAGS_FOR_TARGET="${LDFLAGS_FOR_TARGET}" || \
+    make LDFLAGS="${LDFLAGS}" LDFLAGS_FOR_TARGET="${LDFLAGS_FOR_TARGET}" || return 1
   make DESTDIR=${GCCBOOTDEST} install || return 1
 
   #Setup some missing bits
@@ -1726,6 +1746,9 @@ build_static_tool() {
     cd ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}/build-${1}-static
     CFG_BIN=..
   fi;
+
+  #Touch up documents
+  find ${SRCDIR}/${4}/${STATICTOOL} -regex '.*\.info$' -or -regex '.*\.pdf$'|awk '{printf "touch %s\n",$1}' |sh
 
   run_configure ${3} ${CFG_BIN} --build=${BUILD} --host=${2} ${STATICOPT} ${ARCHOPT} || return 1
 
@@ -2305,10 +2328,11 @@ buildall_arch() {
 }
 
 buildall_static() {
+#  unset BOOTCLEAN
   check_create_arch ${1}
 
   #GCC tools symlinks
-  for gcct in nm gnatlink gnatmake gnatbind gnatls strip gcc g++;do
+  for gcct in nm gnatlink gnatmake gnatbind gnatls strip gcc g++ objcopy ar ranlib;do
     if [ -x /usr/bin/${gcct} ] && [ ! -e /usr/bin/${2}-${gcct} ];then
       ln -s ${gcct} /usr/bin/${2}-${gcct}
     fi;
@@ -2329,6 +2353,8 @@ buildall_static() {
 
   echo "GCC"
   (export CC=gcc-4.6;
+#  GCCLFLAGS="-L/lib/arm-linux-gnueabihf -L/usr/lib/arm-linux-gnueabihf"
+#  GCCOPTS=--with-gmp-include=/usr/include/arm-linux-gnueabihf
   build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
 
   echo "Static tools"
