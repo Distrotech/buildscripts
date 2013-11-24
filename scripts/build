@@ -467,10 +467,11 @@ sysroot_fixup() {
     #Replace all libtools with the "sysroot" version
     for ltool in `find . -name libtool`;do
       if [ -x ${ltool} ];then
-        rm ${ltool}
-        if [ -d ${ARCHROOT}/${1} ] && [ ! -h ${ARCHROOT}/${1} ];then
+        if [ -d ${ARCHROOT}/${1} ] && [ -e ${ARCHROOT}/${1}/usr/bin/libtool ];then
+          rm ${ltool}
           cp ${ARCHROOT}/${1}/usr/bin/libtool ${ltool}
-         else
+         elif [ -e /usr/bin/libtool ];then
+          rm ${ltool}
           cp /usr/bin/libtool ${ltool}
         fi;
       fi;
@@ -939,9 +940,15 @@ build_project() {
   XCCOPT="${XCCOPT} ${RPLINK}"
 
   export CC_SYSROOT="--sysroot=${SYSROOT}/ ${XCCOPT} -L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/opt/xfce/include";
-  CC="/usr/bin/${HOST}-gcc";
-  CXX="/usr/bin/${HOST}-g++"
-  LD="/usr/bin/${HOST}-ld"
+  if [ "${BOOTSTRAP_STATIC}" == "0" ];then
+    CC="/usr/bin/${HOST}-gcc";
+    CXX="/usr/bin/${HOST}-g++"
+    LD="/usr/bin/${HOST}-ld"
+   else
+    CC="${HOST}-gcc";
+    CXX="${HOST}-g++"
+    LD="${HOST}-ld"
+  fi;
   export CC CXX
 
   #XXX /build AKA ARCHROOT
@@ -1408,7 +1415,7 @@ build_bootstrap_binutils() {
     if [ ! -e ${ARCHROOT}/${1}/usr/bin/ld ];then
       rsync -a ${DIST_ROOT}/ ${ARCHROOT}/${1}/
     fi
-    if [ ! -e /usr/${2}/bin/ld ];then
+    if [ ! -e /usr/${2}/bin/ld ] && [ "${BOOTSTRAP_STATIC}" == "0" ];then
       rsync -a ${DIST_ROOT}/usr/${2}/ /usr/${2}/
     fi
   fi;
@@ -1458,25 +1465,22 @@ build_gcc_bootstrap() {
   if [ ! "${4}" ] || [ "${4}" == "static" ];then
     MARCH=BOOTOPT_${1}
     CONFOPT="${BOOTOPT} ${SYSROOT} --with-boot-ldflags=-static"
-    CFLAGS="${GCCFLAGS} -fPIC"
-    CXXFLAGS="${GCCFLAGS} -fPIC"
+    CFLAGS="${GCCFLAGS} -fPIC -O2"
+    CXXFLAGS="${GCCFLAGS} -fPIC -O2"
     LDFLAGS="-static ${GCCLFLAGS}"
-    if [ "${1}" == "${NARCH}" ] && [ -x ${BASEROOT}/${1}/usr/${2}/bin/ld ];then
-      CONFOPT="${CONFOPT} --with-ld=${BASEROOT}/${1}/usr/${2}/bin/ld"
-    fi;
     SDIROPT=-boot
    elif [ "${4}" == "shared" ];then
     MARCH=BOOTOPT_${1}
     CONFOPT="${SHAREDOPT} ${SYSROOT} ${CONFOPTX}"
-    CFLAGS=-fPIC
-    CXXFLAGS=-fPIC
+    CFLAGS="-fPIC -O2";
+    CXXFLAGS="-fPIC -O2";
     SDIROPT=-shared
-    LDFLAGS="-L/usr/${B_LIBDIRS} -L/usr/${NLIBDIR}";
+#    LDFLAGS="-L/usr/${B_LIBDIRS} -L/usr/${NLIBDIR}";
    elif [ ! "${4}" ] || [ "${4}" == "null" ];then
     MARCH=BOOTOPT_${1}
     CONFOPT="${NULLOPT} ${SYSROOT} CC=${BUILD}-gcc CXX=${BUILD}-g++"
-    CFLAGS=-fPIC
-    CXXFLAGS=-fPIC
+    CFLAGS="-fPIC -O2";
+    CXXFLAGS="-fPIC -O2";
     SDIROPT=-null
     LDFLAGS="";
    elif [ "${4}" == "cross" ];then
@@ -1486,8 +1490,8 @@ build_gcc_bootstrap() {
     MARCH=CROSSOPT_${1}
     GCCLANG=LANG_${1}
     LANGOPT=${!GCCLANG}
-    CFLAGS=-I=/usr/include
-    CXXFLAGS=-I=/usr/include
+    CFLAGS="-I=/usr/include -O2"
+    CXXFLAGS="-I=/usr/include -O2"
     LDFLAGS="-L/lib -L/libx32 -L/lib64 -L/usr/lib -L/usr/libx32 -L/usr/lib64"
     export CFLAGS CXXFLAGS
     CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${TLIBDIR}/jvm/gcj-jdk-${1} --enable-cxx-flags=-I=/usr/include
@@ -1549,6 +1553,11 @@ build_gcc_bootstrap() {
   if [ "${1}" == "${NARCH}" ] && [ ! -x /usr/${2}/bin/ld ];then
     LDFLAGS_FOR_TARGET="${LDFLAGS_FOR_TARGET} -B${BUILDDIR}/usr/${2}/bin";
   fi;
+
+  if [ "${1}" == "${NARCH}" ] && [ -x ${BUILDDIR}/usr/${2}/bin/ld ] && [ "${BOOTSTRAP_STATIC}" == "1" ];then
+    CONFOPT="${CONFOPT} --with-ld=${BUILDDIR}/usr/${2}/bin/ld"
+  fi;
+
 #  if [ -x /usr/bin/${HOST}-gcc ] && [ -x /usr/bin/${HOST}-g++ ];then
 #    CC=${HOST}-gcc
 #    CXX=${HOST}-g++
@@ -2174,8 +2183,8 @@ bootstrap_native() {
     automake-1.14 help2man zlib libtool gmp gengetopt libidn libtasn1 libffi || return 1
 
   #build shared gcc to get shared libstdc++/libada/libgcc [C/C++/ADA]
-  if [ ! -e /usr/${NLIBDIR}/libstdc++.so ];then
-    build_packages ${NARCH} libtool gmp mpfr mpc || return 1
+  if [ ! -e /usr/${NLIBDIR}/libstdc++.so ] || [ ! -e ${STATDIR}/${NARCH}/done/gcc ];then
+    build_packages ${NARCH} libtool gmp mpfr mpc isl cloog || return 1
     touch /usr/bin/${BUILD}-gcc.boot
     (build_gcc_bootstrap ${NARCH} ${BUILD} ${NARCH} shared) || return 1
     rm /usr/bin/${BUILD}-gcc.boot /usr/bin/${BUILD}-gcc.shared
@@ -2328,7 +2337,8 @@ buildall_arch() {
 }
 
 buildall_static() {
-#  unset BOOTCLEAN
+  unset BOOTCLEAN
+  export DIETBUILD=0
   check_create_arch ${1}
 
   #GCC tools symlinks
@@ -2352,9 +2362,12 @@ buildall_static() {
   (build_bootstrap_binutils ${1} ${2}) || return 1
 
   echo "GCC"
+  (PATH=${ARCHROOT}/${1}/sbin:${ARCHROOT}/${1}/bin:${ARCHROOT}/${1}/usr/sbin:${ARCHROOT}/${1}/usr/bin:${PATH}
+  build_packages ${1} libtool zlib gmp mpfr mpc isl cloog) || return 1
   (export CC=gcc-4.6;
 #  GCCLFLAGS="-L/lib/arm-linux-gnueabihf -L/usr/lib/arm-linux-gnueabihf"
 #  GCCOPTS=--with-gmp-include=/usr/include/arm-linux-gnueabihf
+#  build_gcc_bootstrap ${1} ${2} ${1} static &&
   build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
 
   echo "Static tools"
