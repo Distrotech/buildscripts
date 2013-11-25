@@ -55,7 +55,7 @@ touch ${STATICROOT}/etc/.static
 cd /dist/pkg/build/${DARCH}
 for pkg in `ls -d *static *boot` ;do
   for subpkg in `ls ${pkg}/${pkg}.tar.xz ${pkg}/${pkg}-libs.tar.xz ${pkg}/${pkg}-dev.tar.xz 2>/dev/null`;do
-    tar -C ${STATICROOT} -xJf ${subpkg};
+    tar --exclude=*/.dbg/* -C ${STATICROOT} -xJf ${subpkg};
   done;
 done
 
@@ -75,7 +75,7 @@ for devpkg in /dist/pkg/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}-dev.tar.xz 
               /dist/pkg/${DARCH}/automake-${AUTOMAKE}/automake-${AUTOMAKE}.tar.xz \
               kernel-headers.tar.xz /dist/pkg/java-jar.tar.xz;do
   if [ -f ${devpkg} ];then
-    tar -C ${STATICROOT} -xJf ${devpkg};
+    tar --exclude=*/.dbg/* -C ${STATICROOT} -xJf ${devpkg};
   fi;
 done;
 
