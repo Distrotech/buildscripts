@@ -1,7 +1,7 @@
 VERSION="4.8.1"
 VERSEP="-";
 PREFIX="/usr";
-ARM7OPTS="--with-arch=armv7-a --with-fpu=vfpv3-d16 --with-float=hard --with-mode=thumb";
+ARM7OPTS="--with-arch=armv7-a --with-fpu=vfpv3-d16 --with-float=hard --disable-sjlj-exceptions";
 CONFOPT="--with-ecj-jar=/usr/share/java/ecj-3.5.2.jar --enable-lto --enable-cloog-backend=isl --enable-java-home 
          --with-system-zlib";
 OPT_x86_64="--target=x86_64-linux-gnu  --with-multilib-list=m32,m64,mx32 --with-sysroot=/
@@ -11,7 +11,7 @@ OPT_x86_32="--target=x86_64-linux-gnux32 --with-multilib-list=m32,m64,mx32 --wit
 OPT_i686="--target=i686-linux-gnu --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk
           --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 OPT_arm="--target=arm-linux-gnueabi --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk
-         --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada ${ARM7OPTS}";
+         --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada ${ARM7OPTS} --with-mode=thumb";
 OPT_arm64="--target=aarch64-linux-gnu --disable-multilib --with-sysroot=/ 
            --enable-languages=c,c++,fortran,lto,objc,obj-c++,ada";
 OPT_mips64="--target=mips64-linux-gnuabi64 --with-sysroot=/ --with-abi=64 --with-arch-32=mips32 
@@ -26,18 +26,24 @@ SYSROOTFIXUP="0";
 NOCCOPT="1";
 ADDCC="0";
 CLEARFLAGS="1";
-BASEOPT="--without-cloog --without-isl --with-system-zlib";
-BASEOPT2="--without-lto --disable-libitm --disable-libmudflap  --disable-libswsp --disable-libgomp --disable-multilib
-          --disable-libatomic --disable-libssp --disable-libquadmath --disable-threads --disable-bootstrap";
-NULLOPT="${BASEOPT} ${BASEOPT2} --enable-languages=c --with-newlib --disable-decimal-float --disable-shared";
+BASEOPT="--without-cloog --without-isl --with-system-zlib --disable-bootstrap";
+BASEOPT2="--without-lto --disable-libitm --disable-libmudflap  --disable-libswsp --disable-libgomp
+          --disable-libatomic --disable-libssp --disable-libquadmath";
+NULLOPT="${BASEOPT} ${BASEOPT2} --enable-languages=c --with-newlib --disable-decimal-float --disable-shared --disable-threads";
 BOOTOPT="${BASEOPT} ${BASEOPT2} --enable-languages=c,c++,ada";
-SHAREDOPT="${BASEOPT} --enable-languages=c,c++,ada --disable-multilib";
-BOOTOPT_mips="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
-BOOTOPT_mips64="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=64";
-BOOTOPT_arm="${ARM7OPTS}";
+SHAREDOPT="--with-system-zlib --enable-lto --enable-cloog-backend=isl --enable-languages=c,c++,ada";
+BOOTOPT_mips="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32 --disable-multilib";
+BOOTOPT_mips64="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=64 --disable-multilib";
+BOOTOPT_powerpc="--disable-multilib";
+BOOTOPT_powerpc64="--disable-multilib";
+BOOTOPT_i686="--disable-multilib";
+BOOTOPT_x86_32="--disable-multilib";
+BOOTOPT_x86_64="--disable-multilib";
+BOOTOPT_arm="${ARM7OPTS} --enable-multilib --with-mode=arm";
+BOOTOPT_arm64="--enable-multilib";
 CROSSOPT_x86_32="--with-multilib-list=m32,m64,mx32";
 CROSSOPT_x86_64="--with-multilib-list=m32,m64,mx32";
-CROSSOPT_arm="${ARM7OPTS}";
+CROSSOPT_arm="${ARM7OPTS} --with-mode=arm";
 CROSSOPT_arm64="--disable-multilib --disable-libatomic";
 CROSSOPT_mips="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
 CROSSOPT_mips64="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=64";
@@ -51,3 +57,4 @@ LANG_mips64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_powerpc="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_powerpc64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 ADDBUILDSYSROOT="1";
+ADDLDFLAG="-lstdc++";
