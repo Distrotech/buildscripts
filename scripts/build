@@ -50,6 +50,9 @@ while (( $# > 1 ));do
       break;;
     static)BOOTSTRAP_STATIC=1
       shift;;
+    +)shift;
+      export NOBOOTSTRAP=1
+      break;;
     buildall)ALLARCH="1";;
     *)if [[ ${1} =~ ${ARCHMPAT} ]] && [ -d ${ARCHROOT}/${1} ];then
         ARCHLIST="${ARCHLIST} ${1}"
@@ -131,6 +134,7 @@ mnt_archroot() {
     fi;
     git clone ${GITURL}/buildscripts.git ${DISTDIR}/
   fi;
+
   if [ ! -d ${ARCHROOT}/${1}/${DISTDIR}/.git ];then
     ${BINDFS} ${DISTDIR} ${ARCHROOT}/${1}/${DISTDIR}
   fi;
@@ -552,6 +556,17 @@ cmake_cross_build() {
 #  export LD_LIBRARY_PATH="${RPATH_LINK}"
 #  export CC="${CC} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${RPATH_LINK}"
 #  export CXX="${CXX} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${RPATH_LINK}"
+
+  if [ "${CLEARFLAGS}" ] && [ "${CLEARFLAGS}" == "1" ];then
+    unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS LD
+    if [ "${ADDLDFLAG}" ];then
+      export LDFLAGS="${ADDLDFLAG}"
+    fi;
+    if [ "${ADDCFLAG}" ];then
+      export CFLAGS=${ADDCFLAG}
+      export CXXFLAGS=${ADDCFLAG}
+    fi;
+  fi;
   export LDFLAGS="${LDFLAGS} ${EXTRALIBS}"
 
   if [ "${2}" == "${NARCH}" ];then
@@ -1013,7 +1028,13 @@ build_project() {
 
   export LDFLAGS CPPFLAGS CXXFLAGS CFLAGS MAKE_J
 
-  if [ -x ${SCRIPTDIR}/make_${PROJECT} ];then
+  if [ "${CHROOTBUILD}" ] && [ "${CHROOTBUILD}" == "1" ] && [ "${barch}" != "${NARCH}" ];then
+    (export NARCH=${barch}
+     chroot ${ARCHROOT}/${barch} ${SCRIPTDIR}/build ${barch} + ${PROJECT})
+    if [ -e ${STATDIR}/${barch}/fail/${PROJECT} ];then
+      return 1
+    fi;
+   elif [ -x ${SCRIPTDIR}/make_${PROJECT} ];then
     export CC="${CC} ${CC_SYSROOT}"
     export CXX="${CXX} ${CC_SYSROOT}"
     ${SCRIPTDIR}/make_${PROJECT} ${barch} ${HOST} ${DIST_ROOT} ${CLEANOPT} || return 1
@@ -1482,7 +1503,7 @@ build_gcc_bootstrap() {
     CFLAGS="-fPIC -O2";
     CXXFLAGS="-fPIC -O2";
     SDIROPT=-null
-    LDFLAGS="";
+    LDFLAGS="-lstdc++";
    elif [ "${4}" == "cross" ];then
     if [ "${1}" == "${TARCH}" ];then
       return;
@@ -1953,13 +1974,24 @@ build_dependancies() {
   #Add required perl modules from cpan may not need libxml only expat !!!
   for pmod in XML::Parser XML::SAX Font::TTF XML::Simple Archive::Zip Pod::Simple::Search YAML;do
     if [ ! -e ${STATDIR}/${1}/done/${pmod} ];then
-      cpan -i ${pmod} && touch ${STATDIR}/${1}/done/${pmod}
+      if [ "${NARCH}" == "${1}" ];then
+        cpan -i ${pmod} && touch ${STATDIR}/${1}/done/${pmod}
+       else
+        (chroot ${ARCHROOT}/${1} cpan -i ${pmod}) && touch ${STATDIR}/${1}/done/${pmod}
+      fi;
     fi;
   done
 
+  if [ "${1}" == "${NARCH}" ];then
+    /sbin/ldconfig >/dev/null 2>&1
+    #install icmake on native for yodl
+    build_packages ${1} icmake yodl || return 1
+  fi;
+
   build_packages ${1} intltool popt rsync bzip2 nspr sqlite-autoconf nss openssl Python libcap-ng ply expat libxml2 libxslt gnome-doc-utils \
-    docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus glib \
-    gtk-doc pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg trousers onig slang || return 1
+    docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus glib gtk-doc pkg-config \
+    libcroco libassuan libksba pth libusb libusb-compat gnupg trousers onig slang autoconf automake-1.9 automake-1.10 automake-1.11 \
+    automake-1.12 automake-1.13 automake-1.14 findutils || return 1
 
   #Rebuild libxml2 with Python support
   if [ ${STATDIR}/${1}/done/Python -nt ${STATDIR}/${1}/done/libxml2 ] || \
@@ -1986,13 +2018,20 @@ build_dependancies() {
     fi;
   fi;
 
+  if [ "${1}" != "${NARCH}" ];then
+    build_packages ${1} gobject-introspection libdaemon avahi-nogui talloc tevent libevent libverto krb5 cups ghostscript \
+      gs-fonts ijs libspectre poppler atk gdk-pixbuf libvdpau || return 1
+  fi;
+
   build_packages ${1} cairo gobject-introspection icu4c cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala \
-    libdrm intltool llvm clang talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
+    libdrm intltool llvm talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
     module-init-tools LVM2 cryptsetup libmicrohttpd systemd Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh || return 1
 
-  (gdk-pixbuf-query-loaders --update-cache
-  pango-querymodules --update-cache) >/dev/null 2>&1
-  build_packages ${1} gtk+ freeglut pcsc-lite || return 1
+  if [ "${NARCH}" == "${1}" ];then
+    (gdk-pixbuf-query-loaders > /usr/${B_LIBDIRS}/gdk-pixbuf-2.0/2.10.0/loaders.cache
+    pango-querymodules --update-cache) >/dev/null 2>&1
+    build_packages ${1} gtk+ freeglut pcsc-lite || return 1
+  fi;
 
   #GTK3
   build_packages ${1} wayland libxkbcommon at-spi2-core at-spi2-atk || return 1
@@ -2009,9 +2048,10 @@ build_dependancies() {
     build_packages ${1} gtk3 || return 1
   fi;
 
-
-  (gtk-query-immodules-3.0 --update-cache
-  glib-compile-schemas /usr/share/glib-2.0/schemas) >/dev/null 2>&1
+  if [ "${NARCH}" == "${1}" ];then
+    (gtk-query-immodules-3.0 --update-cache
+    glib-compile-schemas /usr/share/glib-2.0/schemas) >/dev/null 2>&1
+  fi;
 
   #Continue X Build with GL/Mesa
   if [ -e ${STATDIR}/${1}/fail/Xorg ];then
@@ -2022,15 +2062,9 @@ build_dependancies() {
     (unset CLEANOPT;build_project Xorg ${1}) || return 1
   fi;
 
-  if [ "${1}" == "${NARCH}" ];then
-    /sbin/ldconfig >/dev/null 2>&1
-    #install icmake on native for yodl
-    build_packages ${1} icmake || return 1
-  fi;
-
   build_packages ${1} glamor Xorg poppler poppler-data qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
-    txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib dbus-python GConf libbonobo libatomic_ops gc guile autogen \
-    libmad Xaw3d gv rtmpdump mozjs polkit polkit-gnome yodl swig M2Crypto wireless-regdb crda|| return 1
+    txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib docutils dbus-python mozjs polkit GConf libbonobo libatomic_ops gc guile autogen \
+    libmad Xaw3d gv rtmpdump polkit-gnome yodl swig M2Crypto wireless-regdb crda || return 1
 
   #Build openjdk on native
   if [ "${NARCH}" == "${1}" ];then
@@ -2039,28 +2073,28 @@ build_dependancies() {
 
   build_packages ${1} apr apr-iconv sqlite-autoconf keyutils neon apache-ant tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql \
     postgresql apr-util httpd subversion libva gmerlin jasper libraw1394 orc libogg libvorbis libkate gnome-mime-data gnome-vfs \
-    libvisual gstreamer gstreamer-1 v4l-utils audiofile esound flac libsndfile json-c fftw \
+    libvisual gstreamer gstreamer-1 v4l-utils flac audiofile esound libsndfile json-c fftw \
     libsamplerate speex pulseaudio SDL SDL2 libdc1394 OpenCV frei0r libtheora gst-plugins-base gst-plugins-base-1 libavc1394 libiec61883 \
     faac libaacplus vo-aacenc vo-amrwbenc fribidi libass libbluray celt libcaca gsm modplug lame twolame libnut \
     opencore-amr opus schroedinger utvideo openal xvidcore ptlib libcddb libcdio-cdda libcdio fltk libnfnetlink \
     libmnl libexif exif libnetfilter_conntrack libao libtimidity libnetfilter_cttimeout ilmbase gss iptables \
     usbutils xavs x264 libvpx fdk-aac libmpeg2 a52dec ffmpeg h323plus gnugk t38modem qt-4 py2cairo pygobject libglade pygtk \
-    autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 help2man rrdtool avahi djvulibre \
+    help2man rrdtool avahi djvulibre \
     libarchive cogl json-glib pciutils net-snmp sane-backends libvdpau LibVNCServer i2c-tools openexr ImageMagick \
     libungif libiodbc tdb libcanberra libgnome-keyring pangox-compat mhash libmcrypt vim || return 1
 
   #Core Utilities
   build_packages ${1} arptables autofs cdrtools cifs-utils dialog dosfstools e2fsprogs ebtables ethtool gptfdisk htop \
-    inetutils iproute2 ipsec-tools ipvsadm iw grub lesspipe linux_logo lm_sensors lsof lynx lzo mgetty minicom mktemp mtools \
+    inetutils iproute2 ipsec-tools ipvsadm iw lesspipe linux_logo lm_sensors lsof lynx lzo mgetty minicom mktemp mtools \
     net-tools newt nfs4-acl-tools libnfsidmap nfs-utils ntfs-3g ntp openssh parted procinfo-ng procps psmisc squashfs \
     strace sudo sysfsutils sysklogd sysvinit tcpdump tftp-hpa unrar uudeview usbhid-dump vlan watchdog wireless_tools \
     xorriso apg archivemount bc bindfs bsd-finger cdde dcron dmraid ecryptfs-utils ed fbset fdutils fetchmail \
-    foomatic-filters globe hdparm hfsutils joe logcheck logrotate mailutils libpipeline man-db man-pages mdadm mrouted \
+    foomatic-filters globe hdparm hfsutils joe logcheck logrotate mailutils libpipeline po4a man-db man-pages mdadm mrouted \
     mcelog mt-st p7zip phoon pimd procmail quagga quota-tools radvd rp-pppoe screen sdparm setserial sharutils \
     usb-modeswitch usb-modeswitch-data xterm Pyrex bzr cdrdao bash-completion libgusb colord cvs dash dcd dmake faad2 frox \
-    gaa gdb gpm igmpproxy iksemel imap ippool ipv6calc kbd keepalived lksctp-tools libid3tag madplay man2html mercurial \
-    mrtg nmap openl2tp freeradius-server freeradius-client memcached libmemcached opensips openvpn pine psqlodbc rpcbind \
-    sendmail sox sqliteodbc stund hostapd wpa_supplicant libnetfilter_cthelper libnetfilter_queue conntrack-tools \
+    gaa gdb gpm igmpproxy iksemel imap portablexdr ippool ipv6calc kbd keepalived lksctp-tools libid3tag madplay man2html \
+    mercurial mrtg nmap openl2tp freeradius-server freeradius-client memcached libmemcached opensips openvpn pine psqlodbc \
+    rpcbind sendmail sox sqliteodbc stund hostapd wpa_supplicant libnetfilter_cthelper libnetfilter_queue conntrack-tools \
     libnetfilter_acct libnetfilter_log nfacct ulogd mpg123 || return 1
 
   build_packages ${1} gnustep-make gnustep-base SOPE acpid bind clamav coova-chilli dhcp dovecot freetds hylafax mcrypt mm  \
@@ -2068,11 +2102,11 @@ build_dependancies() {
     libdvdnav MPlayer clucene-core libzip mdds boost libixion liborcus || return 1
 
   #Desktop (Gnome / apps)
-  build_packages ${1} gnome-common glade libnotify startup-notification shared-mime-info libwnck vte gnome-keyring \
-    gnome-desktop libopenraw iso-codes libxkbfile libxklavier xpdf icon-naming-utils gnome-icon-theme eog aterm file-roller \
-    libgsf wv hunspell enchant abiword libart libgnome libgnomecanvas libbonoboui libgnomeui gcalctool gucharmap leafpad \
-    ffmpegthumbnailer glib-networking libsoup gsettings-desktop-schemas gtk-engines gnome-themes-standard libsecret \
-    libunique evince || return 1
+  build_packages ${1} gnome-common libgnome libart libgnomecanvas libbonoboui libgnomeui glade libnotify \
+    startup-notification shared-mime-info libwnck vte gnome-keyring gnome-desktop libopenraw iso-codes libxkbfile \
+    libxklavier xpdf icon-naming-utils gnome-icon-theme eog aterm file-roller libgsf wv hunspell enchant abiword \
+    libgnomecanvas gcalctool gucharmap leafpad ffmpegthumbnailer gsettings-desktop-schemas glib-networking libsoup \
+    gtk-engines gnome-themes-standard libsecret libunique evince || return 1
 
   #Linphone
   build_packages ${1} oRTP spandsp mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk libosip2 exosip linphone || return 1
@@ -2091,7 +2125,7 @@ build_dependancies() {
 #XXX
   #Evolution/Epiphany
   build_packages ${1} libgdata libgweather libpst geoclue libical libwebp gtkhtml gtkimageview \
-    evolution-data-server clutter clutter-gtk evolution webkitgtk epiphany || return 1
+    evolution-data-server clutter clutter-gtk || return 1
 
   #Mono if bootstrap good
   if [ -x /usr/bin/gmcs ];then
@@ -2110,19 +2144,20 @@ build_dependancies() {
     gnuchess ctl CTL openexr_ctl openexr_viewers xmlcopyeditor dia || return 1
 
   #Other Packages
-  build_packages ${1} memtest86 liberation-fonts dejavu-fonts unifoundry psutils php-src docutils po4a isoquery syslinux|| return 1
+  build_packages ${1} memtest86 liberation-fonts dejavu-fonts unifoundry psutils php-src  isoquery syslinux|| return 1
 
   #DirectFB
   build_packages ${1} flux DirectFB SDL_net SDL_image smpeg SDL_mixer SDL2_net SDL2_image smpeg2 SDL2_mixer || return 1
 
   #GST Plugins
-  build_packages ${1} gst-plugins-good gst-plugins-ugly gst-plugins-bad gst-plugins-good-1 gst-plugins-ugly-1 gst-plugins-bad-1 || return 10
+  build_packages ${1} gst-plugins-good gst-plugins-ugly gst-plugins-bad gst-plugins-good-1 gst-plugins-ugly-1 gst-plugins-bad-1 || return 1
 
   #Voip libs
 #  build_packages ${1} openr2 libpri libss7 || return 1
-
 #XXX
 #PyQt-x11 sip
+  #Almost done
+  build_packages ${1} grub || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
@@ -2172,18 +2207,19 @@ bootstrap_native() {
   fi;
 
   #Build Native Arch Libs
-  if [ -e /etc/.static ];then
+  if [ -e /etc/.static ] || [ -e /usr/bin/${BUILD}-gcc.null ] || [ -e /usr/bin/${BUILD}-gcc.boot ];then
     (build_glibc ${NARCH} ${BUILD}) || return 1
     /sbin/ldconfig >/dev/null 2>&1
     rm /etc/.static
+    touch /usr/bin/${BUILD}-gcc.boot
   fi;
 
   #Bootstrap native arch buildtools
-  build_packages ${NARCH} binutils groff gdbm perl help2man findutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 \
-    automake-1.14 help2man zlib libtool gmp gengetopt libidn libtasn1 libffi || return 1
+  build_packages ${NARCH} binutils groff gdbm perl help2man autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 \
+    automake-1.14 help2man zlib libtool gmp findutils file gengetopt libidn libtasn1 libffi || return 1
 
   #build shared gcc to get shared libstdc++/libada/libgcc [C/C++/ADA]
-  if [ ! -e /usr/${NLIBDIR}/libstdc++.so ] || [ ! -e ${STATDIR}/${NARCH}/done/gcc ];then
+  if [ -e /usr/bin/${BUILD}-gcc.boot ] || [ -e /usr/bin/${BUILD}-gcc.shared ];then
     build_packages ${NARCH} libtool gmp mpfr mpc isl cloog || return 1
     touch /usr/bin/${BUILD}-gcc.boot
     (build_gcc_bootstrap ${NARCH} ${BUILD} ${NARCH} shared) || return 1
@@ -2204,7 +2240,7 @@ bootstrap_native() {
   fi;
 
   build_packages ${NARCH} gmp ncursesw ncurses gettext p11-kit nettle texinfo gnutls libgpg-error libgcrypt pcre ustr \
-    flex bison libprelude bzip2 libaudit selinux portablexdr libtirpc Linux-PAM  ||return 1
+    flex bison libprelude bzip2 libaudit selinux libtirpc Linux-PAM  ||return 1
 
   #Bootstrap native arch with deps for GCC [libjava] if gcc not built
   if [ ! -e ${STATDIR}/${NARCH}/done/unzip ];then
@@ -2227,9 +2263,6 @@ bootstrap_native() {
 }
 
 bootstrap_toolchain() {
-  #Check arch build dir exists Setup linux headers and env vars
-  check_create_arch ${1}
-
   #Is LD good ?? create symlinks needed
   for binarch in ${HOST} ${BUILD};do
     for bintool in `ls /usr/${binarch}/bin/`;do
@@ -2422,8 +2455,13 @@ for barch in ${ARCHLIST};do
   #Setup stat dir
   configstatdir ${barch}
 
-  #ensure the tool chain is in place
-  bootstrap_toolchain ${barch} || continue;
+  #Check arch build dir exists Setup linux headers and env vars
+  check_create_arch ${barch}
+
+  #ensure the tool chain is in place unless not bootstraping
+  if [ ! "${NOBOOTSTRAP}" ] || [ "${NOBOOTSTRAP}" != "1" ];then
+    bootstrap_toolchain ${barch} || continue;
+  fi;
 
   #Build multiple packages XXX add git bits
   if (( $# > 1 ));then
