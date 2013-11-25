@@ -28,9 +28,8 @@ ADDCC="0";
 CLEARFLAGS="1";
 BASEOPT="--without-cloog --without-isl --with-system-zlib";
 BASEOPT2="--without-lto --disable-libitm --disable-libmudflap  --disable-libswsp --disable-libgomp --disable-multilib
-          --disable-libatomic --disable-libssp --disable-libquadmath --disable-threads --disable-shared 
-          --disable-bootstrap";
-NULLOPT="${BASEOPT} ${BASEOPT2} --enable-languages=c --with-newlib --disable-decimal-float";
+          --disable-libatomic --disable-libssp --disable-libquadmath --disable-threads --disable-bootstrap";
+NULLOPT="${BASEOPT} ${BASEOPT2} --enable-languages=c --with-newlib --disable-decimal-float --disable-shared";
 BOOTOPT="${BASEOPT} ${BASEOPT2} --enable-languages=c,c++,ada";
 SHAREDOPT="${BASEOPT} --enable-languages=c,c++,ada --disable-multilib";
 BOOTOPT_mips="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
