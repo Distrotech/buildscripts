@@ -185,7 +185,7 @@ check_create_arch() {
   for incdir in /usr/X11R7/include /usr/${B_LIBDIRS}/glib-2.0/include /opt/qt-4/include \
                 /usr/include/glib-2.0 /usr/include/dbus-1.0 /opt/xfce/include \
                 /usr/include/gtk-3.0 /usr/include/gtk-2.0;do
-    if [ ! -d ${incdir} ];then
+    if [ ! -d ${incdir} ] && [ "${BOOTSTRAP_STATIC}" == "0" ];then
       mkdir -p ${incdir}
     fi;
     if [ ! -d ${ARCHROOT}/${1}/${incdir} ];then
@@ -541,7 +541,7 @@ imake_cross_build() {
 
   #Postconfig hook
   if [ -e ${SRCDIR}/${PSOURCEDIR}/.build-info/post-config ];then
-    sh ${SRCDIR}/${PSOURCEDIR}/.build-info/post-config ${2} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT}
+    bash ${SRCDIR}/${PSOURCEDIR}/.build-info/post-config ${2} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT}
   fi;
 
   sysroot_fixup ${1}
@@ -590,7 +590,7 @@ cmake_cross_build() {
 
   #Postconfig hook
   if [ -e ${SRCDIR}/${PSOURCEDIR}/.build-info/post-config ];then
-    sh ${SRCDIR}/${PSOURCEDIR}/.build-info/post-config ${2} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT}
+    bash ${SRCDIR}/${PSOURCEDIR}/.build-info/post-config ${2} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT}
   fi;
 
   /usr/bin/make ${MAKE_J} V=1 ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} && \
@@ -675,7 +675,7 @@ autoconf_cross_build() {
 
   #Preconfig hook
   if [ -e ${SRCDIR}/${PSOURCEDIR}/.build-info/pre-config ];then
-    sh ${SRCDIR}/${PSOURCEDIR}/.build-info/pre-config ${2} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT}
+    bash ${SRCDIR}/${PSOURCEDIR}/.build-info/pre-config ${2} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT}
   fi;
 
   if [ "${NOCCOPT}" ] && [ "${NOCCOPT}" == "1" ] && [ "${EXTRALIBS}" ];then
@@ -690,14 +690,14 @@ autoconf_cross_build() {
 
   #Postconfig hook
   if [ -e ${SRCDIR}/${PSOURCEDIR}/.build-info/post-config ];then
-    sh ${SRCDIR}/${PSOURCEDIR}/.build-info/post-config ${2} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT}
+    bash ${SRCDIR}/${PSOURCEDIR}/.build-info/post-config ${2} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT}
   fi;
 
   sysroot_fixup ${2}
 
   #config make hook
   if [ -e ${SRCDIR}/${PSOURCEDIR}/.build-info/make-config ];then
-    sh ${SRCDIR}/${PSOURCEDIR}/.build-info/make-config ${NARCH} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT} ${HOST} ${2}
+    bash ${SRCDIR}/${PSOURCEDIR}/.build-info/make-config ${NARCH} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT} ${HOST} ${2}
    else
     if [ "${ADDCC}" ] && [ "${ADDCC}" == "0" ];then
       /usr/bin/make ${MAKE_J} HOSTCC="${BUILD}-gcc" HOSTLD="${BUILD}-gcc" \
@@ -1144,7 +1144,7 @@ build_project() {
 
   #Postinstall hook
   if [ -e ${SRCDIR}/${PSOURCEDIR}/.build-info/post-install ];then
-    sh ${SRCDIR}/${PSOURCEDIR}/.build-info/post-install ${barch} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT}
+    bash ${SRCDIR}/${PSOURCEDIR}/.build-info/post-install ${barch} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT}
   fi;
 
   #Dist conf process dist configs
@@ -1603,7 +1603,7 @@ build_gcc_bootstrap() {
 
   #Setup some missing bits
   if [ -e ${SRCDIR}/gcc/${GCC}/.build-info/post-install ];then
-    sh ${SRCDIR}/gcc/${GCC}/.build-info/post-install ${1} ${SRCDIR}/gcc/${GCC} ${GCCBOOTDEST}
+    bash ${SRCDIR}/gcc/${GCC}/.build-info/post-install ${1} ${SRCDIR}/gcc/${GCC} ${GCCBOOTDEST}
   fi;
 
   if [ "${DIETBUILD}" == "1" ];then
@@ -1809,7 +1809,7 @@ build_static_tool() {
 
   #Postconfig hook
   if [ -e ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-config ];then
-    sh ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-config ${1} ${SRCDIR}/${4}/${STATICTOOL} ${TOOLDIR}/${1}/${STATICTOOL}-static
+    bash ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-config ${1} ${SRCDIR}/${4}/${STATICTOOL} ${TOOLDIR}/${1}/${STATICTOOL}-static
   fi;
 
   make ${MAKE_J} ${STATICMOPT} || make ${STATICMOPT} || return 1
@@ -1817,7 +1817,7 @@ build_static_tool() {
 
   #Postinstall hook
   if [ -e ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install ];then
-    sh ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install ${1} ${SRCDIR}/${4}/${STATICTOOL} ${TOOLDIR}/${1}/${STATICTOOL}-static
+    bash ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install ${1} ${SRCDIR}/${4}/${STATICTOOL} ${TOOLDIR}/${1}/${STATICTOOL}-static
   fi;
 
   if [ "${STATICINSTLIBS}" ] && [ "${STATICINSTLIBS}" == "1" ];then
@@ -2362,6 +2362,39 @@ loop_on_dir() {
   fi;
 }
 
+ubuntu_pkg() {
+  for rpkg in build-essential help2man autopoint libselinux-dev libsigsegv-dev libreadline-dev libncursesw5-dev \
+              gnat libgmp-dev libmpfr-dev libmpc-dev libgnatprj4.6-dev ant openjdk-7-jdk squashfs-tools git gawk;do
+    if ! dpkg -l ${rpkg} > /dev/null 2>&1;then
+      PKG_TOGET="${PKG_TOGET} ${rpkg}"
+    fi;
+  done
+  if [ "${PKG_TOGET}" ];then
+    apt-get install ${PKG_TOGET} || return 1
+   else
+    return 0;
+  fi;
+}
+
+ubuntu_host() {
+  if ! ubuntu_pkg;then
+    echo "Sorry it did not work out needed to get"
+    echo ${PKG_TOGET}
+    return 1;
+  fi;
+}
+
+check_host() {
+  (eval `cat /etc/os-release`
+  if [ "${NAME}" ] && [ "${NAME}" == "Ubuntu" ];then
+    ubuntu_host || return 1;
+   else
+    echo "Host not supported please add support"
+    return 1;
+  fi;)
+  export BOOTSTRAP_STATIC=1
+}
+
 buildall_arch() {
   while loop_on_dir ${1};do
     if [ -e ${STATDIR}/${1}/change ];then
@@ -2423,6 +2456,11 @@ for pkg in binutils gcc glibc qemu;do
     exit 1;
   fi;
 done;
+
+#Bootstrap on ubuntu
+if test -e /etc/os-release;then
+  check_host || exit 1
+fi;
 
 #Setup Native enviroment doing it like this prevents code replication
 arch_config ${NARCH}
