@@ -1972,7 +1972,8 @@ build_dependancies() {
   fi;
 
   #Add required perl modules from cpan may not need libxml only expat !!!
-  for pmod in XML::Parser XML::SAX Font::TTF XML::Simple Archive::Zip Pod::Simple::Search YAML;do
+  for pmod in XML::Parser XML::SAX Font::TTF XML::Simple Archive::Zip Pod::Simple::Search YAML File::Temp \
+              Locale::gettext Term::ReadKey Text::WrapI18N Unicode::GCString;do
     if [ ! -e ${STATDIR}/${1}/done/${pmod} ];then
       if [ "${NARCH}" == "${1}" ];then
         cpan -i ${pmod} && touch ${STATDIR}/${1}/done/${pmod}
