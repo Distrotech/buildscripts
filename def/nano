@@ -3,5 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-all";
 SYSROOTFIXUP="1";
-STATICOPT="LDFLAGS=-static --enable-all";
+STATICOPT="LDFLAGS=-static --enable-all LIBS=-ldl";
 
