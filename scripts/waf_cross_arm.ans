@@ -35,11 +35,39 @@ Checking for HAVE_SECURE_MKSTEMP: OK
 rpath library support: OK
 -Wl,--version-script support: OK
 Checking for HAVE_IFACE_GETIFADDRS: OK
-Checking for HAVE_IFACE_IFCONF: UNKNOWN
-Checking for HAVE_IFACE_IFREQ: UNKNOWN
 Checking for HAVE_INCOHERENT_MMAP: NO
 Checking getconf LFS_CFLAGS: "`getconf LFS_CFLAGS`"
 Checking for large file support without additional flags: NO
 Checking for working strptime: OK
 Checking for HAVE_SHARED_MMAP: OK
 Checking for HAVE_MREMAP: OK
+Checking for HAVE_LITTLE_ENDIAN: OK
+Checking for HAVE_LITTLE_ENDIAN - runtime: OK
+Checking for HAVE_BIG_ENDIAN - runtime: NO
+Checking whether we can use Linux thread-specific credentials with 32-bit system calls: OK
+Checking whether setreuid is available: OK
+Checking whether setresuid is available: OK
+Checking whether seteuid is available: OK
+Checking whether fcntl locking is available: OK
+Checking whether the realpath function allows a NULL argument: OK
+Checking for ftruncate extend: OK
+getcwd takes a NULL argument: OK
+Checking configure summary: OK
+Checking value of NSIG: "65"
+Checking value of _NSIG: "65"
+Checking value of SIGRTMAX: "64"
+Checking value of SIGRTMIN: "34"
+Checking for kernel share modes: OK
+Checking whether blkcnt_t is 64 bit: OK
+Checking whether POSIX capabilities are available: OK
+vfs_fileid: checking for statfs() and struct statfs.f_fsid: OK
+Checking for kernel change notify support: UNKNOWN
+Checking for Linux kernel oplocks: UNKNOWN
+Checking whether blkcnt_t is 32 bit: UNKNOWN
+Checking if can we convert from CP850 to UCS-2LE: UNKNOWN
+Checking if can we convert from IBM850 to UCS-2LE: UNKNOWN
+Checking if can we convert from UTF-8 to UCS-2LE: UNKNOWN
+Checking if can we convert from UTF8 to UCS-2LE: UNKNOWN
+Checking size of ((struct utmp *)NULL)->ut_line: UNKNOWN
+Checking for the maximum value of the 'time_t' type: UNKNOWN
+vfs_fileid: checking for statfs() and struct statfs.f_fsid: UNKNOWN
