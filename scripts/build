@@ -2023,7 +2023,7 @@ build_dependancies() {
       gs-fonts ijs libspectre poppler atk gdk-pixbuf libvdpau || return 1
   fi;
 
-  build_packages ${1} cairo gobject-introspection icu4c cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala \
+  build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala \
     libdrm intltool llvm talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
     module-init-tools LVM2 cryptsetup libmicrohttpd systemd Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh || return 1
 
