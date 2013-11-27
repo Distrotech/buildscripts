@@ -2,10 +2,14 @@
 
 GLIBCVER=2.18
 QEMU=1.6.1
-ANTVER=1.8.4
+ANTVER=1.9.2
 
 AUTOCONF=2.69
 AUTOMAKE=1.9.6
+
+DISTDIR=/dist
+PKGDISTDIR=${DISTDIR}/pkg
+CROSSDISTDIR=${DISTDIR}/cross
 
 NARCH=$( uname -m )
 
@@ -19,7 +23,7 @@ if [ "${1}" ];then
   DARCH=${NARCH}
 fi;
 
-if [ ! "${DARCH}" ] || [ ! -d /dist/pkg/build/${DARCH} ];then
+if [ ! "${DARCH}" ] || [ ! -d ${PKGDISTDIR}/build/${DARCH} ];then
   echo require arch
   exit;
 fi;
@@ -43,7 +47,7 @@ esac;
 if [ ${2} ];then
   STATICROOT=${2}
  else
-  STATICROOT=/dist/root/${DARCH}-static
+  STATICROOT=${DISTDIR}/root/${DARCH}-static
 fi;
 
 if [ -d ${STATICROOT} ];then
@@ -52,28 +56,28 @@ fi;
 mkdir -p ${STATICROOT}/etc
 touch ${STATICROOT}/etc/.static
 
-cd /dist/pkg/build/${DARCH}
+cd ${PKGDISTDIR}/build/${DARCH}
 for pkg in `ls -d *static *boot` ;do
   for subpkg in `ls ${pkg}/${pkg}.tar.xz ${pkg}/${pkg}-libs.tar.xz ${pkg}/${pkg}-dev.tar.xz 2>/dev/null`;do
     tar --exclude=*/.dbg/* -C ${STATICROOT} -xJf ${subpkg};
   done;
 done
 
-if [ -e /dist/cross/${NARCH}/qemu-${QEMU}/usr/bin/qemu-${DARCH}-static ];then
-  cp /dist/cross/${NARCH}/qemu-${QEMU}/usr/bin/qemu-${DARCH}-static ${STATICROOT}/usr/bin
+if [ -e ${CROSSDISTDIR}/${NARCH}/qemu-${QEMU}/usr/bin/qemu-${DARCH}-static ];then
+  cp ${CROSSDISTDIR}/${NARCH}/qemu-${QEMU}/usr/bin/qemu-${DARCH}-static ${STATICROOT}/usr/bin
 fi;
 
 #Strip all the bits
 ${STRIP} ${STATICROOT}/bin/* ${STATICROOT}/sbin/* ${STATICROOT}/usr/bin/* ${STATICROOT}/usr/sbin/*
 
-for devpkg in /dist/pkg/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}-dev.tar.xz \
-              /dist/pkg/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}-libs.tar.xz \
-              /dist/pkg/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}-conf.tar.xz \
-              /dist/pkg/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}.tar.xz \
-              /dist/pkg/${DARCH}/apache-ant-${ANTVER}/apache-ant-${ANTVER}-libs.tar.xz \
-              /dist/pkg/${DARCH}/autoconf-${AUTOCONF}/autoconf-${AUTOCONF}.tar.xz \
-              /dist/pkg/${DARCH}/automake-${AUTOMAKE}/automake-${AUTOMAKE}.tar.xz \
-              kernel-headers.tar.xz /dist/pkg/java-jar.tar.xz;do
+for devpkg in ${PKGDISTDIR}/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}-dev.tar.xz \
+              ${PKGDISTDIR}/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}-libs.tar.xz \
+              ${PKGDISTDIR}/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}-conf.tar.xz \
+              ${PKGDISTDIR}/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}.tar.xz \
+              ${PKGDISTDIR}/${DARCH}/apache-ant-${ANTVER}/apache-ant-${ANTVER}-libs.tar.xz \
+              ${PKGDISTDIR}/${DARCH}/autoconf-${AUTOCONF}/autoconf-${AUTOCONF}.tar.xz \
+              ${PKGDISTDIR}/${DARCH}/automake-${AUTOMAKE}/automake-${AUTOMAKE}.tar.xz \
+              kernel-headers.tar.xz ${PKGDISTDIR}/java-jar.tar.xz;do
   if [ -f ${devpkg} ];then
     tar --exclude=*/.dbg/* -C ${STATICROOT} -xJf ${devpkg};
   fi;
@@ -87,15 +91,7 @@ for sysdir in proc sys dev root tmp usr/src dist etc/xml;do
   mkdir -p ${STATICROOT}/${sysdir}
 done;
 
-cp /etc/passwd /etc/group /etc/hosts ${STATICROOT}/etc
-if [ -x /usr/bin/xmlcatalog ];then
-  xmlcatalog --noout --create ${STATICROOT}/etc/xml/docbook.xml
-  xmlcatalog --noout --create ${STATICROOT}/etc/xml/docbook-xsl.xml
-  xmlcatalog --noout --create ${STATICROOT}/etc/xml/catalog.xml
-  xmlcatalog --noout --add nextCatalog "file:///etc/xml/docbook.xml" "" ${STATICROOT}/etc/xml/catalog.xml
-  xmlcatalog --noout --add nextCatalog "file:///etc/xml/docbook-xsl.xml" "" ${STATICROOT}/etc/xml/catalog.xml
-  ln -s catalog.xml ${STATICROOT}/etc/xml/catalog
-fi;
+rsync -avP ${DISTDIR}/res ${STATICROOT}/
 
 for mdir in 1 2 3 4 5 6 7 8;do
   mkdir -p ${STATICROOT}/usr/share/man/man${mdir}
@@ -123,10 +119,8 @@ if [ -e ${STATICROOT}.sqfs ];then
   rm ${STATICROOT}.sqfs
 fi;
 
-cp /dist/scripts/build ${STATICROOT}/usr/sbin/build_system
 mkdir ${STATICROOT}/build
 ln -s ..  ${STATICROOT}/build/${DARCH}
-
 
 chroot ${STATICROOT} /sbin/ldconfig
 
