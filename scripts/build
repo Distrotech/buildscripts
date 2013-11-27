@@ -230,7 +230,7 @@ check_create_arch() {
     if [ ! -d ${ARCHROOT}/${1}/etc ];then
       mkdir -p ${ARCHROOT}/${1}/etc
       ln -s ../proc/self/mounts ${ARCHROOT}/${1}/etc/mtab
-      rsync -avRP ${DISTDIR}/res/ ${ARCHROOT}/${1}/
+      rsync -a ${DISTDIR}/res/ ${ARCHROOT}/${1}/
       if [ -x /bin/domainname ];then
         echo "domainname $(domainname)" > ${ARCHROOT}/${1}/etc/resolv.conf
         echo "search $(domainname)" >> ${ARCHROOT}/${1}/etc/resolv.conf
