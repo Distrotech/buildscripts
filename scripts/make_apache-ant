@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 
 JARS="antlr-4.1-dev-complete junit-4.11 js"
 
@@ -14,7 +14,9 @@ if [ ! -d lib/optional ];then
 fi;
 
 for jar in ${JARS};do
-  if [ -e /usr/share/java/${jar}.jar ];then
+  if [ -e ${SYSROOT}/usr/share/java/${jar}.jar ];then
+    ln -s ${SYSROOT}/usr/share/java/${jar}.jar lib/optional/${jar}.jar
+   elif [ -e /usr/share/java/${jar}.jar ];then
     ln -s /usr/share/java/${jar}.jar lib/optional/${jar}.jar
   fi;
 done;

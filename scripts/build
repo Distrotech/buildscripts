@@ -4,6 +4,9 @@
 GITIP=192.30.252.130
 GITBASE=git://${GITIP}/Distrotech
 
+ANT_VER="1.9.2";
+JAVA_VER="1.7.0_60";
+
 XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /usr/share/docbook2X/xslt/catalog.xml'
 LANG=en_ZA.UTF8
 
@@ -30,7 +33,7 @@ MARCH_x86_64="x86_32|i[3-6]86|x86_64"
 MARCH_x86_32=${MARCH_x86_64}
 MARCH_powerpc64="powerpc|powerpc64"
 
-export XML_CATALOG_FILES LANG
+export XML_CATALOG_FILES LANG ANT_VER JAVA_VER
 
 #Parse cmdline opts
 #Adding a arch here may require you adding tupple/kernel arch/libdirs and bellow in arch_config
@@ -846,16 +849,6 @@ build_project() {
     TOPDIR=${TOPDIR}../
   fi;
 
-  if [ "${JAVA_HOME}" ];then
-    export JAVA_HOME
-    export PATH=${JAVA_HOME}/bin:${PATH}
-  fi;
-
-  if [ "${ANT_HOME}" ];then
-    export ANT_HOME
-    export PATH=${ANT_HOME}/bin:${PATH}
-  fi;
-
   SYSPATH=${PATH}
 
   if [ -x /usr/bin/which ] || [ -x /bin/which ];then
@@ -1170,6 +1163,8 @@ build_project() {
 #      if [ -d ${DIST_ROOT}/usr/${B_LIBDIRS} ];then
 #        ${RSYNC} -avP ${DIST_ROOT}/usr/${B_LIBDIRS} /usr/
 #      fi;
+   elif [ "${BOOTSTRAP_STATIC}" == "1" ] && [ "${GCCDEPENDS}" ];then
+    rsync -avP ${DIST_ROOT}/ ${BASEROOT}/${barch}/
   fi;
 
   if [ -d ${ARCHROOT}/${barch} ] && [ ! -h ${ARCHROOT}/${barch} ];then
@@ -1593,6 +1588,11 @@ build_gcc_bootstrap() {
   run_configure ${USELIBDIR} .. ${PROGPRE} --build=${BUILD} --host=${THOST} --target=${2} --with-build-sysroot=${BUILDDIR} \
                 ${CONFOPT} ${!MARCH} ${GCCOPTS} || return 1
 
+
+  if [ "${BOOTSTRAP_STATIC}" == "1" ];then
+    rsync -a ${BUILDDIR}/usr/${NLIBDIR}/crt*.o gcc/
+  fi;
+
   if [ ! -d ${2}/libstdc++-v3 ];then
     mkdir -p ${2}/libstdc++-v3
   fi;
@@ -1777,10 +1777,19 @@ build_static_tool() {
     CFG_BIN=..
   fi;
 
+  run_configure ${3} ${CFG_BIN} --build=${BUILD} --host=${2} ${STATICOPT} ${ARCHOPT} || return 1
+
   #Touch up documents
   find ${SRCDIR}/${4}/${STATICTOOL} -regex '.*\.info$' -or -regex '.*\.pdf$'|awk '{printf "touch %s\n",$1}' |sh
 
-  run_configure ${3} ${CFG_BIN} --build=${BUILD} --host=${2} ${STATICOPT} ${ARCHOPT} || return 1
+  if [ "${4}" == "flex" ];then
+    sed -i -e "s/\(all:\).*/\1/" doc/Makefile
+    cp ../scan.c ../parse.h ../parse.c ./
+  fi;
+
+  if [ "${4}" == "make" ];then
+    sed -i -e "s/\(all:\).*/\1/" doc/Makefile
+  fi;
 
   if [ "${4}" == "binutils" ];then
     make ${MAKE_J} configure-host || return 1
@@ -1792,6 +1801,7 @@ build_static_tool() {
 
   #Texinfo hack Add po to the list too
   if [ "${4}" == "texinfo" ];then
+    sed -i -e "s/\(all:\).*/\1/" doc/Makefile
     for gnulib in gnulib/lib/ tools/gnulib/lib/ po;do
       if [ -d ${gnulib} ];then
         make ${MAKE_J} -C ${gnulib} || make -C ${gnulib} || return 1
@@ -2366,9 +2376,10 @@ loop_on_dir() {
 }
 
 ubuntu_pkg() {
-  for rpkg in build-essential help2man autopoint libselinux-dev libsigsegv-dev libreadline-dev libncursesw5-dev \
-              gnat libgmp-dev libmpfr-dev libmpc-dev libgnatprj4.6-dev ant openjdk-7-jdk squashfs-tools git gawk;do
-    if ! dpkg -l ${rpkg} > /dev/null 2>&1;then
+  for rpkg in build-essential help2man autopoint gnat libgnatprj4.6-dev ant openjdk-7-jdk squashfs-tools git gawk \
+              texinfo flex bison autoconf automake libgmp-dev libmpfr-dev libmpc-dev libselinux1-dev libsigsegv-dev \
+              libreadline-dev libncursesw5-dev libncurses5-dev libgpm-dev libgtk2.0-dev libtool;do
+    if ! dpkg -s ${rpkg} > /dev/null 2>&1;then
       PKG_TOGET="${PKG_TOGET} ${rpkg}"
     fi;
   done
@@ -2433,6 +2444,7 @@ buildall_static() {
 
   echo "GCC"
   (PATH=${ARCHROOT}/${1}/sbin:${ARCHROOT}/${1}/bin:${ARCHROOT}/${1}/usr/sbin:${ARCHROOT}/${1}/usr/bin:${PATH}
+  export GCCDEPENDS=1
   build_packages ${1} libtool zlib gmp mpfr mpc isl cloog) || return 1
   (export CC=gcc-4.6;
 #  GCCLFLAGS="-L/lib/arm-linux-gnueabihf -L/usr/lib/arm-linux-gnueabihf"
@@ -2444,7 +2456,7 @@ buildall_static() {
   static_toolbuild ${1} || return 1
 
   echo "Packages for static root"
-  build_packages ${1} apache-ant automake-1.9 autoconf || return 1
+  build_packages ${1} junit rhino antlr4 apache-ant automake-1.9 autoconf || return 1
   return;
 }
 
@@ -2473,6 +2485,26 @@ NKARCH=${LINARCH}
 unset TUPPLE SETLIBDIR LINARCH
 export BUILD NKARCH NLIBDIR
 
+if [ ! "${ANT_HOME}" ] && [ -d /usr/${NLIBDIR}/jvm/apache-ant-${ANT_VER} ];then
+  export ANT_HOME="/usr/${NLIBDIR}/jvm/apache-ant-${ANT_VER}"
+fi;
+
+if [ "${ANT_HOME}" ];then
+  export PATH=${PATH}:${ANT_HOME}/bin
+fi;
+
+if [ ! "${JAVA_HOME}" ] && [ -d /usr/${NLIBDIR}/jvm/jdk-${JAVA_VER} ];then
+  export JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-${JAVA_VER}"
+ elif [ ! "${JAVA_HOME}" ] && [ -d /usr/${NLIBDIR}/jvm/jre-${JAVA_VER} ];then
+  export JAVA_HOME="/usr/${NLIBDIR}/jvm/jre-${JAVA_VER}"
+ elif [ ! "${JAVA_HOME}" ] && [ -d /usr/lib/jvm/default-java ];then
+  export JAVA_HOME="/usr/lib/jvm/default-java"
+fi;
+
+if [ "${JAVA_HOME}" ];then
+  export PATH=${JAVA_HOME}/bin:${PATH}
+fi;
+
 #OpenJDK specifically barfs when these are not inplace check and fix
 for binlink in cpio tar sed grep fgrep egrep;do
   if [ ! -e /bin/${binlink} ] && [ -x /usr/bin/${binlink} ];then
@@ -2484,13 +2516,32 @@ if [ ! -d ${PKGDISTDIR} ];then
   mkdir -p ${PKGDISTDIR}
 fi;
 
-if [ "${BOOTSTRAP_STATIC}" ] && [ "${BOOTSTRAP_STATIC}" == "1" ];then
-  buildall_static ${NARCH} ${BUILD}
-  exit 0;
+#Get Java files ecj / ant / antlr / jhylafax / junit
+#ecj/hyla/js/junit are binaries
+unset NEWJAVA
+if [ ! -e ${ARCHROOT}/${NARCH}/usr/share/java/ecj-3.5.2.jar ];then
+  #http://archive.eclipse.org/eclipse/downloads/drops/R-3.5.2-201002111343/ecjsrc-3.5.2.zip4
+  if [ ! -d ${ARCHROOT}/${NARCH}/usr/share/java ];then
+    mkdir -p ${ARCHROOT}/${NARCH}/usr/share/java
+  fi
+  wget archive.eclipse.org/eclipse/downloads/drops/R-3.5.2-201002111343/ecj-3.5.2.jar -O ${ARCHROOT}/${NARCH}/usr/share/java/ecj-3.5.2.jar
+  NEWJAVA=1;
+fi;
+
+if [ "${NEWJAVA}" ] && [ "${NEWJAVA}" == "1" ];then
+  rm ${PKGDISTDIR}/java-jar.tar.xz
+  (cd ${ARCHROOT}/${NARCH}
+   tar -cJf ${PKGDISTDIR}/java-jar.tar.xz usr/share/java/ecj-3.5.2.jar)
 fi;
 
 if [ -d /usr/share/java ] && [ -d ${PKGDISTDIR} ] && [ ! -f ${PKGDISTDIR}/java-jar.tar.xz ];then
-  find /usr/share/java/ ! -regex .*libgcj.* |cpio -ov -H tar |xz -9 > ${PKGDISTDIR}/java-jar.tar.xz
+  tar -cJf ${PKGDISTDIR}/java-jar.tar.xz /usr/share/java/ecj*.jar
+#  find /usr/share/java/ ! -regex .*libgcj.* |cpio -ov -H tar |xz -9 > ${PKGDISTDIR}/java-jar.tar.xz
+fi;
+
+if [ "${BOOTSTRAP_STATIC}" ] && [ "${BOOTSTRAP_STATIC}" == "1" ];then
+  buildall_static ${NARCH} ${BUILD}
+  exit 0;
 fi;
 
 for barch in ${ARCHLIST};do

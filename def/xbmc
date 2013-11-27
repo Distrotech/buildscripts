@@ -1,7 +1,6 @@
 VERSION="13"
 VERSEP="-";
 PREFIX="/usr";
-JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-1.7.0_60";
 CONFOPT="--enable-external-ffmpeg --enable-external-libraries --disable-rsxs PYTHON=/build/${barch}/usr/bin/python";
 ADDCFLAG="-I=/usr/include/python2.7";
 BUILDDIR="0";

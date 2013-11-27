@@ -26,7 +26,7 @@ SYSROOTFIXUP="0";
 NOCCOPT="1";
 ADDCC="0";
 CLEARFLAGS="1";
-BASEOPT="--without-cloog --without-isl --with-system-zlib --disable-bootstrap";
+BASEOPT="--without-cloog --without-isl --disable-bootstrap";
 BASEOPT2="--without-lto --disable-libitm --disable-libmudflap  --disable-libswsp --disable-libgomp
           --disable-libatomic --disable-libssp --disable-libquadmath";
 NULLOPT="${BASEOPT} ${BASEOPT2} --enable-languages=c --with-newlib --disable-decimal-float --disable-shared --disable-threads";
