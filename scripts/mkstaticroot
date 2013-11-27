@@ -91,7 +91,7 @@ for sysdir in proc sys dev root tmp usr/src dist etc/xml;do
   mkdir -p ${STATICROOT}/${sysdir}
 done;
 
-rsync -avP ${DISTDIR}/res ${STATICROOT}/
+rsync -avP ${DISTDIR}/res/ ${STATICROOT}/
 
 for mdir in 1 2 3 4 5 6 7 8;do
   mkdir -p ${STATICROOT}/usr/share/man/man${mdir}

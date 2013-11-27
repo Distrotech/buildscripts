@@ -414,7 +414,7 @@ tar_package() {
   myloc="\.\/usr\/share\/locale\/${mylang}.*";
 
   find . ! -regex "\.\/include\/.*" -and ! -regex "\.\/usr\/include\/.*" -and ! -regex "\.\/etc\/.*" \
-         ! -regex "\.\/opt\/[a-zA-Z0-9\-_]+\/include\/.*" -and ! -regex "\.\/usr\/X11R7\/include\/.*" -and \
+         ! -regex "\.\/opt\/[a-zA-Z0-9\-\_]+\/include\/.*" -and ! -regex "\.\/usr\/X11R7\/include\/.*" -and \
          ! -regex ".*\/${B_LIBDIRS}\/.*" -and ! -regex "\.\/etc" -and \
          ! -regex "${dbginfo}" -and ! -regex "${dbginfo}\/.*" -and ! -regex "${sharedoc}" -and \
          ! -regex "${manpages}" -and ! -regex "${infopages}" -and ! -regex "\.\/usr\/${B_LIBDIRS}\/locale\/.*" \
@@ -434,7 +434,7 @@ tar_package() {
            -regex ".*\/${B_LIBDIRS}\/.*" |\
          cpio -ov -H tar |xz -9 > ${pkgpre}-libs.tar.xz
     find . -regex "\.\/include\/.*" -or -regex "\.\/usr\/include\/.*" -or \
-           -regex "\.\/opt\/[a-zA-Z0-9\-_]+\/include\/.*" -or -regex "\.\/usr\/X11R7\/include\/.*" -or \
+           -regex "\.\/opt\/[a-zA-Z0-9\-\_]+\/include\/.*" -or -regex "\.\/usr\/X11R7\/include\/.*" -or \
            -regex ".*\/${B_LIBDIRS}\/.*\.a" -or -regex "\.\/usr\/${B_LIBDIRS}\/go.*" -or \
            -regex "\.\/usr\/${B_LIBDIRS}\/thunderbird-devel-.*" -or \
            -regex "\.\/usr\/${B_LIBDIRS}\/firefox-devel-.*" -or \
@@ -463,7 +463,7 @@ tar_package() {
          cpio -ov -H tar |xz -9 > ${pkgpre}-doc.tar.xz
   fi;
 
-  if [ -d etc ];then 
+  if [ -d etc ];then
     find . -regex "\.\/etc\/.*" |\
          cpio -ov -H tar |xz -9 > ${pkgpre}-conf.tar.xz
   fi;)
