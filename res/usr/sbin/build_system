@@ -1,0 +1,18 @@
+#!/bin/bash
+
+GITIP=192.30.252.130
+DISTDIR=/dist
+
+export GITURL=git://${GITIP}/Distrotech
+
+if [ ! -d ${DISTDIR}/.git ];then
+  if [ ! -d ${DISTDIR} ];then
+    mkdir ${DISTDIR}
+  fi;
+  git clone ${GITURL}/buildscripts.git ${DISTDIR}/
+ else
+  (cd ${DISTDIR}
+  git pull)
+fi;
+
+${DISTDIR}/scripts/build $@
