@@ -1,8 +1,7 @@
 VERSION="0.24.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-xpdf-headers --enable-libcurl --enable-zlib";
-CONFOPTX="--disable-cairo-output";
+CONFOPT="--enable-xpdf-headers --enable-libcurl --enable-zlib --enable-cairo-output";
 EXTRALIBS="-ldl -lpng16";
 CLEARFLAGS="1";
 ADDWITHSYSROOT="1";
