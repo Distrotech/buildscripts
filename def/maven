@@ -1,0 +1,9 @@
+VERSION="3.1.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+MOPT_x86_64="LIBDIR=lib64";
+MOPT_x86_32="LIBDIR=libx32";
+MOPT_powerpc64="LIBDIR=lib64";
+MOPT_mips64="LIBDIR=lib64";

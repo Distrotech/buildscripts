@@ -6,6 +6,7 @@ GITBASE=git://${GITIP}/Distrotech
 
 ANT_VER="1.9.2";
 JAVA_VER="1.7.0_60";
+M2_VER="3.1.1";
 
 XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /usr/share/docbook2X/xslt/catalog.xml'
 LANG=en_ZA.UTF8
@@ -33,7 +34,7 @@ MARCH_x86_64="x86_32|i[3-6]86|x86_64"
 MARCH_x86_32=${MARCH_x86_64}
 MARCH_powerpc64="powerpc|powerpc64"
 
-export XML_CATALOG_FILES LANG ANT_VER JAVA_VER
+export XML_CATALOG_FILES LANG ANT_VER JAVA_VER M2_VER
 
 #Parse cmdline opts
 #Adding a arch here may require you adding tupple/kernel arch/libdirs and bellow in arch_config
@@ -157,6 +158,31 @@ mnt_archroot() {
 }
 
 #Check arch export common env variables
+check_java() {
+  if [ ! "${ANT_HOME}" ] && [ -d /usr/${NLIBDIR}/jvm/apache-ant-${ANT_VER} ];then
+    export ANT_HOME="/usr/${NLIBDIR}/jvm/apache-ant-${ANT_VER}"
+    export PATH=${PATH}:${ANT_HOME}/bin
+  fi;
+
+  if [ ! "${M2_HOME}" ] && [ -d /usr/${NLIBDIR}/jvm/apache-maven-${M2_VER} ];then
+    export M2_HOME="/usr/${NLIBDIR}/jvm/apache-maven-${M2_VER}"
+    export PATH=${PATH}:${M2_HOME}/bin
+  fi;
+
+  if [ ! "${JAVA_HOME}" ];then
+    if [ -d /usr/${NLIBDIR}/jvm/jdk-${JAVA_VER} ];then
+      export JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-${JAVA_VER}"
+     elif [ -d /usr/${NLIBDIR}/jvm/jre-${JAVA_VER} ];then
+      export JAVA_HOME="/usr/${NLIBDIR}/jvm/jre-${JAVA_VER}"
+     elif [ -d /usr/lib/jvm/default-java ];then
+      export JAVA_HOME="/usr/lib/jvm/default-java"
+    fi;
+    if [ "${JAVA_HOME}" ];then
+      export PATH=${JAVA_HOME}/bin:${PATH}
+    fi;
+  fi;
+}
+
 check_create_arch() {
   #Set tupple
   arch_config ${1}
@@ -267,6 +293,7 @@ check_create_arch() {
     mkdir -p ${ARCHROOT}/${1}/usr/include
     rsync -a ${HDIR}/usr/include/ ${ARCHROOT}/${1}/usr/include/
   fi;
+  check_java
 }
 
 git_load_pkg() {
@@ -828,6 +855,7 @@ build_project() {
   fi;
   export FIXUPLIB;
 
+  check_java
   if [ "${ADDPATH}" ];then
     PATH="${PATH}:${ADDPATH}"
   fi;
@@ -2127,7 +2155,7 @@ build_dependancies() {
 
   #Other bits
   build_packages ${1} alsa-oss alsa-plugins alsa-tools alsa-utils TiMidity calamaris dirac ruby netatalk mod_perl \
-    mod_python nut omniORB dtc qemu asciidoc doxygen wxWidgets taglib xerces-c || return 1
+    mod_python nut omniORB dtc qemu asciidoc doxygen wxWidgets taglib xerces-c maven jhylafax || return 1
 
 
   #XFCE
@@ -2485,24 +2513,16 @@ NKARCH=${LINARCH}
 unset TUPPLE SETLIBDIR LINARCH
 export BUILD NKARCH NLIBDIR
 
-if [ ! "${ANT_HOME}" ] && [ -d /usr/${NLIBDIR}/jvm/apache-ant-${ANT_VER} ];then
-  export ANT_HOME="/usr/${NLIBDIR}/jvm/apache-ant-${ANT_VER}"
-fi;
-
 if [ "${ANT_HOME}" ];then
   export PATH=${PATH}:${ANT_HOME}/bin
 fi;
 
-if [ ! "${JAVA_HOME}" ] && [ -d /usr/${NLIBDIR}/jvm/jdk-${JAVA_VER} ];then
-  export JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-${JAVA_VER}"
- elif [ ! "${JAVA_HOME}" ] && [ -d /usr/${NLIBDIR}/jvm/jre-${JAVA_VER} ];then
-  export JAVA_HOME="/usr/${NLIBDIR}/jvm/jre-${JAVA_VER}"
- elif [ ! "${JAVA_HOME}" ] && [ -d /usr/lib/jvm/default-java ];then
-  export JAVA_HOME="/usr/lib/jvm/default-java"
+if [ "${JAVA_HOME}" ];then
+  export PATH=${PATH}:${JAVA_HOME}/bin
 fi;
 
-if [ "${JAVA_HOME}" ];then
-  export PATH=${JAVA_HOME}/bin:${PATH}
+if [ "${M2_HOME}" ];then
+  export PATH=${PATH}:${M2_HOME}/bin
 fi;
 
 #OpenJDK specifically barfs when these are not inplace check and fix
