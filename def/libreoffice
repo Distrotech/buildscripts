@@ -1,7 +1,7 @@
 VERSION="4.0.1.2"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-junit=/usr/share/java/junit-4.10.jar --with-system-hunspell --with-system-cairo --with-system-graphite 
+CONFOPT="--with-junit=/usr/share/java/junit-4.11.jar --with-system-hunspell --with-system-cairo --with-system-graphite 
          --with-system-nss  --with-system-zlib --with-system-openssl --with-system-jpeg --with-system-expat 
          --with-system-lcms2 --with-system-libxml --with-system-icu --with-system-openldap --with-system-poppler 
          --with-system-mysql --with-system-postgresql --with-system-sane --with-system-curl 
