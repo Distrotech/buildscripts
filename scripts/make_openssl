@@ -34,3 +34,6 @@ SYSROOT=`${2}-gcc -print-sysroot`
 make LDFLAGS="-L${SYSROOT}/usr/lib" AR="${AR} r" RANLIB=${RANLIB} \
   CC="${CC}" ARCH=${SARCH} INCLUDEDIR=${INCDIR} INSTALL_PREFIX=${3} \
   MANDIR=/usr/share/man all install || exit 1
+
+rm -rf ${3}/etc/openssl/certs
+ln -s ../ssl/certs ${3}/etc/openssl/certs

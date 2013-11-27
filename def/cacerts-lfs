@@ -1,0 +1,6 @@
+VERSION="head"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+GITBRANCH="master";

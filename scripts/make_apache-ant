@@ -1,11 +1,23 @@
-#!/bin/bash
+ #!/bin/bash
+
+JARS="antlr-4.1-dev-complete junit-4.11 js"
 
 DIST=$( basename `pwd` )
 
 if [ "${4}" ];then
   ./build.sh clean
-  rm -rf ${DIST}
+  rm -rf ${DIST} lib/optional
 fi;
+
+if [ ! -d lib/optional ];then
+  mkdir -p lib/optional
+fi;
+
+for jar in ${JARS};do
+  if [ -e /usr/share/java/${jar}.jar ];then
+    ln -s /usr/share/java/${jar}.jar lib/optional/${jar}.jar
+  fi;
+done;
 
 ./build.sh -Ddist.dir=${DIST}
 
