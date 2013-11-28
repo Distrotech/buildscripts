@@ -5,3 +5,4 @@ CONFOPT="--enable-readline --with-installed-readline --with-curses bash_cv_termc
 STATICMOPT="LDFLAGS=-static TERMCAP_LIB=-lncursesw";
 STATICOPT="--enable-readline --with-installed-readline --with-curses bash_cv_termcap_lib=-lncursesw --enable-static-link  
            --without-bash-malloc";
+STATICBSTRAP="1";

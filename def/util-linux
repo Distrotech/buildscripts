@@ -13,3 +13,4 @@ STATICOPT="--disable-shared --enable-ddate --enable-arch --enable-last --enable-
          --without-slang LDFLAGS=-static";
 STATICMOPT="LDFLAGS=-all-static";
 AMVER="1.12";
+STATICBSTRAP="1";
