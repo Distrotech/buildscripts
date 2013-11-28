@@ -57,7 +57,8 @@ cd ${PKGDISTDIR}/build/${DARCH}
 #XXX GCC BOOT
 for bpkg in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
              pkg-config util-linux diffutils libtool gperf m4 cpio git binutils glibc autoconf \
-             automake-1.9 apache-ant qemu junit rhino antlr4 gmp mpfr mpc cloog isl zlib gcc;do
+             automake-1.9 apache-ant qemu junit rhino antlr4 gmp mpfr mpc cloog isl zlib gcc \
+             findutils;do
   (if [ ! -e ${DEFDIR}/${bpkg} ];then
     continue;
    fi;
@@ -130,7 +131,17 @@ done;
 for xsync in "${DISTDIR}/res/" "-R /usr/share/terminfo" "-R /lib/terminfo";do
   rsync -a ${xsync} ${STATICROOT}/
 done
-rsync -a ${ARCHROOT}/${DARCH}/usr/include/gnu/stubs-* ${STATICROOT}/usr/include/gnu/
+
+#GCC stubs
+for stub in stubs-32.h  stubs-64.h  stubs.h  stubs-x32.h;then
+  if [ -e ${ARCHROOT}/${DARCH}/usr/include/gnu/${stub}.h ];then
+    rsync -a ${ARCHROOT}/${DARCH}/usr/include/gnu/${stub}.h ${STATICROOT}/usr/include/gnu/
+   elif [ "${stub}" == "stubs-x32.h" ];then
+     ln -s stubs-64.h ${STATICROOT}/usr/include/gnu/${stub}
+   else
+     touch ${STATICROOT}/usr/include/gnu/${stub}
+  fi;
+fi;
 
 echo "nameserver ::1" > ${STATICROOT}/etc/resolv.conf
 if [ -e ${STATICROOT}.sqfs ];then
