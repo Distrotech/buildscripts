@@ -2473,7 +2473,9 @@ build_bootstrap() {
   (PATH=${ARCHROOT}/${1}/sbin:${ARCHROOT}/${1}/bin:${ARCHROOT}/${1}/usr/sbin:${ARCHROOT}/${1}/usr/bin:${PATH}
   export GCCDEPENDS=1
   build_packages ${1} libtool zlib gmp mpfr mpc isl cloog) || return 1
-  (export CC=gcc-4.6;
+  (if [ -x /usr/bin/gnatgcc ];then
+    export CC=gnatgcc;
+  fi;
   build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
 
   echo "Shared tools"
