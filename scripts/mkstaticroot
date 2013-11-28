@@ -1,15 +1,12 @@
 #!/bin/bash
 
-GLIBCVER=2.18
-QEMU=1.6.1
-ANTVER=1.9.2
-
-AUTOCONF=2.69
-AUTOMAKE=1.9.6
+ANT_VER=1.9.2
 
 DISTDIR=/dist
 PKGDISTDIR=${DISTDIR}/pkg
 CROSSDISTDIR=${DISTDIR}/cross
+DEFDIR=${DISTDIR}/def
+ARCHROOT=/build
 
 NARCH=$( uname -m )
 
@@ -57,27 +54,61 @@ mkdir -p ${STATICROOT}/etc
 touch ${STATICROOT}/etc/.static
 
 cd ${PKGDISTDIR}/build/${DARCH}
-for pkg in `ls -d *static *boot` ;do
-  for subpkg in `ls ${pkg}/${pkg}.tar.xz ${pkg}/${pkg}-libs.tar.xz ${pkg}/${pkg}-dev.tar.xz 2>/dev/null`;do
-    tar --exclude=*/.dbg/* -C ${STATICROOT} -xJf ${subpkg};
-  done;
-done
+#XXX GCC BOOT
+for bpkg in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
+             pkg-config util-linux diffutils libtool gperf m4 cpio git binutils glibc autoconf \
+             automake-1.9 apache-ant qemu junit rhino antlr4 gmp mpfr mpc cloog isl zlib gcc;do
+  (if [ ! -e ${DEFDIR}/${bpkg} ];then
+    continue;
+   fi;
+   eval `cat ${DEFDIR}/${bpkg}`;
+   AVER=VERSION_${DARCH}
+   if [ "${!AVER}" ];then
+    VERSION=${!AVER}
+   fi;
+   eval ${AVER}=""
+   PNAME=${bpkg}${VERSEP}${VERSION}
+   if [ ! "${STATICBSTRAP}" ];then
+     STATICBSTRAP=0;
+   fi;
+   if [ "${bpkg}" == "gcc" ] && [ -d ${CROSSDISTDIR}/${DARCH}/${PNAME}-boot ];then
+     PKG=${PKGDISTDIR}/build/${DARCH}/${PNAME}-boot
+     PNAME="${PNAME}-boot"
+    elif [ "${STATICBSTRAP}" == "1" ] && [ -d ${CROSSDISTDIR}/${DARCH}/${PNAME}-static ];then
+     PKG=${PKGDISTDIR}/build/${DARCH}/${PNAME}-static
+     PNAME="${PNAME}-static"
+    elif [ "${STATICBSTRAP}" == "0" ] && [ -d ${PKGDISTDIR}/${DARCH}/${PNAME} ];then
+     PKG=${PKGDISTDIR}/${DARCH}/${PNAME}
+    elif [ -d ${CROSSDISTDIR}/${DARCH}/${PNAME}-static ];then
+     PKG=${PKGDISTDIR}/build/${DARCH}/${PNAME}-static
+     PNAME="${PNAME}-static"
+    else
+      echo "Bad/missing build ${PNAME}"
+      continue;
+   fi;
+   if [ -e ${PKG}/${PNAME}.tar.xz ];then
+     tar --exclude=*/.dbg/* -C ${STATICROOT} -xJf ${PKG}/${PNAME}.tar.xz
+    else
+     echo "Missing file ${PKG}/${PNAME}.tar.xz"
+   fi;
 
-if [ -e ${CROSSDISTDIR}/${NARCH}/qemu-${QEMU}/usr/bin/qemu-${DARCH}-static ];then
-  cp ${CROSSDISTDIR}/${NARCH}/qemu-${QEMU}/usr/bin/qemu-${DARCH}-static ${STATICROOT}/usr/bin
-fi;
+   case ${bpkg} in
+     glibc)INSTSUB="dev libs conf";;
+     *)INSTSUB="dev libs";;
+   esac;
+
+   for subpkg in ${INSTSUB};do
+     if [ -e ${PKG}/${PNAME}-${subpkg}.tar.xz ];then
+       tar --exclude=*/.dbg/* -C ${STATICROOT} -xJf ${PKG}/${PNAME}-${subpkg}.tar.xz
+     fi;
+   done;
+  );
+done;
 
 #Strip all the bits
-${STRIP} ${STATICROOT}/bin/* ${STATICROOT}/sbin/* ${STATICROOT}/usr/bin/* ${STATICROOT}/usr/sbin/*
+${STRIP} ${STATICROOT}/bin/* ${STATICROOT}/sbin/* ${STATICROOT}/usr/bin/* ${STATICROOT}/usr/sbin/* >/dev/null 2>&1
 
-for devpkg in ${PKGDISTDIR}/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}-dev.tar.xz \
-              ${PKGDISTDIR}/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}-libs.tar.xz \
-              ${PKGDISTDIR}/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}-conf.tar.xz \
-              ${PKGDISTDIR}/${DARCH}/glibc-${GLIBCVER}/glibc-${GLIBCVER}.tar.xz \
-              ${PKGDISTDIR}/${DARCH}/apache-ant-${ANTVER}/apache-ant-${ANTVER}-libs.tar.xz \
-              ${PKGDISTDIR}/${DARCH}/autoconf-${AUTOCONF}/autoconf-${AUTOCONF}.tar.xz \
-              ${PKGDISTDIR}/${DARCH}/automake-${AUTOMAKE}/automake-${AUTOMAKE}.tar.xz \
-              kernel-headers.tar.xz ${PKGDISTDIR}/java-jar.tar.xz;do
+for devpkg in kernel-headers.tar.xz ${PKGDISTDIR}/java-jar.tar.xz;do
   if [ -f ${devpkg} ];then
     tar --exclude=*/.dbg/* -C ${STATICROOT} -xJf ${devpkg};
   fi;
@@ -87,32 +118,19 @@ if [ ! -e ${STATICROOT}/usr/include/asm ];then
   ln -s asm-${LINARCH} ${STATICROOT}/usr/include/asm
 fi;
 
-for sysdir in proc sys dev root tmp usr/src dist etc/xml;do
+for sysdir in proc sys dev root tmp usr/src dist;do
   mkdir -p ${STATICROOT}/${sysdir}
 done;
-
-rsync -avP ${DISTDIR}/res/ ${STATICROOT}/
 
 for mdir in 1 2 3 4 5 6 7 8;do
   mkdir -p ${STATICROOT}/usr/share/man/man${mdir}
 done;
 
-#Install terminfo DB / Stub files / CPAN config
-if [ -d /usr/share/terminfo ];then
-  rsync -avRP /usr/share/terminfo ${STATICROOT}/
-fi;
-if [ -d /lib/terminfo ];then
-  rsync -avRP /lib/terminfo ${STATICROOT}/
-fi;
-rsync -avRP /usr/include/gnu/stubs-* /usr/share/terminfo ${STATICROOT}/
-
-if [ ! -e /root/.cpan/CPAN/MyConfig.pm ];then
-  cpan -i XML::Parser
-fi
-
-if [ -e /root/.cpan/CPAN/MyConfig.pm ];then
-  rsync -aR /root/.cpan/CPAN/MyConfig.pm ${STATICROOT}/
-fi;
+#Install terminfo DB / Stub files / CPAN config / etc resources
+for xsync in "${DISTDIR}/res/" "-R /usr/share/terminfo" "-R /lib/terminfo";do
+  rsync -a ${xsync} ${STATICROOT}/
+done
+rsync -a ${ARCHROOT}/${DARCH}/usr/include/gnu/stubs-* ${STATICROOT}/usr/include/gnu/
 
 echo "nameserver ::1" > ${STATICROOT}/etc/resolv.conf
 if [ -e ${STATICROOT}.sqfs ];then
@@ -123,5 +141,4 @@ mkdir ${STATICROOT}/build
 ln -s ..  ${STATICROOT}/build/${DARCH}
 
 chroot ${STATICROOT} /sbin/ldconfig
-
 mksquashfs ${STATICROOT}/* ${STATICROOT}.sqfs -comp xz
