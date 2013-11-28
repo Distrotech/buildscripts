@@ -1038,7 +1038,7 @@ build_project() {
   fi;
 
   if [ "${AUTORECONF}" ] && [ "${AUTORECONF}" == "1" ];then
-    (cd ${TOPDIR};autoreconf)
+    (cd ${TOPDIR};autoreconf -i -f)
   fi;
 
   export DIST_ROOT=${PKGBUILDDIR}/${barch}/${PKG}
@@ -2077,7 +2077,7 @@ build_dependancies() {
   build_packages ${1} wayland libxkbcommon at-spi2-core at-spi2-atk || return 1
 
   #we need gdk-pixbuf/librsvg built with gtk3 to build gtk33 bootstrap it [dont build demos/tests/examples on 1st pass]
-  if [ ! -d /usr/${B_LIBDIRS}/gtk-3.0 ] && [ "${1}" == "${NARCH}" ];then
+  if [ ! -e ${STATDIR}/${1}/done/gtk3 ] && [ "${1}" == "${NARCH}" ];then
     build_packages ${1} gtk3 || return 1
     to_redo="gdk-pixbuf librsvg gtk3";
     for redo in ${to_redo};do
@@ -2331,11 +2331,15 @@ bootstrap_toolchain() {
   done;
 
   #Get native toolchain in order / multilib
-  (bootstrap_native) ||return 1
+  (bootstrap_native || return 1
+  if [ "${1}" != "${NARCH}" ];then
+    #Files required for cross builds
+    build_packages ${NARCH} icu mysql || return 1
+  fi;) ||return 1
 
   if [ "${1}" != "${NARCH}" ];then
     (build_bootstrap_binutils ${1} ${HOST} && \
-    build_glibc_march ${1}) || return 1
+    build_glibc_march ${1}) || return 1 
    else
     build_dependancies ${NARCH} ${BUILD} || return 1
 
