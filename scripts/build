@@ -230,7 +230,7 @@ check_create_arch() {
     if [ ! -d ${ARCHROOT}/${1}/etc ];then
       mkdir -p ${ARCHROOT}/${1}/etc
       ln -s ../proc/self/mounts ${ARCHROOT}/${1}/etc/mtab
-      rsync -avRP ${DISTDIR}/res/ ${ARCHROOT}/${1}/
+      rsync -a ${DISTDIR}/res/ ${ARCHROOT}/${1}/
       if [ -x /bin/domainname ];then
         echo "domainname $(domainname)" > ${ARCHROOT}/${1}/etc/resolv.conf
         echo "search $(domainname)" >> ${ARCHROOT}/${1}/etc/resolv.conf
@@ -1381,8 +1381,8 @@ run_configure() {
   shift;
   CONFPTH=${1}
   shift;
-  ${CONFPTH}/configure --libdir=/usr/${CONFLIBDIR} --prefix=${PREFIX} --sysconfdir=/etc --mandir=/usr/share/man \
-               --infodir=/usr/share/info --localstatedir=/var $@ || return 1
+  ${CONFPTH}/configure --libdir=${PREFIX}/${CONFLIBDIR} --prefix=${PREFIX} --sysconfdir=/etc --mandir=${PREFIX}/share/man \
+               --infodir=${PREFIX}/share/info --localstatedir=/var $@ || return 1
 }
 
 build_bootstrap_binutils() {
@@ -2446,8 +2446,6 @@ buildall_arch() {
 }
 
 buildall_static() {
-  unset BOOTCLEAN
-  export DIETBUILD=0
   check_create_arch ${1}
 
   #GCC tools symlinks
