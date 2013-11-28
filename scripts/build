@@ -34,7 +34,7 @@ MARCH_x86_64="x86_32|i[3-6]86|x86_64"
 MARCH_x86_32=${MARCH_x86_64}
 MARCH_powerpc64="powerpc|powerpc64"
 
-export XML_CATALOG_FILES LANG ANT_VER JAVA_VER M2_VER
+export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA_VER M2_VER
 
 #Parse cmdline opts
 #Adding a arch here may require you adding tupple/kernel arch/libdirs and bellow in arch_config
@@ -89,11 +89,12 @@ fi;
 ulimit -s unlimited
 
 #Set the arch based on uname -m this is not able to determine multi/sub arches
-export NARCH=${NARCH:=$( uname -m )}
+NARCH=${NARCH:=$( uname -m )}
 
 case ${NARCH} in
   arm*)NARCH=arm;;
 esac;
+export NARCH
 
 #Native if not specified
 if [ ! "${ARCHLIST}" ];then
@@ -2476,12 +2477,14 @@ build_bootstrap() {
   (PATH=${ARCHROOT}/${1}/sbin:${ARCHROOT}/${1}/bin:${ARCHROOT}/${1}/usr/sbin:${ARCHROOT}/${1}/usr/bin:${PATH}
   export GCCDEPENDS=1
   build_packages ${1} libtool zlib gmp mpfr mpc isl cloog) || return 1
-  (export CC=gcc-4.6;
+  (if [ -x /usr/bin/gnatgcc ];then
+    export CC=gnatgcc;
+  fi;
   build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
 
   echo "Shared tools"
   build_packages ${1} bison flex sed gawk make rsync grep gzip \
-    tar xz diffutils libtool gperf m4 cpio git || return 1
+    tar xz diffutils libtool gperf m4 cpio git findutils || return 1
 
   echo "Static tools"
   static_toolbuild ${1} || return 1
