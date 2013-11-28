@@ -52,7 +52,7 @@ while (( $# > 1 ));do
     noclean)NOCLEAN=1;;
     -)shift;
       break;;
-    static)BOOTSTRAP_STATIC=1
+    bootstrap)BOOTSTRAP=1
       shift;;
     +)shift;
       export NOBOOTSTRAP=1
@@ -69,12 +69,12 @@ if [ "${CLEANOPT}" ];then
   BOOTCLEAN=${CLEANOPT};
 fi;
 
-if [ ! "${BOOTSTRAP_STATIC}" ] && [ "${1}" == "static" ];then
-  BOOTSTRAP_STATIC=1;
- elif [ ! "${BOOTSTRAP_STATIC}" ];then
-  BOOTSTRAP_STATIC=0;
+if [ ! "${BOOTSTRAP}" ] && [ "${1}" == "bootstrap" ];then
+  BOOTSTRAP=1;
+ elif [ ! "${BOOTSTRAP}" ];then
+  BOOTSTRAP=0;
 fi;
-export BOOTSTRAP_STATIC
+export BOOTSTRAP
 
 #Is last man standing a arch ??
 if [ "${1}" ] && [[ ${1} =~ ${ARCHMPAT} ]] && [ ! -e ${DEFDIR}/${1} ];then
@@ -214,7 +214,7 @@ check_create_arch() {
   for incdir in /usr/X11R7/include /usr/${B_LIBDIRS}/glib-2.0/include /opt/qt-4/include \
                 /usr/include/glib-2.0 /usr/include/dbus-1.0 /opt/xfce/include \
                 /usr/include/gtk-3.0 /usr/include/gtk-2.0;do
-    if [ ! -d ${incdir} ] && [ "${BOOTSTRAP_STATIC}" == "0" ];then
+    if [ ! -d ${incdir} ] && [ "${BOOTSTRAP}" == "0" ];then
       mkdir -p ${incdir}
     fi;
     if [ ! -d ${ARCHROOT}/${1}/${incdir} ];then
@@ -498,6 +498,7 @@ tar_package() {
 
 sysroot_fixup() {
   if [ "${SYSROOTFIXUP}" == "1" ];then
+echo "BOO";read
     #Replace all libtools with the "sysroot" version
     for ltool in `find . -name libtool`;do
       if [ -x ${ltool} ];then
@@ -678,7 +679,7 @@ autoconf_cross_build() {
   fi;
 
   #Disable shared libs for c++ libs where libstdc++ is not shared
-  if [ "${STDCSTATIC}" ] && [ ! -f ${SYSROOT}/usr/${B_LIBDIRS}/libstdc++.so ] && [ ! -f /usr/${3}/${B_LIBDIRS}/libstdc++.so ];then
+  if [ "${STDCSTATIC}" ] && [ ! -f ${SYSROOT}/usr/${B_LIBDIRS}/libstdc++.so ] && [ ! -f /usr/${3}/${B_LIBDIRS}/libstdc++.so ] && [ "${BOOTSTRAP}" == "0" ];then
       STDOPTSX="${STDOPTSX} ${STDCSTATIC}";
   fi;
 
@@ -976,7 +977,7 @@ build_project() {
   XCCOPT="${XCCOPT} ${RPLINK}"
 
   export CC_SYSROOT="--sysroot=${SYSROOT}/ ${XCCOPT} -L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/opt/xfce/include";
-  if [ "${BOOTSTRAP_STATIC}" == "0" ];then
+  if [ "${BOOTSTRAP}" == "0" ];then
     CC="/usr/bin/${HOST}-gcc";
     CXX="/usr/bin/${HOST}-g++"
     LD="/usr/bin/${HOST}-ld"
@@ -1180,7 +1181,7 @@ build_project() {
   #Build Distributibils
   tar_package ${DIST_ROOT} ${PKGDISTDIR}/${barch} ${PKG} > /dev/null 2>&1
 
-  if [ "${BOOTSTRAP_STATIC}" == "0" ] && [ "${barch}" == "${NARCH}" ];then
+  if [ "${BOOTSTRAP}" == "0" ] && [ "${barch}" == "${NARCH}" ];then
     if [ -d ${DIST_ROOT} ];then
       ${RSYNC} -avP ${DIST_ROOT}/ /
     fi;
@@ -1191,7 +1192,7 @@ build_project() {
 #      if [ -d ${DIST_ROOT}/usr/${B_LIBDIRS} ];then
 #        ${RSYNC} -avP ${DIST_ROOT}/usr/${B_LIBDIRS} /usr/
 #      fi;
-   elif [ "${BOOTSTRAP_STATIC}" == "1" ] && [ "${GCCDEPENDS}" ];then
+   elif [ "${BOOTSTRAP}" == "1" ] && [ "${GCCDEPENDS}" ];then
     rsync -avP ${DIST_ROOT}/ ${BASEROOT}/${barch}/
   fi;
 
@@ -1261,7 +1262,7 @@ build_glibc() {
   fi;
 
   #building without gcc do so without SSP
-  if [ ! -x /usr/bin/${2}-g++ ] && [ "${BOOTSTRAP_STATIC}" == "0" ];then
+  if [ ! -x /usr/bin/${2}-g++ ] && [ "${BOOTSTRAP}" == "0" ];then
     #dont build we are stuck on rerun ??
     if [ "${1}" == "${NARCH}" ] && [ -e /${USELIBDIR}/libc.so.6 ];then
       return 0;
@@ -1362,7 +1363,7 @@ build_glibc() {
     fi;
   fi;
 
-  if [ "${BOOTSTRAP_STATIC}" == "0" ];then
+  if [ "${BOOTSTRAP}" == "0" ];then
     rsync -a usr/include /usr/${2}/include
 
     #C Lib Stubs
@@ -1397,7 +1398,7 @@ build_bootstrap_binutils() {
 
   if [ "${1}" == "${NARCH}" ];then
     DIST_ROOT=${TOOLDIR}/${NARCH}/${BINUTILS}-static
-    if [ "${BOOTSTRAP_STATIC}" == "0" ];then
+    if [ "${BOOTSTRAP}" == "0" ];then
       CSYSROOT="--with-sysroot=/"
      else
       CSYSROOT="--with-sysroot=${ARCHROOT}/${1}"
@@ -1407,7 +1408,7 @@ build_bootstrap_binutils() {
     CSYSROOT="--with-sysroot=${ARCHROOT}/${1}"
   fi;
 
-  if [ -d ${DIST_ROOT} ] && [ "${BOOTSTRAP_STATIC}" == "1" ];then
+  if [ -d ${DIST_ROOT} ] && [ "${BOOTSTRAP}" == "1" ];then
     return 0
    elif [ -e /usr/bin/${2}-ld ] && [ -d ${DIST_ROOT} ];then
     return 0
@@ -1459,7 +1460,7 @@ build_bootstrap_binutils() {
     if [ ! -e ${ARCHROOT}/${1}/usr/bin/ld ];then
       rsync -a ${DIST_ROOT}/ ${ARCHROOT}/${1}/
     fi
-    if [ ! -e /usr/${2}/bin/ld ] && [ "${BOOTSTRAP_STATIC}" == "0" ];then
+    if [ ! -e /usr/${2}/bin/ld ] && [ "${BOOTSTRAP}" == "0" ];then
       rsync -a ${DIST_ROOT}/usr/${2}/ /usr/${2}/
     fi
   fi;
@@ -1494,7 +1495,7 @@ build_gcc_bootstrap() {
   eval ${AVER}=""
   GCC=gcc${VERSEP}${VERSION}
 
-  if [ "${1}" != "${3}" ] || [ "${BOOTSTRAP_STATIC}" == "1" ];then
+  if [ "${1}" != "${3}" ] || [ "${BOOTSTRAP}" == "1" ];then
     SYSROOT="--with-sysroot=${ARCHROOT}/${1} ${CONFOPTX}";
     BUILDROOT=${ARCHROOT}/${1}
    else
@@ -1598,7 +1599,7 @@ build_gcc_bootstrap() {
     LDFLAGS_FOR_TARGET="${LDFLAGS_FOR_TARGET} -B${BUILDDIR}/usr/${2}/bin";
   fi;
 
-  if [ "${1}" == "${NARCH}" ] && [ -x ${BUILDDIR}/usr/${2}/bin/ld ] && [ "${BOOTSTRAP_STATIC}" == "1" ];then
+  if [ "${1}" == "${NARCH}" ] && [ -x ${BUILDDIR}/usr/${2}/bin/ld ] && [ "${BOOTSTRAP}" == "1" ];then
     CONFOPT="${CONFOPT} --with-ld=${BUILDDIR}/usr/${2}/bin/ld"
   fi;
 
@@ -1617,7 +1618,7 @@ build_gcc_bootstrap() {
                 ${CONFOPT} ${!MARCH} ${GCCOPTS} || return 1
 
 
-  if [ "${BOOTSTRAP_STATIC}" == "1" ];then
+  if [ "${BOOTSTRAP}" == "1" ];then
     rsync -a ${BUILDDIR}/usr/${NLIBDIR}/crt*.o gcc/
   fi;
 
@@ -1649,7 +1650,7 @@ build_gcc_bootstrap() {
     ln -s gcc ${GCCBOOTDEST}/usr/bin/cc
     tar_package ${GCCBOOTDEST} ${TOOLPKG}/${TARCH} ${TARGPKG} > /dev/null 2>&1
     #Fill the gap till full gcc built
-    if [ "${TARCH}" == "${NARCH}" ] && [ ! -e ${STATDIR}/${TARCH}/done/gcc ] && [ "${BOOTSTRAP_STATIC}" == "0" ];then
+    if [ "${TARCH}" == "${NARCH}" ] && [ ! -e ${STATDIR}/${TARCH}/done/gcc ] && [ "${BOOTSTRAP}" == "0" ];then
       rsync -aP ${GCCBOOTDEST}/ /
       if [ "${4}" == "shared" ];then
         (rm ${STATDIR}/${1}/done/gmp ${STATDIR}/${1}/done/mpfr ${STATDIR}/${1}/done/mpc \
@@ -1823,7 +1824,7 @@ build_static_tool() {
     make ${MAKE_J} configure-host || return 1
   fi;
 
-  if [ -x libtool ] && [ "${BOOTSTRAP_STATIC}" == "0" ];then
+  if [ -x libtool ] && [ "${BOOTSTRAP}" == "0" ];then
     cp ${ARCHROOT}/${1}/usr/bin/libtool ./
   fi;
 
@@ -1841,7 +1842,7 @@ build_static_tool() {
     SYSROOTFIXUP="1";
   fi;
   export SYSROOTFIXUP;
-  if [ "${BOOTSTRAP_STATIC}" == "0" ];then
+  if [ "${BOOTSTRAP}" == "0" ];then
     sysroot_fixup ${1}
   fi;
 
@@ -2434,7 +2435,7 @@ check_host() {
     echo "Host not supported please add support"
     return 1;
   fi;)
-  export BOOTSTRAP_STATIC=1
+  export BOOTSTRAP=1
 }
 
 buildall_arch() {
@@ -2445,11 +2446,11 @@ buildall_arch() {
   done;
 }
 
-buildall_static() {
+build_bootstrap() {
   check_create_arch ${1}
 
   #GCC tools symlinks
-  for gcct in nm gnatlink gnatmake gnatbind gnatls strip gcc g++ objcopy ar ranlib;do
+  for gcct in nm gnatlink gnatmake gnatbind gnatls strip gcc g++ objcopy ar ranlib ld;do
     if [ -x /usr/bin/${gcct} ] && [ ! -e /usr/bin/${2}-${gcct} ];then
       ln -s ${gcct} /usr/bin/${2}-${gcct}
     fi;
@@ -2478,6 +2479,10 @@ buildall_static() {
 #  build_gcc_bootstrap ${1} ${2} ${1} static &&
   build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
 
+  echo "Shared tools"
+  build_packages ${1} bison flex sed gawk make rsync grep gzip \
+    tar xz diffutils libtool gperf m4 cpio git || return 1
+
   echo "Static tools"
   static_toolbuild ${1} || return 1
 
@@ -2490,6 +2495,7 @@ buildall_static() {
 if test -e /etc/os-release;then
   check_host || exit 1
 fi;
+export BOOTSTRAP_STATIC=${BOOTSTRAP}
 
 if [ ! -d ${DEFDIR} ] || [ ! -d ${DISTDIR}/scripts ];then
   git clone ${GITURL}/buildscripts.git ${DISTDIR}/
@@ -2557,8 +2563,8 @@ if [ -d /usr/share/java ] && [ -d ${PKGDISTDIR} ] && [ ! -f ${PKGDISTDIR}/java-j
 #  find /usr/share/java/ ! -regex .*libgcj.* |cpio -ov -H tar |xz -9 > ${PKGDISTDIR}/java-jar.tar.xz
 fi;
 
-if [ "${BOOTSTRAP_STATIC}" ] && [ "${BOOTSTRAP_STATIC}" == "1" ];then
-  buildall_static ${NARCH} ${BUILD}
+if [ "${BOOTSTRAP}" ] && [ "${BOOTSTRAP}" == "1" ];then
+  build_bootstrap ${NARCH} ${BUILD}
   exit 0;
 fi;
 
