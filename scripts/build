@@ -498,7 +498,6 @@ tar_package() {
 
 sysroot_fixup() {
   if [ "${SYSROOTFIXUP}" == "1" ];then
-echo "BOO";read
     #Replace all libtools with the "sysroot" version
     for ltool in `find . -name libtool`;do
       if [ -x ${ltool} ];then
