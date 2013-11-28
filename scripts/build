@@ -798,7 +798,7 @@ build_project() {
   eval ${AVER}=""
 
   #For null config i need this set up early
-  export ACLOCAL_PATH=/usr/share/aclocal:/usr/share/xfce4/dev-tools/m4macros:./m4
+  export ACLOCAL_PATH=/usr/share/aclocal:/usr/share/xfce4/dev-tools/m4macros:/usr/X11R7/share/aclocal:./m4
   if [ "${AMVER}" ];then
     ACLOCAL=aclocal-${AMVER}
     AUTOMAKE=automake-${AMVER}
@@ -2549,7 +2549,9 @@ if [ ! -e ${ARCHROOT}/${NARCH}/usr/share/java/ecj-3.5.2.jar ];then
 fi;
 
 if [ "${NEWJAVA}" ] && [ "${NEWJAVA}" == "1" ];then
-  rm ${PKGDISTDIR}/java-jar.tar.xz
+  if [ -e ${PKGDISTDIR}/java-jar.tar.xz ];then
+    rm ${PKGDISTDIR}/java-jar.tar.xz
+  fi;
   (cd ${ARCHROOT}/${NARCH}
    tar -cJf ${PKGDISTDIR}/java-jar.tar.xz usr/share/java/ecj-3.5.2.jar)
 fi;
