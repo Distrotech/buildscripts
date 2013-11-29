@@ -1949,13 +1949,15 @@ bootstrap_arch() {
       esac;
     fi;
 
-    #GCC needs system zlib glibc can use selinux/gd
+    #GCC needs system zlib glibc can use selinux/gd Add packages for a build enviroment
     BOOTCLEAN=distclean
-    build_packages ${arch} libtool pcre ustr bzip2 libaudit selinux libpng expat libxml2 freetype fontconfig \
-      jpeg tiff gd glibc tzdata gmp mpfr mpc isl cloog gcc ncurses ncursesw slang nettle libtasn1 \
-      libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude libtirpc flex Linux-PAM \
-      util-linux || exit 1) || return 1;
-
+    build_packages ${arch} libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat libxml2 freetype \
+      fontconfig jpeg tiff gd glibc tzdata gmp mpfr mpc isl cloog gcc libsigsegv ncurses ncursesw slang \
+      nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude libtirpc flex Linux-PAM \
+      util-linux bash coreutils bison sed texinfo make gzip tar rsync grep xz diffutils patch gperf m4 cpio \
+      findutils nano less glib pkg-config libxslt gdbm gawk iana-etc tzdata binutils autoconf automake-1.9 \
+      automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 file docbook-4.1.2 \
+      docbook-4.2 docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl which groff gdbm perl Python git unzip zip || exit 1) || return 1;
   done;
 }
 
@@ -2004,7 +2006,7 @@ build_dependancies() {
   build_packages ${1} groff gdbm perl gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv \
     m4 diffutils attr acl pcre libaudit selinux file gengetopt libidn libtasn1 p11-kit nettle gnutls \
     libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap bison flex gawk coreutils readline bash \
-    xz expat openssl wget iana-etc cacerts-lfs || return 1
+    xz expat openssl wget iana-etc || return 1
 
   #Dont build libxml2 if there is a python in / may not be one in /build/.../
   if [ ! -d /usr/lib/python2.7 ];then
@@ -2112,7 +2114,7 @@ build_dependancies() {
     build_packages ${1} icedtea7 || return 1
   fi;
 
-  build_packages ${1} apr apr-iconv sqlite-autoconf keyutils neon rhino junit antlr4 apache-ant \
+  build_packages ${1} cacerts-lfs apr apr-iconv sqlite-autoconf keyutils neon rhino junit antlr4 apache-ant \
     tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion \
     libva gmerlin jasper libraw1394 orc libogg libvorbis libkate gnome-mime-data gnome-vfs \
     libvisual gstreamer gstreamer-1 v4l-utils flac audiofile esound libsndfile json-c fftw \
@@ -2480,7 +2482,8 @@ build_bootstrap() {
 
   echo "Shared tools"
   build_packages ${1} bison flex sed gawk make rsync grep gzip \
-    tar xz diffutils libtool gperf m4 cpio git findutils || return 1
+    tar xz diffutils libtool gperf m4 cpio git findutils patch \
+    iana-etc tzdata || return 1
 
   echo "Static tools"
   static_toolbuild ${1} || return 1

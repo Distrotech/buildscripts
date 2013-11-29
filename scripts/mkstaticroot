@@ -58,7 +58,8 @@ cd ${PKGDISTDIR}/build/${DARCH}
 for bpkg in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
              pkg-config util-linux diffutils libtool gperf m4 cpio git binutils glibc autoconf \
              automake-1.9 apache-ant qemu junit rhino antlr4 gmp mpfr mpc cloog isl zlib gcc \
-             findutils;do
+             findutils patch iana-etc tzdata;do
+
   (if [ ! -e ${DEFDIR}/${bpkg} ];then
     continue;
    fi;
