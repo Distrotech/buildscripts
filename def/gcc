@@ -58,3 +58,4 @@ LANG_powerpc="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_powerpc64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 ADDBUILDSYSROOT="1";
 ADDLDFLAG="-lstdc++";
+COREBUILD="1";
