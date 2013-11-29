@@ -1,5 +1,7 @@
 #!/bin/bash
 
+shopt -s extglob
+
 #GITIP=[2002:29dd:626::1]
 GITIP=192.30.252.130
 GITBASE=git://${GITIP}/Distrotech
@@ -30,9 +32,9 @@ AMDEF="1.11";
 BOOTCLEAN="distclean";
 
 #Multiarch Definitions
-MARCH_x86_64="x86_32|i[3-6]86|x86_64"
+MARCH_x86_64='@(x86_32|i[3-6]86|x86_64)'
 MARCH_x86_32=${MARCH_x86_64}
-MARCH_powerpc64="powerpc|powerpc64"
+MARCH_powerpc64='@(powerpc|powerpc64)'
 
 export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA_VER M2_VER
 
@@ -128,6 +130,25 @@ arch_config() {
     *64)LINARCH=${1::-2};;
     *)LINARCH=${1};
   esac;
+
+  #Name of LD Link
+  case ${1} in
+    x86_64)LDNAME=ld-linux-x86-64.so.2;;
+    x86_32)LDNAME=ld-linux-x32.so.2;;
+    i[3-6]86)LDNAME=ld-linux.so.2;;
+    arm)LDNAME=ld-linux-armhf.so.3;;
+    arm64)LDNAME=ld-linux-aarch64.so.1;;
+  esac;
+
+  #Name of GLIBC Multi Libdir
+  case ${1} in
+    x86_64)MLIBDIR=ld-linux-x86-64.so.2;;
+    x86_32)MLIBDIR=ld-linux-x32.so.2;;
+    i[3-6]86)MLIBDIR=ld-linux.so.2;;
+    arm)MLIBDIR=ld-linux-armhf.so.3;;
+    arm64)MLIBDIR=ld-linux-aarch64.so.1;;
+  esac;
+
 }
 
 mnt_archroot() {
@@ -1196,7 +1217,7 @@ build_project() {
     rsync -avP ${DIST_ROOT}/ ${BASEROOT}/${barch}/
   fi;
 
-  if [ -d ${ARCHROOT}/${barch} ] && [ ! -h ${ARCHROOT}/${barch} ];then
+  if [ -d ${ARCHROOT}/${barch} ] && [ ! -h ${ARCHROOT}/${barch} ] && [ ! "${COREBUILD}" ];then
     ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${barch}/
   fi;
 
@@ -1446,12 +1467,17 @@ build_bootstrap_binutils() {
   fi;
 
   if [ "${1}" != "${NARCH}" ];then
-    if [ ! -e /usr/bin/${2}-ld ];then
-      rsync -aP ${DIST_ROOT}/ /
-    fi;
-    MULTIARCH=MARCH_${1}
-    if [[ ${1} =~ ${!MULTIARCH} ]];then
-      rsync -a ${DIST_ROOT}/usr/${2} ${BASEROOT}/${NARCH}/usr/;
+    rsync -aP ${DIST_ROOT}/ /
+
+    MULTIARCH=MARCH_${NARCH}
+    NATIVE=${!MULTIARCH}
+    if [ "${NATIVE}" ];then
+      case ${1} in
+	${NATIVE})rsync -a ${DIST_ROOT}/usr/${2} ${BASEROOT}/${NARCH}/usr/;;
+        *)echo rsync -a ${DIST_ROOT}/ ${ARCHROOT}/${1}/;;
+      esac;
+     else
+      rsync -a ${DIST_ROOT}/ ${ARCHROOT}/${1}/;
     fi;
     tar_package ${DIST_ROOT} ${TOOLPKG}/${NARCH}/${1} ${BINUTILS} > /dev/null 2>&1
    else
@@ -1537,7 +1563,7 @@ build_gcc_bootstrap() {
     LANGOPT=${!GCCLANG}
     CFLAGS="-I=/usr/include -O2"
     CXXFLAGS="-I=/usr/include -O2"
-    LDFLAGS="-L/lib -L/libx32 -L/lib64 -L/usr/lib -L/usr/libx32 -L/usr/lib64"
+    LDFLAGS="-L${ARCHROOT}/${1}/${TLIBDIR} -L${ARCHROOT}/${1}/usr/${TLIBDIR}";
     export CFLAGS CXXFLAGS
     CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${TLIBDIR}/jvm/gcj-jdk-${1} --enable-cxx-flags=-I=/usr/include
              CFLAGS=-I=/usr/include ${LANGOPT} ${SYSROOT}"
@@ -1676,7 +1702,16 @@ build_gcc_bootstrap() {
           if [ -e ${STATDIR}/${1}/done/libtool ];then
             rm ${STATDIR}/${1}/done/libtool
           fi;
-        fi;
+          MULTIARCH=MARCH_${NARCH}
+          NATIVE=${!MULTIARCH}
+          if [ "${NATIVE}" ];then
+            case ${1} in
+	      ${NATIVE})return 0;;
+            esac;
+          fi;
+          (cd ${GCCBOOTDEST}/usr/${2};rsync -Ra lib*/*so* ${ARCHROOT}/${1}/usr/)
+          rsync -a ${GCCBOOTDEST}/ ${ARCHROOT}/${1}/
+        fi
        elif [ -e /usr/bin/${2}-gcc.null ] && [ "${4}" == "boot" ];then
         rsync -aP ${GCCBOOTDEST}/ /
         touch /usr/bin/${2}-gcc.boot
@@ -1952,12 +1987,12 @@ bootstrap_arch() {
     #GCC needs system zlib glibc can use selinux/gd Add packages for a build enviroment
     BOOTCLEAN=distclean
     build_packages ${arch} libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat libxml2 freetype \
-      fontconfig jpeg tiff gd glibc tzdata gmp mpfr mpc isl cloog gcc libsigsegv ncurses ncursesw slang \
-      nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude libtirpc flex Linux-PAM \
+      fontconfig jpeg tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc libsigsegv ncurses ncursesw onig \
+      slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude libtirpc flex Linux-PAM \
       util-linux bash coreutils bison sed texinfo make gzip tar rsync grep xz diffutils patch gperf m4 cpio \
       findutils nano less glib pkg-config libxslt gdbm gawk iana-etc tzdata binutils autoconf automake-1.9 \
-      automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 file docbook-4.1.2 \
-      docbook-4.2 docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl which groff gdbm perl Python git unzip zip || exit 1) || return 1;
+      automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 file docbook-4.1.2 docbook-4.2 \
+      docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl which groff gdbm perl Python git unzip zip || exit 1) || return 1;
   done;
 }
 
@@ -2341,8 +2376,8 @@ bootstrap_toolchain() {
   fi;) ||return 1
 
   if [ "${1}" != "${NARCH}" ];then
-    (build_bootstrap_binutils ${1} ${HOST} && \
-    build_glibc_march ${1}) || return 1 
+    (build_bootstrap_binutils ${1} ${HOST}) && \
+    (build_glibc_march ${1}) || return 1 
    else
     build_dependancies ${NARCH} ${BUILD} || return 1
 
