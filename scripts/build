@@ -9,6 +9,7 @@ GITBASE=git://${GITIP}/Distrotech
 ANT_VER="1.9.2";
 JAVA_VER="1.7.0_60";
 M2_VER="3.1.1";
+export ORIG_PATH=${PATH}
 
 XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /usr/share/docbook2X/xslt/catalog.xml'
 LANG=en_ZA.UTF8
@@ -142,13 +143,9 @@ arch_config() {
 
   #Name of GLIBC Multi Libdir
   case ${1} in
-    x86_64)MLIBDIR=ld-linux-x86-64.so.2;;
-    x86_32)MLIBDIR=ld-linux-x32.so.2;;
-    i[3-6]86)MLIBDIR=ld-linux.so.2;;
-    arm)MLIBDIR=ld-linux-armhf.so.3;;
-    arm64)MLIBDIR=ld-linux-aarch64.so.1;;
+    x86_64)AMLIBDIR=x86-64;;
+    i[3-6]86|x86_32)AMLIBDIR=i686;;
   esac;
-
 }
 
 mnt_archroot() {
@@ -184,6 +181,9 @@ check_java() {
   if [ ! "${ANT_HOME}" ] && [ -d /usr/${NLIBDIR}/jvm/apache-ant-${ANT_VER} ];then
     export ANT_HOME="/usr/${NLIBDIR}/jvm/apache-ant-${ANT_VER}"
     export PATH=${PATH}:${ANT_HOME}/bin
+   elif [ ! "${ANT_HOME}" ] && [ -d /usr/${B_LIBDIRS}/jvm/apache-ant-${ANT_VER} ];then
+    export ANT_HOME="/usr/${B_LIBDIRS}/jvm/apache-ant-${ANT_VER}"
+    export PATH=${PATH}:${ANT_HOME}/bin
   fi;
 
   if [ ! "${M2_HOME}" ] && [ -d /usr/${NLIBDIR}/jvm/apache-maven-${M2_VER} ];then
@@ -200,7 +200,7 @@ check_java() {
       export JAVA_HOME="/usr/lib/jvm/default-java"
     fi;
     if [ "${JAVA_HOME}" ];then
-      export PATH=${JAVA_HOME}/bin:${PATH}
+      export PATH=${PATH}:${JAVA_HOME}/bin
     fi;
   fi;
 }
@@ -1073,6 +1073,8 @@ build_project() {
 
   if [ "${CHROOTBUILD}" ] && [ "${CHROOTBUILD}" == "1" ] && [ "${barch}" != "${NARCH}" ];then
     (export NARCH=${barch}
+     unset ANT_HOME JAVA_HOME M2_HOME
+     export PATH=${ORIG_PATH}
      chroot ${ARCHROOT}/${barch} ${SCRIPTDIR}/build ${barch} + ${PROJECT})
     if [ -e ${STATDIR}/${barch}/fail/${PROJECT} ];then
       return 1
@@ -1407,15 +1409,20 @@ run_configure() {
                --infodir=${PREFIX}/share/info --localstatedir=/var $@ || return 1
 }
 
+get_pkg_name() {
+  eval `cat ${DEFDIR}/${1}`;
+ AVER=VERSION_${2}
+ if [ "${!AVER}" ];then
+  VERSION=${!AVER}
+ fi;
+ eval ${AVER}=""
+ PNAME=${1}${VERSEP}${VERSION}
+}
+
 build_bootstrap_binutils() {
   barch=${1}
-  eval `cat ${DEFDIR}/binutils`;
-  AVER=VERSION_${1}
-  if [ "${!AVER}" ];then
-    VERSION=${!AVER}
-  fi;
-  eval ${AVER}=""
-  BINUTILS=binutils${VERSEP}${VERSION}
+  get_pkg_name binutils ${1}
+  BINUTILS=${PNAME}
 
   if [ "${1}" == "${NARCH}" ];then
     DIST_ROOT=${TOOLDIR}/${NARCH}/${BINUTILS}-static
@@ -1925,6 +1932,89 @@ static_toolbuild() {
   done;
 }
 
+setup_hybrid_boot() {
+  if [ "${1}" == "${2}" ];then
+    return 0;
+  fi;
+
+echo ${LDNAME}
+echo ${MLIBDIR}
+echo ${BUILD}
+echo ${NARCH}
+return 0
+
+  if [ ! "${LDNAME}" ] || [ ! "${MLIBDIR}" ];then
+    echo "LD name or multilib dir is not defined !!!"
+    return 1;
+  fi;
+
+  MULTIARCH=MARCH_${2} 
+  NATIVE=${!MULTIARCH}
+  if [ "${NATIVE}" ];then
+    case ${1} in
+      ${NATIVE})return;;
+    esac;
+  fi;
+
+  if [ ! -d /usr/gnemul/qemu-${1} ];then
+    mkdir -p /usr/gnemul/qemu-${1}
+  fi;
+
+  if [ ! -d ${ARCHROOT}/${1} ];then
+    mkdir -p ${ARCHROOT}/${1}
+  fi;
+
+  if [ ! -d /usr/gnemul/qemu-${1}/dev ];then
+    mount --bind ${ARCHROOT}/${1} /usr/gnemul/qemu-${1}
+  fi;
+
+  TMPDIR=$( mktemp -d -p /root cross_${NARCH}_${1}.XXXXXXXXXXX)
+  if [ ! "${TMPDIR}" ];then
+    return 1
+  fi;
+
+  for pkg in glibc mpc mpfr gmp cloog isl readline ncurses zlib flex ncursesw glib;do
+   (get_pkg_name ${pkg} ${1}
+   PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
+   cd ${PDIR}
+   tar -C ${TMPDIR} -xf ${PNAME}-libs.tar.xz)
+  done
+
+  for pkg in bash make;do
+   (get_pkg_name ${pkg} ${1}
+   PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
+   cd ${PDIR}
+   tar -C ${TMPDIR} -xf ${PNAME}.tar.xz usr/bin bin 2>/dev/null)
+  done
+
+  for pkg in gcc binutils;do
+   (get_pkg_name ${pkg} ${1}
+   if [ "${pkg}" == "gcc" ];then
+     PNAME=${PNAME}-cross
+   fi;
+   PDIR=${PKGDISTDIR}/build/${NARCH}/${1}/${PNAME}
+   cd ${PDIR}
+   tar -C ${TMPDIR} -xf ${PNAME}.tar.xz
+   tar -C ${TMPDIR} -xf ${PNAME}-libs.tar.xz
+   tar -C ${TMPDIR} -xf ${PNAME}-dev.tar.xz)
+  done
+
+  for pth in ${TMPDIR} ${TMPDIR}/usr;do
+    mv ${pth}/${NLIBDIR} ${pth}/${MLIBDIR}
+    mkdir ${pth}/${NLIBDIR}
+    mv ${pth}/${MLIBDIR} ${pth}/${NLIBDIR}
+  done;
+  ln -s ${MLIBDIR}/${LDNAME}  ${TMPDIR}/${NLIBDIR}/${LDNAME}
+
+  rsync -avP ${TMPDIR}/ ${ARCHROOT}/${1}/
+#  HOST=arm-linux-gnueabi;
+#  ls /usr/bin/${HOST}-*  |cut -d- -f4- |awk -v HOST=${HOST} '{printf "rm /usr/bin/%s;ln -s %s-%s /usr/bin/%s;fi\n",$1,HOST,$1,$1}
+
+  if [ "${TMPDIR}" ] && [ -d "${TMPDIR}" ];then
+    rm -rf ${TMPDIR}
+  fi;
+}
+
 bootstrap_arch() {
   for arch in $@;do
     if [ "${arch}" == "${NARCH}" ];then
@@ -1987,12 +2077,21 @@ bootstrap_arch() {
     #GCC needs system zlib glibc can use selinux/gd Add packages for a build enviroment
     BOOTCLEAN=distclean
     build_packages ${arch} libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat libxml2 freetype \
-      fontconfig jpeg tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc libsigsegv ncurses ncursesw onig \
+      fontconfig jpeg tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac libsigsegv ncurses ncursesw onig \
       slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude libtirpc flex Linux-PAM \
       util-linux bash coreutils bison sed texinfo make gzip tar rsync grep xz diffutils patch gperf m4 cpio \
       findutils nano less glib pkg-config libxslt gdbm gawk iana-etc tzdata binutils autoconf automake-1.9 \
       automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 file docbook-4.1.2 docbook-4.2 \
-      docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl which groff gdbm perl Python git unzip zip || exit 1) || return 1;
+      docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl which groff gdbm || return 1
+
+   #perl wants db if it finds it we will build it on native with Java support so leave native for now 
+   if [ "${arch}" != "${NARCH}" ] && [ -e /usr/${NLIBDIR}/libdb.so ];then
+     build_packages ${arch} tcl8 db|| return 1
+   fi;
+
+   build_packages ${arch} perl Python git unzip zip || exit 1) || return 1;
+   #XXX
+   #(setup_hybrid_boot ${arch} ${NARCH}) || return 1
   done;
 }
 
@@ -2192,9 +2291,8 @@ build_dependancies() {
   build_packages ${1} oRTP spandsp mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk libosip2 exosip linphone || return 1
 
   #Other bits
-  build_packages ${1} alsa-oss alsa-plugins alsa-tools alsa-utils TiMidity calamaris dirac ruby netatalk mod_perl \
-    mod_python nut omniORB dtc qemu asciidoc doxygen wxWidgets taglib xerces-c maven jhylafax tomcat || return 1
-
+  build_packages ${1} alsa-oss alsa-plugins alsa-tools alsa-utils TiMidity calamaris dirac netatalk mod_perl \
+    mod_python nut omniORB dtc qemu asciidoc doxygen ruby wxWidgets taglib xerces-c maven jhylafax tomcat || return 1
 
   #XFCE
   build_packages ${1} xfce4-dev-tools libxfce4util xfconf libxfce4ui garcon exo xfce4-panel tumbler \
@@ -2339,6 +2437,7 @@ bootstrap_native() {
   (BOOTCLEAN=distclean;build_packages ${NARCH} libtool gmp mpfr mpc isl cloog) || return 1
 
   #Build multi arch stack for native
+  (bootstrap_arch ${NARCH}) || return 1
   (build_glibc_march ${NARCH}) || return 1
 }
 
@@ -2554,9 +2653,10 @@ done;
 arch_config ${NARCH}
 BUILD=${TUPPLE}
 NLIBDIR=${SETLIBDIR}
+MLIBDIR=${AMLIBDIR}
 NKARCH=${LINARCH}
 unset TUPPLE SETLIBDIR LINARCH
-export BUILD NKARCH NLIBDIR
+export BUILD NKARCH NLIBDIR MLIBDIR
 
 if [ "${ANT_HOME}" ];then
   export PATH=${PATH}:${ANT_HOME}/bin
