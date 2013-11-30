@@ -878,6 +878,13 @@ build_project() {
   export FIXUPLIB;
 
   check_java
+
+  #Add gnu classpath / IBM/ecj compiler
+  if [ ! "${JAVA_HOME}" ] && [ -d /usr/${NLIBDIR}/jvm/gcj-jdk ];then
+    export JAVA_HOME="/usr/${NLIBDIR}/jvm/gcj-jdk"
+    export PATH=${PATH}:${JAVA_HOME}/bin
+  fi;
+
   if [ "${ADDPATH}" ];then
     PATH="${PATH}:${ADDPATH}"
   fi;
@@ -1673,12 +1680,6 @@ build_gcc_bootstrap() {
      rm -rf build-${TARCH}-${1}${SDIROPT}
   fi;
 
-#Build javac
-#gcj -Wl,-Bsymbolic -findirect-dispatch --main=org.eclipse.jdt.internal.compiler.batch.Main \
-#    /usr/share/java/ecj-3.5.2.jar -o ${3}/usr/bin/javac
-#x86_64-linux-gnu-gcj -mx32 -Wl,-Bsymbolic -findirect-dispatch --main=org.eclipse.jdt.internal.compiler.batch.Main
-#/usr/share/java/ecj-3.5.2.jar -L/dist/build/x86_64/gcc-git/usr/libx32 -lgcj -lgcj_bc -o /usr/bin/javac-x3
-
   if [ "${1}" == "${TARCH}" ];then
     ln -s gcc ${GCCBOOTDEST}/usr/bin/cc
     tar_package ${GCCBOOTDEST} ${TOOLPKG}/${TARCH} ${TARGPKG} > /dev/null 2>&1
@@ -1701,6 +1702,7 @@ build_gcc_bootstrap() {
         if [ "${4}" != "cross" ];then
           touch /usr/bin/${2}-gcc.${4}
          else
+          ln -sr ${GCCBOOTDEST}/usr/bin/ecj ${GCCBOOTDEST}/usr/${TLIBDIR}/jvm/gcj-jdk-${1}
           for stamp in null boot shared;do
             if [ -e /usr/bin/${2}-gcc.${stamp} ];then
               rm /usr/bin/${2}-gcc.${stamp}
