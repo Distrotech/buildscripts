@@ -95,7 +95,7 @@ export CFLAGS_FOR_BUILD=-I.
 export LDFLAGS_FOR_BUILD=-L.
 export MANCONF="/etc/man.conf";
 
-./util/modular/build.sh -p --clone --autoresume ./${1}.done --modfile ./${1}.tobuild ${PREFIX} || sync_fin ${3} 1
+./util/modular/build.sh --clone --autoresume ./${1}.done --modfile ./${1}.tobuild ${PREFIX} || sync_fin ${3} 1
 
 sync_fin ${3} 0
 
