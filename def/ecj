@@ -1,0 +1,7 @@
+VERSION="3.5.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+MAKEOPTS="GCJ=${HOST}-gcj";
+GITBRANCH="master";

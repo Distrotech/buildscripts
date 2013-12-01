@@ -1079,11 +1079,11 @@ build_project() {
   mkdir -p ${DIST_ROOT}
 
   export LDFLAGS CPPFLAGS CXXFLAGS CFLAGS MAKE_J
-
   if [ "${CHROOTBUILD}" ] && [ "${CHROOTBUILD}" == "1" ] && [ "${barch}" != "${NARCH}" ];then
     (export NARCH=${barch}
      unset ANT_HOME JAVA_HOME M2_HOME
      export PATH=${ORIG_PATH}
+     rsync -aR ${SRCDIR}/${PSOURCEDIR}/ ${ARCHROOT}/${barch}/
      chroot ${ARCHROOT}/${barch} ${SCRIPTDIR}/build ${barch} + ${PROJECT})
     if [ -e ${STATDIR}/${barch}/fail/${PROJECT} ];then
       return 1
@@ -2253,7 +2253,7 @@ build_dependancies() {
   fi;
 
   build_packages ${1} cacerts-lfs apr apr-iconv sqlite-autoconf keyutils neon rhino junit antlr4 apache-ant \
-    tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion \
+    ecj tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion \
     libva gmerlin jasper libraw1394 orc libogg libvorbis libkate gnome-mime-data gnome-vfs \
     libvisual gstreamer gstreamer-1 v4l-utils flac audiofile esound libsndfile json-c fftw \
     libsamplerate speex pulseaudio SDL SDL2 libdc1394 OpenCV frei0r libtheora gst-plugins-base \
