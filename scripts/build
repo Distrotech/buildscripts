@@ -6,6 +6,8 @@ shopt -s extglob
 GITIP=192.30.252.130
 GITBASE=git://${GITIP}/Distrotech
 
+CPUNO=$(lscpu  |awk '/^CPU\(s\)/ {print $2}')
+
 ANT_VER="1.9.2";
 JAVA_VER="1.7.0_60";
 M2_VER="3.1.1";
@@ -47,7 +49,7 @@ ALLARCH="0";
 
 ARCHLIST="";
 CLEANOPT="";
-MAKE_J="-j10"
+MAKE_J="-j${CPUNO}"
 
 while (( $# > 1 ));do
   case ${1} in
