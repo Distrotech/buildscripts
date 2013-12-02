@@ -2296,7 +2296,7 @@ build_dependancies() {
 
   #Other bits
   build_packages ${1} alsa-oss alsa-plugins alsa-tools alsa-utils TiMidity calamaris dirac netatalk mod_perl \
-    mod_python nut omniORB dtc qemu asciidoc doxygen ruby wxWidgets taglib xerces-c maven jhylafax || return 1
+    mod_python nut omniORB dtc qemu asciidoc doxygen ruby wxWidgets taglib xerces-c maven jhylafax admin_console || return 1
 
   #XFCE
   build_packages ${1} xfce4-dev-tools libxfce4util xfconf libxfce4ui garcon exo xfce4-panel tumbler \
