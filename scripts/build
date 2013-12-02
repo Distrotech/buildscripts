@@ -9,9 +9,11 @@ GITBASE=git://${GITIP}/Distrotech
 CPUNO=$(lscpu  |awk '/^CPU\(s\)/ {print $2}')
 
 ANT_VER="1.9.2";
-JAVA_VER="1.7.0_60";
+JAVA_VER="1.7.0_45";
 M2_VER="3.1.1";
+
 export ORIG_PATH=${PATH}
+export PATH=${PATH}:/usr/X11R7/bin:/opt/xfce/bin
 
 XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /usr/share/docbook2X/xslt/catalog.xml'
 LANG=en_ZA.UTF8
@@ -790,6 +792,8 @@ build_project() {
   shift;
   addopts=$@
 
+  check_java
+
   eval `cat ${DEFDIR}/${BUILDPROJECT}`
   DONTBUILDPAT=${DONTBUILD// /|}
   if [ "${DONTBUILD}" ] && [[ ${barch} =~ ${DONTBUILDPAT} ]];then
@@ -878,8 +882,6 @@ build_project() {
     FIXUPLIB="0";
   fi;
   export FIXUPLIB;
-
-  check_java
 
   #Add gnu classpath / IBM/ecj compiler
   if [ ! "${JAVA_HOME}" ] && [ -d /usr/${NLIBDIR}/jvm/gcj-jdk ];then
@@ -2201,7 +2203,7 @@ build_dependancies() {
 
   if [ "${1}" != "${NARCH}" ];then
     build_packages ${1} gobject-introspection libdaemon avahi-nogui talloc tevent libevent libverto krb5 cups ghostscript \
-      gs-fonts ijs libspectre poppler atk gdk-pixbuf libvdpau || return 1
+      gs-fonts ijs libspectre cairo poppler atk gdk-pixbuf libvdpau mozjs polkit libgusb colord || return 1
   fi;
 
   build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala \
@@ -2225,13 +2227,13 @@ build_dependancies() {
       rm ${STATDIR}/${1}/done/${redo}
     done
     build_packages ${1} ${to_redo} || return 1
-   else
-    build_packages ${1} gtk3 || return 1
-  fi;
-
-  if [ "${NARCH}" == "${1}" ];then
     (gtk-query-immodules-3.0 --update-cache
     glib-compile-schemas /usr/share/glib-2.0/schemas) >/dev/null 2>&1
+   else
+    if [ ! -e ${STATDIR}/${1}/done/gtk3 ];then
+      rm -f ${STATDIR}/${1}/done/poppler
+    fi;
+    build_packages ${1} gtk3 || return 1
   fi;
 
   #Continue X Build with GL/Mesa
@@ -2249,7 +2251,19 @@ build_dependancies() {
 
   #Build openjdk on native
   if [ "${NARCH}" == "${1}" ];then
-    build_packages ${1} icedtea7 || return 1
+    build_packages ${1} icedtea7-2.4 || return 1
+    JAVA_DIR=/usr/lib64/jvm
+    JRESEC=${JAVA_DIR}/jre-${JAVA_VER}/lib/security/cacerts
+    if [ ! -h ${JRESEC} ] && [ -e ${JRESEC} ];then
+      ln -srf /etc/ssl/certs/java/cacerts ${JRESEC}
+    fi;
+echo ${JRESEC}
+    JRESEC=${JAVA_DIR}/jdk-${JAVA_VER}/jre/lib/security/cacerts
+    if [ ! -h ${JRESEC} ] && [ -e ${JRESEC} ];then
+      ln -srf /etc/ssl/certs/java/cacerts ${JRESEC}
+    fi;
+echo ${JRESEC}
+read
   fi;
 
   build_packages ${1} cacerts-lfs apr apr-iconv sqlite-autoconf keyutils neon rhino junit antlr4 apache-ant \
