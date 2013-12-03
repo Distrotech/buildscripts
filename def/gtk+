@@ -21,3 +21,5 @@ CLEARFLAGS="1";
 ADDLDFLAG="-L=/usr/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS}";
 OPT_arm64="--enable-introspection=no";
 GITREPO="gtk";
+CHROOTBUILD="1";
+NOCROSS="1";

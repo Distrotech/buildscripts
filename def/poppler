@@ -7,3 +7,4 @@ CLEARFLAGS="1";
 ADDWITHSYSROOT="1";
 ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/openjpeg-1.5 -I=/usr/include/cairo -I=/usr/include/pango-1.0
           -I=/usr/include/gdk-pixbuf-2.0 -I=/usr/include/atk-1.0";
+CHROOTBUILD="1";

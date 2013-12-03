@@ -5,3 +5,4 @@ CONFOPT="";
 GITBRANCH="master";
 CLEARFLAGS="1";
 GITBRANCH="master";
+CHROOTBUILD="1";

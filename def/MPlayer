@@ -21,3 +21,4 @@ OPT_mips="--enable-cross-compile --cc=mips-linux-gnu-gcc --host-cc=/usr/bin/gcc 
 ADDCFLAG="-O2 -I=/usr/include/fribidi -I=/usr/include/freetype2";
 ADDLDFLAG="-L=/usr/${B_LIBDIRS}";
 ADDFILTER="config.mak";
+CHROOTBUILD="1";

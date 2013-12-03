@@ -9,3 +9,4 @@ NONULLCONF="1";
 CLEARFLAGS="1";
 OPT_arm64="--enable-introspection=no";
 AMVER="1.13";
+CHROOTBUILD="1";

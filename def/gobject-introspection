@@ -22,3 +22,4 @@ MOPT_x86_64="CC=/usr/bin/gcc";
 MOPT_arm="CC=/usr/bin/arm-linux-gnueabi-gcc GLIB_LIBDIR=/build/arm/usr/lib";
 MOPT_mips="GLIB_LIBDIR=/build/mips/usr/lib CC=/usr/bin/mips-linux-gnu-gcc";
 DONTBUILD="arm64";
+CHROOTBUILD="1";
