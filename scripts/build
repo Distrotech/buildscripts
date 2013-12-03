@@ -1086,7 +1086,7 @@ build_project() {
      unset ANT_HOME JAVA_HOME M2_HOME
      export PATH=${ORIG_PATH}
      rsync -aR ${SRCDIR}/${PSOURCEDIR}/ ${ARCHROOT}/${barch}/
-     chroot ${ARCHROOT}/${barch} ${SCRIPTDIR}/build ${barch} + ${PROJECT})
+     chroot ${ARCHROOT}/${barch} ${SCRIPTDIR}/build ${barch} + ${BUILDPROJECT})
     if [ -e ${STATDIR}/${barch}/fail/${PROJECT} ];then
       return 1
     fi;
@@ -2203,21 +2203,18 @@ build_dependancies() {
 
   if [ "${1}" != "${NARCH}" ];then
     build_packages ${1} gobject-introspection libdaemon avahi-nogui talloc tevent libevent libverto krb5 cups ghostscript \
-      gs-fonts ijs libspectre cairo poppler atk gdk-pixbuf libvdpau mozjs polkit libgusb colord || return 1
+      gs-fonts ijs libspectre cairo poppler atk gdk-pixbuf libvdpau mozjs polkit libmicrohttpd LVM2 cryptsetup systemd libgusb colord || return 1
   fi;
 
   build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala \
     libdrm intltool llvm talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
-    module-init-tools LVM2 cryptsetup libmicrohttpd systemd Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh || return 1
+    module-init-tools Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh || return 1
 
   if [ "${NARCH}" == "${1}" ];then
     (gdk-pixbuf-query-loaders > /usr/${B_LIBDIRS}/gdk-pixbuf-2.0/2.10.0/loaders.cache
     pango-querymodules --update-cache) >/dev/null 2>&1
-    build_packages ${1} gtk+ freeglut pcsc-lite || return 1
   fi;
-
-  #GTK3
-  build_packages ${1} wayland libxkbcommon at-spi2-core at-spi2-atk || return 1
+  build_packages ${1} gtk+ freeglut pcsc-lite wayland libxkbcommon at-spi2-core at-spi2-atk || return 1
 
   #we need gdk-pixbuf/librsvg built with gtk3 to build gtk33 bootstrap it [dont build demos/tests/examples on 1st pass]
   if [ ! -e ${STATDIR}/${1}/done/gtk3 ] && [ "${1}" == "${NARCH}" ];then
@@ -2253,17 +2250,12 @@ build_dependancies() {
   if [ "${NARCH}" == "${1}" ];then
     build_packages ${1} icedtea7-2.4 || return 1
     JAVA_DIR=/usr/lib64/jvm
-    JRESEC=${JAVA_DIR}/jre-${JAVA_VER}/lib/security/cacerts
-    if [ ! -h ${JRESEC} ] && [ -e ${JRESEC} ];then
-      ln -srf /etc/ssl/certs/java/cacerts ${JRESEC}
-    fi;
-echo ${JRESEC}
-    JRESEC=${JAVA_DIR}/jdk-${JAVA_VER}/jre/lib/security/cacerts
-    if [ ! -h ${JRESEC} ] && [ -e ${JRESEC} ];then
-      ln -srf /etc/ssl/certs/java/cacerts ${JRESEC}
-    fi;
-echo ${JRESEC}
-read
+    for JARSEC in ${JAVA_DIR}/jre-${JAVA_VER}/lib/security/cacerts \
+                  ${JAVA_DIR}/jdk-${JAVA_VER}/jre/lib/security/cacerts;do
+      if [ ! -h ${JARSEC} ] && [ -e ${JARSEC} ];then
+        ln -srf /etc/ssl/certs/java/cacerts ${JARSEC}
+      fi;
+    done;
   fi;
 
   build_packages ${1} cacerts-lfs apr apr-iconv sqlite-autoconf keyutils neon rhino junit antlr4 apache-ant \
