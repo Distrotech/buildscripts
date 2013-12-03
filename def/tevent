@@ -19,3 +19,4 @@ GITBRANCH="tevent-0.9.19";
 GITREPO="samba";
 CFGPTH="lib/tevent";
 CFGBIN="tevent/"
+CHROOTBUILD="1";
