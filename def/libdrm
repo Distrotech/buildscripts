@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-I=/usr/include/cairo";
 AMVER="1.13";
+CHROOTBUILD="1";

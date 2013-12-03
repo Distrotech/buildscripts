@@ -8,3 +8,4 @@ CLEARFLAGS="1";
 ALIAS="avahi";
 DISTCONF="avahi/avahi-daemon.conf avahi/avahi-autoipd.action";
 GITREPO="avahi";
+CHROOTBUILD="1";
