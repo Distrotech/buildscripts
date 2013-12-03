@@ -1,8 +1,7 @@
 VERSION="0.102"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="INTLTOOL_PERL=/usr/bin/perl";
-OPT_i686="G_IR_SCANNER=/build/i686/usr/bin/g-ir-scanner";
-XGOBJECTINTRO="1";
+CONFOPT="";
 DONTBUILD="arm64";
 CLEARFLAGS="1";
+CHROOTBUILD="1";
