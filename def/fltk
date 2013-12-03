@@ -5,3 +5,4 @@ CONFOPT="--enable-shared";
 BUILDDIR="0";
 SYSROOTFIXUP="1";
 ADDCFLAGS="-fPIC";
+MAKE_J="-j2";
