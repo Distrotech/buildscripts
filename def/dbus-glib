@@ -12,3 +12,4 @@ OPT_powerpc64="ac_cv_have_abstract_sockets=no with_dbus_binding_tool=dbus-bindin
 OPT_i686="ac_cv_have_abstract_sockets=no with_dbus_binding_tool=dbus-binding-tool";
 OPT_x86_64="ac_cv_have_abstract_sockets=no with_dbus_binding_tool=dbus-binding-tool";
 OPT_x86_32="ac_cv_have_abstract_sockets=no with_dbus_binding_tool=dbus-binding-tool";
+CHROOTBUILD="1";

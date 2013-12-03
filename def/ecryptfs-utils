@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="--with-pamdir=/usr/${B_LIBDIRS}/security";
 MAKEOPTS="SWIG=swig";
 GITBRANCH="master";
+CHROOTBUILD="1";

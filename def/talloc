@@ -18,3 +18,4 @@ GITREPO="samba";
 GITBRANCH="talloc-2.1.0";
 CFGPTH="lib/talloc/";
 CFGBIN="talloc/";
+CHROOTBUILD="1";
