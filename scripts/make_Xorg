@@ -8,8 +8,11 @@ FILT=FILTER_${1}
 FILTER=${!FILT}
 
 OPT_mips="--disable-loongson-mmi";
+OPT_arm="--disable-arm-iwmmxt --disable-arm-iwmmxt2";
+# --disable-arm-simd --disable-arm-neon";
+
 AOPT=OPT_${1}
-ARCHOP=${!AOPT}
+ARCHOPT=${!AOPT}
 
 sync_fin() {
   if [ ! -d ${1}/${PREFIX} ];then
@@ -17,10 +20,10 @@ sync_fin() {
   fi;
 
   #LD Cache
-  if [ ! -d ${3}/etc/ld.so.conf.d ];then
-    mkdir -p ${3}/etc/ld.so.conf.d
+  if [ ! -d ${1}/etc/ld.so.conf.d ];then
+    mkdir -p ${1}/etc/ld.so.conf.d
   fi;
-  echo "/usr/X11R7/${B_LIBDIRS}" > ${3}/etc/ld.so.conf.d/xwin.conf
+  echo "/usr/X11R7/${B_LIBDIRS}" > ${1}/etc/ld.so.conf.d/xwin.conf
 
   if [ "${NARCH}" == "${BARCH}" ];then
     rsync -a ${DESTDIR}${PREFIX}/ /${PREFIX}/
@@ -81,7 +84,7 @@ fi;
 
 export CC_FOR_BUILD=gcc
 export CXX_FOR_BUILD=g++
-CONFFLAGS="--host=${2} --build=${BUILD} --with-sysroot --libdir=${PREFIX}/${B_LIBDIRS} --disable-selective-werror 
+CONFFLAGS="--host=${2} --build=${BUILD} --with-sysroot --libdir=${PREFIX}/${B_LIBDIRS} --disable-selective-werror ${ARCHOPT}
            ac_cv_file__dev_urandom=yes --with-utmp-file=/var/run/utmp --with-wtmp-file=/var/log/wtmp
            ac_cv_file__usr_X11R7_include_xorg_dri_h=yes ac_cv_file__usr_X11R7_include_xorg_sarea_h=yes
            ac_cv_file__usr_X11R7_include_xorg_dristruct_h=yes ac_cv_file__usr_X11R7_include_xorg_damage_h=yes"
