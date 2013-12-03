@@ -2,7 +2,7 @@ VERSION="1.0.16"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-OPT_i686="--target=i686-linux-gnu";
-CLEARFLAGS="1";
-NOCCOPT="1";
 CHROOTBUILD="1";
+BUILDDIR="0";
+NOCCOPT="1";
+NONULLCONF="1";
