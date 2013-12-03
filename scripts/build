@@ -2172,8 +2172,8 @@ build_dependancies() {
   fi;
 
   build_packages ${1} intltool popt rsync bzip2 nspr sqlite-autoconf nss openssl Python libcap-ng ply expat libxml2 libxslt gnome-doc-utils \
-    docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus glib gtk-doc pkg-config \
-    libcroco libassuan libksba pth libusb libusb-compat gnupg trousers onig slang autoconf automake-1.9 automake-1.10 automake-1.11 \
+    docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus glib gnome-doc-utils gtk-doc \
+    pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg trousers onig slang autoconf automake-1.9 automake-1.10 automake-1.11 \
     automake-1.12 automake-1.13 automake-1.14 findutils || return 1
 
   #Rebuild libxml2 with Python support
