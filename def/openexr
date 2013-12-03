@@ -4,4 +4,5 @@ PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-I=/usr/include/OpenEXR/";
 CFGPTH="OpenEXR";
-CFGBIN="OpenEXR/"
+CFGBIN="OpenEXR/";
+DONTBUILD="arm";

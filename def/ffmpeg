@@ -20,7 +20,7 @@ OPT_i686="--enable-cross-compile --sysroot=/build/i686 --arch=i686 --target-os=l
           --enable-libopencv --enable-frei0r --enable-libv4l2";
 OPT_arm="--enable-cross-compile --sysroot=/build/arm --arch=arm --target-os=linux --cross-prefix=arm-linux-gnueabi-
          --extra-ldflags=-Wl,--rpath-link=/build/arm/usr/lib:/build/arm/lib:/build/arm/usr/X11R7/lib
-         --host-cc=/usr/bin/gcc --enable-libv4l2";
+         --host-cc=/usr/bin/gcc --enable-libv4l2 --disable-asm";
 OPT_x86_32="--enable-cross-compile --sysroot=/build/x86_32 --arch=x86_64 --target-os=linux 
           --cross-prefix=x86_64-linux-gnux32- --extra-cflags=-mx32 --extra-ldflags=-mx32
           --libdir=/usr/libx32 --shlibdir=/usr/libx32 --host-cc=/usr/bin/gcc --disable-asm

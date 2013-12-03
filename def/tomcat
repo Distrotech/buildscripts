@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 MAKE_J="-j1";
 MAKEOPTS="LIBDIR=${B_LIBDIRS}";
+DONTBUILD="arm arm64 mips mips64 powerpc powerpc64";
