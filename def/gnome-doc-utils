@@ -2,3 +2,4 @@ VERSION="0.20.10"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+CHROOTBUILD="1";
