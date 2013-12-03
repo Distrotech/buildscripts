@@ -8,8 +8,17 @@ GITBASE=git://${GITIP}/Distrotech
 
 CPUNO=$(lscpu  |awk '/^CPU\(s\)/ {print $2}')
 
+#Set the arch based on uname -m this is not able to determine multi/sub arches
+NARCH=${NARCH:=$( uname -m )}
+
+case ${NARCH} in
+  arm*)NARCH=arm;
+      JAVA_VER="1.7.0_25";;
+  *)JAVA_VER="1.7.0_45";;
+esac;
+export NARCH
+
 ANT_VER="1.9.2";
-JAVA_VER="1.7.0_45";
 M2_VER="3.1.1";
 
 export ORIG_PATH=${PATH}
@@ -94,14 +103,6 @@ if [ "${1}" ] && [[ ${1} =~ ${ARCHMPAT} ]] && [ ! -e ${DEFDIR}/${1} ];then
 fi;
 
 ulimit -s unlimited
-
-#Set the arch based on uname -m this is not able to determine multi/sub arches
-NARCH=${NARCH:=$( uname -m )}
-
-case ${NARCH} in
-  arm*)NARCH=arm;;
-esac;
-export NARCH
 
 #Native if not specified
 if [ ! "${ARCHLIST}" ];then
