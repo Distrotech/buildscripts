@@ -6,3 +6,4 @@ BUILDDIR="0";
 GITREPO="unifoundry";
 GITBRANCH="distrotech-unifont-${VERSION}";
 MAKEOPTS="FONTDIR=/usr/share/grubfont SHAREDIR=/usr/share/grubfont";
+NOMAKEFLAGS="1";
