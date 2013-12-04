@@ -5,3 +5,4 @@ CONFOPT="--sysconfdir=/etc/chilli --enable-dhcpopt --enable-ieee8023 --enable-pp
          --with-openssl --with-lookup3 --with-curl --with-poll --with-ipv6";
 BUILDDIR="0";
 EXTRALIBS="-ldl -lcares -lidn -lrt -lpthread -lrtmp -lssl -lcrypto -lz";
+AMVER="1.13";
