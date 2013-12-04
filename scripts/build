@@ -2346,7 +2346,7 @@ build_dependancies() {
 #XXX
 #PyQt-x11 sip
   #Almost done
-  build_packages ${1} grub || return 1
+  build_packages ${1} grub-fonts grub || return 1
 
   #Time to build a static gcc bootstrap distributable
   (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
