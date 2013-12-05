@@ -1,4 +1,4 @@
-VERSION="4.8.4"
+VERSION="4.8.5"
 VERSEP="-";
 PREFIX="/opt/qt-4";
 STDOPTS="-opensource -openssl-linked -confirm-license";

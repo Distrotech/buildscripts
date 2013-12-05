@@ -4,6 +4,8 @@
 
 unset CFLAGS LDFLAGS CC CXX CPPFLAGS CXXFLAGS LD
 
+#export QTDIR=/opt/qt-4 ;export QT_BUILD_QMAKE=/opt/qt-4/bin/qmake ;export PATH=${PATH}:${QTDIR}/bin
+
 if [ "${4}" ];then
   make confclean ${4}
 fi;
@@ -15,28 +17,42 @@ if [ "${1}" == "${NARCH}" ] && [ ! -d /build/${1} ];then
 fi;
 
 ARCH="";
+case ${NARCH} in
+  i686)PLATFORM=linux-g++-32;;
+  mips)PLATFORM=linux-mips-g++;;
+  mips64)PLATFORM=linux-mips-g++-64;;
+  arm)PLATFORM=linux-arm-gnueabi-g++;;
+  arm64)PLATFORM=linux-aarch64-gnu-g++;;
+  powerpc)PLATFORM=linux-ppc-g++;;
+  powerpc64)PLATFORM=linux-ppc-g++-64;;
+  x86_64)PLATFORM=linux-g++-64;
+         ARCH="-host-arch x86_64";;
+  x86_32)PLATFORM=linux-g++-x32;;
+esac;
+
 case ${1} in
-	i686)PLATFORM=linux-g++-32;;
-	mips)PLATFORM=linux-mips-g++;
-		ARCH="-host-arch mips";;
-	mips64)PLATFORM=linux-mips-g++-64;
-		ARCH="-host-arch mips";;
-	arm)PLATFORM=linux-arm-gnueabi-g++;
-		ARCH="-host-arch arm";;
-	arm64)PLATFORM=linux-aarch64-gnu-g++;
-		ARCH="-host-arch arm64";;
-	powerpc)PLATFORM=linux-ppc-g++;
-		ARCH="-host-arch powerpc";;
-	powerpc64)PLATFORM=linux-ppc-g++-64;
-		ARCH="-host-arch powerpc";;
-	x86_64)PLATFORM=linux-g++-64;;
-	x86_32)PLATFORM=linux-g++-x32;;
+	i686)XPLATFORM=linux-g++-32;;
+	mips)XPLATFORM=linux-mips-g++;
+		ARCH="${ARCH} -host-arch mips";;
+	mips64)XPLATFORM=linux-mips-g++-64;
+		ARCH="${ARCH} -host-arch mips";;
+	arm)XPLATFORM=linux-arm-gnueabi-g++;
+		ARCH="-no-pch ${ARCH} -arch arm";;
+	arm64)XPLATFORM=linux-aarch64-gnu-g++;
+		ARCH="${ARCH} -host-arch arm64";;
+	powerpc)XPLATFORM=linux-ppc-g++;
+		ARCH="${ARCH} -host-arch powerpc";;
+	powerpc64)XPLATFORM=linux-ppc-g++-64;
+		ARCH="${ARCH} -host-arch powerpc";;
+	x86_64)XPLATFORM=linux-g++-64;
+		ARCH="${ARCH} -host-arch x86_64";;
+	x86_32)XPLATFORM=linux-g++-x32;;
 esac;
 
 export QMAKE_INCDIR_X11="-I=/usr/X11R7/include";
 export QMAKE_LIBDIR_X11="-L=/usr/X11R7/${B_LIBDIRS}";
 
-./configure -prefix /opt/qt-4 -v -opensource -openssl-linked -confirm-license -xplatform ${PLATFORM} -system-sqlite \
-            -no-javascript-jit -no-scripttools -no-webkit -no-script -libdir /opt/qt-4/${B_LIBDIRS} -platform ${PLATFORM}
+./configure -prefix /opt/qt-4 -v -opensource -openssl-linked -confirm-license -xplatform ${XPLATFORM} -system-sqlite \
+            -no-javascript-jit -no-scripttools -no-webkit -no-script -libdir /opt/qt-4/${B_LIBDIRS} -platform ${PLATFORM} ${ARCH}
 make -C src/tools/bootstrap all ;ranlib src/tools/bootstrap/libbootstrap.a
 make ${MAKE_J} INSTALL_ROOT=${3} all && make INSTALL_ROOT=${3} install
