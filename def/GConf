@@ -3,7 +3,7 @@ VERSEP="-";
 CONFOPT="INTLTOOL_PERL=/usr/bin/perl";
 PREFIX="/usr";
 ADDCFLAG="-I=/usr/include/orbit-2.0 -I=/usr/include/libxml2 -I=/usr/include/polkit-1";
-XGOBJECTINTRO="1";
 BUILDDIR="0";
 CLEARFLAGS="1";
 OPT_arm64="--enable-introspection=no";
+CHROOTBUILD="1";
