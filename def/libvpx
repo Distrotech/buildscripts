@@ -4,7 +4,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-vp8 --enable-pic --enable-shared --enable-static";
 STDOPTS="--prefix=/usr";
-OPT_arm="--target=armv7-linux-gcc";
+OPT_arm="--target=armv7-linux-gcc --extra-cflags=-mhard-float";
 OPT_arm64="--target=aarch64-linux-gcc";
 OPT_mips="--target=mips32-linux-gcc";
 OPT_mips64="--target=mips32-linux-gcc";

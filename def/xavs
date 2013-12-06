@@ -1,14 +1,14 @@
-VERSION="git"
+VERSION="git";
 VERSEP="-";
 PREFIX="/usr";
 STDOPTS="--prefix=/usr";
-OPT_x86_64="--host=x86_64-linux-gnu --enable-pic";
-OPT_x86_32="--host=x86_64-linux-gnux32 --enable-shared";
-OPT_i686="--host=i686-linux-gnu --enable-shared";
+OPT_x86_64="--host=x86_64-linux-gnu --enable-shared --enable-pic";
+OPT_x86_32="--host=x86_64-linux-gnux32 --enable-shared --enable-pic";
+OPT_i686="--host=i686-linux-gnu --enable-shared --enable-pic" --diasable-static;
 OPT_mips="--host=mips-linux-gnu --enable-shared --enable-pic";
 OPT_mips64="--host=mips64-linux-gnuabi64 --enable-shared --enable-pic";
-OPT_powerpc="--host=powerpc-linux-gnu --enable-shared";
-OPT_powerpc64="--host=powerpc-linux-gnu --enable-shared";
+OPT_powerpc="--host=powerpc-linux-gnu --enable-shared --enable-pic";
+OPT_powerpc64="--host=powerpc-linux-gnu --enable-shared --enable-pic";
 OPT_arm="--host=arm-linux-gnueabi --enable-shared --enable-pic";
 OPT_arm64="--host=aarch64-linux-gnu --enable-shared --enable-pic";
 BUILDDIR="0";
