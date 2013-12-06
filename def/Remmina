@@ -10,6 +10,7 @@ CONFOPT="-DWITH_TELEPATHY:BOOL=OFF -DWITH_APPINDICATOR=OFF
          -DGDK2_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libgdk-x11-2.0.so
          -DGDK3_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libgdk-x11-2.0.so
          -DGTK2_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libgtk-x11-2.0.so
+         -DGTK3_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libgtk-3.so
          -DLIBSSH_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libssh.so
          -DVTE_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libvte.so
          -DZLIB_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libz.so
