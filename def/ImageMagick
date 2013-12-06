@@ -2,3 +2,4 @@ VERSION="6.8.7"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+OPT_arm="--without-openexr";
