@@ -5,3 +5,4 @@ CONFOPT="--enable-maintainer-flags=no";
 ADDCFLAG="-DG_CONST_RETURN=const";
 CLEARFLAGS="1";
 BUILDDIR="0";
+CHROOTBUILD="1";
