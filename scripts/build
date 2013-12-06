@@ -870,6 +870,21 @@ build_project() {
     return 1
   fi;
 
+  if [ "${CHROOTBUILD}" ] && [ "${CHROOTBUILD}" == "1" ] && [ "${barch}" != "${NARCH}" ];then
+    (rsync -aR ${SRCDIR}/${PSOURCEDIR}/ ${ARCHROOT}/${barch}/
+     (cd ${ARCHROOT}/${barch}/${SRCDIR}/${PSOURCEDIR}/
+      if [ -d .git ];then
+        git reset --hard
+        git clean -x -f -d
+     fi;)
+     /usr/bin/env -i - NARCH=${barch} CLEANOPT=${BOOTCLEAN} chroot ${ARCHROOT}/${barch} ${SCRIPTDIR}/build ${barch} + ${BUILDPROJECT})
+    if [ -e ${STATDIR}/${barch}/fail/${PROJECT} ];then
+      return 1
+     else
+      return 0
+    fi;
+  fi
+
   if [ ! "${BUILDDIR}" ];then
     export BUILDDIR=1;
   fi;
@@ -986,7 +1001,7 @@ build_project() {
     export QTDIR=/opt/qt-4
   fi;
 
-  CFLAGS="${ADDCFLAG} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/usr/lib/glib-2.0/include -I=/usr/include/glib-2.0 -I=/usr/include/gtk-3.0 -I=/usr/include/gtk-2.0 -I=/usr/include/dbus-1.0 -I=/opt/qt-4/include -I=/opt/xfce/include";
+  CFLAGS="${ADDCFLAG} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/usr/lib/glib-2.0/include -I=/usr/include/glib-2.0 -I=/usr/include/gtk-3.0 -I=/usr/include/gtk-2.0 -I=/usr/include/dbus-1.0 -I=/opt/qt-4/include -I=/opt/xfce/include -I=/usr/${B_LIBDIRS}/glib-2.0/include";
 # -I=/usr/lib/perl5/5.16.2/${HOST}-thread-multi/CORE";
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
@@ -1082,16 +1097,7 @@ build_project() {
   mkdir -p ${DIST_ROOT}
 
   export LDFLAGS CPPFLAGS CXXFLAGS CFLAGS MAKE_J
-  if [ "${CHROOTBUILD}" ] && [ "${CHROOTBUILD}" == "1" ] && [ "${barch}" != "${NARCH}" ];then
-    (export NARCH=${barch}
-     unset ANT_HOME JAVA_HOME M2_HOME
-     export PATH=${ORIG_PATH}
-     rsync -aR ${SRCDIR}/${PSOURCEDIR}/ ${ARCHROOT}/${barch}/
-     chroot ${ARCHROOT}/${barch} ${SCRIPTDIR}/build ${barch} + ${BUILDPROJECT})
-    if [ -e ${STATDIR}/${barch}/fail/${PROJECT} ];then
-      return 1
-    fi;
-   elif [ -x ${SCRIPTDIR}/make_${PROJECT} ];then
+  if [ -x ${SCRIPTDIR}/make_${PROJECT} ];then
     export CC="${CC} ${CC_SYSROOT}"
     export CXX="${CXX} ${CC_SYSROOT}"
     ${SCRIPTDIR}/make_${PROJECT} ${barch} ${HOST} ${DIST_ROOT} ${CLEANOPT} || return 1

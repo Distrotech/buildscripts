@@ -84,6 +84,7 @@ fi;
 
 export CC_FOR_BUILD=gcc
 export CXX_FOR_BUILD=g++
+export CFLAGS="${CFLAGS} -I=/usr/${B_LIBDIRS}/glib-2.0/include"
 CONFFLAGS="--host=${2} --build=${BUILD} --with-sysroot --libdir=${PREFIX}/${B_LIBDIRS} --disable-selective-werror ${ARCHOPT}
            ac_cv_file__dev_urandom=yes --with-utmp-file=/var/run/utmp --with-wtmp-file=/var/log/wtmp
            ac_cv_file__usr_X11R7_include_xorg_dri_h=yes ac_cv_file__usr_X11R7_include_xorg_sarea_h=yes
@@ -94,7 +95,7 @@ if [ "${NARCH}" != "${1}" ];then
 fi;
 export CONFFLAGS
 
-export CFLAGS_FOR_BUILD=-I.
+export CFLAGS_FOR_BUILD="-I. -I=/usr/${B_LIBDIRS}/glib-2.0/include"
 export LDFLAGS_FOR_BUILD=-L.
 export MANCONF="/etc/man.conf";
 

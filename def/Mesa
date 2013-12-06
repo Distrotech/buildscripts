@@ -13,6 +13,6 @@ ADDCFLAG="-I=/usr/include/libdrm -fPIC";
 ADDLDFLAG="-L/usr/src/Mesa/Mesa-${VERSION}/lib";
 MAKEOPTS="HOSTCC_LDFLAGS=-L/usr/${NLIBDIR}"
 LDISCC="1";
-XEXTRALIBS="-lstdc++";
 AMVER="1.13";
 CHROOTBUILD="1";
+AUTORECONF="1";
