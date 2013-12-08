@@ -6,3 +6,4 @@ BUILDDIR="0";
 ADDCFLAG="-m32";
 ADDLDFLAG="-m elf_i386 -static -L=/lib";
 LDISCC="0";
+DONTBUILD="arm arm64 mips mips64 powerpc powerpc64";
