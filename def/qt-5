@@ -1,10 +1,10 @@
-VERSION="4.8.5"
+VERSION="5.1.1"
 VERSEP="-";
-PREFIX="/opt/qt-4";
+PREFIX="/opt/qt-5";
 CONFOPT="-opensource -openssl-linked -confirm-license -prefix ${PREFIX} -v -system-sqlite -libdir ${PREFIX}/${B_LIBDIRS}";
 OPT_arm="-no-pch";
-XOPTX_arm="-xplatform ${QT_HOSTSPEC}";
-OPT_x86_32="-no-javascript-jit -no-scripttools -no-webkit -no-script";
+CONFOPTXX="-xplatform ${QT_HOSTSPEC}";
+OPT_x86_32="-no-javascript-jit -no-optimized-qmake";
 NOCCOPT="1";
-DONTBUILD="arm64";
 BUILDDIR="0";
+DONTBUILD="arm64";

@@ -20,6 +20,7 @@ export NARCH
 
 ANT_VER="1.9.2";
 M2_VER="3.1.1";
+QT_VER="5";
 
 export ORIG_PATH=${PATH}
 export PATH=${PATH}:/usr/X11R7/bin:/opt/xfce/bin
@@ -50,7 +51,7 @@ MARCH_x86_64='@(x86_32|i[3-6]86|x86_64)'
 MARCH_x86_32=${MARCH_x86_64}
 MARCH_powerpc64='@(powerpc|powerpc64)'
 
-export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA_VER M2_VER
+export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA_VER M2_VER QT_VER
 
 #Parse cmdline opts
 #Adding a arch here may require you adding tupple/kernel arch/libdirs and bellow in arch_config
@@ -146,6 +147,19 @@ arch_config() {
     arm64)LDNAME=ld-linux-aarch64.so.1;;
   esac;
 
+  #QT Spec file
+  case ${1} in
+    i686)QTSPEC=linux-g++-32;;
+    mips)QTSPEC=linux-mips-g++;;
+    mips64)QTSPEC=linux-mips-g++-64;;
+    arm)QTSPEC=linux-arm-gnueabi-g++;;
+    arm64)QTSPEC=linux-aarch64-gnu-g++;;
+    powerpc)QTSPEC=linux-ppc-g++;;
+    powerpc64)QTSPEC=linux-ppc-g++-64;;
+    x86_64)QTSPEC=linux-g++-64;; 
+    x86_32)QTSPEC=linux-g++-x32;;
+  esac;
+
   #Name of GLIBC Multi Libdir
   case ${1} in
     x86_64)AMLIBDIR=x86-64;;
@@ -215,6 +229,7 @@ check_create_arch() {
   arch_config ${1}
   HOST=${TUPPLE}
   KARCH=${LINARCH}
+  QT_SPEC=${QTSPEC}
   B_LIBDIRS=${SETLIBDIR}
 
   unset TUPPLE SETLIBDIR LINARCH
@@ -226,7 +241,7 @@ check_create_arch() {
     powerpc64)QCPU=ppc64;;
   esac;
 
-  export B_LIBDIRS HOST KARCH QCPU
+  export B_LIBDIRS HOST KARCH QCPU QT_SPEC
 
   HDIR=${BASEROOT}/${1}
   if [ ! -d ${HDIR} ];then
@@ -238,7 +253,7 @@ check_create_arch() {
   fi;
 
   #Core utils barfs when bootstraping
-  for incdir in /usr/X11R7/include /usr/${B_LIBDIRS}/glib-2.0/include /opt/qt-4/include \
+  for incdir in /usr/X11R7/include /usr/${B_LIBDIRS}/glib-2.0/include /opt/qt-${QT_VER}/include \
                 /usr/include/glib-2.0 /usr/include/dbus-1.0 /opt/xfce/include \
                 /usr/include/gtk-3.0 /usr/include/gtk-2.0;do
     if [ ! -d ${incdir} ] && [ "${BOOTSTRAP}" == "0" ];then
@@ -908,7 +923,7 @@ build_project() {
   if [ "${ADDPATH}" ];then
     PATH="${PATH}:${ADDPATH}"
   fi;
-  export PATH="${PATH}:/opt/qt-4/bin:/opt/xfce/bin:/opt/xfce/sbin:${ADDPATH}"
+  export PATH="${PATH}:/opt/qt-${QT_VER}/bin:/opt/xfce/bin:/opt/xfce/sbin:${ADDPATH}"
   echo Building ${PKG}
 
   if [ ! "${CFGPTH}" ];then
@@ -995,19 +1010,19 @@ build_project() {
     export PATH=${SYSPATH}
   fi;
 
-  if [ -d ${ARCHROOT}/${barch}/opt/qt-4 ] && [ ! -h ${ARCHROOT}/${barch} ];then
-    export QTDIR=${ARCHROOT}/${barch}/opt/qt-4
-   elif [ -d /opt/qt-4 ];then
-    export QTDIR=/opt/qt-4
+  if [ -d ${ARCHROOT}/${barch}/opt/qt-${QT_VER} ] && [ ! -h ${ARCHROOT}/${barch} ];then
+    export QTDIR=${ARCHROOT}/${barch}/opt/qt-${QT_VER}
+   elif [ -d /opt/qt-${QT_VER} ];then
+    export QTDIR=/opt/qt-${QT_VER}
   fi;
 
-  CFLAGS="${ADDCFLAG} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/usr/lib/glib-2.0/include -I=/usr/include/glib-2.0 -I=/usr/include/gtk-3.0 -I=/usr/include/gtk-2.0 -I=/usr/include/dbus-1.0 -I=/opt/qt-4/include -I=/opt/xfce/include -I=/usr/${B_LIBDIRS}/glib-2.0/include";
+  CFLAGS="${ADDCFLAG} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/usr/lib/glib-2.0/include -I=/usr/include/glib-2.0 -I=/usr/include/gtk-3.0 -I=/usr/include/gtk-2.0 -I=/usr/include/dbus-1.0 -I=/opt/qt-${QT_VER}/include -I=/opt/xfce/include -I=/usr/${B_LIBDIRS}/glib-2.0/include";
 # -I=/usr/lib/perl5/5.16.2/${HOST}-thread-multi/CORE";
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
   export CXXFLAGS=${CFLAGS}
-  LDFLAGS="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} ${ADDLDFLAG}"
+  LDFLAGS="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-${QT_VER}/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS} ${ADDLDFLAG}"
   if [ "${SETCPPTOC}" == "1" ];then
     CPPFLAGS=${CFLAGS};
   fi;
@@ -1017,10 +1032,10 @@ build_project() {
   fi;
   export FORCE_UNSAFE_CONFIGURE=1
 #    export PKG_CONFIG_SYSROOT_DIR="${SYSROOT}"
-  export PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/share/pkgconfig:${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig";
+  export PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/share/pkgconfig:${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/opt/qt-${QT_VER}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig";
 #  export PYTHONPATH="/usr/${B_LIBDIRS}/python2.7/site-packages/"
 
-  RPATH_LINK="${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}"
+  RPATH_LINK="${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio:${SYSROOT}/opt/qt-${QT_VER}/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}"
   RPLINK=" -Wl,--rpath-link=${RPATH_LINK}";
   XCCOPT="${XCCOPT} ${RPLINK}"
 
@@ -1100,6 +1115,7 @@ build_project() {
   if [ -x ${SCRIPTDIR}/make_${PROJECT} ];then
     export CC="${CC} ${CC_SYSROOT}"
     export CXX="${CXX} ${CC_SYSROOT}"
+    export CONFOPT="${CONFOPT} ${ARCHOPT} ${ARCHXOPT}";
     ${SCRIPTDIR}/make_${PROJECT} ${barch} ${HOST} ${DIST_ROOT} ${CLEANOPT} || return 1
    elif [ -e ${TOPDIR}${CFGBIN}configure ] && [ "${PROJECT}" != "cmake" ];then
     if [ ! -x ${TOPDIR}${CFGBIN}configure ];then
@@ -1763,7 +1779,7 @@ build_qemu_static() {
   QEMU=qemu${VERSEP}${VERSION}
   export PREFIX
 
-  export PKG_CONFIG_PATH="/${NLIBDIR}/pkgconfig:/usr/${NLIBDIR}/pkgconfig:/opt/apache2/${NLIBDIR}/pkgconfig:/usr/share/${NLIBDIR}/pkgconfig:/usr/X11R7/${NLIBDIR}/pkgconfig:/lib/pkgconfig:/usr/lib/pkgconfig:/opt/qt-4/${NLIBDIR}/pkgconfig:/opt/xfce/${NLIBDIR}/pkgconfig";
+  export PKG_CONFIG_PATH="/${NLIBDIR}/pkgconfig:/usr/${NLIBDIR}/pkgconfig:/opt/apache2/${NLIBDIR}/pkgconfig:/usr/share/${NLIBDIR}/pkgconfig:/usr/X11R7/${NLIBDIR}/pkgconfig:/lib/pkgconfig:/usr/lib/pkgconfig:/opt/qt-${QT_VER}/${NLIBDIR}/pkgconfig:/opt/xfce/${NLIBDIR}/pkgconfig";
   DIST_PKG=${TOOLPKG}/${NARCH}/${QEMU}-static.tar.xz
   if [ -d ${TOOLDIR}/${NARCH}/${QEMU} ] && [ -f ${DIST_PKG} ];then
     return
@@ -2274,7 +2290,7 @@ build_dependancies() {
     libbluray celt libcaca gsm modplug lame twolame libnut opencore-amr opus schroedinger utvideo \
     openal xvidcore ptlib libcddb libcdio-cdda libcdio fltk libnfnetlink libmnl libexif exif \
     libnetfilter_conntrack libao libtimidity libnetfilter_cttimeout ilmbase gss iptables \
-    usbutils xavs x264 libvpx fdk-aac libmpeg2 a52dec ffmpeg h323plus gnugk t38modem qt-4 \
+    usbutils xavs x264 libvpx fdk-aac libmpeg2 a52dec ffmpeg h323plus gnugk t38modem qt-${QT_VER} \
     py2cairo pygobject libglade pygtk help2man rrdtool avahi djvulibre libarchive cogl json-glib \
     pciutils net-snmp sane-backends libvdpau LibVNCServer i2c-tools openexr ImageMagick \
     libungif libiodbc tdb libcanberra libgnome-keyring pangox-compat mhash libmcrypt vim || return 1
@@ -2672,8 +2688,9 @@ BUILD=${TUPPLE}
 NLIBDIR=${SETLIBDIR}
 MLIBDIR=${AMLIBDIR}
 NKARCH=${LINARCH}
+QT_HOSTSPEC=${QTSPEC}
 unset TUPPLE SETLIBDIR LINARCH
-export BUILD NKARCH NLIBDIR MLIBDIR
+export BUILD NKARCH NLIBDIR MLIBDIR QT_HOSTSPEC
 
 if [ "${ANT_HOME}" ];then
   export PATH=${PATH}:${ANT_HOME}/bin

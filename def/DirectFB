@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="ac_cv_path_MAN2HTML=false";
 OPT_arm="--with-gfxdrivers=ati128,cle266,ep9x,gl,gles2,i810,i830,mach64,matrox,neomagic,nsc,nvidia,omap,pvr2d,pxa3xx,savage,sh772x,sis315,tdfx,unichrome,vdpau,vmware";
+CHROOTBUILD="1";
