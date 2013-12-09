@@ -1,9 +1,9 @@
 VERSION="1.0.16"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="ac_cv_vcs_checkout=no";
 CHROOTBUILD="1";
 BUILDDIR="0";
 NOCCOPT="1";
 NONULLCONF="1";
-DONTBUILD="arm";
+AMVER="1.14";
