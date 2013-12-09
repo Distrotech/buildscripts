@@ -8,9 +8,10 @@ if [ "${1}" == "${NARCH}" ] && [ ! -d /build/${1} ];then
   mkdir -p /build/${1}/opt/qt-${QT_VER}/${B_LIBDIRS}
 fi;
 
-if [ "${4}" ];then
+if [ "${4}" ] || [ ! -e Makefile ];then
   if [ -e .gitmodules ];then
     git submodule foreach --recursive "git clean -dfx"
+    git submodule deinit -f .
    else
     make confclean ${4}
   fi;
