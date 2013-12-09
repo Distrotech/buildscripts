@@ -14,7 +14,10 @@ if [ "${4}" ];then
    else
     make confclean ${4}
   fi;
-  ./configure ${CONFOPT} -platform ${QT_SPEC}
+  ./init-repository
+  ./configure ${CONFOPT} -xplatform ${QT_SPEC} -platform ${QT_HOSTSPEC} || exit 1
 fi;
 
-make ${MAKE_J} all && make INSTALL_ROOT=${3} install
+make ${MAKE_J} all || rm qtbase/lib/libQt5Bootstrap.a
+make ${MAKE_J} -C qtbase/src/tools/bootstrap RANLIB=${BUILD}-ranlib
+make ${MAKE_J} all && make INSTALL_ROOT=${3} install || exit 1
