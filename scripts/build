@@ -1273,6 +1273,10 @@ build_project() {
       if [ -d .git ];then
         git reset --hard
         git clean -x -f -d
+        if [ -e .gitmodules ];then
+          git submodule foreach --recursive "git clean -dfx"
+          git submodule deinit -f .
+        fi;
       fi;) > /dev/null 2>&1
     fi;
   fi;) || true

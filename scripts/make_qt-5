@@ -8,6 +8,12 @@ if [ "${1}" == "${NARCH}" ] && [ ! -d /build/${1} ];then
   mkdir -p /build/${1}/opt/qt-${QT_VER}/${B_LIBDIRS}
 fi;
 
+#Possible rebuild
+if [ -e Makefile.build ];then
+  mv Makefile.build Makefile
+fi;
+
+#Initialise modules and configure
 if [ "${4}" ] || [ ! -e Makefile ];then
   if [ -e .gitmodules ];then
     git submodule foreach --recursive "git clean -dfx"
@@ -19,6 +25,14 @@ if [ "${4}" ] || [ ! -e Makefile ];then
   ./configure ${CONFOPT} -xplatform ${QT_SPEC} -platform ${QT_HOSTSPEC} || exit 1
 fi;
 
-make ${MAKE_J} all || rm qtbase/lib/libQt5Bootstrap.a
-make ${MAKE_J} -C qtbase/src/tools/bootstrap RANLIB=${BUILD}-ranlib
-make ${MAKE_J} all && make INSTALL_ROOT=${3} install || exit 1
+#make sure index is build with correct ranlib
+if [ "${1}" == "${NARCH}" ];then
+  make ${MAKE_J} all || rm qtbase/lib/libQt5Bootstrap.a
+  make ${MAKE_J} -C qtbase/src/tools/bootstrap RANLIB=${BUILD}-ranlib
+fi;
+
+make ${MAKE_J} all || make || exit 1
+make INSTALL_ROOT=${3} install || exit 1
+
+#stop diet clean cleaning up
+mv Makefile Makefile.build
