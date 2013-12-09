@@ -1,0 +1,6 @@
+VERSION="2.8.1"
+VERSEP="-";
+PREFIX="/opt/qt-5";
+CONFOPT="";
+BUILDDIR="0";
+QTMAKE="1";
