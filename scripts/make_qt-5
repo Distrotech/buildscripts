@@ -1,1 +1,23 @@
-make_qt-4
+#!/bin/bash
+
+unset CFLAGS LDFLAGS CC CXX CPPFLAGS CXXFLAGS LD
+
+if [ "${1}" == "${NARCH}" ] && [ ! -d /build/${1} ];then
+  mkdir -p /opt/qt-${QT_VER}/${B_LIBDIRS}
+ else
+  mkdir -p /build/${1}/opt/qt-${QT_VER}/${B_LIBDIRS}
+fi;
+
+if [ "${4}" ];then
+  if [ -e .gitmodules ];then
+    git submodule foreach --recursive "git clean -dfx"
+   else
+    make confclean ${4}
+  fi;
+  ./init-repository
+  ./configure ${CONFOPT} -xplatform ${QT_SPEC} -platform ${QT_HOSTSPEC} || exit 1
+fi;
+
+make ${MAKE_J} all || rm qtbase/lib/libQt5Bootstrap.a
+make ${MAKE_J} -C qtbase/src/tools/bootstrap RANLIB=${BUILD}-ranlib
+make ${MAKE_J} all && make INSTALL_ROOT=${3} install || exit 1
