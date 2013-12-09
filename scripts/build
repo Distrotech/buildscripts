@@ -1010,7 +1010,7 @@ build_project() {
     export PATH=${SYSPATH}
   fi;
 
-  if [ -d ${ARCHROOT}/${barch}/opt/qt-${QT_VER} ] && [ ! -h ${ARCHROOT}/${barch} ];then
+  if [ -d ${ARCHROOT}/${barch}/opt/qt-${QT_VER} ] && [ ! -h ${ARCHROOT}/${barch} ] && [ ${barch} != ${NARCH} ];then
     export QTDIR=${ARCHROOT}/${barch}/opt/qt-${QT_VER}
    elif [ -d /opt/qt-${QT_VER} ];then
     export QTDIR=/opt/qt-${QT_VER}
@@ -1112,7 +1112,9 @@ build_project() {
   mkdir -p ${DIST_ROOT}
 
   export LDFLAGS CPPFLAGS CXXFLAGS CFLAGS MAKE_J
-  if [ -x ${SCRIPTDIR}/make_${PROJECT} ];then
+  if [ "${QTMAKE}" ] && [ "${QTMAKE}" == "1" ];then
+    (${QTDIR}/bin/qmake -r && make ${MAKE_J} && make INSTALL_ROOT=${DIST_ROOT}/${PREFIX} install) || return 1
+   elif [ -x ${SCRIPTDIR}/make_${PROJECT} ];then
     export CC="${CC} ${CC_SYSROOT}"
     export CXX="${CXX} ${CC_SYSROOT}"
     export CONFOPT="${CONFOPT} ${ARCHOPT} ${ARCHXOPT}";
