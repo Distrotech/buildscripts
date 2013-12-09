@@ -4,4 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 CFGPTH="CTL";
 CFGBIN="CTL/";
-
+DONTBUILD="arm";
