@@ -11,6 +11,8 @@ OPT_x86_64="--enable-64bit";
 OPT_x86_32="--enable-64bit";
 OPT_arm="--host=arm-linux-gnueabi --target=arm-linux-gnueabi";
 OPT_arm64="--host=aarch64-linux-gnu --target=aarch64-linux-gnu --enable-64bit";
+OPT_powerpc="--host=powerpc-linux-gnueabi --target=powerpc-linux-gnueabi";
+OPT_powerpc64="--host=powerpc64-linux-gnueabi --target=powerpc64-linux-gnueabi --enable-64bit";
 NOCCOPT="1";
 DONTBUILD="arm64";
 FIXUPLIB="1";
