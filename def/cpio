@@ -5,3 +5,4 @@ CONFOPT="";
 STATICOPT="--disable-shared";
 STATICMOPT="LDFLAGS=-static";
 AMVER="1.13";
+COREBUILD="1";

@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="ac_cv_search_libiconv_open=no";
 STATICOPT="ac_cv_search_libiconv_open=no LDFLAGS=-static";
 BUILDDIR="0";
+COREBUILD="1";

@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 STATICOPT="LDFLAGS=-static";
+COREBUILD="1";
