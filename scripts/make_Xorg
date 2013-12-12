@@ -88,7 +88,8 @@ export CFLAGS="${CFLAGS} -I=/usr/${B_LIBDIRS}/glib-2.0/include"
 CONFFLAGS="--host=${2} --build=${BUILD} --with-sysroot --libdir=${PREFIX}/${B_LIBDIRS} --disable-selective-werror ${ARCHOPT}
            ac_cv_file__dev_urandom=yes --with-utmp-file=/var/run/utmp --with-wtmp-file=/var/log/wtmp
            ac_cv_file__usr_X11R7_include_xorg_dri_h=yes ac_cv_file__usr_X11R7_include_xorg_sarea_h=yes
-           ac_cv_file__usr_X11R7_include_xorg_dristruct_h=yes ac_cv_file__usr_X11R7_include_xorg_damage_h=yes"
+           ac_cv_file__usr_X11R7_include_xorg_dristruct_h=yes ac_cv_file__usr_X11R7_include_xorg_damage_h=yes
+           xorg_cv_malloc0_returns_null=yes"
 
 if [ "${NARCH}" != "${1}" ];then
   CONFFLAGS="${CONFFLAGS} MKFONTDIR=/usr/X11R7/bin/mkfontdir MKFONTSCALE=/usr/X11R7/bin/mkfontscale";
