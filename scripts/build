@@ -165,7 +165,7 @@ arch_config() {
 
   #Name of GLIBC Multi Libdir
   case ${1} in
-    x86_64)AMLIBDIR=x86-64;;
+    x86_64)AMLIBDIR=x86_64;;
     i[3-6]86|x86_32)AMLIBDIR=i686;;
   esac;
 }
@@ -1975,35 +1975,25 @@ setup_hybrid_boot() {
     return 0;
   fi;
 
-echo ${LDNAME}
-echo ${MLIBDIR}
-echo ${BUILD}
-echo ${NARCH}
-return 0
-
   if [ ! "${LDNAME}" ] || [ ! "${MLIBDIR}" ];then
     echo "LD name or multilib dir is not defined !!!"
     return 1;
   fi;
 
-  MULTIARCH=MARCH_${2} 
-  NATIVE=${!MULTIARCH}
-  if [ "${NATIVE}" ];then
-    case ${1} in
-      ${NATIVE})return;;
-    esac;
+  if [ -e ${ARCHROOT}/${1}/usr/${NLIBDIR}/${MLIBDIR}/.distro_done ];then
+    return 0;
   fi;
 
-  if [ ! -d /usr/gnemul/qemu-${1} ];then
-    mkdir -p /usr/gnemul/qemu-${1}
+  if [ ! -d /usr/gnemul/qemu-${QCPU} ];then
+    mkdir -p /usr/gnemul/qemu-${QCPU}
   fi;
 
   if [ ! -d ${ARCHROOT}/${1} ];then
-    mkdir -p ${ARCHROOT}/${1}
+    mkdir -p ${ARCHROOT}/${1}/dev
   fi;
 
-  if [ ! -d /usr/gnemul/qemu-${1}/dev ];then
-    mount --bind ${ARCHROOT}/${1} /usr/gnemul/qemu-${1}
+  if [ ! -d /usr/gnemul/qemu-${QCPU}/dev ];then
+    mount --bind ${ARCHROOT}/${1} /usr/gnemul/qemu-${QCPU}
   fi;
 
   TMPDIR=$( mktemp -d -p /root cross_${NARCH}_${1}.XXXXXXXXXXX)
@@ -2011,14 +2001,14 @@ return 0
     return 1
   fi;
 
-  for pkg in glibc mpc mpfr gmp cloog isl readline ncurses zlib flex ncursesw glib;do
+  for pkg in glibc mpc mpfr gmp cloog isl readline ncurses zlib flex ncursesw glib popt gcc pcre selinux xz;do
    (get_pkg_name ${pkg} ${1}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    cd ${PDIR}
    tar -C ${TMPDIR} -xf ${PNAME}-libs.tar.xz)
   done
 
-  for pkg in bash make;do
+  for pkg in bash make rsync findutils cpio xz;do
    (get_pkg_name ${pkg} ${1}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    cd ${PDIR}
@@ -2044,13 +2034,18 @@ return 0
   done;
   ln -s ${MLIBDIR}/${LDNAME}  ${TMPDIR}/${NLIBDIR}/${LDNAME}
 
+  (cd ${TMPDIR}
+  ls /usr/bin/${HOST}-*  |cut -d- -f4- |awk -v HOST=${HOST} '{printf "rm usr/bin/%s;ln -s %s-%s usr/bin/%s\n",$1,HOST,$1,$1}' |sh)
+
   rsync -avP ${TMPDIR}/ ${ARCHROOT}/${1}/
-#  HOST=arm-linux-gnueabi;
-#  ls /usr/bin/${HOST}-*  |cut -d- -f4- |awk -v HOST=${HOST} '{printf "rm /usr/bin/%s;ln -s %s-%s /usr/bin/%s;fi\n",$1,HOST,$1,$1}
 
   if [ "${TMPDIR}" ] && [ -d "${TMPDIR}" ];then
     rm -rf ${TMPDIR}
   fi;
+  chroot ${ARCHROOT}/${1} /sbin/ldconfig
+  ${ARCHROOT}/${1}/sbin/ldconfig -r ${ARCHROOT}/${1}
+  cp /usr/bin/qemu-${QCPU}-static ${ARCHROOT}/${1}/usr/bin
+  touch ${ARCHROOT}/${1}/usr/${NLIBDIR}/${MLIBDIR}/.distro_done
 }
 
 bootstrap_arch() {
@@ -2122,14 +2117,16 @@ bootstrap_arch() {
       automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 file docbook-4.1.2 docbook-4.2 \
       docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl which groff gdbm || return 1
 
-   #perl wants db if it finds it we will build it on native with Java support so leave native for now 
-   if [ "${arch}" != "${NARCH}" ] && [ -e /usr/${NLIBDIR}/libdb.so ];then
-     build_packages ${arch} tcl8 db|| return 1
+   #handle hybrid/cross builds
+   if [ "${arch}" != "${NARCH}" ];then
+     (setup_hybrid_boot ${arch} ${NARCH}) || return 1
+     #perl wants db if it finds it we will build it on native with Java support so leave native for now 
+     if [ -e /usr/${NLIBDIR}/libdb.so ];then
+       build_packages ${arch} tcl8 db|| return 1
+     fi;
    fi;
 
    build_packages ${arch} perl Python git unzip zip || exit 1) || return 1;
-   #XXX
-   #(setup_hybrid_boot ${arch} ${NARCH}) || return 1
   done;
 }
 
