@@ -1,0 +1,12 @@
+VERSION="7";
+VERSEP=".";
+PREFIX="/usr";
+CONFOPT="--with-jdk-home=/usr/${B_LIBDIRS}/jvm/gcj-jdk";
+OPT_arm="--enable-zero";
+DONTBUILD="arm arm64 mips mips64 powerpc powerpc64 x86_32";
+NOCCOPT="1";
+NOCROSS="1";
+AMVER="1.14";
+CLEARFLAGS="1";
+ADDCFLAG="-I=/usr/X11R7/include -I=/usr/${B_LIBDIRS}/jvm/gcj-jdk/include"
+ADDCC="0";

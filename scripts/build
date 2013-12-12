@@ -16,6 +16,7 @@ case ${NARCH} in
       JAVA_VER="1.7.0_25";;
   *)JAVA_VER="1.7.0_45";;
 esac;
+JAVA6_VER="1.6.0_27";
 export NARCH
 
 ANT_VER="1.9.2";
@@ -51,7 +52,7 @@ MARCH_x86_64='@(x86_32|i[3-6]86|x86_64)'
 MARCH_x86_32=${MARCH_x86_64}
 MARCH_powerpc64='@(powerpc|powerpc64)'
 
-export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA_VER M2_VER QT_VER
+export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA_VER JAVA6_VER M2_VER QT_VER
 
 #Parse cmdline opts
 #Adding a arch here may require you adding tupple/kernel arch/libdirs and bellow in arch_config
@@ -145,6 +146,8 @@ arch_config() {
     i[3-6]86)LDNAME=ld-linux.so.2;;
     arm)LDNAME=ld-linux-armhf.so.3;;
     arm64)LDNAME=ld-linux-aarch64.so.1;;
+    powerpc)LDNAME=ld.so.1;;
+    powerpc64)LDNAME=ld64.so.1;;
   esac;
 
   #QT Spec file
@@ -2189,7 +2192,7 @@ build_dependancies() {
       if [ "${NARCH}" == "${1}" ];then
         cpan -i ${pmod} && touch ${STATDIR}/${1}/done/${pmod}
        else
-        (chroot ${ARCHROOT}/${1} cpan -i ${pmod}) && touch ${STATDIR}/${1}/done/${pmod}
+        (chroot ${ARCHROOT}/${1} cpan -f -i ${pmod}) && touch ${STATDIR}/${1}/done/${pmod}
       fi;
     fi;
   done
@@ -2277,7 +2280,7 @@ build_dependancies() {
 
   #Build openjdk on native
   if [ "${NARCH}" == "${1}" ];then
-    build_packages ${1} icedtea7-2.4 || return 1
+    build_packages ${1} icedtea7-2.3 icedtea7-2.4 icedtea6-1.12 || return 1
     JAVA_DIR=/usr/lib64/jvm
     for JARSEC in ${JAVA_DIR}/jre-${JAVA_VER}/lib/security/cacerts \
                   ${JAVA_DIR}/jdk-${JAVA_VER}/jre/lib/security/cacerts;do
