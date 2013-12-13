@@ -12,6 +12,8 @@ CPUNO=$(lscpu  |awk '/^CPU\(s\)/ {print $2}')
 NARCH=${NARCH:=$( uname -m )}
 
 case ${NARCH} in
+  ppc)NARCH=powerpc;;
+  ppc64)NARCH=powerpc64;;
   arm*)NARCH=arm;
       JAVA_VER="1.7.0_25";;
   *)JAVA_VER="1.7.0_45";;
@@ -28,6 +30,8 @@ export PATH=${PATH}:/usr/X11R7/bin:/opt/xfce/bin
 
 XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /usr/share/docbook2X/xslt/catalog.xml'
 LANG=en_ZA.UTF8
+LANGUAGE=${LANG}
+#LC_ALL=${LANG}
 
 #Setup layout path
 SRCDIR=/usr/src
@@ -52,7 +56,7 @@ MARCH_x86_64='@(x86_32|i[3-6]86|x86_64)'
 MARCH_x86_32=${MARCH_x86_64}
 MARCH_powerpc64='@(powerpc|powerpc64)'
 
-export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA_VER JAVA6_VER M2_VER QT_VER
+export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA_VER JAVA6_VER M2_VER QT_VER LANGUAGE
 
 #Parse cmdline opts
 #Adding a arch here may require you adding tupple/kernel arch/libdirs and bellow in arch_config
@@ -1009,7 +1013,12 @@ build_project() {
       unset LD_LIBRARY_PATH PYTHONHOME PERL5LIB
     fi;
    else
-    unset LD_LIBRARY_PATH PYTHONHOME PERL5LIB
+    if [ "${NARCH}" == "${barch}" ];then
+      LD_LIBRARY_PATH="/${B_LIBDIRS}:/usr/${B_LIBDIRS}:/usr/X11R7/${B_LIBDIRS}:/opt/qt-${QT_VER}/${B_LIBDIRS}:/opt/xfce/${B_LIBDIRS}:/usr/lib/perl/x86_64-linux/CORE"
+     else
+      unset LD_LIBRARY_PATH
+    fi;
+    unset PYTHONHOME PERL5LIB
     export PATH=${SYSPATH}
   fi;
 
@@ -2008,7 +2017,7 @@ setup_hybrid_boot() {
    tar -C ${TMPDIR} -xf ${PNAME}-libs.tar.xz)
   done
 
-  for pkg in bash make rsync findutils cpio xz;do
+  for pkg in bash make rsync findutils cpio xz gzip tar;do
    (get_pkg_name ${pkg} ${1}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    cd ${PDIR}
@@ -2035,7 +2044,12 @@ setup_hybrid_boot() {
   ln -s ${MLIBDIR}/${LDNAME}  ${TMPDIR}/${NLIBDIR}/${LDNAME}
 
   (cd ${TMPDIR}
-  ls /usr/bin/${HOST}-*  |cut -d- -f4- |awk -v HOST=${HOST} '{printf "rm usr/bin/%s;ln -s %s-%s usr/bin/%s\n",$1,HOST,$1,$1}' |sh)
+  ls /usr/bin/${HOST}-*  |cut -d- -f4- |awk -v HOST=${HOST} '{printf "rm usr/bin/%s;ln -s %s-%s usr/bin/%s\n",$1,HOST,$1,$1}' |sh
+  for ldtool in $(ls /usr/${HOST}/bin);do
+    rm -f usr/bin/${HOST}-$ldtool usr/bin/${ldtool}
+    ln -s -r usr/${HOST}/bin/${ldtool} usr/bin/${HOST}-$ldtool
+    ln -s -r usr/${HOST}/bin/${ldtool} usr/bin/${ldtool}
+  done)
 
   rsync -avP ${TMPDIR}/ ${ARCHROOT}/${1}/
 
@@ -2243,6 +2257,15 @@ build_dependancies() {
     (gdk-pixbuf-query-loaders > /usr/${B_LIBDIRS}/gdk-pixbuf-2.0/2.10.0/loaders.cache
     pango-querymodules --update-cache) >/dev/null 2>&1
   fi;
+  #Continue X Build with GL/Mesa
+  if [ -e ${STATDIR}/${1}/fail/Xorg ];then
+    if [ ! -e ${STATDIR}/${1}/done/glamor ];then
+      (build_project glamor ${1}) || return 1
+      (unset CLEANOPT;build_project Xorg ${1})
+    fi;
+    (unset CLEANOPT;build_project Xorg ${1}) || return 1
+  fi;
+
   build_packages ${1} gtk+ freeglut pcsc-lite wayland libxkbcommon at-spi2-core at-spi2-atk || return 1
 
   #we need gdk-pixbuf/librsvg built with gtk3 to build gtk33 bootstrap it [dont build demos/tests/examples on 1st pass]
@@ -2260,15 +2283,6 @@ build_dependancies() {
       rm -f ${STATDIR}/${1}/done/poppler
     fi;
     build_packages ${1} gtk3 || return 1
-  fi;
-
-  #Continue X Build with GL/Mesa
-  if [ -e ${STATDIR}/${1}/fail/Xorg ];then
-    if [ ! -e ${STATDIR}/${1}/done/glamor ];then
-      (unset CLEANOPT;build_project Xorg ${1})
-      (build_project glamor ${1}) || return 1
-    fi;
-    (unset CLEANOPT;build_project Xorg ${1}) || return 1
   fi;
 
   build_packages ${1} glamor Xorg poppler poppler-data qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
