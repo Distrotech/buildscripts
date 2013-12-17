@@ -7,4 +7,3 @@ ADDLDFLAG="-L../src/.libs -L=${PREFIX}/${C_LIBDIRS}";
 ADDCFLAG="-I../src";
 AMVER="1.13";
 NOCCOPT="1";
-MLIBDIRLN="libndbm.so libdbm.so";
