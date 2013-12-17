@@ -1,0 +1,7 @@
+VERSION="2.64"
+ALIAS="autoconf";
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--program-suffix=${VERSEP}${VERSION}";
+AMVER="1.12";
+DONTBUILD="arm arm64 mips mips64 powerpc powerpc64 i686 x86_64 x86_32";
