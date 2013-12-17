@@ -6,3 +6,5 @@ STDOPTS="--prefix=/usr --datadir=/usr/share --mandir=/usr/share/man";
 NOCCOPT="1";
 BUILDDIR="0";
 MOPT_i686="ARCH=i386";
+AMVER="1.14";
+DONTBUILD="powerpc";
