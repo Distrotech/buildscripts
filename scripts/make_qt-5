@@ -22,13 +22,21 @@ if [ "${4}" ] || [ ! -e Makefile ];then
     make confclean ${4}
   fi;
   ./init-repository
+  if [ "${1}" == "x86_32" ];then
+    git submodule deinit -f qtjsbackend qtscript
+  fi;
   ./configure ${CONFOPT} -xplatform ${QT_SPEC} -platform ${QT_HOSTSPEC} || exit 1
 fi;
 
 #make sure index is build with correct ranlib
-if [ "${1}" == "${NARCH}" ];then
-  make ${MAKE_J} all || rm qtbase/lib/libQt5Bootstrap.a
-  make ${MAKE_J} -C qtbase/src/tools/bootstrap RANLIB=${BUILD}-ranlib
+if [ "${1}" != "${NARCH}" ];then
+  if [ -d qtbase/lib ];then
+    make ${MAKE_J} all || rm qtbase/lib/libQt5Bootstrap.a
+    make ${MAKE_J} -C qtbase/src/tools/bootstrap RANLIB=${BUILD}-ranlib
+   elif [ -d src/tools/bootstrap ];then
+    make ${MAKE_J} all || rm src/tools/bootstrap/libbootstrap.a
+    make ${MAKE_J} -C src/tools/bootstrap RANLIB=${BUILD}-ranlib
+  fi;
 fi;
 
 make ${MAKE_J} all || make || exit 1

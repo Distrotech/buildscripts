@@ -6,4 +6,4 @@ OPT_arm="-no-pch";
 OPT_x86_32="-no-javascript-jit -no-optimized-qmake";
 NOCCOPT="1";
 BUILDDIR="0";
-DONTBUILD="arm64";
+DONTBUILD="arm64 powerpc";
