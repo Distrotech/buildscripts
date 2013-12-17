@@ -1,7 +1,7 @@
 VERSION="9.2.2"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-pic";
+CONFOPT="--with-pic --disable-debug";
 BUILDDIR="0";
 OPT_arm="--with-dri-drivers=nouveau,r200,radeon,swrast";
 OPT_mips="--with-dri-drivers=nouveau,r200,radeon,swrast";
@@ -14,5 +14,5 @@ ADDLDFLAG="-L/usr/src/Mesa/Mesa-${VERSION}/lib";
 MAKEOPTS="HOSTCC_LDFLAGS=-L/usr/${NLIBDIR}"
 LDISCC="1";
 AMVER="1.13";
-CHROOTBUILD="1";
 AUTORECONF="1";
+MLIBDIRLN="libGL.so libEGL.so";
