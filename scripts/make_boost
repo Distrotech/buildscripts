@@ -2,7 +2,10 @@
 
 unset CFLAGS CXXFLAGS CC
 
-for acpp in x86_64-linux-gnu x86_64-linux-gnux32 i686-linux-gnu;do
+ARCHT="x86_64-linux-gnu x86_64-linux-gnux32 i686-linux-gnu \
+       powerpc-linux-gnu powerpc64-linux-gnu arm-linux-gnueabi";
+
+for acpp in ${ARCHT};do
   touch /usr/bin/${acpp}-g++
 done
 
@@ -17,11 +20,11 @@ if true;then
   if [ ! -d ${3}/usr/include ];then
     mkdir -p ${3}/usr/include
   fi;
-  rsync -avP stage/lib/ ${3}/usr/${B_LIBDIRS}/
+  rsync -avP stage/lib/ ${3}/usr/${C_LIBDIRS}/
   rsync -avP boost ${3}/usr/include/
 fi;
 
-for acpp in x86_64-linux-gnu x86_64-linux-gnux32 i686-linux-gnu;do
+for acpp in ${ARCHT};do
   if [ ! -s /usr/bin/${acpp}-g++ ];then
     rm /usr/bin/${acpp}-g++
   fi;
