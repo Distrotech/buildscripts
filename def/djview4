@@ -1,7 +1,7 @@
 VERSION="4.9"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--disable-silent-rules";
+CONFOPT="--disable-silent-rules QMAKE=${ARCHROOT}/${barch}/opt/qt-4/bin/qmake QTDIR=${ARCHROOT}/${barch}/opt/qt-4 MOC=${ARCHROOT}/${barch}/opt/qt-4/bin/moc";
 OPT_arm="QMAKESPEC=linux-arm-gnueabi-g++";
 OPT_powerpc="QMAKESPEC=linux-ppc-g++";
 OPT_i686="QMAKESPEC=linux-g++-32";
@@ -10,4 +10,5 @@ OPT_mips="QMAKESPEC=linux-mips-g++";
 OPT_mips64="QMAKESPEC=linux-mips-g++-64";
 OPT_powerpc="QMAKESPEC=linux-ppc-g++";
 OPT_powerpc64="QMAKESPEC=linux-ppc-g++-64";
-
+NOCROSS="1";
+NOCCOPT="1";
