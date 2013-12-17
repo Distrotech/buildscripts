@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 MAKEOPTS="GCJ=${HOST}-gcj";
 GITBRANCH="master";
+COREBUILD="1";
