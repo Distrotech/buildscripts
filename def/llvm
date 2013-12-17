@@ -1,9 +1,10 @@
 VERSION="3.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="-DBUILD_SHARED_LIBS:BOOL=ON";
 FIXUPLIB="1";
 ADDFILTER="Makefile.config";
 SYSROOTFIXUP="1";
 DONTBUILD="arm64 mips mips64 powerpc powerpc64";
 NODIET="1";
+FIXUPLIB="1"
