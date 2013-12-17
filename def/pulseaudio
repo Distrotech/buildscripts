@@ -21,6 +21,6 @@ OPT_powerpc64="ac_cv_lib_ltdl_lt_dladvise_init=yes ac_cv_func_malloc_0_nonnull=y
          ac_cv_func_sig2str=no";
 EXTRALIBS="-lrt -lpthread";
 ADDWITHSYSROOT="1";
-ADDCFLAG="-I=/usr/include/json -I=/usr/include/cairo -I=/usr/include/orc-0.4 -I=/usr/include/alsa -I=/usr/include/gconf/2
+ADDCFLAG="-I=/usr/include/json -I=/usr/include/cairo -I=/usr/include/orc-0.4 -I=/usr/include/alsa -I=/usr/include/gconf/2 \
           -I=/usr/include/pango-1.0 -I=/usr/include/gdk-pixbuf-2.0 -I=/usr/include/atk-1.0";
 ADDLDFLAG="-shared-libgcc";
