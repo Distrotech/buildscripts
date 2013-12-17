@@ -6,3 +6,4 @@ ALIAS="ncurses";
 ADDCC="0";
 GITBRANCH="master";
 GITREPO="ncurses";
+MLIBDIRLN="libncursesw.so";

@@ -6,4 +6,4 @@ BUILDDIR="0";
 ADDCFLAG="-I/usr/src/glew/glew${VERSEP}${VERSION}/include";
 ADDLDFLAG="-I/usr/src/glew/glew${VERSEP}${VERSION}/lib";
 LDISCC="1";
-MAKEOPTS="LIBDIR=/usr/${B_LIBDIRS}";
+MAKEOPTS="LIBDIR=/usr/${C_LIBDIRS}";

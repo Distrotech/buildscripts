@@ -3,7 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 NOCCOPT="1";
 BUILDDIR="0";
-STDOPTS="--prefix=/usr --mandir=/usr/share/man";
+STDOPTS="--prefix=/usr --mandir=/usr/share/man --libdir=/usr/${C_LIBDIRS} --shlibdir=/usr/${C_LIBDIRS}";
 CONFOPT="--enable-nonfree --enable-shared --enable-vdpau --enable-bzlib --enable-libtheora
          --enable-gpl --enable-libfreetype --enable-libmp3lame --enable-libdc1394 --enable-libcelt
          --enable-libschroedinger --enable-libspeex --enable-libaacplus --enable-libfaac
@@ -23,10 +23,9 @@ OPT_arm="--enable-cross-compile --sysroot=/build/arm --arch=arm --target-os=linu
          --host-cc=/usr/bin/gcc --enable-libv4l2 --disable-asm";
 OPT_x86_32="--enable-cross-compile --sysroot=/build/x86_32 --arch=x86_64 --target-os=linux 
           --cross-prefix=x86_64-linux-gnux32- --extra-cflags=-mx32 --extra-ldflags=-mx32
-          --libdir=/usr/libx32 --shlibdir=/usr/libx32 --host-cc=/usr/bin/gcc --disable-asm
+          --host-cc=/usr/bin/gcc --disable-asm
           --enable-libopencv --enable-frei0r --enable-libv4l2";
-OPT_x86_64="--sysroot=/build/x86_64 --libdir=/usr/lib64 --shlibdir=/usr/lib64
-          --enable-libopencv --enable-frei0r --enable-libv4l2";
+OPT_x86_64="--sysroot=/build/x86_64 --enable-libopencv --enable-frei0r --enable-libv4l2";
 OPT_mips="--enable-cross-compile --sysroot=/build/mips --arch=mips --target-os=linux --cross-prefix=mips-linux-gnu-
          --extra-ldflags=-Wl,--rpath-link=/build/mips/usr/lib:/build/mips/lib:/build/mips/usr/X11R7/lib
          --host-cc=/usr/bin/gcc --enable-libv4l2";

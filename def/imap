@@ -7,3 +7,4 @@ NOMAKEFLAGS="1";
 XCCOPT="";
 FIXUPLIB="1";
 GITBRANCH="master";
+MLIBDIRLN="libc-client.so";

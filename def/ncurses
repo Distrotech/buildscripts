@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="--with-gpm --with-shared --disable-widec --without-progs --disable-overwrite --without-manpages --without-ada";
 ADDCC="0";
 GITBRANCH="master";
+MLIBDIRLN="libncurses.so";

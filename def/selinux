@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 FIXUPLIB="1";
 NOMAKEFLAGS="1";
+MLIBDIRLN="libselinux.so  libsemanage.so  libsepol.so";
