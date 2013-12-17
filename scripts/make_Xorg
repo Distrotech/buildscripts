@@ -3,6 +3,7 @@
 FILTER_arm="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
 FILTER_arm64="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)|(data/cursors)|(font/)";
 FILTER_mips="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
+FILTER_powerpc="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
 
 FILT=FILTER_${1}
 FILTER=${!FILT}
