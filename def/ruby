@@ -9,3 +9,4 @@ MAKEOPTS="LIBRUBYARG=libruby-static.a";
 BUILDDIR="0";
 NOCROSS="1";
 NOCCOPT="1";
+MAKE_J="-j2";
