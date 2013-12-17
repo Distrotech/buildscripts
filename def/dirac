@@ -11,3 +11,5 @@ OPT_powerpc64="ac_cv_header_cppunit_TestRunner_h=no";
 OPT_i686="ac_cv_header_cppunit_TestRunner_h=no";
 OPT_x86_32="ac_cv_header_cppunit_TestRunner_h=no";
 BUILDDIR="0";
+AUTORECONF="1";
+AMVER="1.13";
