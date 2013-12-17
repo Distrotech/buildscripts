@@ -12,6 +12,8 @@ NARCH=$( uname -m )
 
 case ${NARCH} in
   arm*)NARCH=arm;;
+  ppc)NARCH=powerpc;;
+  ppc64)NARCH=powerpc64;;
 esac;
 
 if [ "${1}" ];then
@@ -58,7 +60,7 @@ cd ${PKGDISTDIR}/build/${DARCH}
 for bpkg in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
              pkg-config util-linux diffutils libtool gperf m4 cpio git binutils glibc autoconf \
              automake-1.9 apache-ant qemu junit rhino antlr4 gmp mpfr mpc cloog isl zlib gcc \
-             findutils patch iana-etc tzdata;do
+             findutils patch iana-etc tzdata ecj;do
 
   (if [ ! -e ${DEFDIR}/${bpkg} ];then
     continue;
@@ -73,6 +75,7 @@ for bpkg in bison flex sed gawk bash make coreutils nano rsync grep less gzip ta
    if [ ! "${STATICBSTRAP}" ];then
      STATICBSTRAP=0;
    fi;
+
    if [ "${bpkg}" == "gcc" ] && [ -d ${CROSSDISTDIR}/${DARCH}/${PNAME}-boot ];then
      PKG=${PKGDISTDIR}/build/${DARCH}/${PNAME}-boot
      PNAME="${PNAME}-boot"
@@ -110,7 +113,7 @@ done;
 #Strip all the bits
 ${STRIP} ${STATICROOT}/bin/* ${STATICROOT}/sbin/* ${STATICROOT}/usr/bin/* ${STATICROOT}/usr/sbin/* >/dev/null 2>&1
 
-for devpkg in kernel-headers.tar.xz ${PKGDISTDIR}/java-jar.tar.xz;do
+for devpkg in kernel-headers.tar.xz;do
   if [ -f ${devpkg} ];then
     tar --exclude=*/.dbg/* -C ${STATICROOT} -xJf ${devpkg};
   fi;
