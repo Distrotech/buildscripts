@@ -5,3 +5,4 @@ CONFOPT="";
 GITBRANCH="master";
 BUILDDIR="0";
 GITBRANCH="master";
+CHROOTBUILD="1";

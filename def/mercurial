@@ -5,4 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 ADDCFLAG="--sysroot=/build/${barch} -I=/usr/include/python2.7";
 ADDLDFLAG="-L=/usr/${B_LIBDIRS}";
-SYSROOTPATH="1";
+CHROOTBUILD="1";
