@@ -15,9 +15,8 @@ CONFOPT="--enable-static=no --with-config-file-path=/etc/php --with-openssl=shar
          --enable-zip --enable-intl --enable-mbregex --with-imap=shared,/build/${barch}/usr";
 CLEARFLAGS="1";
 ADDCFLAG="-fPIC -I=/usr/include/sasl";
-ADDLDFLAG="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS}"
+ADDLDFLAG="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/usr/${C_LIBDIRS}"
 OPT_x86_64="--with-libdir=lib64 --with-apxs2=/build/x86_64/opt/apache2/bin/apxs";
 OPT_x86_32="--with-libdir=libx32 --with-apxs2=/build/x86_32/opt/apache2/bin/apxs --disable-phar";
 OPT_i686="--with-libdir=lib --with-apxs2=/build/i686/opt/apache2/bin/apxs";
-EXTRALIBS="-lutil -lresolv -lpthread -lrt";
 CHROOTBUILD="1";
