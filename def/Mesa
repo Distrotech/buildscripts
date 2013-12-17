@@ -1,4 +1,4 @@
-VERSION="9.2.2"
+VERSION="9.2.5"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-pic --disable-debug";
