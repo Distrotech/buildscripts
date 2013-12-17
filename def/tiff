@@ -14,3 +14,4 @@ OPT_mips64="--host=mips64-linux-gnuabi64";
 STDOPTS="--prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var --libdir=/usr/${C_LIBDIRS}";
 FIXUPLIB="1";
 GITBRANCH="master";
+MLIBDIRLN="libtiff.so";

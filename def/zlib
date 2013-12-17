@@ -10,3 +10,4 @@ OPT_x86_64="--host=x86_64-linux-gnu --build=x86_64-linux-gnu";
 FIXUPLIB="1";
 LDISCC="0";
 BUILDDIR="0";
+MLIBDIRLN="libz.so";
