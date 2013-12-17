@@ -9,9 +9,9 @@ CONFOPT="-DWITH_TELEPATHY:BOOL=OFF -DWITH_APPINDICATOR=OFF
          -DGLIB2_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libglib-2.0.so
          -DGDK3_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libgdk-3.so
          -DGTK3_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libgtk-3.so
-         -DLIBSSH_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libssh.so
+         -DLIBSSH_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libssh.so
          -DVTE_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libvte2_90.so
-         -DZLIB_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libz.so
+         -DZLIB_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libz.so
          -DGNOMEKEYRING_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libgnome-keyring.so
          -DATK_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libatk-1.0.so
          -DGDKPIXBUF_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libgdk_pixbuf-2.0.so

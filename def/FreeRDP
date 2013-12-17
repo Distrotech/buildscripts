@@ -17,12 +17,12 @@ CONFOPT="-DXINERAMA_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libX
          -DXKBFILE_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
          -DOPENSSL_SSL_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libssl.so
          -DOPENSSL_CRYPTO_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libcrypto.so
-         -DZLIB_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libz.so
+         -DZLIB_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libz.so
          -DWITH_PULSEAUDIO:BOOL=ON -DWITH_PCSC:BOOL=ON
          -DCUPS_LIBRARIES:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libcups.so
          -DPULSEAUDIO_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libpulse.so
          -DPCSC_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libpcsclite.so
-         -DAVCODEC_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libavcodec.so
-         -DAVUTIL_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libavutil.so
+         -DAVCODEC_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libavcodec.so
+         -DAVUTIL_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libavutil.so
          -DALSA_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libasound.so";
 FIXUPLIB="1";
