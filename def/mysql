@@ -32,3 +32,4 @@ OPT_x86_64="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=/build/x86_64/u
 FIXUPLIB="1";
 NODIET="1";
 GITBRANCH="master";
+MLIBDIRLN="libmysqlclient.so libmysqlclient_r.so";
