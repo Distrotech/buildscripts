@@ -2,13 +2,9 @@ VERSION="3.3.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-STDOPTS="--prefix=/usr";
+STDOPTS="--prefix=/usr --with-apxs=${ARCHROOT}/${barch}/opt/apache2/bin/apxs --with-python=${ARCHROOT}/${barch}/usr/bin/python";
 BUILDDIR="0";
 NOCCOPT="1";
 ADDCFLAG="-I=/usr/include/python2.7";
-OPT_x86_64="--with-apxs=/build/x86_64/opt/apache2/bin/apxs --with-python=/build/x86_64/usr/bin/python";
-OPT_x86_32="--with-apxs=/build/x86_32/opt/apache2/bin/apxs --with-python=/build/x86_32/usr/bin/python";
-OPT_i686="--with-apxs=/build/i686/opt/apache2/bin/apxs --with-python=/build/i686/usr/bin/python";
-OPT_arm="--with-apxs=/build/arm/opt/apache2/bin/apxs --with-python=/build/arm/usr/bin/python";
 CLEARFLAGS="1";
 CHROOTBUILD="1";
