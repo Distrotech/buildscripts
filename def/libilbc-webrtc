@@ -2,3 +2,4 @@ VERSION="git"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+AUTORECONF="1";
