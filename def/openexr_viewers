@@ -7,4 +7,4 @@ EXTRALIBS="-lIlmCtl -lIlmCtlMath -lIlmCtlSimd -lIlmImfCtl -lIlmThread -lIlmImf -
 ALIAS="openexr";
 CFGPTH="OpenEXR_Viewers";
 CFGBIN="OpenEXR_Viewers/";
-DONTBUILD="arm";
+DONTBUILD="arm powerpc powerpc64";
