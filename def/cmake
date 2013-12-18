@@ -1,7 +1,7 @@
 VERSION="2.8.11.1"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="-DBUILD_QtDialog=ON BUILD_TESTING:BOOL=OFF";
+CONFOPT="-DBUILD_QtDialog=ON -DQT_QMAKE_EXECUTABLE:PATH=/opt/qt-4/bin/qmake BUILD_TESTING:BOOL=OFF";
 NOCCOPT="1";
 ADDPATH="/usr/src/cmake/cmake-2.8.9/build-${barch}/bin";
 OPT_mips="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=/build/mips/usr/lib/libncurses.so
