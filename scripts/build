@@ -396,6 +396,10 @@ git_load_pkg() {
 #    fi;
   fi;
 
+  if [ -e .gitmodules ] && [ "${GITMODULES}" == "1" ];then
+    (cd ${SRCDIR}/${PKGGITDIR};git submodule update --init)
+  fi;
+
   if [ -x /usr/bin/find ] || [ -x /bin/find ];then
     for fcnf in aclocal.m4 configure Makefile.in autoconf.h.in;do
       find ${SRCDIR}/${PKGGITDIR} -name ${fcnf} |awk '{printf "touch %s\n",$1}' |sh

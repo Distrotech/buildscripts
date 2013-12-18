@@ -39,7 +39,7 @@ if [ "${1}" != "${NARCH}" ];then
   fi;
 fi;
 
-make ${MAKE_J} all || make || exit 1
+make ${MAKE_J} RANLIB=${BUILD}-ranlib all || make RANLIB=${BUILD}-ranlib || exit 1
 make INSTALL_ROOT=${3} install || exit 1
 
 #stop diet clean cleaning up

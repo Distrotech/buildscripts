@@ -1,6 +1,8 @@
-VERSION="2.8.1"
+VERSION="3.0.0"
 VERSEP="-";
 PREFIX="/opt/qt-5";
 CONFOPT="";
 BUILDDIR="0";
 QTMAKE="1";
+DONTBUILD="powerpc powerpc64";
+GITMODULES="1";

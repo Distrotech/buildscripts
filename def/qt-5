@@ -1,4 +1,4 @@
-VERSION="5.1.1"
+VERSION="5.2.0"
 VERSEP="-";
 PREFIX="/opt/qt-5";
 CONFOPT="-opensource -openssl-linked -confirm-license -prefix ${PREFIX} -v -system-sqlite -libdir ${PREFIX}/${B_LIBDIRS}";
