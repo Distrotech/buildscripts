@@ -1,8 +1,7 @@
 VERSION="5.2.0"
 VERSEP="-";
 PREFIX="/opt/qt-5";
-CONFOPT="-opensource -openssl-linked -confirm-license -prefix ${PREFIX} -v -system-sqlite -libdir ${PREFIX}/${B_LIBDIRS}";
-OPT_arm="-no-pch";
+CONFOPT="-opensource -openssl-linked -confirm-license -prefix ${PREFIX} -v -system-sqlite -libdir ${PREFIX}/${B_LIBDIRS} -sysroot ${ARCHROOT}/${barch}";
 OPT_x86_32="-no-javascript-jit -no-optimized-qmake";
 NOCCOPT="1";
 BUILDDIR="0";
