@@ -4,7 +4,7 @@ PREFIX="/usr";
 CONFOPT="--enable-crypt --enable-lmpasswd --enable-modules --enable-rlookups --enable-slp --enable-backends=mod
          --enable-overlays=mod --enable-rewrite --enable-slapi --disable-ndb --disable-perl --enable-spasswd
          --with-cyrus-sasl";
-OPT_powerpc="--with-yielding-select ac_cv_func_memcmp_working=yes";
+OPT_powerpc="--with-yielding-select ac_cv_func_memcmp_working=yes ol_cv_pthread_create_works=yes";
 OPT_powerpc64="--with-yielding-select ac_cv_func_memcmp_working=yes";
 OPT_arm="--with-yielding-select ac_cv_func_memcmp_working=yes";
 OPT_arm64="--with-yielding-select ac_cv_func_memcmp_working=yes";
@@ -16,3 +16,4 @@ OPT_x86_32="--with-yielding-select ac_cv_func_memcmp_working=yes";
 EXTRALIBS="-ldl -lltdl -lutil";
 DISTCONF="openldap/ldap.conf openldap/slapd.conf";
 CHROOTBUILD="1";
+MLIBDIRLN="libldap.so liblber.so";
