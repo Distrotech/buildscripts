@@ -2,6 +2,7 @@ VERSION="3.12.11"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="PYTHON=/build/${barch}/usr/bin/python";
+OPT_powerpc="--disable-scan-build";
 BUILDDIR="0";
 NOSVNROOT="1";
 ADDCFLAG="-I=/usr/include/python2.7";
