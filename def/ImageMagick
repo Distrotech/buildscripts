@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 OPT_arm="--without-openexr";
+OPT_powerpc="--without-openexr";
