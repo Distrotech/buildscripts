@@ -581,7 +581,7 @@ make_cc_destdir() {
   if [ "${LDISCC}" == "1" ];then
     export LD="${CC} ${CC_SYSROOT}"
    else
-    export LD="${HOST}-ld --sysroot=${SYSROOT}/ --rpath-link=${RPATH_LINK}"
+    export LD="${HOST}-ld --sysroot=${SYSROOT}/ --rpath-link=${LD_LIBRARY_PATH}"
   fi;
 
   if [ "${NOMAKEFLAGS}" == "1" ];then
@@ -639,9 +639,8 @@ imake_cross_build() {
 }
 
 cmake_cross_build() {
-#  export LD_LIBRARY_PATH="${RPATH_LINK}"
-#  export CC="${CC} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${RPATH_LINK}"
-#  export CXX="${CXX} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${RPATH_LINK}"
+#  export CC="${CC} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${LD_LIBRARY_PATH}"
+#  export CXX="${CXX} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${LD_LIBRARY_PATH}"
 
   if [ "${CLEARFLAGS}" ] && [ "${CLEARFLAGS}" == "1" ];then
     unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS LD
@@ -664,12 +663,12 @@ cmake_cross_build() {
     fi;
     cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES="${EXTRALIBS}" \
           -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" -DCMAKE_C_LINK_FLAGS="${LDFLAGS}" \
-          -DCMAKE_INSTALL_RPATH:PATH="${RPATH_LINK}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} ${1}${CFGBIN}
+          -DCMAKE_INSTALL_RPATH:PATH="${LD_LIBRARY_PATH}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} ${1}${CFGBIN}
    else
     cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES="${EXTRALIBS}" \
           -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" -DCMAKE_C_LINK_FLAGS="${LDFLAGS}" \
           -DCMAKE_SYSTEM_NAME=Linux  -DCMAKE_FIND_ROOT_PATH="${SYSROOT}/" \
-          -DCMAKE_INSTALL_RPATH:PATH="${RPATH_LINK}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} \
+          -DCMAKE_INSTALL_RPATH:PATH="${LD_LIBRARY_PATH}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} \
           -DCMAKE_C_COMPILER=/usr/bin/${HOST}-gcc -DCMAKE_C_COMPILER_ENV_VAR="${CC_SYSROOT}" \
           -DCMAKE_CXX_COMPILER=/usr/bin/${HOST}-g++ -DCMAKE_CXX_COMPILER_ENV_VAR="${CC_SYSROOT}" \
           -DGNU_HOST=${3} -DCMAKE_TOOLCHAIN_FILE=${SCRIPTDIR}/cmake_${2}.cross ${1}${CFGBIN}
@@ -718,10 +717,9 @@ autoconf_cross_build() {
   if [ "${LDISCC}" == "1" ];then
     export LD="${CC}"
    else
-    export LD="${HOST}-ld --sysroot=${SYSROOT}/ --rpath-link=${RPATH_LINK}"
+    export LD="${HOST}-ld --sysroot=${SYSROOT}/ --rpath-link=${LD_LIBRARY_PATH}"
   fi;
 
-#  export LD_LIBRARY_PATH="${RPATH_LINK}"
   if [ ! "${STDOPTS}" ];then
     STDOPTSX="--prefix=${PREFIX} --sysconfdir=/etc/${SYSCONFPRE} --mandir=${PREFIX}/share/man --localstatedir=/var${STATEDIRPRE} --infodir=${PREFIX}/share/info" 
     if [ "${B_LIBDIRS}" ];then
@@ -779,13 +777,13 @@ autoconf_cross_build() {
   fi;
 
   if [ "${NOCCOPT}" ] && [ "${NOCCOPT}" == "1" ] && [ "${EXTRALIBS}" ];then
-    ${1}${CFGBIN}configure ${STDOPTSX} ${CONFOPT} ${ARCHOPT} ${ARCHXOPT} LIBS="${EXTRALIBS}" || return 1
+    ${1}${CFGBIN}configure ${STDOPTSX} ${CONFOPT} ${ARCHOPT} ${ARCHXOPT} LIBS=\"${EXTRALIBS}\" || return 1
    elif [ "${NOCCOPT}" ] && [ "${NOCCOPT}" == "1" ];then
     ${1}${CFGBIN}configure ${STDOPTSX} ${CONFOPT} ${ARCHOPT} ${ARCHXOPT} || return 1
    elif [ "${EXTRALIBS}" ];then
-    ${1}${CFGBIN}configure ${STDOPTSX} ${CONFOPT} ${ARCHOPT} ${ARCHXOPT} CC="${CC}" CXX="${CXX}" LIBS="${EXTRALIBS}" || return 1
+    eval ${1}${CFGBIN}configure ${STDOPTSX} ${CONFOPT} ${ARCHOPT} ${ARCHXOPT} CC=\"${CC}\" CXX=\"${CXX}\" LIBS=\"${EXTRALIBS}\" || return 1
    else
-    ${1}${CFGBIN}configure ${STDOPTSX} ${CONFOPT} ${ARCHOPT} ${ARCHXOPT} CC="${CC}" CXX="${CXX}" || return 1
+    eval ${1}${CFGBIN}configure ${STDOPTSX} ${CONFOPT} ${ARCHOPT} ${ARCHXOPT} CC=\"${CC}\" CXX=\"${CXX}\" || return 1
   fi;
 
   #Postconfig hook
@@ -1018,7 +1016,6 @@ build_project() {
 
   if [ "${NARCH}" == "x86_64" ];then
     if [ "${barch}" == "i686" ] || [ "${barch}" == "x86_32" ];then
-      export LD_LIBRARY_PATH="${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/usr/lib/perl/x86_64-linux/CORE";
       if [ "${SYSROOTPATH}" == "1" ];then
         export PYTHON=${SYSROOT}/usr/bin/python
         export PYTHONHOME=${SYSROOT}/usr
@@ -1027,9 +1024,6 @@ build_project() {
         eval `chroot ${SYSROOT} /usr/bin/perl -V:privlib -V:archlib -V:sitearch -V:sitelib`
         export PERL5LIB=${SYSROOT}/${privlib}:${SYSROOT}/${archlib}:${SYSROOT}/${sitearch}:${SYSROOT}/${sitelib}
       fi;
-#      export PERL5LIB="${SYSROOT}/usr/lib/perl5/5.16.2/x86_64-linux-thread-multi";
-#      eval `perl -V:archlib -V:sitelib -V:sitearch -V:privlib`
-#      export PERL5LIB="${SYSROOT}/${sitearch}:${SYSROOT}/${sitelib}:${SYSROOT}/${archlib}:${SYSROOT}/${privlib}"
      else
       if [ "${SYSROOTPATH}" == "1" ];then
         export PYTHON=${SYSROOT}/usr/bin/python
@@ -1039,14 +1033,9 @@ build_project() {
        else
         export PATH=${SYSPATH}
       fi;
-      unset LD_LIBRARY_PATH PYTHONHOME PERL5LIB
+      unset PYTHONHOME PERL5LIB
     fi;
    else
-    if [ "${NARCH}" == "${barch}" ];then
-      LD_LIBRARY_PATH="/${B_LIBDIRS}:/usr/${B_LIBDIRS}:/usr/X11R7/${B_LIBDIRS}:/opt/qt-${QT_VER}/${B_LIBDIRS}:/opt/xfce/${B_LIBDIRS}:/usr/lib/perl/x86_64-linux/CORE"
-     else
-      LD_LIBRARY_PATH="${ARCHROOT}/${barch}/${B_LIBDIRS}:${ARCHROOT}/${barch}/usr/${B_LIBDIRS}:${ARCHROOT}/${barch}/usr/X11R7/${B_LIBDIRS}:${ARCHROOT}/${barch}/opt/qt-${QT_VER}/${B_LIBDIRS}:${ARCHROOT}/${barch}/opt/xfce/${B_LIBDIRS}:${ARCHROOT}/${barch}/usr/lib/perl/x86_64-linux/CORE"
-    fi;
     unset PYTHONHOME PERL5LIB
     export PATH=${SYSPATH}
   fi;
@@ -1058,42 +1047,33 @@ build_project() {
   fi;
 
   CFLAGS="${ADDCFLAG} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/usr/lib/glib-2.0/include -I=/usr/include/glib-2.0 -I=/usr/include/gtk-3.0 -I=/usr/include/gtk-2.0 -I=/usr/include/dbus-1.0 -I=/opt/xfce/include -I=/usr/${B_LIBDIRS}/glib-2.0/include";
-# -I=/usr/lib/perl5/5.16.2/${HOST}-thread-multi/CORE";
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
   export CXXFLAGS=${CFLAGS}
-  BASE_LIBPATH="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/qt-5/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS}"
-  if [ "${NMLIBDIR}" ];then
-    BASE_LIBPATH="-L=/usr/${B_LIBDIRS}/${NMLIBDIR} -L=/${B_LIBDIRS}/${NMLIBDIR} -L=/opt/xfce/${B_LIBDIRS}/${NMLIBDIR} -L=/usr/X11R7/${B_LIBDIRS}/${NMLIBDIR} ${BASE_LIBPATH}"
-  fi;
-  LDFLAGS="${BASE_LIBPATH} ${ADDLDFLAG}"
+
   if [ "${SETCPPTOC}" == "1" ];then
     CPPFLAGS=${CFLAGS};
   fi;
+
   CPPFLAGS="${ADDCPPFLAG}";
   if [ "${CPPFLAGS}" ];then
     export CPPFLAGS
   fi;
   export FORCE_UNSAFE_CONFIGURE=1
-#    export PKG_CONFIG_SYSROOT_DIR="${SYSROOT}"
 
   PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/share/pkgconfig:${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/qt-5/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig";
-  if [ "${MLIBDIR}" ];then
-    PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/${MLIBDIR}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/${MLIBDIR}/pkgconfig:${PKG_CONFIG_PATH}";
-  fi;
-  export PKG_CONFIG_PATH;
+  LD_LIBRARY_PATH="${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/qt-5/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio";
+  BASE_LIBPATH="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/qt-5/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS}"
 
-#  export PYTHONPATH="/usr/${B_LIBDIRS}/python2.7/site-packages/"
-
-  RPATH_LINK="${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/qt-5/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}"
   if [ "${C_LIBDIRS}" != "${B_LIBDIRS}" ];then
-    RPATH_LINK="${SYSROOT}/usr/${C_LIBDIRS}:${SYSROOT}/${C_LIBDIRS}:${RPATH_LINK}";
+    PKG_CONFIG_PATH="${SYSROOT}/${C_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${C_LIBDIRS}/pkgconfig:${PKG_CONFIG_PATH}";
+    LD_LIBRARY_PATH="${SYSROOT}/${C_LIBDIRS}:${SYSROOT}/usr/${C_LIBDIRS}:${LD_LIBRARY_PATH}";
+    BASE_LIBPATH="-L=/lib/${C_LIBDIRS} -L=/usr/${C_LIBDIRS} ${BASE_LIBPATH}"
   fi;
-  RPLINK=" -Wl,--rpath-link=${RPATH_LINK}";
-  XCCOPT="${XCCOPT} ${RPLINK}"
 
-  export CC_SYSROOT="--sysroot=${SYSROOT}/ ${XCCOPT} ${BASE_LIBPATH} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/opt/xfce/include";
+  export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${LD_LIBRARY_PATH} ${BASE_LIBPATH} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/opt/xfce/include";
+
   if [ "${BOOTSTRAP}" == "0" ];then
     CC="/usr/bin/${HOST}-gcc";
     CXX="/usr/bin/${HOST}-g++"
@@ -1103,7 +1083,7 @@ build_project() {
     CXX="${HOST}-g++"
     LD="${HOST}-ld"
   fi;
-  export CC CXX
+  export CC CXX PKG_CONFIG_PATH LD_LIBRARY_PATH
 
   #XXX /build AKA ARCHROOT
   if [ ! "${ADDGCCDIR}" ] || [ "${ADDGCCDIR}" == "1" ];then
@@ -1119,8 +1099,9 @@ build_project() {
     fi;
   fi;
 
+  LDFLAGS="${BASE_LIBPATH} ${ADDLDFLAG}"
   if [ ! "${LDISCC}" ] || [ "${LDISCC}" == "1" ];then
-    LDFLAGS="${LDFLAGS} ${RPLINK}";
+    LDFLAGS="${LDFLAGS} -Wl,--rpath-link=${LD_LIBRARY_PATH}";
   fi;
 
   if [ "${ARFLAGS}" ];then
@@ -1165,7 +1146,7 @@ build_project() {
   fi;
   mkdir -p ${DIST_ROOT}
 
-  export LDFLAGS CPPFLAGS CXXFLAGS CFLAGS MAKE_J BASE_LIBPATH
+  export LDFLAGS CPPFLAGS CXXFLAGS CFLAGS MAKE_J
   if [ "${QTMAKE}" ] && [ "${QTMAKE}" == "1" ];then
     (${QTDIR}/bin/qmake -r && make ${MAKE_J} && make INSTALL_ROOT=${DIST_ROOT}/${PREFIX} install) || return 1
    elif [ -x ${SCRIPTDIR}/make_${PROJECT} ];then
@@ -2017,8 +1998,8 @@ build_static_tool() {
     bash ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-config ${1} ${SRCDIR}/${4}/${STATICTOOL} ${TOOLDIR}/${1}/${STATICTOOL}-static
   fi;
 
-  make ${MAKE_J} ${STATICMOPT} || make ${STATICMOPT} || return 1
-  make ${STATICMOPT} DESTDIR=${TOOLDIR}/${1}/${STATICTOOL}-static install || return 1
+  eval make ${MAKE_J} ${STATICMOPT} || eval make ${STATICMOPT} || return 1
+  eval make ${STATICMOPT} DESTDIR=${TOOLDIR}/${1}/${STATICTOOL}-static install || return 1
 
   #Postinstall hook
   if [ -e ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install ];then
