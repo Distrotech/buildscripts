@@ -6,7 +6,9 @@ fi;
 
 shopt -s extglob
 
-GITBASE=git://192.30.252.130/Distrotech
+GITHUBIP=${GITHUBIP:=192.30.252.130}
+
+GITBASE=${GITURL:=git://${GITHUBIP}/Distrotech}
 
 CPUNO=$(lscpu  |awk '/^CPU\(s\)/ {print $2}')
 
