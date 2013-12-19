@@ -1035,14 +1035,13 @@ build_project() {
         export PYTHONHOME=${SYSROOT}/usr
         export PYTHONPATH=${SYSROOT}/usr/${B_LIBDIRS}/gobject-introspection/giscanner:${SYSROOT}/usr/${B_LIBDIRS}/gobject-introspection
         export PATH="${SYSROOT}/sbin:${SYSROOT}/bin:${SYSROOT}/usr/sbin:${SYSROOT}/usr/bin:${SYSROOT}/usr/X11R7/bin:${SYSPATH}";
-       else
-        export PATH=${SYSPATH}
       fi;
-      unset PYTHONHOME PERL5LIB
     fi;
-   else
-    unset PYTHONHOME PERL5LIB
-    export PATH=${SYSPATH}
+  fi;
+
+  if [ "${BOOTSTRAP}" == "1" ];then
+    export PYTHON=${SYSROOT}/usr/bin/python
+    export PYTHONHOME=${SYSROOT}/usr
   fi;
 
   if [ -d ${ARCHROOT}/${barch}/opt/qt-${QT_VER} ] && [ ! -h ${ARCHROOT}/${barch} ] && [ ${barch} != ${NARCH} ];then
@@ -1378,8 +1377,14 @@ build_glibc() {
   #Set dir correctly
   if [ "${1}" == "${NARCH}" ];then
     USELIBDIR=${NLIBDIR}
+    if [ "${NMLIBDIR}" ];then
+      USELIBDIR="${USELIBDIR}/${NMLIBDIR}"
+    fi;
    else
     USELIBDIR=${B_LIBDIRS}
+    if [ "${MLIBDIR}" ];then
+      USELIBDIR="${USELIBDIR}/${MLIBDIR}"
+    fi;
   fi;
 
   #building without gcc do so without SSP
@@ -1494,7 +1499,6 @@ build_glibc() {
 #    fi;
 #    rsync -avP usr/${USELIBDIR}/*.o /usr/${2}/${USELIBDIR}/
 #  fi;
-
   tar -cJf ${TOOLPKG}/${1}/${PKG}/${PKG}-static.tar.xz usr/${USELIBDIR}/*.o usr/${USELIBDIR}/*.a usr/include
 }
 
@@ -1765,7 +1769,11 @@ build_gcc_bootstrap() {
 
 
   if [ "${BOOTSTRAP}" == "1" ];then
-    rsync -a ${BUILDDIR}/usr/${NLIBDIR}/crt*.o gcc/
+    if [ "${NMLIBDIR}" ];then
+      rsync -a ${BUILDDIR}/usr/${NLIBDIR}/${NMLIBDIR}/crt*.o gcc/
+     else
+      rsync -a ${BUILDDIR}/usr/${NLIBDIR}/crt*.o gcc/
+    fi;
   fi;
 
   if [ ! -d ${2}/libstdc++-v3 ];then
@@ -1848,7 +1856,6 @@ build_gcc_bootstrap() {
 }
 
 build_qemu_static() {
-  barch=${1}
   . ${DEFDIR}/qemu;
   AVER=VERSION_${NARCH}
   if [ "${!AVER}" ];then
@@ -1859,16 +1866,19 @@ build_qemu_static() {
   export PREFIX
 
   export PKG_CONFIG_PATH="/${NLIBDIR}/pkgconfig:/usr/${NLIBDIR}/pkgconfig:/opt/apache2/${NLIBDIR}/pkgconfig:/usr/share/${NLIBDIR}/pkgconfig:/usr/X11R7/${NLIBDIR}/pkgconfig:/lib/pkgconfig:/usr/lib/pkgconfig:/opt/qt-${QT_VER}/${NLIBDIR}/pkgconfig:/opt/xfce/${NLIBDIR}/pkgconfig";
-  DIST_PKG=${TOOLPKG}/${NARCH}/${QEMU}-static.tar.xz
-  if [ -d ${TOOLDIR}/${NARCH}/${QEMU} ] && [ -f ${DIST_PKG} ];then
+
+  QEMU_DIR=${TOOLDIR}/${NARCH}/${QEMU}-static
+  QEMU_PTH=${TOOLPKG}/${NARCH}/${QEMU}-static
+  DIST_PKG=${QEMU_PTH}/${QEMU}-static.tar.xz
+
+  if [ -d ${QEMU_DIR} ] && [ -f ${DIST_PKG} ];then
     return
   fi;
-  git_load_pkg qemu ${VERSEP}${VERSION} distrotech-${QEMU}
+  git_load_pkg qemu ${VERSEP}${VERSION} distrotech-${QEMU} qemu
 
-  (git_load_pkg qemu ${QEMU}) || return 1
-  setup_build_dir ${NARCH} qemu ${QEMU} ${NARCH}
+  setup_build_dir ${NARCH} qemu ${QEMU} ${NARCH} -static
 
-  if [ "${NLIBDIR}" ];then
+  if [ "${NMLIBDIR}" ];then
     C_LIBDIRS="${NLIBDIR}/${NMLIBDIR}"
    else
     C_LIBDIRS=${NLIBDIR}
@@ -1878,21 +1888,23 @@ build_qemu_static() {
                 --cc=${BUILD}-gcc || return 1
   make ${MAKE_J} || make || return 1
 
-  mkdir -p ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin
-  for arch in arm mips ppc ppc64;do
+  mkdir -p ${QEMU_DIR}/usr/bin
+  for arch in arm mips mips64 ppc ppc64;do
     if [ "${arch}" != "${NARCH}" ];then
       uemu=${arch}-linux-user/qemu-${arch};
-      cp ${uemu} ${TOOLDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${arch}-static
+      cp ${uemu} ${QEMU_DIR}/usr/bin/qemu-${arch}-static
     fi;
   done
 
   if [ "${DIETBUILD}" == "1" ];then
      cd ${SRCDIR}/qemu/${QEMU}
-     rm -rf build-${NARCH}-${1}
+     rm -rf build-${NARCH}-${1}-static
   fi;
 
-  rsync -aP --exclude=/usr/bin/qemu-${NARCH}-static ${TOOLDIR}/${NARCH}/${QEMU}/ /
-  (cd ${TOOLDIR}/${NARCH}/${QEMU};tar -cJf ${DIST_PKG} *)
+  rsync -aP --exclude=/usr/bin/qemu-${NARCH}-static ${QEMU_DIR}/ /
+  (cd ${QEMU_DIR};
+   mkdir -p ${QEMU_PTH};
+   tar -cJf ${DIST_PKG} *)
 }
 
 build_packages() {
@@ -2702,7 +2714,7 @@ loop_on_dir() {
 ubuntu_pkg() {
   for rpkg in build-essential help2man autopoint gnat libgnatprj4.6-dev ant openjdk-7-jdk squashfs-tools git gawk \
               texinfo flex bison autoconf automake libgmp-dev libmpfr-dev libmpc-dev libselinux1-dev libsigsegv-dev \
-              libreadline-dev libncursesw5-dev libncurses5-dev libgpm-dev libgtk2.0-dev libtool;do
+              libreadline-dev libncursesw5-dev libncurses5-dev libgpm-dev libgtk2.0-dev libtool gcj-jdk;do
     if ! dpkg -s ${rpkg} > /dev/null 2>&1;then
       PKG_TOGET="${PKG_TOGET} ${rpkg}"
     fi;
@@ -2774,14 +2786,21 @@ build_bootstrap() {
 
   echo "Shared tools"
   build_packages ${1} bison flex sed gawk make rsync grep gzip \
-    tar xz diffutils libtool gperf m4 cpio git findutils patch \
+    tar xz diffutils libtool gperf m4 cpio Python git findutils patch \
     iana-etc tzdata || return 1
 
   echo "Static tools"
-  static_toolbuild ${1} || return 1
+  (export PYTHON=${ARCHROOT}/${1}/usr/bin/python
+  export PYTHONHOME=${ARCHROOT}/${1}/usr
+  static_toolbuild ${1}) || return 1
 
   echo "Packages for static root"
-  build_packages ${1} junit rhino antlr4 apache-ant automake-1.9 autoconf || return 1
+  build_packages ${1} junit rhino antlr4 apache-ant automake-1.9 autoconf ecj linux_logo || return 1
+
+  echo "Qemu static bits"
+  (build_qemu_static) || return 1
+
+  echo "All done ..."
   return;
 }
 
