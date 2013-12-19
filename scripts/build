@@ -581,7 +581,7 @@ make_cc_destdir() {
   if [ "${LDISCC}" == "1" ];then
     export LD="${CC} ${CC_SYSROOT}"
    else
-    export LD="${HOST}-ld --sysroot=${SYSROOT}/ --rpath-link=${LD_LIBRARY_PATH}"
+    export LD="${HOST}-ld --sysroot=${SYSROOT}/ --rpath-link=${RLINK_PATH}"
   fi;
 
   if [ "${NOMAKEFLAGS}" == "1" ];then
@@ -639,8 +639,8 @@ imake_cross_build() {
 }
 
 cmake_cross_build() {
-#  export CC="${CC} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${LD_LIBRARY_PATH}"
-#  export CXX="${CXX} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${LD_LIBRARY_PATH}"
+#  export CC="${CC} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH}"
+#  export CXX="${CXX} --sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH}"
 
   if [ "${CLEARFLAGS}" ] && [ "${CLEARFLAGS}" == "1" ];then
     unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS LD
@@ -663,12 +663,12 @@ cmake_cross_build() {
     fi;
     cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES="${EXTRALIBS}" \
           -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" -DCMAKE_C_LINK_FLAGS="${LDFLAGS}" \
-          -DCMAKE_INSTALL_RPATH:PATH="${LD_LIBRARY_PATH}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} ${1}${CFGBIN}
+          -DCMAKE_INSTALL_RPATH:PATH="${RLINK_PATH}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} ${1}${CFGBIN}
    else
     cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES="${EXTRALIBS}" \
           -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" -DCMAKE_C_LINK_FLAGS="${LDFLAGS}" \
           -DCMAKE_SYSTEM_NAME=Linux  -DCMAKE_FIND_ROOT_PATH="${SYSROOT}/" \
-          -DCMAKE_INSTALL_RPATH:PATH="${LD_LIBRARY_PATH}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} \
+          -DCMAKE_INSTALL_RPATH:PATH="${RLINK_PATH}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} \
           -DCMAKE_C_COMPILER=/usr/bin/${HOST}-gcc -DCMAKE_C_COMPILER_ENV_VAR="${CC_SYSROOT}" \
           -DCMAKE_CXX_COMPILER=/usr/bin/${HOST}-g++ -DCMAKE_CXX_COMPILER_ENV_VAR="${CC_SYSROOT}" \
           -DGNU_HOST=${3} -DCMAKE_TOOLCHAIN_FILE=${SCRIPTDIR}/cmake_${2}.cross ${1}${CFGBIN}
@@ -695,11 +695,15 @@ autoconf_cross_build() {
   if [ "${CLEARFLAGS}" ] && [ "${CLEARFLAGS}" == "1" ];then
     unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS LD
     if [ "${ADDLDFLAG}" ];then
-      LDFLAGS="${ADDLDFLAG} -L${ARCHROOT}/${2}/${C_LIBDIRS} -L${ARCHROOT}/${2}/usr/${C_LIBDIRS}"
+      LDFLAGS="${ADDLDFLAG} -L${ARCHROOT}/${2}/${B_LIBDIRS} -L${ARCHROOT}/${2}/${C_LIBDIRS} -L${ARCHROOT}/${2}/usr/${C_LIBDIRS}"
      else
-      LDFLAGS="-L${ARCHROOT}/${2}/${C_LIBDIRS} -L${ARCHROOT}/${2}/usr/${C_LIBDIRS}"
+      LDFLAGS="-L${ARCHROOT}/${2}/${B_LIBDIRS} -L${ARCHROOT}/${2}/${C_LIBDIRS} -L${ARCHROOT}/${2}/usr/${C_LIBDIRS}"
+    fi;
+    if [ "${BOOTSTRAP}" == "1" ];then
+      LDFLAGS="${LDFLAGS} -Wl,--rpath-link=${RLINK_PATH} --sysroot=${ARCHROOT}/${2}"
     fi;
     export LDFLAGS
+
     if [ "${ADDCFLAG}" ];then
       export CFLAGS="${ADDCFLAG}"
 #      export CPPFLAGS="${ADDCFLAG}"
@@ -713,11 +717,10 @@ autoconf_cross_build() {
     export CXX="${CXX}"
   fi;
 
-
   if [ "${LDISCC}" == "1" ];then
     export LD="${CC}"
    else
-    export LD="${HOST}-ld --sysroot=${SYSROOT}/ --rpath-link=${LD_LIBRARY_PATH}"
+    export LD="${HOST}-ld --sysroot=${SYSROOT}/ --rpath-link=${RLINK_PATH}"
   fi;
 
   if [ ! "${STDOPTS}" ];then
@@ -1063,16 +1066,16 @@ build_project() {
   export FORCE_UNSAFE_CONFIGURE=1
 
   PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/share/pkgconfig:${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/qt-5/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig";
-  LD_LIBRARY_PATH="${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/qt-5/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio";
+  RLINK_PATH="${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/qt-5/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio";
   BASE_LIBPATH="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/qt-5/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS}"
 
   if [ "${C_LIBDIRS}" != "${B_LIBDIRS}" ];then
     PKG_CONFIG_PATH="${SYSROOT}/${C_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${C_LIBDIRS}/pkgconfig:${PKG_CONFIG_PATH}";
-    LD_LIBRARY_PATH="${SYSROOT}/${C_LIBDIRS}:${SYSROOT}/usr/${C_LIBDIRS}:${LD_LIBRARY_PATH}";
+    RLINK_PATH="${SYSROOT}/${C_LIBDIRS}:${SYSROOT}/usr/${C_LIBDIRS}:${RLINK_PATH}";
     BASE_LIBPATH="-L=/lib/${C_LIBDIRS} -L=/usr/${C_LIBDIRS} ${BASE_LIBPATH}"
   fi;
 
-  export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${LD_LIBRARY_PATH} ${BASE_LIBPATH} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/opt/xfce/include";
+  export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH} ${BASE_LIBPATH} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/opt/xfce/include";
 
   if [ "${BOOTSTRAP}" == "0" ];then
     CC="/usr/bin/${HOST}-gcc";
@@ -1083,7 +1086,10 @@ build_project() {
     CXX="${HOST}-g++"
     LD="${HOST}-ld"
   fi;
-  export CC CXX PKG_CONFIG_PATH LD_LIBRARY_PATH
+  export CC CXX PKG_CONFIG_PATH RLINK_PATH
+  if [ "${BOOTSTRAP}" == "0" ];then
+    export LD_LIBRARY_PATH="${RLINK_PATH}"
+  fi;
 
   #XXX /build AKA ARCHROOT
   if [ ! "${ADDGCCDIR}" ] || [ "${ADDGCCDIR}" == "1" ];then
@@ -1101,7 +1107,7 @@ build_project() {
 
   LDFLAGS="${BASE_LIBPATH} ${ADDLDFLAG}"
   if [ ! "${LDISCC}" ] || [ "${LDISCC}" == "1" ];then
-    LDFLAGS="${LDFLAGS} -Wl,--rpath-link=${LD_LIBRARY_PATH}";
+    LDFLAGS="${LDFLAGS} -Wl,--rpath-link=${RLINK_PATH}";
   fi;
 
   if [ "${ARFLAGS}" ];then
@@ -2734,8 +2740,6 @@ buildall_arch() {
 }
 
 build_bootstrap() {
-  check_create_arch ${1}
-
   #GCC tools symlinks
   for gcct in nm gnatlink gnatmake gnatbind gnatls strip gcc g++ objcopy ar ranlib ld;do
     if [ -x /usr/bin/${gcct} ] && [ ! -e /usr/bin/${2}-${gcct} ];then
@@ -2749,6 +2753,7 @@ build_bootstrap() {
      cd /usr/src/linux/linux-3 &&
      make INSTALL_HDR_PATH=${SRCDIR}/linux/usr headers_install_all) || return 1
   fi;
+  check_create_arch ${1}
 
   echo "GLIBC"
   (build_glibc ${1} ${2}) || return 1
