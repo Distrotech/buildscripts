@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "${RUNBASHRC}" ] && [ "${RUNBASHRC}" == "1" ];then
+if [ "${RUNBASHRC}" ] && [ "${RUNBASHRC}" == "1" ] && [ -e ~/.bashrc ];then
   . ~/.bashrc
 fi;
 
@@ -777,9 +777,9 @@ autoconf_cross_build() {
   fi;
 
   if [ "${NOCCOPT}" ] && [ "${NOCCOPT}" == "1" ] && [ "${EXTRALIBS}" ];then
-    ${1}${CFGBIN}configure ${STDOPTSX} ${CONFOPT} ${ARCHOPT} ${ARCHXOPT} LIBS=\"${EXTRALIBS}\" || return 1
+    eval ${1}${CFGBIN}configure ${STDOPTSX} ${CONFOPT} ${ARCHOPT} ${ARCHXOPT} LIBS=\"${EXTRALIBS}\" || return 1
    elif [ "${NOCCOPT}" ] && [ "${NOCCOPT}" == "1" ];then
-    ${1}${CFGBIN}configure ${STDOPTSX} ${CONFOPT} ${ARCHOPT} ${ARCHXOPT} || return 1
+    eval ${1}${CFGBIN}configure ${STDOPTSX} ${CONFOPT} ${ARCHOPT} ${ARCHXOPT} || return 1
    elif [ "${EXTRALIBS}" ];then
     eval ${1}${CFGBIN}configure ${STDOPTSX} ${CONFOPT} ${ARCHOPT} ${ARCHXOPT} CC=\"${CC}\" CXX=\"${CXX}\" LIBS=\"${EXTRALIBS}\" || return 1
    else
