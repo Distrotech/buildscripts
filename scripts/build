@@ -406,7 +406,7 @@ git_load_pkg() {
     for fcnf in aclocal.m4 configure Makefile.in autoconf.h.in;do
       find ${SRCDIR}/${PKGGITDIR} -name ${fcnf} |awk '{printf "touch %s\n",$1}' |sh
     done;
-    find ${SRCDIR}/${PKGGITDIR} -regex '.*\.info$' -or -regex '.*\.pdf$'|awk '{printf "touch %s\n",$1}' |sh
+    find ${SRCDIR}/${PKGGITDIR} -regex '.*\.pdf$' -or -regex '.*\.info$'|awk '{printf "touch %s\n",$1}' |sh
    else
     (cd ${SRCDIR}/${PKGGITDIR}
     touch aclocal.m4 */aclocal.m4 configure Makefile.in */Makefile.in autoconf.h.in */autoconf.h.in)
@@ -701,7 +701,7 @@ autoconf_cross_build() {
      else
       LDFLAGS="-L${ARCHROOT}/${2}/${B_LIBDIRS} -L${ARCHROOT}/${2}/${C_LIBDIRS} -L${ARCHROOT}/${2}/usr/${C_LIBDIRS}"
     fi;
-    if [ "${BOOTSTRAP}" == "1" ];then
+    if [ "${BOOTSTRAP}" == "1" ] && [ "${PROJECT}" != "glibc" ];then
       LDFLAGS="${LDFLAGS} -Wl,--rpath-link=${RLINK_PATH} --sysroot=${ARCHROOT}/${2}"
     fi;
     export LDFLAGS
@@ -799,7 +799,10 @@ autoconf_cross_build() {
   sysroot_fixup ${2}
 
   #config make hook
-  if [ -e ${SRCDIR}/${PSOURCEDIR}/.build-info/make-config ];then
+  if [ "${BOOTSTRAP}" == "1" ] && [ "${PROJECT}" == "glibc" ];then
+    env -i - PATH=${ORIG_PATH} make ${MAKE_J} || return 1
+    make DESTDIR=${DIST_ROOT} install || return 1
+   elif [ -e ${SRCDIR}/${PSOURCEDIR}/.build-info/make-config ];then
     bash ${SRCDIR}/${PSOURCEDIR}/.build-info/make-config ${NARCH} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT} ${HOST} ${2}
    else
     if [ "${ADDCC}" ] && [ "${ADDCC}" == "0" ];then
@@ -1659,7 +1662,7 @@ build_gcc_bootstrap() {
     SDIROPT=-boot
    elif [ "${4}" == "shared" ];then
     MARCH=BOOTOPT_${1}
-    CONFOPT="${SHAREDOPT} ${SYSROOT} ${CONFOPTX}"
+    CONFOPT="${SHAREDOPT} ${SYSROOT} ${CONFOPTX} --with-gmp-lib=${ARCHROOT}/${3}/usr/${TLIBDIR}/${TMLIBDIR}";
     CFLAGS="-fPIC -O2";
     CXXFLAGS="-fPIC -O2";
     SDIROPT=-shared
@@ -1670,7 +1673,7 @@ build_gcc_bootstrap() {
     fi;
    elif [ ! "${4}" ] || [ "${4}" == "null" ];then
     MARCH=BOOTOPT_${1}
-    CONFOPT="${NULLOPT} ${SYSROOT} CC=${BUILD}-gcc CXX=${BUILD}-g++"
+    CONFOPT="${NULLOPT} ${SYSROOT} CC=${BUILD}-gcc CXX=${BUILD}-g++ --with-gmp-lib=${ARCHROOT}/${3}/usr/${TLIBDIR}/${TMLIBDIR}"
     CFLAGS="-fPIC -O2";
     CXXFLAGS="-fPIC -O2";
     SDIROPT=-null
@@ -2057,8 +2060,13 @@ static_toolbuild() {
       TLIBDIR="${TLIBDIR}/${NMLIBDIR}";
     fi;
   fi;
-  for stool in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
-      pkg-config util-linux diffutils libtool gperf m4 cpio git;do
+
+  STATICPKG="bash coreutils nano less texinfo pkg-config util-linux git";
+#  if [ "${BOOTSTRAP}" == "0" ];then
+#    STATICPKG="${STATICPKG} bison flex sed gawk make grep gzip tar xz diffutils libtool gperf m4 cpio";
+#  fi;
+
+  for stool in ${STATICPKG};do
     (build_static_tool ${1} ${TARGET} ${TLIBDIR} ${stool}) || return 1
   done;
 }
@@ -2603,9 +2611,12 @@ bootstrap_native() {
   fi;
   (BOOTCLEAN=distclean;build_packages ${NARCH} libtool gmp mpfr mpc isl cloog) || return 1
 
+  #Need yasm that needs cmake add nasm for free
+  build_packages ${NARCH} cmake yasm nasm || return 1
+
   #Build multi arch stack for native
-  (bootstrap_arch ${NARCH}) || return 1
   (build_glibc_march ${NARCH}) || return 1
+  (bootstrap_arch ${NARCH}) || return 1
 }
 
 bootstrap_toolchain() {
@@ -2858,6 +2869,14 @@ fi;
 if [ "${BOOTSTRAP}" ] && [ "${BOOTSTRAP}" == "1" ];then
   build_bootstrap ${NARCH} ${BUILD}
   exit 0;
+fi;
+
+#Pull in the linux source and create headers dir
+if [ ! -d ${SRCDIR}/linux/usr/include/linux ];then
+  echo "Linux Headers"
+  (git_load_pkg linux -3 master linux &&
+  cd /usr/src/linux/linux-3 &&
+  make INSTALL_HDR_PATH=${SRCDIR}/linux/usr headers_install_all) || exit 1
 fi;
 
 for barch in ${ARCHLIST};do
