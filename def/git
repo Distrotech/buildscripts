@@ -16,4 +16,5 @@ OPT_powerpc64="ac_cv_fread_reads_directories=no ac_cv_snprintf_returns_bogus=no"
 OPT_i686="ac_cv_fread_reads_directories=no ac_cv_snprintf_returns_bogus=no";
 ADDCFLAG="-I. -I../";
 STATICOPT="LDFLAGS=-static";
+STATICBSTRAP="1";
 EXTRALIBS="-ldl";
