@@ -1,9 +1,12 @@
 #!/bin/bash
 
-GITIP=192.30.252.130
-DISTDIR=/dist
-
-export GITURL=git://${GITIP}/Distrotech
+if [ -e ~/.distrotech_build ];then
+  . ~/.distrotech_build
+ else
+  GITURL="git://github.com/Distrotech";
+  DISTDIR="/dist";
+fi;
+export GITURL DISTDIR
 
 if [ ! -d ${DISTDIR}/.git ];then
   if [ ! -d ${DISTDIR} ];then

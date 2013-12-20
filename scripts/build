@@ -6,14 +6,14 @@ fi;
 
 shopt -s extglob
 
-GITHUBIP=${GITHUBIP:=192.30.252.130}
-
-GITBASE=${GITURL:=git://${GITHUBIP}/Distrotech}
+GITBASE=${GITURL:=git://github.com/Distrotech}
 
 CPUNO=$(lscpu  |awk '/^CPU\(s\)/ {print $2}')
 
 #Set the arch based on uname -m this is not able to determine multi/sub arches
 NARCH=${NARCH:=$( uname -m )}
+
+DISTRONAME="Distro Solutions"
 
 DEF_JAVA_VER="1.7.0_45";
 DEF_QT_VER="5";
@@ -42,7 +42,7 @@ LANG=${LANG:=en_ZA.UTF8}
 
 #Setup layout path
 SRCDIR=/usr/src
-DISTDIR=/dist
+DISTDIR=${DISTDIR:=/dist}
 ARCHROOT=/build
 STATDIR=${DISTDIR}/status
 DEFDIR=${DISTDIR}/def
@@ -2061,7 +2061,7 @@ static_toolbuild() {
     fi;
   fi;
 
-  STATICPKG="bash coreutils nano less texinfo pkg-config util-linux git";
+  STATICPKG="bash coreutils nano less texinfo pkg-config util-linux git dialog";
 #  if [ "${BOOTSTRAP}" == "0" ];then
 #    STATICPKG="${STATICPKG} bison flex sed gawk make grep gzip tar xz diffutils libtool gperf m4 cpio";
 #  fi;
@@ -2725,7 +2725,7 @@ loop_on_dir() {
 ubuntu_pkg() {
   for rpkg in build-essential help2man autopoint gnat libgnatprj4.6-dev ant openjdk-7-jdk squashfs-tools git gawk \
               texinfo flex bison autoconf automake libgmp-dev libmpfr-dev libmpc-dev libselinux1-dev libsigsegv-dev \
-              libreadline-dev libncursesw5-dev libncurses5-dev libgpm-dev libgtk2.0-dev libtool gcj-jdk;do
+              libreadline-dev libncursesw5-dev libncurses5-dev libgpm-dev libgtk2.0-dev libtool gcj-jdk dialog;do
     if ! dpkg -s ${rpkg} > /dev/null 2>&1;then
       PKG_TOGET="${PKG_TOGET} ${rpkg}"
     fi;
@@ -2764,6 +2764,180 @@ buildall_arch() {
   done;
 }
 
+install_pkg_to_toolchain() {
+   if [ ! -e ${DEFDIR}/${1} ];then
+     continue;
+   fi;
+
+   get_pkg_name ${1}
+   STATICBSTRAP=${STATICBSTRAP:=0};
+
+   if [ "${1}" == "gcc" ] && [ -d ${TOOLDIR}/${2}/${PNAME}-boot ];then
+     PKG=${PKGDISTDIR}/build/${2}/${PNAME}-boot
+     PNAME="${PNAME}-boot"
+    elif [ "${STATICBSTRAP}" == "1" ] && [ -d ${TOOLDIR}/${2}/${PNAME}-static ];then
+     PKG=${PKGDISTDIR}/build/${2}/${PNAME}-static
+     PNAME="${PNAME}-static"
+    elif [ "${STATICBSTRAP}" == "0" ] && [ -d ${PKGDISTDIR}/${2}/${PNAME} ];then
+     PKG=${PKGDISTDIR}/${2}/${PNAME}
+    elif [ -d ${TOOLDIR}/${2}/${PNAME}-static ];then
+     PKG=${PKGDISTDIR}/build/${2}/${PNAME}-static
+     PNAME="${PNAME}-static"
+    else
+      echo "Bad/missing build ${PNAME}"
+      continue;
+   fi;
+   if [ -e ${PKG}/${PNAME}.tar.xz ];then
+     tar --exclude=*/.dbg/* -C ${3} -xJf ${PKG}/${PNAME}.tar.xz
+    else
+     echo "Missing file ${PKG}/${PNAME}.tar.xz"
+   fi;
+
+   case ${bpkg} in
+     glibc)INSTSUB="dev libs conf";;
+     *)INSTSUB="dev libs";;
+   esac;
+
+   for subpkg in ${INSTSUB};do
+     if [ -e ${PKG}/${PNAME}-${subpkg}.tar.xz ];then
+       tar --exclude=*/.dbg/* -C ${3} -xJf ${PKG}/${PNAME}-${subpkg}.tar.xz
+     fi;
+   done;
+}
+
+build_toolchain_dir() {
+  BUILDROOTDIR=${2}
+  while ! test -z ${BUILDROOTDIR} && test -d ${BUILDROOTDIR};do
+    eval ${DIALOG} --title \"Select New Chroot Folder\" --dselect \"${BUILDROOTDIR}\"  10 60 2> /tmp/build-$$.tmp
+    BUILDROOTDIR=`cat /tmp/build-$$.tmp`
+    rm /tmp/build-$$.tmp
+  done;
+
+  if [ ! "${BUILDROOTDIR}" ];then
+    eval ${DIALOG} --title \"Error\" --msgbox \"No New Directory Selected Quiting.\" 10 40
+    clear
+    return 1;
+  fi;
+
+  arch_config ${1}
+  STRIP=${TUPPLE}-strip
+
+  mkdir -p ${BUILDROOTDIR}/etc
+  touch ${BUILDROOTDIR}/etc/.static
+
+  BPKGS="bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
+         pkg-config util-linux diffutils libtool gperf m4 cpio git binutils glibc autoconf \
+         automake-1.9 apache-ant qemu junit rhino antlr4 gmp mpfr mpc cloog isl zlib gcc \
+         findutils patch iana-etc tzdata ecj linux_logo dialog";
+
+  PKG_CNT=$(echo ${BPKGS} |wc -w)
+  PCVAL=$(echo "scale=2;100 / ${PKG_CNT}" |bc)
+  GVAL=1
+
+  (for bpkg in ${BPKGS};do
+    (install_pkg_to_toolchain ${bpkg} ${1} ${BUILDROOTDIR}) >/dev/null 2>&1
+    GVAL=$(echo "${GVAL} + ${PCVAL}" |bc)
+    echo ${GVAL/.*}
+  done;) |eval ${DIALOG} --title \"Progress\" --gauge \"Transfering files for\\n\\n${DISTRONAME} Linux\\n${DISTROVER}\" 10 40
+  sleep 1
+  clear
+
+  if [ -e ${PKGDISTDIR}/build/${1}/kernel-headers.tar.xz ];then
+    tar --exclude=*/.dbg/* -C ${BUILDROOTDIR} -xJf ${PKGDISTDIR}/build/${1}/kernel-headers.tar.xz;
+  fi;
+
+  if [ ! -e ${BUILDROOTDIR}/usr/include/asm ];then
+    ln -s asm-${LINARCH} ${BUILDROOTDIR}/usr/include/asm
+  fi;
+
+  for sysdir in proc sys dev root tmp usr/src dist;do
+    mkdir -p ${BUILDROOTDIR}/${sysdir}
+  done;
+
+  for mdir in 1 2 3 4 5 6 7 8;do
+    mkdir -p ${BUILDROOTDIR}/usr/share/man/man${mdir}
+  done;
+
+  #Strip all the bits
+  ${STRIP} ${BUILDROOTDIR}/bin/* ${BUILDROOTDIR}/sbin/* ${BUILDROOTDIR}/usr/bin/* ${BUILDROOTDIR}/usr/sbin/* >/dev/null 2>&1
+
+  #Install terminfo DB / Stub files / CPAN config / etc resources
+  for xsync in "${DISTDIR}/res/" "-R /usr/share/terminfo" "-R /lib/terminfo";do
+    rsync -a ${xsync} ${BUILDROOTDIR}/
+  done
+
+  #GCC stubs
+  for stub in stubs-32.h  stubs-64.h  stubs.h  stubs-x32.h;do
+    if [ -e ${ARCHROOT}${DARCH}/usr/include/gnu/${stub}.h ];then
+      rsync -a ${ARCHROOT}${DARCH}/usr/include/gnu/${stub}.h ${BUILDROOTDIR}/usr/include/gnu/
+     elif [ "${stub}" == "stubs-x32.h" ] && [ ! -e ${BUILDROOTDIR}/usr/include/gnu/${stub} ];then
+       ln -s stubs-64.h ${BUILDROOTDIR}/usr/include/gnu/${stub}
+     else
+       touch ${BUILDROOTDIR}/usr/include/gnu/${stub}
+    fi;
+  done;
+
+  if [ -e ${BUILDROOTDIR}.sqfs ];then
+    rm ${BUILDROOTDIR}.sqfs
+  fi;
+
+  mkdir -p ${BUILDROOTDIR}${ARCHROOT}/${DARCH}
+  chroot ${BUILDROOTDIR} /sbin/ldconfig >/dev/null 2>&1
+
+  eval ${DIALOG} --title \"DNS Server\" --form \"Enter DNS Server IP\'s\" 12 40 4 \
+    \"1 DNS Server:\" 1 1 \"\" 1 15 25 30 \
+    \"2 DNS Server:\" 2 1 \"127.0.0.1\" 2 15 25 30 \
+    \"3 DNS Server:\" 3 1 \"::1\" 3 15 25 30 \
+    \"4 DNS Server:\" 4 1 \"8.8.8.8\" 4 15 25 30 2> /tmp/form.$$
+
+  (while read line;do
+    if [ "${line}" ];then
+      echo nameserver $line
+    fi
+  done < /tmp/form.$$) > ${BUILDROOTDIR}/etc/resolv.conf
+  rm /tmp/form.$$
+
+  clear
+  mksquashfs ${BUILDROOTDIR}/* ${BUILDROOTDIR}.sqfs -comp xz 2>/dev/null
+
+  rm -rf ${BUILDROOTDIR}${ARCHROOT}/${DARCH}
+  ln -f -r -s ${BUILDROOTDIR} ${BUILDROOTDIR}${ARCHROOT}/${DARCH}
+
+  (cat <<__EOF__
+GITURL="${GITBASE}";
+DISTDIR="${DISTDIR}";
+HOST_ARCH="${HOST_ARCH}";
+HOST_BITS="${HOST_BITS}"
+HOST_LIBDIR="${HOST_LIBDIR}";
+HOST_MLIBDIR="${HOST_MLIBDIR}";
+__EOF__
+) > ${BUILDROOTDIR}/root/.distrotech_build
+
+}
+
+dialog_config() {
+  arch_config ${1}
+
+  case ${1} in
+    i[3-6]86|x86_64|x86_32)HOST_ARCH="x86";;
+    *64)HOST_ARCH=${1::-2};;
+    *)HOST_ARCH=${1};;
+  esac;
+
+  case ${1} in
+    x86_32)HOST_BITS="(ILP32) 64";;
+    *64)HOST_BITS="64";;
+    *)HOST_BITS="32";;
+  esac;
+
+  HOST_LIBDIR=${SETLIBDIR};
+  HOST_MLIBDIR=${AMLIBDIR};
+
+  DISTROVER="${HOST_ARCH} ${HOST_BITS}bit"
+  DIALOG="dialog --backtitle \"${DISTRONAME} Linux ${DISTROVER}\"";
+  export DIALOG DISTROVER HOST_MLIBDIR HOST_LIBDIR HOST_BITS HOST_ARCH
+}
+
 build_bootstrap() {
   #GCC tools symlinks
   for gcct in nm gnatlink gnatmake gnatbind gnatls strip gcc g++ objcopy ar ranlib ld;do
@@ -2800,19 +2974,45 @@ build_bootstrap() {
     tar xz diffutils libtool gperf m4 cpio Python git findutils patch \
     iana-etc tzdata || return 1
 
+  echo "Packages for static root"
+  build_packages ${1} junit rhino antlr4 apache-ant automake-1.9 autoconf ecj linux_logo || return 1
+
   echo "Static tools"
   (export PYTHON=${ARCHROOT}/${1}/usr/bin/python
   export PYTHONHOME=${ARCHROOT}/${1}/usr
   static_toolbuild ${1}) || return 1
 
-  echo "Packages for static root"
-  build_packages ${1} junit rhino antlr4 apache-ant automake-1.9 autoconf ecj linux_logo || return 1
-
   echo "Qemu static bits"
   (build_qemu_static) || return 1
-
-  echo "All done ..."
   return;
+}
+
+set_date_time() {
+  dialog_config ${NARCH}
+
+  (if ! eval ${DIALOG} --title \"Date\" --calendar \"Set the correct date\" 2 40 2>/tmp/cal.$$;then
+    if [ -e /tmp/cal.$$ ];then
+      rm /tmp/cal.$$
+    fi;
+    return 1
+  fi;
+  IFS='/' read -ra DATE < /tmp/cal.$$
+
+  if ! eval ${DIALOG} --title "Time" --timebox \"Set the correct time\" 2 40 2>/tmp/cal.$$;then
+    if [ -e /tmp/cal.$$ ];then
+      rm /tmp/cal.$$
+    fi;
+    return 1
+  fi;
+  IFS=':' read -ra TIME < /tmp/cal.$$
+
+  if [ -e /tmp/cal.$$ ];then
+    rm /tmp/cal.$$
+  fi;
+
+  DTIME=$(printf %02i ${DATE[1]};printf %02i ${DATE[0]};printf %02i ${TIME[0]};printf %02i ${TIME[1]};printf ${DATE[2]};printf .%02i ${TIME[2]})
+  date ${DTIME} >/dev/null 2>&1
+  clear)
 }
 
 #Bootstrap on ubuntu
@@ -2867,7 +3067,32 @@ if [ ! -d ${PKGDISTDIR} ];then
 fi;
 
 if [ "${BOOTSTRAP}" ] && [ "${BOOTSTRAP}" == "1" ];then
-  build_bootstrap ${NARCH} ${BUILD}
+  dialog_config ${NARCH}
+
+  if eval ${DIALOG} --title \"GIT Server\" --inputbox \"Enter IP address of git server.\\nOnly git:// is supported.\" 10 40 \"${GITBASE}\" 2> /tmp/form.$$;then
+    GITBASE=`cat /tmp/form.$$`
+  fi;
+
+  if [ -e /tmp/form.$$ ];then
+    rm /tmp/form.$$
+  fi;
+
+  if ! eval ${DIALOG} --title "Continue" --yesno \"Continue To Build a ${DISTRONAME} toolchain for ${DISTROVER} [${NARCH}].\" 10 40;then
+    clear
+    return 1
+  fi;
+  clear
+
+  (build_bootstrap ${NARCH} ${BUILD}) | ${DIALOG} --progressbox 60 60
+
+  if ! eval ${DIALOG} --title \"Create Chroot\" --yesno \"Do you wish to create a chroot directory now\"  10 40;then
+    clear
+    return;
+  fi;
+  clear
+
+  build_toolchain_dir ${NARCH} ${DISTDIR}/root/${NARCH}-buildroot
+
   exit 0;
 fi;
 
