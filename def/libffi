@@ -1,10 +1,11 @@
 VERSION="3.0.13"
 VERSEP="-";
 PREFIX="/usr";
-STDOPTS="--prefix=/usr --libdir=/usr/${B_LIBDIRS}";
+STDOPTS="--prefix=/usr --libdir=/usr/${B_LIBDIRS} --host=${HOST}";
 CONFOPT="";
 OPT_arm="--with-gcc-arch=arm TARGET=ARM TARGETDIR=arm";
 OPT_x86_64="--with-gcc-arch=x86_64";
+OPT_x86_32="ac_cv_sizeof_size_t=4";
 GITBRANCH="v3.0.13";
 FIXUPLIB="1";
 NOMLIBDIR="1";
