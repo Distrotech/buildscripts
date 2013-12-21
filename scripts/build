@@ -2,11 +2,13 @@
 
 if [ "${RUNBASHRC}" ] && [ "${RUNBASHRC}" == "1" ] && [ -e ~/.bashrc ];then
   . ~/.bashrc
+ elif [ -e /root/.distrotech_build ];then
+  . ~/.distrotech_build
 fi;
 
 shopt -s extglob
 
-GITBASE=${GITURL:=git://github.com/Distrotech}
+GITURL=${GITURL:=git://github.com/Distrotech}
 
 CPUNO=$(lscpu  |awk '/^CPU\(s\)/ {print $2}')
 
@@ -52,7 +54,7 @@ TOOLDIR=${DISTDIR}/cross
 BASEROOT=${DISTDIR}/root
 SCRIPTDIR=${DISTDIR}/scripts
 PKGBUILDDIR=${DISTDIR}${ARCHROOT}
-GITURL=${GITBASE}
+GITURL=${GITURL}
 GITUPDATE=1;
 DIETBUILD=1;
 AMDEF="1.11";
@@ -170,7 +172,7 @@ arch_config() {
     arm64)QTSPEC=linux-aarch64-gnu-g++;;
     powerpc)QTSPEC=linux-ppc-g++;;
     powerpc64)QTSPEC=linux-ppc-g++-64;;
-    x86_64)QTSPEC=linux-g++-64;; 
+    x86_64)QTSPEC=linux-g++-64;;
     x86_32)QTSPEC=linux-g++-x32;;
   esac;
 
@@ -180,6 +182,29 @@ arch_config() {
     i[3-6]86|x86_32)AMLIBDIR=i686;;
     *)unset AMLIBDIR;;
   esac;
+}
+
+dialog_config() {
+  arch_config ${1}
+
+  case ${1} in
+    i[3-6]86|x86_64|x86_32)HOST_ARCH="x86";;
+    *64)HOST_ARCH=${1::-2};;
+    *)HOST_ARCH=${1};;
+  esac;
+
+  case ${1} in
+    x86_32)HOST_BITS="(ILP32) 64";;
+    *64)HOST_BITS="64";;
+    *)HOST_BITS="32";;
+  esac;
+
+  HOST_LIBDIR=${SETLIBDIR};
+  HOST_MLIBDIR=${AMLIBDIR};
+
+  DISTROVER="${HOST_ARCH} ${HOST_BITS}bit"
+  DIALOG="dialog --backtitle \"${DISTRONAME} Linux ${DISTROVER}\"";
+  export DIALOG DISTROVER HOST_MLIBDIR HOST_LIBDIR HOST_BITS HOST_ARCH
 }
 
 mnt_archroot() {
@@ -237,6 +262,19 @@ check_java() {
       export PATH=${PATH}:${JAVA_HOME}/bin
     fi;
   fi;
+}
+
+add_distrotech_build() {
+
+  (cat <<__EOF__
+GITURL="${GITURL}";
+DISTDIR="${DISTDIR}";
+HOST_ARCH="${HOST_ARCH}";
+HOST_BITS="${HOST_BITS}"
+HOST_LIBDIR="${HOST_LIBDIR}";
+HOST_MLIBDIR="${HOST_MLIBDIR}";
+__EOF__
+) > ${1}/root/.distrotech_build
 }
 
 check_create_arch() {
@@ -297,8 +335,14 @@ check_create_arch() {
       fi;
     fi;
     for adir in / /root /dev /proc /sys /usr/src ${DISTDIR} /tmp ${ARCHROOT};do
-      mkdir -p ${ARCHROOT}/${1}/${adir}
+      if [ ! -d ${ARCHROOT}/${1}/${adir} ];then
+        mkdir -p ${ARCHROOT}/${1}/${adir}
+      fi;
     done
+    if [ ! -e ${ARCHROOT}/${1}/root/.distrotech_build ];then
+      (dialog_config ${1}
+       add_distrotech_build ${ARCHROOT}/${1})
+    fi;
     if [ ! -e ${ARCHROOT}/${1}${ARCHROOT}/${1} ];then
       ln -s .. ${ARCHROOT}/${1}${ARCHROOT}/${1}
     fi;
@@ -1380,14 +1424,8 @@ build_glibc() {
   #Set dir correctly
   if [ "${1}" == "${NARCH}" ];then
     USELIBDIR=${NLIBDIR}
-    if [ "${NMLIBDIR}" ];then
-      USELIBDIR="${USELIBDIR}/${NMLIBDIR}"
-    fi;
    else
     USELIBDIR=${B_LIBDIRS}
-    if [ "${MLIBDIR}" ];then
-      USELIBDIR="${USELIBDIR}/${MLIBDIR}"
-    fi;
   fi;
 
   #building without gcc do so without SSP
@@ -2244,7 +2282,7 @@ bootstrap_arch() {
     build_packages ${arch} libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat libxml2 freetype \
       fontconfig jpeg tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac libsigsegv ncurses ncursesw onig \
       slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude libtirpc flex Linux-PAM \
-      util-linux bash coreutils bison sed texinfo make gzip tar rsync grep xz diffutils patch gperf m4 cpio \
+      dialog util-linux bash coreutils bison sed texinfo make gzip tar rsync grep xz diffutils patch gperf m4 cpio \
       findutils nano less glib pkg-config libxslt gdbm gawk iana-etc tzdata binutils autoconf automake-1.9 \
       automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 file docbook-4.1.2 docbook-4.2 \
       docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl which groff gdbm || return 1
@@ -2593,7 +2631,7 @@ bootstrap_native() {
   fi;
 
   build_packages ${NARCH} gmp ncursesw ncurses gettext p11-kit nettle texinfo gnutls libgpg-error libgcrypt pcre ustr \
-    flex bison libprelude bzip2 libaudit selinux libtirpc Linux-PAM  ||return 1
+    flex bison libprelude bzip2 libaudit selinux libtirpc Linux-PAM dialog ||return 1
 
   #Bootstrap native arch with deps for GCC [libjava] if gcc not built
   if [ ! -e ${STATDIR}/${NARCH}/done/unzip ];then
@@ -2897,45 +2935,13 @@ build_toolchain_dir() {
   done < /tmp/form.$$) > ${BUILDROOTDIR}/etc/resolv.conf
   rm /tmp/form.$$
 
+  add_distrotech_build ${BUILDROOTDIR}
+
   clear
   mksquashfs ${BUILDROOTDIR}/* ${BUILDROOTDIR}.sqfs -comp xz 2>/dev/null
 
   rm -rf ${BUILDROOTDIR}${ARCHROOT}/${DARCH}
   ln -f -r -s ${BUILDROOTDIR} ${BUILDROOTDIR}${ARCHROOT}/${DARCH}
-
-  (cat <<__EOF__
-GITURL="${GITBASE}";
-DISTDIR="${DISTDIR}";
-HOST_ARCH="${HOST_ARCH}";
-HOST_BITS="${HOST_BITS}"
-HOST_LIBDIR="${HOST_LIBDIR}";
-HOST_MLIBDIR="${HOST_MLIBDIR}";
-__EOF__
-) > ${BUILDROOTDIR}/root/.distrotech_build
-
-}
-
-dialog_config() {
-  arch_config ${1}
-
-  case ${1} in
-    i[3-6]86|x86_64|x86_32)HOST_ARCH="x86";;
-    *64)HOST_ARCH=${1::-2};;
-    *)HOST_ARCH=${1};;
-  esac;
-
-  case ${1} in
-    x86_32)HOST_BITS="(ILP32) 64";;
-    *64)HOST_BITS="64";;
-    *)HOST_BITS="32";;
-  esac;
-
-  HOST_LIBDIR=${SETLIBDIR};
-  HOST_MLIBDIR=${AMLIBDIR};
-
-  DISTROVER="${HOST_ARCH} ${HOST_BITS}bit"
-  DIALOG="dialog --backtitle \"${DISTRONAME} Linux ${DISTROVER}\"";
-  export DIALOG DISTROVER HOST_MLIBDIR HOST_LIBDIR HOST_BITS HOST_ARCH
 }
 
 build_bootstrap() {
@@ -3069,8 +3075,8 @@ fi;
 if [ "${BOOTSTRAP}" ] && [ "${BOOTSTRAP}" == "1" ];then
   dialog_config ${NARCH}
 
-  if eval ${DIALOG} --title \"GIT Server\" --inputbox \"Enter IP address of git server.\\nOnly git:// is supported.\" 10 40 \"${GITBASE}\" 2> /tmp/form.$$;then
-    GITBASE=`cat /tmp/form.$$`
+  if eval ${DIALOG} --title \"GIT Server\" --inputbox \"Enter IP address of git server.\\nOnly git:// is supported.\" 10 40 \"${GITURL}\" 2> /tmp/form.$$;then
+    export GITURL=`cat /tmp/form.$$`
   fi;
 
   if [ -e /tmp/form.$$ ];then
@@ -3083,7 +3089,7 @@ if [ "${BOOTSTRAP}" ] && [ "${BOOTSTRAP}" == "1" ];then
   fi;
   clear
 
-  (build_bootstrap ${NARCH} ${BUILD}) | ${DIALOG} --progressbox 60 60
+  build_bootstrap ${NARCH} ${BUILD}
 
   if ! eval ${DIALOG} --title \"Create Chroot\" --yesno \"Do you wish to create a chroot directory now\"  10 40;then
     clear
