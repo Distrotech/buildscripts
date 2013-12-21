@@ -1,6 +1,10 @@
 #!/bin/bash
 
-printf "\033c"
+if [ -x /usr/bin/clear ];then
+  clear
+ else
+  printf "\033c"
+fi;
 
 if [ -e ~/.distrotech_build ];then
   . ~/.distrotech_build
@@ -19,7 +23,7 @@ if [ ! -e /proc/self ];then
 fi;
 
 if [ ! -e /sys/kernel ];then
-  mount -t sys ${HOST_ARCH}_sys /sys
+  mount -t sysfs ${HOST_ARCH}_sys /sys
 fi;
 
 alias ls='ls --color=yes'
