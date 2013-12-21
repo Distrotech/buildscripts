@@ -1,7 +1,6 @@
 #!/bin/bash
 
 ANT_VER=1.9.2
-
 DISTDIR=/dist
 PKGDISTDIR=${DISTDIR}/pkg
 CROSSDISTDIR=${DISTDIR}/cross
@@ -16,83 +15,57 @@ case ${NARCH} in
   ppc64)NARCH=powerpc64;;
 esac;
 
-if [ "${1}" ];then
-  DARCH=${1}
- else
-  DARCH=${NARCH}
-fi;
+config_toolchain_arch() {
+  case ${1} in
+    arm*)STRIP=arm-linux-gnueabi-strip;;
+    arm64)STRIP=aarch64-linux-gnu-strip;;
+    mips64)STRIP=mips64-linux-gnuabi64-strip;;
+    x86_32)STRIP=x86_64-linux-gnux32-strip;;
+    *)STRIP=${1}-linux-gnu-strip;;
+  esac;
 
-if [ ! "${DARCH}" ] || [ ! -d ${PKGDISTDIR}/build/${DARCH} ];then
-  echo require arch
-  exit;
-fi;
+  #Determine kernel arch
+  case ${1} in
+    x86_*|i[3-6]86)LINARCH="x86";;
+    arm64)LINARCH=arm64;;
+    *64)LINARCH=${1::-2};;
+    *)LINARCH=${1};
+  esac;
+}
 
-case ${DARCH} in
-  arm*)STRIP=arm-linux-gnueabi-strip;;
-  arm64)STRIP=aarch64-linux-gnu-strip;;
-  mips64)STRIP=mips64-linux-gnuabi64-strip;;
-  x86_32)STRIP=x86_64-linux-gnux32-strip;;
-  *)STRIP=${DARCH}-linux-gnu-strip;;
-esac;
-
-#Determine kernel arch
-case ${DARCH} in
-  x86_*|i[3-6]86)LINARCH="x86";;
-  arm64)LINARCH=arm64;;
-  *64)LINARCH=${DARCH::-2};;
-  *)LINARCH=${DARCH};
-esac;
-
-if [ ${2} ];then
-  STATICROOT=${2}
- else
-  STATICROOT=${DISTDIR}/root/${DARCH}-buildroot
-fi;
-
-if [ -d ${STATICROOT} ];then
-  rm -rf ${STATICROOT}
-fi;
-mkdir -p ${STATICROOT}/etc
-touch ${STATICROOT}/etc/.static
-
-cd ${PKGDISTDIR}/build/${DARCH}
-#XXX GCC BOOT
-for bpkg in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
-             pkg-config util-linux diffutils libtool gperf m4 cpio git binutils glibc autoconf \
-             automake-1.9 apache-ant qemu junit rhino antlr4 gmp mpfr mpc cloog isl zlib gcc \
-             findutils patch iana-etc tzdata ecj linux_logo;do
-
-  (if [ ! -e ${DEFDIR}/${bpkg} ];then
-    continue;
+install_pkg_to_toolchain() {
+   if [ ! -e ${DEFDIR}/${bpkg} ];then
+     continue;
    fi;
    eval `cat ${DEFDIR}/${bpkg}`;
-   AVER=VERSION_${DARCH}
+   AVER=VERSION_${1}
    if [ "${!AVER}" ];then
     VERSION=${!AVER}
    fi;
    eval ${AVER}=""
    PNAME=${bpkg}${VERSEP}${VERSION}
+
    if [ ! "${STATICBSTRAP}" ];then
      STATICBSTRAP=0;
    fi;
 
-   if [ "${bpkg}" == "gcc" ] && [ -d ${CROSSDISTDIR}/${DARCH}/${PNAME}-boot ];then
-     PKG=${PKGDISTDIR}/build/${DARCH}/${PNAME}-boot
+   if [ "${bpkg}" == "gcc" ] && [ -d ${CROSSDISTDIR}/${1}/${PNAME}-boot ];then
+     PKG=${PKGDISTDIR}/build/${1}/${PNAME}-boot
      PNAME="${PNAME}-boot"
-    elif [ "${STATICBSTRAP}" == "1" ] && [ -d ${CROSSDISTDIR}/${DARCH}/${PNAME}-static ];then
-     PKG=${PKGDISTDIR}/build/${DARCH}/${PNAME}-static
+    elif [ "${STATICBSTRAP}" == "1" ] && [ -d ${CROSSDISTDIR}/${1}/${PNAME}-static ];then
+     PKG=${PKGDISTDIR}/build/${1}/${PNAME}-static
      PNAME="${PNAME}-static"
-    elif [ "${STATICBSTRAP}" == "0" ] && [ -d ${PKGDISTDIR}/${DARCH}/${PNAME} ];then
-     PKG=${PKGDISTDIR}/${DARCH}/${PNAME}
-    elif [ -d ${CROSSDISTDIR}/${DARCH}/${PNAME}-static ];then
-     PKG=${PKGDISTDIR}/build/${DARCH}/${PNAME}-static
+    elif [ "${STATICBSTRAP}" == "0" ] && [ -d ${PKGDISTDIR}/${1}/${PNAME} ];then
+     PKG=${PKGDISTDIR}/${1}/${PNAME}
+    elif [ -d ${CROSSDISTDIR}/${1}/${PNAME}-static ];then
+     PKG=${PKGDISTDIR}/build/${1}/${PNAME}-static
      PNAME="${PNAME}-static"
     else
       echo "Bad/missing build ${PNAME}"
       continue;
    fi;
    if [ -e ${PKG}/${PNAME}.tar.xz ];then
-     tar --exclude=*/.dbg/* -C ${STATICROOT} -xJf ${PKG}/${PNAME}.tar.xz
+     tar --exclude=*/.dbg/* -C ${2} -xJf ${PKG}/${PNAME}.tar.xz
     else
      echo "Missing file ${PKG}/${PNAME}.tar.xz"
    fi;
@@ -104,48 +77,84 @@ for bpkg in bison flex sed gawk bash make coreutils nano rsync grep less gzip ta
 
    for subpkg in ${INSTSUB};do
      if [ -e ${PKG}/${PNAME}-${subpkg}.tar.xz ];then
-       tar --exclude=*/.dbg/* -C ${STATICROOT} -xJf ${PKG}/${PNAME}-${subpkg}.tar.xz
+       tar --exclude=*/.dbg/* -C ${2} -xJf ${PKG}/${PNAME}-${subpkg}.tar.xz
      fi;
    done;
-  );
-done;
+}
 
-#Strip all the bits
-${STRIP} ${STATICROOT}/bin/* ${STATICROOT}/sbin/* ${STATICROOT}/usr/bin/* ${STATICROOT}/usr/sbin/* >/dev/null 2>&1
-
-for devpkg in kernel-headers.tar.xz;do
-  if [ -f ${devpkg} ];then
-    tar --exclude=*/.dbg/* -C ${STATICROOT} -xJf ${devpkg};
+build_toolchain_dir() {
+  if [ ! "${1}" ] || [ ! -d ${PKGDISTDIR}/build/${1} ];then
+    echo "Arch [${1}] Is invalid or no build is available"
+    return 1;
   fi;
-done;
 
-if [ ! -e ${STATICROOT}/usr/include/asm ];then
-  ln -s asm-${LINARCH} ${STATICROOT}/usr/include/asm
+echo "BOO ${@}";return 1
+  if [ -d ${2} ];then
+    echo "Error Buildroot Exists"
+    return 1;
+  fi;
+
+  config_toolchain_arch ${1}
+
+  mkdir -p ${2}/etc
+  touch ${2}/etc/.static
+
+  for bpkg in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
+              pkg-config util-linux diffutils libtool gperf m4 cpio git binutils glibc autoconf \
+              automake-1.9 apache-ant qemu junit rhino antlr4 gmp mpfr mpc cloog isl zlib gcc \
+              findutils patch iana-etc tzdata ecj linux_logo;do
+    (install_pkg_to_toolchain ${bpkg})
+  done;
+
+  #Strip all the bits
+  ${STRIP} ${2}/bin/* ${2}/sbin/* ${2}/usr/bin/* ${2}/usr/sbin/* >/dev/null 2>&1
+
+  if [ -e ${PKGDISTDIR}/build/${1}kernel-headers.tar.xz ];then
+    tar --exclude=*/.dbg/* -C ${2} -xJf ${PKGDISTDIR}/build/${1}kernel-headers.tar.xz;
+  fi;
+
+  if [ ! -e ${2}/usr/include/asm ];then
+    ln -s asm-${LINARCH} ${2}/usr/include/asm
+  fi;
+
+  for sysdir in proc sys dev root tmp usr/src dist;do
+    mkdir -p ${2}/${sysdir}
+  done;
+
+  for mdir in 1 2 3 4 5 6 7 8;do
+    mkdir -p ${2}/usr/share/man/man${mdir}
+  done;
+
+  #Install terminfo DB / Stub files / CPAN config / etc resources
+  for xsync in "${DISTDIR}/res/" "-R /usr/share/terminfo" "-R /lib/terminfo";do
+    rsync -a ${xsync} ${2}/
+  done
+
+  #GCC stubs
+  for stub in stubs-32.h  stubs-64.h  stubs.h  stubs-x32.h;do
+    if [ -e ${ARCHROOT}${DARCH}/usr/include/gnu/${stub}.h ];then
+      rsync -a ${ARCHROOT}${DARCH}/usr/include/gnu/${stub}.h ${2}/usr/include/gnu/
+     elif [ "${stub}" == "stubs-x32.h" ];then
+       ln -s stubs-64.h ${2}/usr/include/gnu/${stub}
+     else
+       touch ${2}/usr/include/gnu/${stub}
+    fi;
+  done;
+}
+
+DARCH=${1}
+DARCH=${DARCH:=$NARCH}
+
+if [ ${2} ];then
+  STATICROOT=${2}
+ else
+  STATICROOT=${DISTDIR}/root/${DARCH}-buildroot
 fi;
+build_toolchain_dir ${DARCH} ${STATICROOT}
 
-for sysdir in proc sys dev root tmp usr/src dist;do
-  mkdir -p ${STATICROOT}/${sysdir}
-done;
+echo $?
 
-for mdir in 1 2 3 4 5 6 7 8;do
-  mkdir -p ${STATICROOT}/usr/share/man/man${mdir}
-done;
-
-#Install terminfo DB / Stub files / CPAN config / etc resources
-for xsync in "${DISTDIR}/res/" "-R /usr/share/terminfo" "-R /lib/terminfo";do
-  rsync -a ${xsync} ${STATICROOT}/
-done
-
-#GCC stubs
-for stub in stubs-32.h  stubs-64.h  stubs.h  stubs-x32.h;do
-  if [ -e ${ARCHROOT}${DARCH}/usr/include/gnu/${stub}.h ];then
-    rsync -a ${ARCHROOT}${DARCH}/usr/include/gnu/${stub}.h ${STATICROOT}/usr/include/gnu/
-   elif [ "${stub}" == "stubs-x32.h" ];then
-     ln -s stubs-64.h ${STATICROOT}/usr/include/gnu/${stub}
-   else
-     touch ${STATICROOT}/usr/include/gnu/${stub}
-  fi;
-done;
+exit
 
 echo "nameserver ::1" > ${STATICROOT}/etc/resolv.conf
 if [ -e ${STATICROOT}.sqfs ];then
