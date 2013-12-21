@@ -1,18 +1,20 @@
 #!/bin/bash
 
 if [ "${1}" ];then
-  DARCH=${1};
+  ROOT=${1}
  else
   DARCH=$( uname -m )
   case ${DARCH} in
     arm*)DARCH=arm;;
+    aarch)DARCH=arm64;;
+    ppc)DARCH=powerpc;;
+    ppc64)DARCH=powerpc64;;
   esac;
+  ROOT=/dist/root/${DARCH}-static
 fi;
 
-ROOT=/dist/root/${DARCH}-static
-
-for bind in dev proc sys proc/sys/fs/binfmt_misc usr/src/linux;do
+for bind in dev/pts dev proc/sys/fs/binfmt_misc proc sys usr/src/linux;do
   if [ -d ${ROOT}/${bind} ];then
-    umount ${ROOT}/${bind}
+    umount ${ROOT}/${bind} >/dev/null 2>&1
   fi;
 done;
