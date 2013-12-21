@@ -61,16 +61,16 @@ if [ ! -d /etc/xml ];then
   mkdir -p /etc/xml
 fi;
 
-if [ -e /etc/xml/docbook-xsl.xml ];then
-  rm /etc/xml/docbook-xsl.xml;
+if [ -e ${ARCHROOT}/${1}/etc/xml/docbook-xsl.xml ];then
+  rm ${ARCHROOT}/${1}/etc/xml/docbook-xsl.xml;
 fi;
-xmlcatalog --noout --create /etc/xml/docbook-xsl.xml
+xmlcatalog --noout --create ${ARCHROOT}/${1}/etc/xml/docbook-xsl.xml
 
 for dbook in `ls /etc/xml/docbook-xsl-*.xml`;do
-  xmlcatalog --noout --add nextCatalog "file://${dbook}" "" /etc/xml/docbook-xsl.xml
+  xmlcatalog --noout --add nextCatalog "file://${dbook}" "" ${ARCHROOT}/${1}/etc/xml/docbook-xsl.xml
 done;
 
 #Add Me i may not be installed yet
-if [ ! -e /etc/xml/docbook-xsl-${VERSION}.xml ];then
-  xmlcatalog --noout --add nextCatalog "file:///etc/xml/docbook-xsl-${VERSION}.xml" "" /etc/xml/docbook-xsl.xml
+if [ ! -e ${ARCHROOT}/${1}/etc/xml/docbook-xsl-${VERSION}.xml ];then
+  xmlcatalog --noout --add nextCatalog "file:///etc/xml/docbook-xsl-${VERSION}.xml" "" ${ARCHROOT}/${1}/etc/xml/docbook-xsl.xml
 fi;
