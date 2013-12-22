@@ -3,6 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 STDOPTS="--prefix /usr --shared";
+export QT_VER=4
 BUILDDIR="0";
 NOCCOPT="1";
 OPT_i686="-platform linux-g++-i686 --with-doxywizard";
