@@ -1,7 +1,7 @@
 VERSION="9.2.5"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-pic --disable-debug";
+CONFOPT="--with-pic --disable-debug --enable-xa";
 BUILDDIR="0";
 OPT_arm="--with-dri-drivers=nouveau,r200,radeon,swrast";
 OPT_mips="--with-dri-drivers=nouveau,r200,radeon,swrast";
