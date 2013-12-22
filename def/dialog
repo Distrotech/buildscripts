@@ -6,5 +6,5 @@ ADDFILTER="makefile";
 NOCCOPT="1";
 ADDCC="0";
 GITBRANCH="master";
-STATICOPT="LDFLAGS=-static LIBS=-lgpm";
+STATICOPT="LDFLAGS=\"-static -L=/usr/${C_LIBDIRS}\" LIBS=-lgpm";
 STATICBSTRAP="1";

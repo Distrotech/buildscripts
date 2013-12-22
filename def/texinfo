@@ -2,5 +2,5 @@ VERSION="4.13"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-STATICMOPT="LDFLAGS=-static";
+STATICMOPT="\"LDFLAGS=-static -L=/usr/${C_LIBDIRS}\"";
 STATICBSTRAP="1";
