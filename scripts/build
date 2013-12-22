@@ -1710,7 +1710,7 @@ build_gcc_bootstrap() {
 
   if [ ! "${4}" ] || [ "${4}" == "static" ];then
     MARCH=BOOTOPT_${1}
-    CONFOPT="${BOOTOPT} ${SYSROOT} --with-boot-ldflags=-static"
+    CONFOPT="${BOOTOPT} ${SYSROOT} --with-boot-ldflags=-static --with-gmp-lib=${ARCHROOT}/${3}/usr/${TLIBDIR}/${TMLIBDIR}"
     CFLAGS="${GCCFLAGS} -fPIC -O2"
     CXXFLAGS="${GCCFLAGS} -fPIC -O2"
     LDFLAGS="-static ${GCCLFLAGS}"
@@ -1981,6 +1981,7 @@ build_packages() {
 
 build_static_tool() {
   barch=${1}
+
   . ${DEFDIR}/${4}
   AVER=VERSION_${1}
   if [ "${!AVER}" ];then
@@ -2031,7 +2032,8 @@ build_static_tool() {
     CFG_BIN=..
   fi;
 
-  run_configure ${3} ${CFG_BIN} --build=${BUILD} --host=${2} ${STATICOPT} ${ARCHOPT} || return 1
+  eval ${CFG_BIN}/configure --libdir=${PREFIX}/${3} --prefix=${PREFIX} --sysconfdir=/etc --mandir=${PREFIX}/share/man \
+               --infodir=${PREFIX}/share/info --localstatedir=/var --build=${BUILD} --host=${2} ${STATICOPT} ${ARCHOPT} || return 1
 
   #Touch up documents
   find ${SRCDIR}/${4}/${STATICTOOL} -regex '.*\.info$' -or -regex '.*\.pdf$'|awk '{printf "touch %s\n",$1}' |sh
@@ -2115,6 +2117,8 @@ static_toolbuild() {
       TLIBDIR="${TLIBDIR}/${NMLIBDIR}";
     fi;
   fi;
+
+  export C_LIBDIRS=${TLIBDIR}
 
   STATICPKG="bash coreutils nano less texinfo pkg-config util-linux git dialog";
 #  if [ "${BOOTSTRAP}" == "0" ];then
