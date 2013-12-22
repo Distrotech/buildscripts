@@ -3,5 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-all";
 SYSROOTFIXUP="1";
-STATICOPT="LDFLAGS=-static --enable-all LIBS=-ldl";
+STATICOPT="LDFLAGS=\"-static -L=/usr/${C_LIBDIRS}\" --enable-all LIBS=-ldl";
 STATICBSTRAP="1";

@@ -1,6 +1,6 @@
 VERSION="451"
 VERSEP="-";
 PREFIX="/usr";
-STATICMOPT="LDFLAGS=-static";
+STATICMOPT="\"LDFLAGS=-static -L=/usr/${C_LIBDIRS}\"";
 GITBRANCH="master";
 STATICBSTRAP="1";

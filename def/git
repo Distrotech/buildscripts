@@ -15,6 +15,6 @@ OPT_powerpc="ac_cv_fread_reads_directories=no ac_cv_snprintf_returns_bogus=no";
 OPT_powerpc64="ac_cv_fread_reads_directories=no ac_cv_snprintf_returns_bogus=no";
 OPT_i686="ac_cv_fread_reads_directories=no ac_cv_snprintf_returns_bogus=no";
 ADDCFLAG="-I. -I../";
-STATICOPT="LDFLAGS=-static";
+STATICOPT="\"LDFLAGS=-static -L=/usr/${C_LIBDIRS}\"";
 STATICBSTRAP="1";
 EXTRALIBS="-ldl";

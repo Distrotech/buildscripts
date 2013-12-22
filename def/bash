@@ -2,7 +2,7 @@ VERSION="4.2"
 VERSEP="-";
 PREFIX="/";
 CONFOPT="--enable-readline --with-installed-readline --with-curses bash_cv_termcap_lib=-lncursesw";
-STATICMOPT="LDFLAGS=-static TERMCAP_LIB=-lncursesw";
+STATICMOPT="LDFLAGS=-static TERMCAP_LIB=\"-L=/usr/${C_LIBDIRS} -lncursesw\"";
 STATICOPT="--enable-readline --with-installed-readline --with-curses bash_cv_termcap_lib=-lncursesw --enable-static-link  
            --without-bash-malloc";
 STATICBSTRAP="1";
