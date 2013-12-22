@@ -37,7 +37,10 @@ ANT_VER="1.9.2";
 M2_VER="3.1.1";
 
 export ORIG_PATH=${PATH}
-export PATH=${PATH}:/usr/X11R7/bin:/opt/xfce/bin
+
+#Cleanup the enviroment
+unset JAVA_HOME ANT_HOME M2_HOME QTDIR
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/X11R7/bin:/opt/xfce/bin
 
 XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /usr/share/docbook2X/xslt/catalog.xml'
 LANG=${LANG:=en_ZA.UTF8}
@@ -194,7 +197,7 @@ dialog_config() {
   esac;
 
   case ${1} in
-    x86_32)HOST_BITS="(ILP32) 64";;
+    x86_32)HOST_BITS="x32";;
     *64)HOST_BITS="64";;
     *)HOST_BITS="32";;
   esac;
@@ -273,6 +276,10 @@ HOST_ARCH="${HOST_ARCH}";
 HOST_BITS="${HOST_BITS}"
 HOST_LIBDIR="${HOST_LIBDIR}";
 HOST_MLIBDIR="${HOST_MLIBDIR}";
+JAVA_VER="${JAVA_VER}";
+ANT_VER="${ANT_VER}";
+M2_VER="${M2_VER}";
+QT_VER="${QT_VER}";
 __EOF__
 ) > ${1}/root/.distrotech_build
 }
@@ -286,6 +293,12 @@ check_create_arch() {
   B_LIBDIRS=${SETLIBDIR}
   MLIBDIR=${AMLIBDIR}
   unset TUPPLE SETLIBDIR LINARCH
+
+  if [ "${MLIBDIR}" ];then
+    C_LIBDIRS="${B_LIBDIRS}/${MLIBDIR}"
+   else
+    C_LIBDIRS=${B_LIBDIRS}
+  fi;
 
   case ${1} in
     arm|arm64)QCPU=arm;;
@@ -306,7 +319,7 @@ check_create_arch() {
   fi;
 
   #Core utils barfs when bootstraping
-  for incdir in /usr/X11R7/include /usr/${B_LIBDIRS}/glib-2.0/include /opt/qt-${QT_VER}/include \
+  for incdir in /usr/X11R7/include /usr/${C_LIBDIRS}/glib-2.0/include /opt/qt-${QT_VER}/include \
                 /usr/include/glib-2.0 /usr/include/dbus-1.0 /opt/xfce/include \
                 /usr/include/gtk-3.0 /usr/include/gtk-2.0;do
     if [ ! -d ${incdir} ] && [ "${BOOTSTRAP}" == "0" ];then
@@ -319,6 +332,10 @@ check_create_arch() {
 
   if [ ! -d ${ARCHROOT}/${1}/usr/lib/glib-2.0/include ];then
     mkdir -p ${ARCHROOT}/${1}/usr/lib/glib-2.0/include
+  fi;
+
+  if [ "${MLIBDIR}" ] && [ ! -e ${ARCHROOT}/${1}/usr/${C_LIBDIRS}/glib-2.0 ];then
+    ln -s ${C_LIBDIRS} ${ARCHROOT}/${1}/usr/${C_LIBDIRS}/glib-2.0
   fi;
 
   if [ "${1}" != "${NARCH}" ] || [ -d ${ARCHROOT}/${1} ];then
@@ -1097,7 +1114,7 @@ build_project() {
     export QTDIR=/opt/qt-${QT_VER}
   fi;
 
-  CFLAGS="${ADDCFLAG} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/usr/lib/glib-2.0/include -I=/usr/include/glib-2.0 -I=/usr/include/gtk-3.0 -I=/usr/include/gtk-2.0 -I=/usr/include/dbus-1.0 -I=/opt/xfce/include -I=/usr/${B_LIBDIRS}/glib-2.0/include";
+  CFLAGS="${ADDCFLAG} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/usr/lib/glib-2.0/include -I=/usr/include/glib-2.0 -I=/usr/include/gtk-3.0 -I=/usr/include/gtk-2.0 -I=/usr/include/dbus-1.0 -I=/opt/xfce/include -I=/usr/${C_LIBDIRS}/glib-2.0/include";
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
@@ -1120,7 +1137,7 @@ build_project() {
   if [ "${C_LIBDIRS}" != "${B_LIBDIRS}" ];then
     PKG_CONFIG_PATH="${SYSROOT}/${C_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${C_LIBDIRS}/pkgconfig:${PKG_CONFIG_PATH}";
     RLINK_PATH="${SYSROOT}/${C_LIBDIRS}:${SYSROOT}/usr/${C_LIBDIRS}:${RLINK_PATH}";
-    BASE_LIBPATH="-L=/lib/${C_LIBDIRS} -L=/usr/${C_LIBDIRS} ${BASE_LIBPATH}"
+    BASE_LIBPATH="-L=/${C_LIBDIRS} -L=/usr/${C_LIBDIRS} ${BASE_LIBPATH}"
   fi;
 
   export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH} ${BASE_LIBPATH} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/opt/xfce/include";
@@ -2109,6 +2126,13 @@ static_toolbuild() {
   done;
 }
 
+fixup_glibc_link() {
+  if [ -h ${1}/usr/${2}/${3} ];then
+    rm ${1}/usr/${2}/${3}
+  fi;
+  ln -s -r ${1}/${2}/${3}.${4} ${1}/usr/${2}/${3}
+}
+
 setup_hybrid_boot() {
   if [ "${1}" == "${2}" ];then
     return 0;
@@ -2140,11 +2164,20 @@ setup_hybrid_boot() {
     return 1
   fi;
 
+  rsync -aR /usr/share/java ${TMPDIR}
+
   for pkg in glibc mpc mpfr gmp cloog isl readline ncurses zlib flex ncursesw glib popt gcc pcre selinux xz libsigsegv;do
    (get_pkg_name ${pkg} ${1}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    cd ${PDIR}
-   tar -C ${TMPDIR} -xf ${PNAME}-libs.tar.xz)
+   tar -C ${TMPDIR} -xf ${PNAME}-libs.tar.xz
+   if [ "${NMLIBDIR}" ] && [ "${MLIBDIRLN}" ];then
+     for delln in ${MLIBDIRLN};do
+       if [ -e ${TMPDIR}/${PREFIX}/${NLIBDIR}/${delln} ];then
+         rm ${TMPDIR}/${PREFIX}/${NLIBDIR}/${delln}
+       fi;
+     done
+   fi;)
   done
 
   for pkg in javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep;do
@@ -2182,10 +2215,12 @@ setup_hybrid_boot() {
                                       usr/bin/gkeytool usr/bin/gnative2ascii usr/bin/gorbd usr/bin/grmic usr/bin/grmid usr/bin/grmiregistry \
                                       usr/bin/gserialver usr/bin/gtnameserv 2>/dev/null
 
- for jtool in gappletviewer gjar gjarsigner gij gjdoc gjavah gkeytool \
+  for jtool in gappletviewer gjar gjarsigner gij gjdoc gjavah gkeytool \
               gnative2ascii gorbd grmic grmid grmiregistry gserialver gtnameserv;do
-   ln -s ${jtool} ${TMPDIR}/usr/bin/${HOST}-${jtool}
- done)
+    if [ -e ${TMPDIR}/usr/bin/${jtool} ];then
+      ln -s ${jtool} ${TMPDIR}/usr/bin/${HOST}-${jtool}
+    fi;
+  done)
 
   for pth in ${TMPDIR} ${TMPDIR}/usr;do
     if [ -e ${pth}/${NLIBDIR} ];then
@@ -2200,7 +2235,14 @@ setup_hybrid_boot() {
       mv ${pth}/${NLIBDIR}-tmp/* ${pth}/${NLIBDIR}/${NMLIBDIR}
       rm -rf ${pth}/${NLIBDIR}-tmp
     fi;
-  done;
+  done
+
+  for fixln in "libanl.so 1" "libBrokenLocale.so 1" "libcidn.so 1" "libcrypt.so 1" "libdl.so 2" \
+               "libm.so 6" "libnsl.so 1" "libnss_compat.so 2" "libnss_db.so 2" "libnss_dns.so 2" \
+               "libnss_files.so 2" "libnss_hesiod.so 2" "libnss_nisplus.so 2" "libnss_nis.so 2" \
+               "libresolv.so 2" "librt.so 1" "libthread_db.so 1" "libutil.so 1";do
+    fixup_glibc_link ${TMPDIR} ${NLIBDIR}/${NMLIBDIR} ${fixln}
+  done
   ln -s ${NMLIBDIR}/${NLDNAME}  ${TMPDIR}/${NLIBDIR}/${NLDNAME}
 
   (cd ${TMPDIR}
@@ -2372,10 +2414,10 @@ build_dependancies() {
 
   #Add required perl modules from cpan may not need libxml only expat !!!
   for pmod in XML::Parser XML::SAX Font::TTF XML::Simple Archive::Zip Pod::Simple::Search YAML File::Temp \
-              Locale::gettext Term::ReadKey Text::WrapI18N Unicode::GCString;do
+              Term::ReadKey Text::WrapI18N Unicode::GCString;do
     if [ ! -e ${STATDIR}/${1}/done/${pmod} ];then
       if [ "${NARCH}" == "${1}" ];then
-        cpan -i ${pmod} && touch ${STATDIR}/${1}/done/${pmod}
+        (cpan -i ${pmod} && touch ${STATDIR}/${1}/done/${pmod}) || return 1
        else
         (chroot ${ARCHROOT}/${1} cpan -f -i ${pmod}) && touch ${STATDIR}/${1}/done/${pmod}
       fi;
@@ -2425,7 +2467,7 @@ build_dependancies() {
 
   build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala \
     libdrm intltool llvm talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
-    module-init-tools Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh || return 1
+    module-init-tools Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh cryptsetup systemd || return 1
 
   if [ "${NARCH}" == "${1}" ];then
     (if [ "${MLIBDIR}" ];then
@@ -2435,9 +2477,11 @@ build_dependancies() {
     fi;
     pango-querymodules --update-cache) >/dev/null 2>&1
   fi;
+
   #Continue X Build with GL/Mesa
   if [ -e ${STATDIR}/${1}/fail/Xorg ];then
     if [ ! -e ${STATDIR}/${1}/done/glamor ];then
+      (unset CLEANOPT;build_project Xorg ${1})
       (build_project glamor ${1}) || return 1
       (unset CLEANOPT;build_project Xorg ${1})
     fi;
@@ -2496,16 +2540,16 @@ build_dependancies() {
   #Core Utilities
   build_packages ${1} arptables autofs cdrtools cifs-utils dialog dosfstools e2fsprogs ebtables ethtool gptfdisk htop \
     inetutils iproute2 ipsec-tools ipvsadm iw lesspipe linux_logo lm_sensors lsof lynx lzo mgetty minicom mktemp mtools \
-    net-tools newt nfs4-acl-tools libnfsidmap nfs-utils ntfs-3g ntp openssh parted procinfo-ng procps psmisc squashfs \
+    net-tools newt nfs4-acl-tools libnfsidmap LVM2 nfs-utils ntfs-3g ntp openssh parted procinfo-ng procps psmisc squashfs \
     strace sudo sysfsutils sysklogd sysvinit tcpdump tftp-hpa unrar uudeview usbhid-dump vlan watchdog wireless_tools \
     xorriso apg archivemount bc bindfs bsd-finger cdde dcron dmraid ecryptfs-utils ed fbset fdutils fetchmail \
     foomatic-filters globe hdparm hfsutils joe logcheck logrotate mailutils libpipeline po4a man-db man-pages mdadm mrouted \
     mcelog mt-st p7zip phoon pimd procmail quagga quota-tools radvd rp-pppoe screen sdparm setserial sharutils \
     usb-modeswitch usb-modeswitch-data xterm Pyrex bzr cdrdao bash-completion libgusb colord cvs dash dcd dmake faad2 frox \
     gaa gdb gpm igmpproxy iksemel imap portablexdr ippool ipv6calc kbd keepalived lksctp-tools libid3tag madplay man2html \
-    mercurial mrtg nmap openl2tp freeradius-server freeradius-client memcached libmemcached lksctp-tools opensips openvpn \
-    pine psqlodbc rpcbind sendmail sox sqliteodbc stund hostapd wpa_supplicant libnetfilter_cthelper libnetfilter_queue \
-    conntrack-tools libnetfilter_acct libnetfilter_log nfacct ulogd mpg123 || return 1
+    mercurial mrtg nmap openl2tp freeradius-server freeradius-client memcached libmemcached lksctp-tools libmicrohttpd \
+    opensips openvpn pine psqlodbc rpcbind sendmail sox sqliteodbc stund hostapd wpa_supplicant libnetfilter_cthelper \
+    libnetfilter_queue conntrack-tools libnetfilter_acct libnetfilter_log nfacct ulogd mpg123 || return 1
 
   build_packages ${1} gnustep-make gnustep-base SOPE acpid bind clamav coova-chilli dhcp dovecot freetds hylafax mcrypt mm  \
     nss-mdns nss_ldap pam_ldap proftpd radius samba sipsak squid squidGuard tnef webalizer wine libdvdcss libdvdread \
