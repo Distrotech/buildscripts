@@ -3,7 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-shared";
 ADDLDFLAG="-lm -lpthread";
-ADDCFLAG="-I=/usr/include/libxml2 -I=/usr/include/glib-2.0 -I=/usr/${B_LIBDIRS}/glib-2.0/include";
+ADDCFLAG="-I=/usr/include/libxml2 -I=/usr/include/glib-2.0 -I=/usr/${C_LIBDIRS}/glib-2.0/include";
 NOCCOPT="1";
 CLEARFLAGS="1";
 EXTRALIBS="-lm -lz -llzma";
