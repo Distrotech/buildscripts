@@ -2,3 +2,4 @@ VERSION="0.7.0"
 VERSEP="-";
 PREFIX="/opt/xfce";
 CONFOPT="--datarootdir=/usr/share";
+NOMLIBDIR="1";

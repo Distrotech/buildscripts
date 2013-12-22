@@ -2,3 +2,4 @@ VERSION="4.11.0"
 VERSEP="-";
 PREFIX="/opt/xfce";
 CONFOPT="--datarootdir=/usr/share --enable-maintainer-mode";
+NOMLIBDIR="1";
