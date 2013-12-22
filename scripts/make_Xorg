@@ -24,9 +24,9 @@ sync_fin() {
   if [ ! -d ${1}/etc/ld.so.conf.d ];then
     mkdir -p ${1}/etc/ld.so.conf.d
   fi;
-  echo "/usr/X11R7/${B_LIBDIRS}" > ${1}/etc/ld.so.conf.d/xwin.conf
+  echo "/usr/X11R7/${B_LIBDIRS}" > ${1}/etc/ld.so.conf.d/xwin_${BARCH}.conf
 
-  if [ "${NARCH}" == "${BARCH}" ];then
+  if [ "${NARCH}" == "${BARCH}" ] && [ ! -h ${ARCHROOT}/${NARCH} ];then
     rsync -a ${DESTDIR}${PREFIX}/ /${PREFIX}/
   fi;
 
@@ -40,9 +40,15 @@ sync_fin() {
         rm ${pkgfail}/config.log
       fi;
     done;
+    exit ${2}
   fi;
 
-  exit ${2}
+  if [ ! -d ${1}${PREFIX} ];then
+    mkdir -p ${1}${PREFIX}
+  fi;
+  rsync -a ${DESTDIR}${PREFIX}/ ${1}${PREFIX}/
+
+  exit 0
 }
 
 NARCH=`uname -m`
