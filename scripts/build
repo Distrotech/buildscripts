@@ -2277,7 +2277,7 @@ setup_hybrid_boot() {
   touch ${ARCHROOT}/${1}/usr/${NLIBDIR}/${NMLIBDIR}.distro_done
 }
 
-bootstrap_arch() {
+bootstrap_arch_lib() {
   for arch in $@;do
     if [ "${arch}" == "${NARCH}" ];then
        continue;
@@ -2300,7 +2300,10 @@ bootstrap_arch() {
       (build_glibc ${arch} ${TUPPLE}) || return 1
     fi;
   done;
+}
 
+
+bootstrap_arch_root() {
   #Build native GCC we called here 1st to bootstrap native may need to rebuild libtool
   if [ ! -e ${STATDIR}/${NARCH}/done/gcc ] && [ -e ${STATDIR}/${NARCH}/done/libtool ];then
     DELLIBTOOL=${STATDIR}/${NARCH}/done/libtool
@@ -2381,16 +2384,20 @@ EOF
 }
 
 build_glibc_march() {
-  (bootstrap_arch ${NARCH}) || return 1
+  (bootstrap_arch_lib ${NARCH}) || return 1
 
   #GCC C build to bootstrap multiarch
   case ${1} in
-    x86_32|x86_64)(bootstrap_arch i686 x86_32 x86_64) || return 1
+    x86_32|x86_64)(bootstrap_arch_lib i686 x86_32 x86_64) || return 1
+           (bootstrap_arch_root ${NARCH}) || return 1
+           (bootstrap_arch_root i686 x86_32 x86_64) || return 1
            if [ "${1}" == "${NARCH}" ];then
              (setup_ldconf i686 x86_32 x86_64)
            fi;
     ;;
-    powerpc64)(bootstrap_arch powerpc powerpc64) || return 1;
+    powerpc64)(bootstrap_arch_lib powerpc powerpc64) || return 1;
+           (bootstrap_arch_root ${NARCH}) || return 1
+           (bootstrap_arch_root powerpc powerpc64) || return 1;
            if [ -d ${ARCHROOT}/${1} ] && [ -e ${STATDIR}/powerpc/done/glibc ] && \
               [ ! -e ${ARCHROOT}/${1}/usr/lib/libc.so ];then
              rm ${STATDIR}/powerpc/done/glibc
@@ -2400,7 +2407,8 @@ build_glibc_march() {
              (setup_ldconf powerpc powerpc64)
            fi;
     ;;
-    *)(bootstrap_arch ${1}) || return 1;;
+    *)(bootstrap_arch_lib ${1}) || return 1;
+      (bootstrap_arch_root ${1}) || return 1;;
   esac
 }
 
@@ -3169,7 +3177,7 @@ if [ "${BOOTSTRAP}" ] && [ "${BOOTSTRAP}" == "1" ];then
 fi;
 
 #Pull in the linux source and create headers dir
-if [ ! -d ${SRCDIR}/linux/usr/include/linux ] && [ ! -d ${ARCHROOT}/${NARCH}/usr/include/linux ];then
+if [ ! -d ${SRCDIR}/linux/usr/include/linux ];then
   echo "Linux Headers"
   (git_load_pkg linux -3 master linux &&
   cd /usr/src/linux/linux-3 &&
