@@ -5,3 +5,4 @@ CONFOPT="";
 GITBRANCH="master";
 BUILDDIR="0";
 AMVER="1.14";
+DONTBUILD="x86_64 x86_32 i686 arm arm64 mips mips64 powerpc powerpc64";
