@@ -1,5 +1,9 @@
-VERSION="3.3"
+VERSION="34"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="-DCLANG_PATH_TO_LLVM_BUILD:PATH=/usr/src/llvm/llvm-${VERSION}/build-${barch} -DCLANG_PATH_TO_LLVM_SOURCE:PATH=/usr/src/llvm/llvm-${VERSION}";
+CONFOPT="-DCLANG_PATH_TO_LLVM_BUILD:PATH=/usr/src/llvm/llvm-${VERSION}/build-${barch}
+         -DCLANG_PATH_TO_LLVM_SOURCE:PATH=/usr/src/llvm/llvm-${VERSION}
+         -DCLANG_INCLUDE_TESTS:BOOL=ON
+         -DCLANG_TEST_USE_VG:BOOL=ON
+         -DCLANG_BUILD_EXAMPLES:BOOL=ON";
 FIXUPLIB="1";
