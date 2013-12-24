@@ -1,5 +1,6 @@
-VERSION="1.1.13"
+VERSION="1.1.21"
 VERSEP="-";
-PREFIX="/usr";
+PREFIX="/var/spool/apache/viewvc";
 CONFOPT="";
 BUILDDIR="0";
+NOMAKEFLAGS="1";
