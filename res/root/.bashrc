@@ -26,9 +26,6 @@ if [ ! -e /sys/kernel ];then
   mount -t sysfs ${HOST_ARCH}_sys /sys
 fi;
 
-alias ls='ls --color=yes'
-alias less='less -r'
-
 LANG=${LANG:=en_ZA.UTF8}
 if [ ! -e /etc/localtime ];then
   export TZ=${TZ:=Africa/Johannesburg}
@@ -52,7 +49,7 @@ for libpth in /usr /usr/X11R7 /opt/qt-5 /opt/qt-4 /opt/xfce;do
 done;
 
 unset JAVA_HOME ANT_HOME M2_HOME QTDIR
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/X11R7/bin:/opt/xfce/bin
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/apache2/bin:/usr/X11R7/bin:/opt/xfce/bin
 
 if [ "${JAVA_VER}" ] && [ -d /usr/${HOST_LIBDIR}/jvm/jdk-${JAVA_VER} ];then
   export JAVA_HOME=/usr/${HOST_LIBDIR}/jvm/jdk-${JAVA_VER}
@@ -89,6 +86,13 @@ export PS1='${HOST_ARCH}_${HOST_BITS}:\w\$ '
 export DIALOG="dialog --backtitle \"${DISTRONAME} Linux ${DISTROVER}\""
 export PATH
 
+export LESSOPEN="|lesspipe.sh %s"
+export LESSQUIET=1
+export LESS="-MR"
+unset LESSCLOSE
+
+eval `dircolors -b`
+
 if [ -x /usr/bin/linux_logo ];then
   linux_logo -F "Distrotech #O ${DISTROVER} #V\n#U\n#L"
 fi;
@@ -97,3 +101,6 @@ if [ "${HOME}" ];then
   cd ${HOME}
 fi;
 
+alias ls='ls --color=auto'
+alias pstree='pstree -U'
+alias pico='nano'
