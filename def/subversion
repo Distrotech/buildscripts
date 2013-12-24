@@ -1,7 +1,7 @@
 VERSION="1.7.7"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-swig --with-ssl";
+CONFOPT="--with-swig --with-ssl --enable-javahl --with-jdk=${JAVA_HOME}";
 OPTX_arm="--with-apxs=/build/arm/opt/apache2/bin/apxs --with-apr=/build/arm/usr --with-apr-util=/build/arm/usr
          --with-gssapi=/build/arm/usr --with-swig=/build/arm/usr --with-neon=/build/arm/usr";
 OPTX_arm64="--with-apxs=/build/arm64/opt/apache2/bin/apxs --with-apr=/build/arm64/usr --with-apr-util=/build/arm64/usr
@@ -17,7 +17,8 @@ ADDLFLAG="/dist/${barch}/subversion${VERSEP}${VERSION}/usr/lib";
 STATICOPT="--disable-shared --without-berkeley-db --enable-all-static --without-apxs LDFLAGS=-static"
 STATICMOPT="LDFLAGS=-all-static";
 GITBRANCH="master";
-MAKEITARGETS="install swig-pl swig-py install-swig-pl install-swig-py";
+MAKETARGETS="javahl";
+MAKEITARGETS="install swig-pl swig-py install-swig-pl install-swig-py install-javahl";
 BUILDDIR="0";
 CHROOTBUILD="1";
 LDISCC="0";
