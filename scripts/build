@@ -2310,8 +2310,15 @@ bootstrap_arch_root() {
    else
     DELLIBTOOL="";
   fi
+
   (check_create_arch ${NARCH}
+  if [ ! -e ${STATDIR}/${NARCH}/done/util-linux ];then
+    for ulib in uuid blkid mount;do
+      rm /${C_LIBDIRS}/lib${ulib}.a /${C_LIBDIRS}/lib${ulib}.la /${C_LIBDIRS}/lib${ulib}.so >/dev/null 2>&1
+    done;
+  fi;
   build_packages ${NARCH} gcc) || return 1
+
   if [ "${DELLIBTOOL}" ];then
     rm ${DELLIBTOOL}
   fi;
@@ -2349,9 +2356,6 @@ bootstrap_arch_root() {
       automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 file docbook-4.1.2 docbook-4.2 \
       docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl which groff || return 1
 
-   #Pacakges used in native bootstrap
-   build_packages ${arch} cmake dbus gengetopt gettext gtk-doc help2man libcap libcap-ng libcroco nasm OpenSP openjade xmlto yasm ||return 1
-
    #handle hybrid/cross builds
    if [ "${arch}" != "${NARCH}" ];then
      (setup_hybrid_boot ${arch} ${NARCH}) || return 1
@@ -2361,7 +2365,10 @@ bootstrap_arch_root() {
      fi;
    fi;
 
-   build_packages ${arch} perl Python git unzip zip linux_logo || exit 1) || return 1;
+   build_packages ${arch} perl Python git unzip zip linux_logo ||return 1
+
+   #Pacakges used in native bootstrap
+   build_packages ${arch} cmake dbus gengetopt gettext gtk-doc help2man libcap libcap-ng libcroco nasm OpenSP openjade xmlto yasm || exit 1) || return 1;
   done;
 }
 
@@ -2456,10 +2463,6 @@ build_dependancies() {
     build_packages ${1} libxml2 libxslt || return 1
   fi;
 
-  if [ ! -e ${STATDIR}/${1}/done/util-linux ];then
-    rm /usr/lib64/libblkid.a /usr/lib64/libuuid.a /usr/lib64/libblkid.la /usr/lib64/libuuid.la >/dev/null 2>&1
-  fi;
-
   build_packages ${1} util-linux nano rsync grep less gzip tar pkg-config cpio iana-etc xmlto xmltoman giflib freetype \
     fontconfig fonttools lcms2 jpeg libpng tiff libmng OpenSP c-ares curl git || return 1
 
@@ -2479,7 +2482,7 @@ build_dependancies() {
 
   build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala \
     libdrm intltool llvm talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
-    module-init-tools Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh cryptsetup systemd || return 1
+    module-init-tools Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh LVM2 cryptsetup systemd || return 1
 
   if [ "${NARCH}" == "${1}" ];then
     (if [ "${MLIBDIR}" ];then
@@ -2552,7 +2555,7 @@ build_dependancies() {
   #Core Utilities
   build_packages ${1} arptables autofs cdrtools cifs-utils dialog dosfstools e2fsprogs ebtables ethtool gptfdisk htop \
     inetutils iproute2 ipsec-tools ipvsadm iw lesspipe linux_logo lm_sensors lsof lynx lzo mgetty minicom mktemp mtools \
-    net-tools newt nfs4-acl-tools libnfsidmap LVM2 nfs-utils ntfs-3g ntp openssh parted procinfo-ng procps psmisc squashfs \
+    net-tools newt nfs4-acl-tools libnfsidmap nfs-utils ntfs-3g ntp openssh parted procinfo-ng procps psmisc squashfs \
     strace sudo sysfsutils sysklogd sysvinit tcpdump tftp-hpa unrar uudeview usbhid-dump vlan watchdog wireless_tools \
     xorriso apg archivemount bc bindfs bsd-finger cdde dcron dmraid ecryptfs-utils ed fbset fdutils fetchmail \
     foomatic-filters globe hdparm hfsutils joe logcheck logrotate mailutils libpipeline po4a man-db man-pages mdadm mrouted \
@@ -2607,6 +2610,9 @@ build_dependancies() {
   build_packages ${1} FreeRDP vte3 Remmina pycups desktop-file-utils system-config-printer sip PyQt-x11 \
     python-notify notify-python reportlab hplip mm-common libsigcxx2 libtorrent rtorrent djview4 \
     gnuchess ctl CTL openexr_ctl openexr_viewers xmlcopyeditor dia || return 1
+
+  #Perl/Python Bits
+  build_packages ${1} setuptools net-snmp-perl net-snmp-python || return 1
 
   #Other Packages
   build_packages ${1} memtest86 liberation-fonts dejavu-fonts unifoundry psutils php-src  isoquery syslinux|| return 1
@@ -3177,7 +3183,7 @@ if [ "${BOOTSTRAP}" ] && [ "${BOOTSTRAP}" == "1" ];then
 fi;
 
 #Pull in the linux source and create headers dir
-if [ ! -d ${SRCDIR}/linux/usr/include/linux ];then
+if [ ! -d ${SRCDIR}/linux/usr/include/linux ] && [ ! "${RUNBASHRC}" ];then
   echo "Linux Headers"
   (git_load_pkg linux -3 master linux &&
   cd /usr/src/linux/linux-3 &&
