@@ -1,3 +1,0 @@
-#!/bin/bash
-
-./viewvc-install --prefix=/var/spool/apache/viewvc --destdir=${3}
