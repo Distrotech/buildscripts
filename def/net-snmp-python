@@ -1,0 +1,9 @@
+VERSION="5.7.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ALIAS="net-snmp";
+BUILDDIR="0";
+CFGPTH="python";
+CFGBIN="python/";
+CHROOTBUILD="1";

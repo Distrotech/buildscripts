@@ -1,0 +1,9 @@
+VERSION="5.7.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ALIAS="net-snmp";
+BUILDDIR="0";
+CFGPTH="perl";
+CFGBIN="perl/";
+CHROOTBUILD="1";
