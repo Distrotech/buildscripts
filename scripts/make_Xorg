@@ -107,7 +107,12 @@ export CFLAGS_FOR_BUILD="-I. -I=/usr/${B_LIBDIRS}/glib-2.0/include"
 export LDFLAGS_FOR_BUILD=-L.
 export MANCONF="/etc/man.conf";
 
+touch ${PREFIX}/include/mibstore.h
+
 ./util/modular/build.sh --clone --autoresume ./${1}.done --modfile ./${1}.tobuild ${PREFIX} || sync_fin ${3} 1
 
-sync_fin ${3} 0
+if [ -e ${PREFIX}/include/mibstore.h ] && [ ! -s ${PREFIX}/include/mibstore.h ];then
+  rm ${PREFIX}/include/mibstore.h
+fi;
 
+sync_fin ${3} 0
