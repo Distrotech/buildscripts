@@ -1,11 +1,11 @@
-VERSION="1.8.3"
+VERSION="1.8.5.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 ADDCC="0";
 SYSROOTFIXUP="1";
-OPT_x86_32="--with-python=/build/x86_32/usr/bin/python ac_cv_fread_reads_directories=no 
+OPT_x86_32="--with-python=/build/x86_32/usr/bin/python ac_cv_fread_reads_directories=no \
             ac_cv_snprintf_returns_bogus=no";
 OPT_arm="ac_cv_fread_reads_directories=no ac_cv_snprintf_returns_bogus=no";
 OPT_arm64="ac_cv_fread_reads_directories=no ac_cv_snprintf_returns_bogus=no";
@@ -18,3 +18,6 @@ ADDCFLAG="-I. -I../";
 STATICOPT="\"LDFLAGS=-static -L=/usr/${C_LIBDIRS}\"";
 STATICBSTRAP="1";
 EXTRALIBS="-ldl";
+MAKEOPTS="prefix=${PREFIX}";
+MAKETARGETS="man";
+MAKEITARGETS="install-doc";
