@@ -884,7 +884,7 @@ autoconf_cross_build() {
     if [ "${ADDCC}" ] && [ "${ADDCC}" == "0" ];then
       /usr/bin/make ${MAKE_J} HOSTCC="${BUILD}-gcc" HOSTLD="${BUILD}-gcc" \
         HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} && \
-        /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} install
+        /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install
       RES=$?
       if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
         /usr/bin/make HOSTCC="${BUILD}-gcc" HOSTLD="${BUILD}-gcc" HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" \
