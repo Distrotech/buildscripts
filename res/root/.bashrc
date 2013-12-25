@@ -86,9 +86,11 @@ export PS1='${HOST_ARCH}_${HOST_BITS}:\w\$ '
 export DIALOG="dialog --backtitle \"${DISTRONAME} Linux ${DISTROVER}\""
 export PATH
 
+export GIT_EDITOR="nano"
+
 export LESSOPEN="|lesspipe.sh %s"
 export LESSQUIET=1
-export LESS="-MR"
+export LESS="-Mr"
 unset LESSCLOSE
 
 eval `dircolors -b`
@@ -104,3 +106,4 @@ fi;
 alias ls='ls --color=auto'
 alias pstree='pstree -U'
 alias pico='nano'
+alias vi='vim'
