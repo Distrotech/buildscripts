@@ -1,6 +1,5 @@
-VERSION="1.2.0"
+VERSION="1.2.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 FIXUPLIB="1";
-GITBRANCH="master";
