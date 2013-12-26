@@ -1,0 +1,6 @@
+VERSION="3.10.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+ALIAS="gnome-desktop";
+GITMODULES="1";
