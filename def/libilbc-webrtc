@@ -1,5 +1,6 @@
-VERSION="git"
+VERSION="svn"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 AUTORECONF="1";
+GITBRANCH="master";

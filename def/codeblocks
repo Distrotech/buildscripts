@@ -1,0 +1,7 @@
+VERSION="13.12"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+NOCCOPT="1";
+ADDCC="0";
+CLEARFLAGS="1";

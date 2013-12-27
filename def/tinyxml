@@ -3,5 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-LDISCC="1";
 FIXUPLIB="1";

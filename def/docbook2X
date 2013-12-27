@@ -8,3 +8,4 @@ CONFOPT="ac_cv_file__usr_local_share_java_resolver_jar=no ac_cv_file__usr_share_
          ac_cv_file__usr_local_share_java_xalan2_jar=no ac_cv_file__usr_share_java_xalan2_jar=no";
 BUILDDIR="0";
 ADDCC="0";
+GITBRANCH="master";
