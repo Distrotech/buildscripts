@@ -3,5 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 OPT_x86_32="--without-guile";
-STATICMOPT="LDFLAGS=-static";
 COREBUILD="1";
+if [ ! -e ${ARCHROOT}/${barch}/usr/${C_LIBDIRS} ];then
+  CONFOPT="${CONFOPT} --without-guile";
+fi;
