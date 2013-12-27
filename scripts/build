@@ -3211,15 +3211,15 @@ if [ "${BOOTSTRAP}" ] && [ "${BOOTSTRAP}" == "1" ];then
 
   if ! eval ${DIALOG} --title "Continue" --yesno \"Continue To Build a ${DISTRONAME} toolchain for ${DISTROVER} [${NARCH}].\" 10 40;then
     clear
-    return 1
+    exit 1
   fi;
   clear
 
-  build_bootstrap ${NARCH} ${BUILD}
+  build_bootstrap ${NARCH} ${BUILD} || return 1
 
   if ! eval ${DIALOG} --title \"Create Chroot\" --yesno \"Do you wish to create a chroot directory now\"  10 40;then
     clear
-    return;
+    exit 1;
   fi;
   clear
 
