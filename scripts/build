@@ -719,11 +719,15 @@ cmake_cross_build() {
 
   if [ "${CLEARFLAGS}" ] && [ "${CLEARFLAGS}" == "1" ];then
     unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS LD
-    if [ "${ADDLDFLAG}" ];then
-      LDFLAGS="${ADDLDFLAG} -L${ARCHROOT}/${2}/${C_LIBDIRS} -L${ARCHROOT}/${2}/usr/${C_LIBDIRS}"
-     else
-      LDFLAGS="-L${ARCHROOT}/${2}/${C_LIBDIRS} -L${ARCHROOT}/${2}/usr/${C_LIBDIRS}"
+
+    if [ "${C_LIBDIRS}" != "${B_LIBDIRS}" ];then
+      LDFLAGS="-L${ARCHROOT}/${2}/${B_LIBDIRS} -L${ARCHROOT}/${2}/${C_LIBDIRS} -L${ARCHROOT}/${2}/usr/${B_LIBDIRS} -L${ARCHROOT}/${2}/usr/${C_LIBDIRS}"
     fi;
+
+    if [ "${ADDLDFLAG}" ];then
+      LDFLAGS="${ADDLDFLAG} ${LDFLAGS}";
+    fi;
+
     if [ "${ADDCFLAG}" ];then
       export CFLAGS="${ADDCFLAG}"
       export CXXFLAGS="${ADDCFLAG}"
@@ -2384,12 +2388,13 @@ bootstrap_arch_root() {
     #GCC needs system zlib glibc can use selinux/gd Add packages for a build enviroment
     BOOTCLEAN=distclean
     build_packages ${arch} libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat libxml2 freetype \
-      fontconfig jpeg tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac libsigsegv ncurses ncursesw onig \
-      slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude libtirpc flex Linux-PAM \
-      readline popt dialog util-linux bash coreutils bison sed texinfo make gzip tar rsync grep xz diffutils patch \
-      gperf m4 cpio findutils nano less glib pkg-config libxslt gdbm gawk iana-etc tzdata binutils autoconf automake-1.9 \
-      automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 file docbook-4.1.2 docbook-4.2 \
-      docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl which groff || return 1
+      fontconfig jpeg tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac libsigsegv ncurses ncursesw \
+      onig slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude libtirpc flex \
+      Linux-PAM readline popt dialog util-linux bash coreutils bison sed texinfo libunistring libatomic_ops gc \
+      guile make gzip tar rsync grep xz diffutils patch gperf m4 cpio findutils nano less glib pkg-config \
+      libxslt gdbm gawk iana-etc tzdata binutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 \
+      automake-1.13 automake-1.14 file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl \
+      which groff || return 1
 
    #handle hybrid/cross builds
    if [ "${arch}" != "${NARCH}" ];then
@@ -2403,7 +2408,7 @@ bootstrap_arch_root() {
    build_packages ${arch} perl Python c-ares curl git unzip zip linux_logo ||return 1
 
    #Pacakges used in native bootstrap
-   build_packages ${arch} cmake dbus gengetopt gettext gtk-doc help2man libcap libcap-ng libcroco nasm OpenSP openjade xmlto yasm || exit 1) || return 1;
+   build_packages ${arch} cmake dbus gengetopt gettext gtk-doc help2man libcap libcap-ng libcroco nasm OpenSP openjade xmlto yasm || return 1) || return 1;
   done;
 }
 
@@ -2605,12 +2610,21 @@ build_dependancies() {
     nss-mdns nss_ldap pam_ldap proftpd radius samba sipsak squid squidGuard tnef webalizer wine libdvdcss libdvdread \
     libdvdnav MPlayer clucene-core libzip mdds boost libixion liborcus || return 1
 
+  #Yelp (Base)
+  build_packages ${1} itstool yelp-xsl yelp-tools || return 1
+
+  #Webkit bits
+  build_packages ${1} libsoup aspell hunspell enchant gtkspell libsecret libwebp geoclue webkitgtk || return 1
+
+  #Desktop (Gnome3)
+  build_packages ${1} gnome-common gnome-desktop-3 gnome-icon-theme gnome-icon-theme-symbolic gnome-icon-theme-extras \
+    gnome-calculator ||return 1
+
   #Desktop (Gnome / apps)
-  build_packages ${1} gnome-common libgnome libart libgnomecanvas libbonoboui libgnomeui glade libnotify \
-    startup-notification shared-mime-info libwnck vte gnome-keyring gnome-desktop libopenraw iso-codes libxkbfile \
-    libxklavier xpdf icon-naming-utils gnome-icon-theme eog aterm file-roller libgsf wv hunspell enchant abiword \
-    libgnomecanvas gcalctool gucharmap leafpad ffmpegthumbnailer gsettings-desktop-schemas glib-networking libsoup \
-    gtk-engines gnome-themes-standard libsecret libunique evince || return 1
+  build_packages ${1} libgnome libart libgnomecanvas libbonoboui libgnomeui glade libnotify startup-notification \
+    shared-mime-info libwnck vte gnome-keyring gnome-desktop libopenraw iso-codes libxkbfile libxklavier xpdf \
+    icon-naming-utils eog aterm file-roller libgsf wv abiword libgnomecanvas gucharmap leafpad ffmpegthumbnailer \
+    gsettings-desktop-schemas glib-networking gtk-engines gnome-themes-standard libunique evince || return 1
 
   #Linphone
   build_packages ${1} oRTP spandsp mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk libosip2 exosip linphone || return 1
@@ -2627,14 +2641,12 @@ build_dependancies() {
 
 #XXX
   #Evolution/Epiphany
-  build_packages ${1} libgdata libgweather libpst geoclue libical libwebp gtkhtml gtkimageview \
-    evolution-data-server clutter clutter-gtk || return 1
+  build_packages ${1} libgdata libgweather libpst libical gtkhtml gtkimageview evolution-data-server clutter clutter-gtk || return 1
 
   #Mono if bootstrap good
   if [ -x /usr/bin/gmcs ];then
     build_packages ${1} mono || return 1
   fi;
-#gtkspell openr2 dblatex
 
   #Distrotech apps
 #missing taploop repositroy
@@ -2659,9 +2671,8 @@ build_dependancies() {
   build_packages ${1} gst-plugins-good gst-plugins-ugly gst-plugins-bad gst-plugins-good-1 gst-plugins-ugly-1 gst-plugins-bad-1 || return 1
 
   #Voip libs
-#  build_packages ${1} openr2 libpri libss7 || return 1
-#XXX
-#PyQt-x11 sip
+#XXX  build_packages ${1} openr2 libpri libss7 || return 1
+
   #Almost done
   build_packages ${1} grub-fonts grub || return 1
 
@@ -2673,7 +2684,6 @@ build_dependancies() {
 
   #Shared GCC C/C++/ADA distributable
   (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
-
 
   #Build tools needed for compiling
   static_toolbuild ${1} ${2}
