@@ -459,9 +459,10 @@ git_load_pkg() {
 #    fi;
   fi;
 
+  (cd ${SRCDIR}/${PKGGITDIR}
   if [ -e .gitmodules ] && [ "${GITMODULES}" == "1" ];then
-    (cd ${SRCDIR}/${PKGGITDIR};git submodule update --init)
-  fi;
+    git submodule update --init
+  fi)
 
   if [ -x /usr/bin/find ] || [ -x /bin/find ];then
     for fcnf in aclocal.m4 configure Makefile.in autoconf.h.in;do
@@ -472,6 +473,14 @@ git_load_pkg() {
     (cd ${SRCDIR}/${PKGGITDIR}
     touch aclocal.m4 */aclocal.m4 configure Makefile.in */Makefile.in autoconf.h.in */autoconf.h.in)
   fi;
+}
+
+tarball_load_pkg() {
+  mkdir -p ${SRCDIR}/${2}/${3}
+  cd ${SRCDIR}/${2}
+  TARBALL=$(basename ${1})
+  wget -c ${1} || return 1
+  tar -C ${3} --strip-components=1 -xf ${TARBALL} ||return 1
 }
 
 check_package() {
@@ -975,10 +984,12 @@ build_project() {
   if [ ! "${GITBRANCH}" ];then
     export GITBRANCH="distrotech-${GITREPO}${VERSEP}${VERSION}";
   fi
-  if [ ${PROJECT} != "Xorg" ];then
+  if [ ${PROJECT} != "Xorg" ] && [ ! "${TARBALLURL}" ];then
     git_load_pkg ${PROJECT} ${VERSEP}${VERSION} ${GITBRANCH} ${GITREPO}
+   elif [ "${TARBALLURL}" ];then
+    tarball_load_pkg ${TARBALLURL} ${PROJECT} ${PROJECT}${VERSEP}${VERSION} ||return 1
    else
-     mkdir -p ${SRCDIR}/${PROJECT}/${PROJECT}${VERSEP}${VERSION}
+    mkdir -p ${SRCDIR}/${PROJECT}/${PROJECT}${VERSEP}${VERSION}
   fi;
 
   if [ "${VERSION}" ];then
@@ -1874,7 +1885,9 @@ build_gcc_bootstrap() {
   fi;
 
   if [ "${1}" == "${TARCH}" ];then
-    ln -s gcc ${GCCBOOTDEST}/usr/bin/cc
+    if [ ! -e ${GCCBOOTDEST}/usr/bin/cc ];then
+      ln -s gcc ${GCCBOOTDEST}/usr/bin/cc
+    fi;
     tar_package ${GCCBOOTDEST} ${TOOLPKG}/${TARCH} ${TARGPKG} > /dev/null 2>&1
     #Fill the gap till full gcc built
     if [ "${TARCH}" == "${NARCH}" ] && [ ! -e ${STATDIR}/${TARCH}/done/gcc ] && [ "${BOOTSTRAP}" == "0" ];then
@@ -2339,11 +2352,6 @@ bootstrap_arch_root() {
   fi
 
   (check_create_arch ${NARCH}
-  if [ ! -e ${STATDIR}/${NARCH}/done/util-linux ];then
-    for ulib in uuid blkid mount;do
-      rm /${C_LIBDIRS}/lib${ulib}.a /${C_LIBDIRS}/lib${ulib}.la /${C_LIBDIRS}/lib${ulib}.so >/dev/null 2>&1
-    done;
-  fi;
   build_packages ${NARCH} gcc) || return 1
 
   if [ "${DELLIBTOOL}" ];then
@@ -3000,6 +3008,17 @@ build_toolchain_dir() {
 
   for mdir in 1 2 3 4 5 6 7 8;do
     mkdir -p ${BUILDROOTDIR}/usr/share/man/man${mdir}
+  done;
+
+  #Remove brain dead bits
+  if [ "${HOST_MLIBDIR}" ];then
+    C_LIBDIRS="${HOST_LIBDIR}/${HOST_MLIBDIR}"
+   else
+    C_LIBDIRS="${HOST_LIBDIR}"
+  fi;
+
+  for ulib in uuid blkid mount;do
+    rm ${BUILDROOTDIR}/${C_LIBDIRS}/lib${ulib}.a ${BUILDROOTDIR}/${C_LIBDIRS}/lib${ulib}.la ${BUILDROOTDIR}/${C_LIBDIRS}/lib${ulib}.so >/dev/null 2>&1
   done;
 
   #Strip all the bits
