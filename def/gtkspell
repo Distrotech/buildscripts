@@ -1,4 +1,4 @@
 VERSION="3.0.4"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--enable-gtk2 --enable-gtk3";
