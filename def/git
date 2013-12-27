@@ -19,7 +19,7 @@ STATICOPT="\"LDFLAGS=-static -L=/usr/${C_LIBDIRS}\"";
 STATICBSTRAP="1";
 EXTRALIBS="-ldl";
 MAKEOPTS="prefix=${PREFIX}";
-if which asciidoc;then
+if which asciidoc >/dev/null 2>&1;then
   MAKETARGETS="man";
   MAKEITARGETS="install-doc";
 fi;
