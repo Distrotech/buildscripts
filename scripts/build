@@ -368,9 +368,9 @@ check_create_arch() {
     ln -s .. ${ARCHROOT}/${NARCH}
   fi;
 
-  if [ -d /usr/${HOST}/${B_LIBDIRS} ] && [ ! -e ${ARCHROOT}/${1}/usr/${HOST}/${B_LIBDIRS}/libstdc++.so ];then
-    rsync -aR /usr/${HOST}/${B_LIBDIRS} ${ARCHROOT}/${1}/
-  fi;
+#  if [ -d /usr/${HOST}/${B_LIBDIRS} ] && [ ! -e ${ARCHROOT}/${1}/usr/${HOST}/${B_LIBDIRS}/libstdc++.so ];then
+#    rsync -aR /usr/${HOST}/${B_LIBDIRS} ${ARCHROOT}/${1}/
+#  fi;
 
   if [ -d ${SRCDIR}/linux/usr/include/linux ];then
     if [ ! -d ${HDIR}/usr/include ] || [ ! -f ${TOOLPKG}/${1}/kernel-headers.tar.xz ] || \
@@ -775,7 +775,7 @@ cmake_cross_build() {
 
 autoconf_cross_build() {
   if [ "${CLEARFLAGS}" ] && [ "${CLEARFLAGS}" == "1" ];then
-    unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS LD
+    unset CFLAGS CPPFLAGS CXXFLAGS
     if [ "${ADDLDFLAG}" ];then
       LDFLAGS="${ADDLDFLAG} -L${ARCHROOT}/${2}/${B_LIBDIRS} -L${ARCHROOT}/${2}/${C_LIBDIRS} -L${ARCHROOT}/${2}/usr/${C_LIBDIRS}"
      else
@@ -795,8 +795,6 @@ autoconf_cross_build() {
     export CC="${CC} ${CC_SYSROOT}"
     export CXX="${CXX} ${CC_SYSROOT}"
     export AS="${AS}";
-    export CC="${CC}"
-    export CXX="${CXX}"
   fi;
 
   if [ "${LDISCC}" == "1" ];then
@@ -1160,7 +1158,7 @@ build_project() {
   fi;
   export FORCE_UNSAFE_CONFIGURE=1
 
-  PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/share/pkgconfig:${SYSROOT}/lib/pkgconfig:${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/qt-5/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig";
+  PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/share/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/qt-5/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig";
   RLINK_PATH="${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/qt-5/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio";
   BASE_LIBPATH="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/qt-5/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS}"
 
@@ -1181,7 +1179,7 @@ build_project() {
     CXX="${HOST}-g++"
     LD="${HOST}-ld"
   fi;
-  export CC CXX PKG_CONFIG_PATH RLINK_PATH
+  export CC CXX PKG_CONFIG_PATH RLINK_PATH MLIBDIRLN
   if [ "${BOOTSTRAP}" == "0" ];then
     export LD_LIBRARY_PATH="${RLINK_PATH}"
   fi;
