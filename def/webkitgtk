@@ -1,8 +1,13 @@
-VERSION="1.8.3"
+VERSION="2.2.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
-GITBRANCH="master";
-BUILDDIR="0";
+CONFOPT="--enable-introspection --enable-accelerated-compositing --enable-jit --enable-web-audio --disable-static";
 AMVER="1.14";
-DONTBUILD="x86_64 x86_32 i686 arm arm64 mips mips64 powerpc powerpc64";
+DONTBUILD="arm64 mips mips64 powerpc powerpc64";
+TARBALLURL="http://webkitgtk.org/releases/webkitgtk-2.2.3.tar.xz";
+CLEARFLAGS="1";
+NOCCOPT="1";
+LDISCC="0";
+ADDCFLAG="-I=/usr/X11R7/include"
+ADDWITHSYSROOT="1";
+SYSROOTFIXUP="0";
