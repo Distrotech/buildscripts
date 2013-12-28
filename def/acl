@@ -1,7 +1,7 @@
 VERSION="2.2.52"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-gettext=yes";
+CONFOPT="--enable-gettext=yes --libexecdir=/usr/${C_LIBDIRS}";
 BUILDDIR="0";
 MAKEITARGETS="install-dev install-lib";
 ADDCFLAG="-fPIC";
