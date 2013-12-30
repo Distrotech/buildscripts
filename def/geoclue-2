@@ -1,0 +1,7 @@
+VERSION="2.0.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-geoip-server=yes";
+BUILDDIR="0";
+ALIAS="geoclue";
+AMVER="1.14";

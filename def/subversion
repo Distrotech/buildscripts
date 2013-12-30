@@ -1,7 +1,7 @@
 VERSION="1.7.7"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-swig --with-ssl --enable-javahl --with-jdk=${JAVA_HOME}";
+CONFOPT="--with-swig --with-ssl --enable-javahl --with-jdk=/usr/${B_LIBDIRS}/jvm/gcj-jdk";
 OPTX_arm="--with-apxs=/build/arm/opt/apache2/bin/apxs --with-apr=/build/arm/usr --with-apr-util=/build/arm/usr
          --with-gssapi=/build/arm/usr --with-swig=/build/arm/usr --with-neon=/build/arm/usr";
 OPTX_arm64="--with-apxs=/build/arm64/opt/apache2/bin/apxs --with-apr=/build/arm64/usr --with-apr-util=/build/arm64/usr

@@ -9,4 +9,4 @@ OPT_x86_32="ac_cv_sizeof_size_t=4";
 GITBRANCH="v3.0.13";
 FIXUPLIB="1";
 NOMLIBDIR="1";
-
+ADDWITHSYSROOT="1";

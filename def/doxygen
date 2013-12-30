@@ -15,3 +15,4 @@ OPT_powerpc="-platform linux-g++-powerpc";
 OPT_powerpc64="-platform linux-g++-powerpc64";
 OPT_x86_32="-platform linux-g++-x32 --with-doxywizard";
 OPT_x86_64="-platform linux-64 --with-doxywizard";
+CHROOTBUILD="1";

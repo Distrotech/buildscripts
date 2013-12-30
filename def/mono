@@ -10,3 +10,4 @@ CLEARFLAGS="1";
 DONTBUILD="x86_32";
 BUILDDIR="0";
 NOCROSS="1";
+ADDCFLAG="-I=/usr/${C_LIBDIRS}/glib-2.0/include";

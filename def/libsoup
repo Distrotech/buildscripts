@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-I=/usr/${C_LIBDIRS}/glib-2.0/include";
 CLEARFLAGS="1";
+CHROOTBUILD="1";

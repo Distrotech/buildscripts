@@ -16,3 +16,4 @@ OPT_i686="ac_cv_file__dev_random=yes";
 OPT_x86_32="ac_cv_file__dev_random=yes --with-export-libdir=/usr/libx32/bind9";
 OPT_x86_64="ac_cv_file__dev_random=yes --with-export-libdir=/usr/lib64/bind9";
 GITBRANCH="master";
+CHROOTBUILD="1";

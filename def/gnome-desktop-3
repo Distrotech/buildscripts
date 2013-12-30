@@ -4,3 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 ALIAS="gnome-desktop";
 GITMODULES="1";
+CLEARFLAGS="1";
+ADDCFLAG="-I=/usr/${C_LIBDIRS}/glib-2.0/include";
+CHROOTBUILD="1";
