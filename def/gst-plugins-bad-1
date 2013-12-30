@@ -7,3 +7,4 @@ ADDCFLAG="-I=/usr/include/gstreamer-0.10 -I=/usr/include/libxml2 -I=/usr/include
 LDISCC="1";
 CLEARFLAGS="1";
 ALIAS="gst-plugins-bad";
+ADDRPTHLINK="1";
