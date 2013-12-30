@@ -10,3 +10,4 @@ AMVER="1.14";
 CLEARFLAGS="1";
 ADDCFLAG="-I=/usr/X11R7/include -I=/usr/${B_LIBDIRS}/jvm/gcj-jdk/include"
 ADDCC="0";
+CHROOTBUILD="1";
