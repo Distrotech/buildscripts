@@ -782,7 +782,10 @@ autoconf_cross_build() {
       LDFLAGS="-L${ARCHROOT}/${2}/${B_LIBDIRS} -L${ARCHROOT}/${2}/${C_LIBDIRS} -L${ARCHROOT}/${2}/usr/${C_LIBDIRS}"
     fi;
     if [ "${BOOTSTRAP}" == "1" ] && [ "${PROJECT}" != "glibc" ];then
-      LDFLAGS="${LDFLAGS} -Wl,--rpath-link=${RLINK_PATH} --sysroot=${ARCHROOT}/${2}"
+      LDFLAGS="${LDFLAGS} -Wl,--rpath-link=${RLINK_PATH} --sysroot=${ARCHROOT}/${2}";
+    fi;
+    if [ "${ADDRPTHLINK}" ] && [ "${ADDRPTHLINK}" == "1" ];then
+      LDFLAGS="${LDFLAGS} -Wl,--rpath-link=${RLINK_PATH}";
     fi;
     export LDFLAGS
 
@@ -1301,48 +1304,26 @@ build_project() {
   touch ${STATDIR}/${barch}/done/${BUILDPROJECT}
   echo ${BUILDPROJECT} >> ${STATDIR}/${barch}/built
 
-  #Move 64bit libs into lib64
   if [ "${FIXUPLIB}" == "1" ];then
-    if [ "${C_LIBDIRS}" == "lib64" ] || [ "${C_LIBDIRS}" == "lib64/x86_64" ];then
-      for libdir in / /usr /usr/local ${PREFIX};do
-        if [ -d ${DIST_ROOT}${libdir}/lib ];then
+    for libdir in / /usr /usr/local ${PREFIX};do
+      for libsuf in lib lib64 libx32 libx3264;do
+        if [ "${libsuf}" == "${C_LIBDIRS}" ];then
+          continue;
+        fi;
+        if [ "${NOMLIBDIR}" ] && [ "${NOMLIBDIR}" == "1" ] && [ "${libsuf}" == "${B_LIBDIRS}" ];then
+          continue;
+        fi;
+        if [ -d ${DIST_ROOT}${libdir}/${libsuf} ];then
           if [ ! -d ${DIST_ROOT}${libdir}/${C_LIBDIRS} ];then
             mkdir -p ${DIST_ROOT}${libdir}/${C_LIBDIRS}
           fi;
-          mv ${DIST_ROOT}${libdir}/lib/* ${DIST_ROOT}${libdir}/${C_LIBDIRS}/
-          rm -rf ${DIST_ROOT}${libdir}/lib
-        fi; # sed -i -e "s/\(\-L=\)\/lib\//\/libx32\//g" ${DIST_ROOT}${libdir}/lib64/*.la
-      done;
-     elif [ "${barch}" == "x86_32" ];then
-      for libdir in / /usr /usr/local ${PREFIX};do
-        for libsuf in lib lib64 libx3264;do
-          if [ -d ${DIST_ROOT}${libdir}/${libsuf} ];then
-            if [ ! -d ${DIST_ROOT}${libdir}/${C_LIBDIRS} ];then
-              mkdir -p ${DIST_ROOT}${libdir}/${C_LIBDIRS}
-            fi;
-            mv ${DIST_ROOT}${libdir}/${libsuf}/* ${DIST_ROOT}${libdir}/${C_LIBDIRS}/
+          mv ${DIST_ROOT}${libdir}/${libsuf}/* ${DIST_ROOT}${libdir}/${C_LIBDIRS}/
+          if [ "${libsuf}" != "${B_LIBDIRS}" ];then
             rm -rf ${DIST_ROOT}${libdir}/${libsuf}
-          fi; # sed -i -e "s/\(\-L=\)\/lib\//\/libx32\//g" ${DIST_ROOT}${libdir}/libx32/*.la
-        done;
-      done;
-     elif [ "${C_LIBDIRS}" == "lib" ] || [ "${C_LIBDIRS}" == "lib/i686" ];then
-      for libdir in / /usr /usr/local ${PREFIX};do
-        for libsuf in lib lib64 libx32 libx3264;do
-          if [ "${libsuf}" == "${C_LIBDIRS}" ];then
-            continue;
           fi;
-          if [ -d ${DIST_ROOT}${libdir}/${libsuf} ];then
-            if [ ! -d ${DIST_ROOT}${libdir}/${C_LIBDIRS} ];then
-              mkdir -p ${DIST_ROOT}${libdir}/${C_LIBDIRS}
-            fi;
-            mv ${DIST_ROOT}${libdir}/${libsuf}/* ${DIST_ROOT}${libdir}/${C_LIBDIRS}/
-            if [ "${libsuf}" != "${B_LIBDIRS}" ];then
-              rm -rf ${DIST_ROOT}${libdir}/${libsuf}
-            fi;
-          fi; # sed -i -e "s/\(\-L=\)\/lib\//\/libx32\//g" ${DIST_ROOT}${libdir}/libx32/*.la
-        done;
+        fi; # sed -i -e "s/\(\-L=\)\/lib\//\/libx32\//g" ${DIST_ROOT}${libdir}/libx32/*.la
       done;
-    fi;
+    done;
     libtool finish ${DIST_ROOT}${libdir}/${C_LIBDIRS}
   fi;
 
