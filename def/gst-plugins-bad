@@ -6,3 +6,4 @@ ADDCFLAG="-I=/usr/include/gstreamer-0.10 -I=/usr/include/libxml2 -I=/usr/include
           -I=/usr/include/libvisual-0.4 -I=/usr/include/pango-1.0 -I=/usr/include/cairo -I=/usr/X11R7/include";
 LDISCC="1";
 CLEARFLAGS="1";
+ADDRPTHLINK="1";
