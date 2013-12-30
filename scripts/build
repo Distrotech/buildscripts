@@ -1327,13 +1327,20 @@ build_project() {
       done;
      elif [ "${C_LIBDIRS}" == "lib" ] || [ "${C_LIBDIRS}" == "lib/i686" ];then
       for libdir in / /usr /usr/local ${PREFIX};do
-        if [ -d ${DIST_ROOT}${libdir}/lib64 ];then
-          if [ ! -d ${DIST_ROOT}${libdir}/${C_LIBDIRS} ];then
-            mkdir -p ${DIST_ROOT}${libdir}/${C_LIBDIRS}
+        for libsuf in lib lib64 libx32 libx3264;do
+          if [ "${libsuf}" == "${C_LIBDIRS}" ];then
+            continue;
           fi;
-          mv ${DIST_ROOT}${libdir}/lib64/* ${DIST_ROOT}${libdir}/${C_LIBDIRS}/
-          rm -rf ${DIST_ROOT}${libdir}/lib64
-        fi; # sed -i -e "s/\(\-L=\)\/lib\//\/libx32\//g" ${DIST_ROOT}${libdir}/lib64/*.la
+          if [ -d ${DIST_ROOT}${libdir}/${libsuf} ];then
+            if [ ! -d ${DIST_ROOT}${libdir}/${C_LIBDIRS} ];then
+              mkdir -p ${DIST_ROOT}${libdir}/${C_LIBDIRS}
+            fi;
+            mv ${DIST_ROOT}${libdir}/${libsuf}/* ${DIST_ROOT}${libdir}/${C_LIBDIRS}/
+            if [ "${libsuf}" != "${B_LIBDIRS}" ];then
+              rm -rf ${DIST_ROOT}${libdir}/${libsuf}
+            fi;
+          fi; # sed -i -e "s/\(\-L=\)\/lib\//\/libx32\//g" ${DIST_ROOT}${libdir}/libx32/*.la
+        done;
       done;
     fi;
     libtool finish ${DIST_ROOT}${libdir}/${C_LIBDIRS}
@@ -2606,30 +2613,35 @@ build_dependancies() {
 
   build_packages ${1} gnustep-make gnustep-base SOPE acpid bind clamav coova-chilli dhcp dovecot freetds hylafax mcrypt mm  \
     nss-mdns nss_ldap pam_ldap proftpd radius samba sipsak squid squidGuard tnef webalizer wine libdvdcss libdvdread \
-    libdvdnav MPlayer clucene-core libzip mdds boost libixion liborcus || return 1
+    libdvdnav MPlayer clucene-core libzip mdds boost libixion liborcus iso-codes || return 1
 
-  #Yelp (Base)
-  build_packages ${1} itstool yelp-xsl yelp-tools || return 1
+  #Gnoem (Base)
+  build_packages ${1} shared-mime-info gnome-common gnome-desktop-3 gnome-icon-theme gnome-icon-theme-symbolic \
+    gnome-icon-theme-extras gnome-themes-standard gsettings-desktop-schemas itstool yelp-xsl yelp-tools \
+    libnotify startup-notification || return 1
 
   #Webkit bits
-  build_packages ${1} libsoup aspell hunspell enchant gtkspell libsecret libwebp geoclue webkitgtk || return 1
+  build_packages ${1} glib-networking libsoup aspell hunspell enchant gtkspell libsecret libwebp \
+    geoip-api-c geoclue geoclue-2 doxygen ruby webkitgtk || return 1
 
   #Desktop (Gnome3)
-  build_packages ${1} gnome-common gnome-desktop-3 gnome-icon-theme gnome-icon-theme-symbolic gnome-icon-theme-extras \
-    gnome-calculator ||return 1
+  build_packages ${1} gucharmap gnome-calculator evince ||return 1
+
+  #Epiphany/Yelp
+  build_packages ${1} gcr yelp libwnck-3 epiphany || return 1
 
   #Desktop (Gnome / apps)
-  build_packages ${1} libgnome libart libgnomecanvas libbonoboui libgnomeui glade libnotify startup-notification \
-    shared-mime-info libwnck vte gnome-keyring gnome-desktop libopenraw iso-codes libxkbfile libxklavier xpdf \
-    icon-naming-utils eog aterm file-roller libgsf wv abiword libgnomecanvas gucharmap leafpad ffmpegthumbnailer \
-    gsettings-desktop-schemas glib-networking gtk-engines gnome-themes-standard libunique evince || return 1
+  build_packages ${1} libgnome libart libgnomecanvas libbonoboui libgnomeui glade libnotify \
+    vte gnome-keyring gnome-desktop libwnck libopenraw libxkbfile libxklavier xpdf \
+    icon-naming-utils eog aterm file-roller libgsf wv abiword libgnomecanvas leafpad ffmpegthumbnailer \
+    gtk-engines libunique || return 1
 
   #Linphone
   build_packages ${1} oRTP spandsp mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk libosip2 exosip linphone || return 1
 
   #Other bits
   build_packages ${1} alsa-oss alsa-plugins alsa-tools alsa-utils TiMidity calamaris dirac netatalk mod_perl \
-    mod_python nut omniORB dtc qemu doxygen ruby wxWidgets taglib xerces-c maven jhylafax admin_console || return 1
+    mod_python nut omniORB dtc qemu wxWidgets taglib xerces-c maven jhylafax admin_console || return 1
 
   #XFCE
   build_packages ${1} xfce4-dev-tools libxfce4util xfconf libxfce4ui garcon exo xfce4-panel tumbler \
@@ -2638,7 +2650,7 @@ build_dependancies() {
     tango-icon-theme hicolor-icon-theme gnome-themes || return 1
 
 #XXX
-  #Evolution/Epiphany
+  #Evolution
   build_packages ${1} libgdata libgweather libpst libical gtkhtml gtkimageview evolution-data-server clutter clutter-gtk || return 1
 
   #Mono if bootstrap good
