@@ -1,12 +1,7 @@
 VERSION="1.3.2"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="ac_cv_file__usr_include_OpenSP=yes";
+CONFOPT="ac_cv_file__usr_include_OpenSP=yes --enable-splibdir=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}";
 BUILDDIR="0";
-OPT_i686="--enable-splibdir=/build/i686/usr/lib/i686";
-OPT_x86_32="--enable-splibdir=/build/x86_32/usr/libx32/i686";
-OPT_x86_64="--enable-splibdir=/build/x86_64/usr/lib64/x86_64";
-OPT_arm="--enable-splibdir=/build/arm/usr/lib";
-OPT_arm64="--enable-splibdir=/build/arm64/usr/lib";
 SYSROOTFIXUP="1";
 GITBRANCH="master";
