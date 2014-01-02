@@ -1,8 +1,8 @@
 VERSION="1.2.0"
-VERSION_arm="20131115";
+VERSION_arm="20131227";
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-vp8 --enable-pic --enable-shared --enable-static";
+CONFOPT="--enable-vp8 --enable-pic --enable-shared --enable-static --disable-unit-tests";
 STDOPTS="--prefix=/usr";
 OPT_arm="--target=armv7-linux-gcc --extra-cflags=-mhard-float";
 OPT_arm64="--target=aarch64-linux-gcc";
