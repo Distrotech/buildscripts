@@ -98,6 +98,14 @@ eval `dircolors -b`
 if [ -x /usr/bin/linux_logo ];then
   linux_logo -F "Distrotech #O ${DISTROVER} #V\n#U\n#L"
 fi;
+if [ -x /usr/bin/fortune ];then
+  if [ -x /usr/bin/figlet ];then
+    fortune -s |figlet -f term
+   else
+    fortune -s
+  fi;
+  echo
+fi
 
 if [ "${HOME}" ];then
   cd ${HOME}
