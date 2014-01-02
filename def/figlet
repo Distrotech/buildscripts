@@ -1,0 +1,7 @@
+VERSION="2.2.5"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+MAKEOPTS="prefix=${PREFIX}";
+BUILDDIR="0";
+LDISCC="1";
