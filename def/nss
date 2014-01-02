@@ -19,3 +19,4 @@ MOPT_powerpc="CPU_ARCH=ppc FREEBL_LOWHASH=0";
 MOPT_powerpc64="USE_64=1";
 DONTBUILD="arm64";
 GITBRANCH="master";
+CHROOTBUILD="1";
