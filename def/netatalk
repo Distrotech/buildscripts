@@ -5,3 +5,4 @@ CONFOPT="--enable-zeroconf --with-pic --enable-fhs --with-cnid-cdb-backend --wit
          --with-shadow --with-kerberos --with-ldap --with-bdb=/build/${barch}/usr/";
 FIXUPLIB="1";
 NOCROSS="1";
+CHROOTBUILD="1";
