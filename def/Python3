@@ -7,3 +7,4 @@ ALIAS="Python";
 LDISCC="0";
 GITREPO="Python";
 GITBRANCH="Python-3.3.0";
+CHROOTBUILD="1";
