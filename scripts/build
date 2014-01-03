@@ -20,6 +20,8 @@ DISTRONAME="Distro Solutions"
 DEF_JAVA_VER="1.7.0_45";
 DEF_QT_VER="5";
 
+PYVER=2;
+
 JAVA6_VER="1.6.0_27";
 JAVA_VER="${DEF_JAVA_VER}";
 QT_VER="${DEF_QT_VER}";
@@ -185,6 +187,13 @@ arch_config() {
     i[3-6]86|x86_32)AMLIBDIR=i686;;
     *)unset AMLIBDIR;;
   esac;
+
+  case ${1} in
+    arm|arm64)AQCPU=arm;;
+    mips|mips64)AQCPU=mips;;
+    powerpc)AQCPU=ppc;;
+    powerpc64)AQCPU=ppc64;;
+  esac;
 }
 
 dialog_config() {
@@ -292,20 +301,14 @@ check_create_arch() {
   QT_SPEC=${QTSPEC}
   B_LIBDIRS=${SETLIBDIR}
   MLIBDIR=${AMLIBDIR}
-  unset TUPPLE SETLIBDIR LINARCH
+  QCPU=${AQCPU}
+  unset TUPPLE SETLIBDIR LINARCH AQCPU
 
   if [ "${MLIBDIR}" ];then
     C_LIBDIRS="${B_LIBDIRS}/${MLIBDIR}"
    else
     C_LIBDIRS=${B_LIBDIRS}
   fi;
-
-  case ${1} in
-    arm|arm64)QCPU=arm;;
-    mips|mips64)QCPU=mips;;
-    powerpc)QCPU=ppc;;
-    powerpc64)QCPU=ppc64;;
-  esac;
 
   export B_LIBDIRS HOST KARCH QCPU QT_SPEC MLIBDIR
 
@@ -1267,11 +1270,11 @@ build_project() {
     imake_cross_build ${barch} || return 1;
    elif [ -e ${TOPDIR}${CFGBIN}./setup.py ];then
     if [ "${NARCH}" == "${barch}" ];then
-      python setup.py clean --all
-      python ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
+      python${PYVER} setup.py clean --all
+      python${PYVER} ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
      else
-      ${ARCHROOT}/${barch}/usr/bin/python setup.py clean --all
-      ${ARCHROOT}/${barch}/usr/bin/python ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
+      ${ARCHROOT}/${barch}/usr/bin/python${PYVER} setup.py clean --all
+      ${ARCHROOT}/${barch}/usr/bin/python${PYVER} ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
     fi;
    elif [ -e ${TOPDIR}${CFGBIN}./Makefile.PL ];then
      perl Makefile.PL ${CONFOPT}
@@ -1741,10 +1744,11 @@ build_gcc_bootstrap() {
     CXXFLAGS="-fPIC -O2";
     SDIROPT=-shared
     if [ "${TMLIBDIR}" ];then
-      LDFLAGS="-L${ARCHROOT}/${3}/${TLIBDIR}/${TMLIBDIR} -L${ARCHROOT}/${3}/usr/${TLIBDIR}/${TMLIBDIR}";
+      LDFLAGS="-L${ARCHROOT}/${TARCH}/${TLIBDIR}/${TMLIBDIR} -L${ARCHROOT}/${TARCH}/usr/${TLIBDIR}/${TMLIBDIR}";
      else
-      LDFLAGS="-L${ARCHROOT}/${3}/${TLIBDIR} -L${ARCHROOT}/${3}/usr/${TLIBDIR}";
+      LDFLAGS="-L${ARCHROOT}/${TARCH}/${TLIBDIR} -L${ARCHROOT}/${TARCH}/usr/${TLIBDIR}";
     fi;
+    LDFLAGS="${LDFLAGS} -L${ARCHROOT}/${1}/usr/${C_LIBDIRS}";
    elif [ ! "${4}" ] || [ "${4}" == "null" ];then
     MARCH=BOOTOPT_${1}
     CONFOPT="${NULLOPT} ${SYSROOT} CC=${BUILD}-gcc CXX=${BUILD}-g++ --with-gmp-lib=${ARCHROOT}/${3}/usr/${TLIBDIR}/${TMLIBDIR}"
@@ -1768,7 +1772,7 @@ build_gcc_bootstrap() {
     fi;
     export CFLAGS CXXFLAGS
     CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${TLIBDIR}/jvm/gcj-jdk-${1} --enable-cxx-flags=-I=/usr/include
-             CFLAGS=-I=/usr/include ${LANGOPT} ${SYSROOT} --with-ecj-jar=/usr/share/java/ecj-3.5.2.jar --enable-java-home"
+             CFLAGS=-I=/usr/include ${LANGOPT} ${SYSROOT} --with-ecj-jar=/usr/share/java/ecj-3.5.2.jar --enable-java-home --without-x"
     SDIROPT=-cross
   fi;
   TARGPKG=${GCC}${SDIROPT}
@@ -1808,10 +1812,12 @@ build_gcc_bootstrap() {
      [ "${4}" == "static" ];then
     BUILDDIR=${SRDIR}
     (cd ${PKGBUILDDIR}/${1}/${GLIBC}
-    if [ -d ${PKGBUILDDIR}/${1}/${GCC} ];then
-      rsync -a ${PKGBUILDDIR}/${1}/${GCC}/ ${SRDIR}/
-    fi;
-    rsync -aR . usr/include ${SRDIR}/
+#    if [ -d ${PKGBUILDDIR}/${1}/${GCC} ];then
+#      rsync -a ${PKGBUILDDIR}/${1}/${GCC}/ ${SRDIR}/
+#    fi;
+     if [ ! -e ${SRDIR}/usr/include/stdio.h ];then
+       rsync -aR . usr/include ${SRDIR}/
+     fi;
     if [ ! -d ${TOOLPKG}/${1}/${GLIBC} ];then
       mkdir -p ${TOOLPKG}/${1}/${GLIBC}
     fi;
@@ -1821,7 +1827,7 @@ build_gcc_bootstrap() {
    else
     BUILDDIR=/
   fi;
-  LDFLAGS_FOR_TARGET="-L${BUILDDIR}/usr/${TLIBDIR} -L${BUILDDIR}/${TLIBDIR}";
+  LDFLAGS_FOR_TARGET="-L${BUILDDIR}/usr/${TLIBDIR} -L${BUILDDIR}/${TLIBDIR} -L${ARCHROOT}/${1}/usr/${C_LIBDIRS}"
   if [ "${1}" == "${NARCH}" ] && [ ! -x /usr/${2}/bin/ld ];then
     LDFLAGS_FOR_TARGET="${LDFLAGS_FOR_TARGET} -B${BUILDDIR}/usr/${2}/bin";
   fi;
@@ -1856,7 +1862,7 @@ build_gcc_bootstrap() {
   if [ ! -d ${2}/libstdc++-v3 ];then
     mkdir -p ${2}/libstdc++-v3
   fi;
-  cp /usr/bin/libtool ${2}/libstdc++-v3
+  cp ${ARCHROOT}/${1}/usr/bin/libtool ${2}/libstdc++-v3
   make ${MAKE_J} LDFLAGS="${LDFLAGS}" LDFLAGS_FOR_TARGET="${LDFLAGS_FOR_TARGET}" || \
     make LDFLAGS="${LDFLAGS}" LDFLAGS_FOR_TARGET="${LDFLAGS_FOR_TARGET}" || return 1
   make DESTDIR=${GCCBOOTDEST} install || return 1
@@ -2177,19 +2183,31 @@ setup_hybrid_boot() {
     return 1;
   fi;
 
-  if [ ! -d /usr/gnemul/qemu-${QCPU} ];then
-    mkdir -p /usr/gnemul/qemu-${QCPU}
+  if [ "${QCPU}" ];then
+    for emldir in /${B_LIBDIRS} /usr/${B_LIBDIRS} /usr/X11R7 /opt;do
+      if [ ! -d /usr/gnemul/qemu-${QCPU}${emldir} ];then
+        mkdir -p /usr/gnemul/qemu-${QCPU}${emldir}
+      fi;
+    done;
+
+    if [ ! -e /usr/gnemul/qemu-${QCPU}/${B_LIBDIRS}/${LDNAME} ];then
+      mount --bind ${ARCHROOT}/${1}/${B_LIBDIRS} /usr/gnemul/qemu-${QCPU}/${B_LIBDIRS}
+    fi;
+
+    if [ ! -e /usr/gnemul/qemu-${QCPU}/usr/${B_LIBDIRS}/libc.so ];then
+      mount --bind ${ARCHROOT}/${1}/usr/${B_LIBDIRS} /usr/gnemul/qemu-${QCPU}/usr/${B_LIBDIRS}
+    fi;
+
+    if [ -e ${ARCHROOT}/${1}/usr/X11R7/${B_LIBDIRS}/libX11.so ] && [ ! -e /usr/gnemul/qemu-${QCPU}/usr/X11R7/${B_LIBDIRS}/libX11.so ];then
+      mount --bind ${ARCHROOT}/${1}/usr/X11R7 /usr/gnemul/qemu-${QCPU}/usr/X11R7
+    fi;
+
+    if [ "`ls /${ARCHROOT}/${1}/opt`" ] &&  [ ! "`ls /usr/gnemul/qemu-${QCPU}/opt`" ];then
+      mount --bind ${ARCHROOT}/${1}/opt /usr/gnemul/qemu-${QCPU}/opt
+    fi;
   fi;
 
-  if [ ! -d ${ARCHROOT}/${1} ];then
-    mkdir -p ${ARCHROOT}/${1}/dev
-  fi;
-
-  if [ ! -d /usr/gnemul/qemu-${QCPU}/dev ];then
-    mount --bind ${ARCHROOT}/${1} /usr/gnemul/qemu-${QCPU}
-  fi;
-
-  if [ -e ${ARCHROOT}/${1}/usr/${NLIBDIR}/${NMLIBDIR}.distro_done ];then
+  if [ -e ${ARCHROOT}/${1}/usr/${NLIBDIR}/${NMLIBDIR}/.distro_done ];then
     return 0;
   fi;
 
@@ -2200,9 +2218,15 @@ setup_hybrid_boot() {
 
   rsync -aR /usr/share/java ${TMPDIR}
 
-  for pkg in glibc mpc mpfr gmp cloog isl readline ncurses zlib flex ncursesw glib popt gcc pcre selinux xz libsigsegv;do
+  ERROR=0;
+
+  for pkg in glibc mpc mpfr gmp cloog isl readline ncurses zlib flex ncursesw glib popt \
+             gcc pcre selinux xz libsigsegv guile acl gc attr libffi libunistring libtool;do
    (get_pkg_name ${pkg} ${1}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
+   if [ ! -d ${PDIR} ];then
+     return 1
+   fi;
    cd ${PDIR}
    tar -C ${TMPDIR} -xf ${PNAME}-libs.tar.xz
    if [ "${NMLIBDIR}" ] && [ "${MLIBDIRLN}" ];then
@@ -2211,18 +2235,21 @@ setup_hybrid_boot() {
          rm ${TMPDIR}/${PREFIX}/${NLIBDIR}/${delln}
        fi;
      done
-   fi;)
+   fi;) || ERROR="${ERROR}${pkg} Libs Missing\n"
   done
 
   for pkg in javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep;do
    (get_pkg_name ${pkg} ${1}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
+   if [ ! -d ${PDIR} ];then
+     return 1
+   fi;
    cd ${PDIR}
    if [ -e ${PNAME}.tar.xz ];then
-     tar -C ${TMPDIR} -xf ${PNAME}.tar.xz usr/bin bin 2>/dev/null
+     tar -C ${TMPDIR} -xf ${PNAME}.tar.xz usr/bin bin 2>/dev/null || true
     else
-     return 1
-   fi)
+     return 0
+   fi) || ERROR="${ERROR}${pkg} Executable Missing\n"
   done
 
   for pkg in gcc binutils;do
@@ -2231,6 +2258,9 @@ setup_hybrid_boot() {
      PNAME=${PNAME}-cross
    fi;
    PDIR=${PKGDISTDIR}/build/${NARCH}/${1}/${PNAME}
+   if [ ! -d ${PDIR} ];then
+     return 1
+   fi;
    cd ${PDIR}
    tar -C ${TMPDIR} -xf ${PNAME}.tar.xz
    if [ -e ${PNAME}-libs.tar.xz ];then
@@ -2238,23 +2268,30 @@ setup_hybrid_boot() {
    fi
    if [ -e ${PNAME}-dev.tar.xz ];then
      tar -C ${TMPDIR} -xf ${PNAME}-dev.tar.xz
-   fi;)
+   fi;) || ERROR="${ERROR}${pkg} Tools Missing\n";
   done
 
- #Java bits from compiler
- (get_pkg_name gcc ${1}
- PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
- cd ${PDIR}
- tar -C ${TMPDIR} -xf ${PNAME}.tar.xz usr/bin/gappletviewer usr/bin/gjar usr/bin/gjarsigner usr/bin/gij usr/bin/gjdoc usr/bin/gjavah \
-                                      usr/bin/gkeytool usr/bin/gnative2ascii usr/bin/gorbd usr/bin/grmic usr/bin/grmid usr/bin/grmiregistry \
-                                      usr/bin/gserialver usr/bin/gtnameserv 2>/dev/null
+  #Java bits from compiler
+  (get_pkg_name gcc ${1}
+  PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
+  if [ -d ${PDIR} ];then
+    cd ${PDIR}
+    tar -C ${TMPDIR} -xf ${PNAME}.tar.xz usr/bin/gappletviewer usr/bin/gjar usr/bin/gjarsigner usr/bin/gij usr/bin/gjdoc usr/bin/gjavah \
+                                         usr/bin/gkeytool usr/bin/gnative2ascii usr/bin/gorbd usr/bin/grmic usr/bin/grmid usr/bin/grmiregistry \
+                                         usr/bin/gserialver usr/bin/gtnameserv 2>/dev/null || true
 
-  for jtool in gappletviewer gjar gjarsigner gij gjdoc gjavah gkeytool \
-              gnative2ascii gorbd grmic grmid grmiregistry gserialver gtnameserv;do
-    if [ -e ${TMPDIR}/usr/bin/${jtool} ];then
-      ln -s ${jtool} ${TMPDIR}/usr/bin/${HOST}-${jtool}
-    fi;
-  done)
+    for jtool in gappletviewer gjar gjarsigner gij gjdoc gjavah gkeytool \
+                 gnative2ascii gorbd grmic grmid grmiregistry gserialver gtnameserv;do
+      if [ -e ${TMPDIR}/usr/bin/${jtool} ];then
+        if [ -e ${TMPDIR}/usr/bin/${HOST}-${jtool} ];then
+          rm ${TMPDIR}/usr/bin/${HOST}-${jtool}
+        fi;
+        ln -s ${jtool} ${TMPDIR}/usr/bin/${HOST}-${jtool}
+      fi;
+    done
+   else
+     return 1
+  fi;) || ERROR="${ERROR}Classpath Missing\n";
 
   for pth in ${TMPDIR} ${TMPDIR}/usr;do
     if [ -e ${pth}/${NLIBDIR} ];then
@@ -2286,7 +2323,8 @@ setup_hybrid_boot() {
   if [ ! -d /usr/${B_LIBDIRS}/jvm ];then
     mkdir -p /usr/${B_LIBDIRS}/jvm
   fi;
-  rsync -a --exclude=bin /usr/${NLIBDIR}/jvm/gcj-jdk-${1}/ /usr/${B_LIBDIRS}/jvm/gcj-jdk/
+  rsync -a /usr/${NLIBDIR}/jvm/gcj-jdk-${1}/ /usr/${B_LIBDIRS}/jvm/gcj-jdk/
+#rsync -avP /usr/lib64/jvm/gcj-jdk-arm/ /build/arm/usr/lib/jvm/gcj-jdk/
 
   for ldtool in $(ls /usr/${HOST}/bin);do
     rm -f usr/bin/${HOST}-$ldtool usr/bin/${ldtool} >/dev/null 2>&1
@@ -2304,7 +2342,11 @@ setup_hybrid_boot() {
   if [ -e /usr/bin/qemu-${QCPU}-static ];then
     cp /usr/bin/qemu-${QCPU}-static ${ARCHROOT}/${1}/usr/bin
   fi;
-  touch ${ARCHROOT}/${1}/usr/${NLIBDIR}/${NMLIBDIR}.distro_done
+  if [ "${ERROR}" == "0" ];then
+    touch ${ARCHROOT}/${1}/usr/${NLIBDIR}/${NMLIBDIR}/.distro_done
+   else
+    echo "ERROR";read
+  fi;
 }
 
 bootstrap_arch_lib() {
@@ -2371,6 +2413,11 @@ bootstrap_arch_root() {
       esac;
     fi;
 
+    #handle hybrid/cross builds
+    if [ "${arch}" != "${NARCH}" ];then
+      (setup_hybrid_boot ${arch} ${NARCH}) || return 1
+    fi;
+
     #GCC needs system zlib glibc can use selinux/gd Add packages for a build enviroment
     BOOTCLEAN=distclean
     build_packages ${arch} libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat libxml2 freetype \
@@ -2382,19 +2429,19 @@ bootstrap_arch_root() {
       automake-1.13 automake-1.14 file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl \
       which groff || return 1
 
-   #handle hybrid/cross builds
-   if [ "${arch}" != "${NARCH}" ];then
-     (setup_hybrid_boot ${arch} ${NARCH}) || return 1
-     #perl wants db if it finds it we will build it on native with Java support so leave native for now 
-     if [ -e /usr/${NLIBDIR}/${NMLIBDIR}/libdb.so ];then
-       build_packages ${arch} tcl8 db|| return 1
-     fi;
-   fi;
+    #handle hybrid/cross builds
+    if [ "${arch}" != "${NARCH}" ];then
+      (setup_hybrid_boot ${arch} ${NARCH}) || return 1
+      #perl wants db if it finds it we will build it on native with Java support so leave native for now
+      if [ -e /usr/${NLIBDIR}/${NMLIBDIR}/libdb.so ];then
+        build_packages ${arch} tcl8 db|| return 1
+      fi;
+    fi;
 
-   build_packages ${arch} perl Python c-ares curl git unzip zip linux_logo ||return 1
+    build_packages ${arch} perl Python c-ares curl git unzip zip linux_logo ||return 1
 
-   #Pacakges used in native bootstrap
-   build_packages ${arch} cmake dbus gengetopt gettext gtk-doc help2man libcap libcap-ng libcroco nasm OpenSP openjade xmlto yasm || return 1) || return 1;
+    #Pacakges used in native bootstrap
+    build_packages ${arch} cmake dbus gengetopt gettext gtk-doc help2man libcap libcap-ng libcroco nasm OpenSP openjade xmlto yasm || return 1) || return 1;
   done;
 }
 
