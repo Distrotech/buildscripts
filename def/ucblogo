@@ -5,3 +5,4 @@ CONFOPT="";
 NOCCOPT="1";
 BUILDDIR="0";
 ADDCFLAG="-fpermissive";
+CHROOTBUILD="1";
