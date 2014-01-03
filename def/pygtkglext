@@ -1,5 +1,0 @@
-VERSION="1.1.0"
-VERSEP="-";
-PREFIX="/usr";
-CONFOPT="";
-CONFOPTX="PYTHON=/build/${barch}/usr/bin/python";

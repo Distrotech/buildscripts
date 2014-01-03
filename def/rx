@@ -1,7 +1,0 @@
-VERSION="1.5"
-VERSEP="-";
-PREFIX="/usr";
-CONFOPT="";
-BUILDDIR="0";
-NOCCOPT="1";
-FIXUPLIB="1";
