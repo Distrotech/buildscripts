@@ -1,0 +1,8 @@
+VERSION="git"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+GITBRANCH="master";
+BUILDDIR="0";
+PYVER="3";
+FIXUPLIB="1";
