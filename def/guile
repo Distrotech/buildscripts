@@ -10,7 +10,7 @@ OPT_powerpc="--with-libltdl-prefix=/build/powerpc/usr/lib -with-libgmp-prefix=/b
 OPT_mips64="--with-libltdl-prefix=/build/mips64/usr/lib64 -with-libgmp-prefix=/build/mips64/usr/lib64 --with-libunistring-prefix=/build/mips64/usr/lib64 --with-libreadline-prefix=/build/mips64/usr/lib64";
 OPT_mips="--with-libltdl-prefix=/build/mips/usr/lib -with-libgmp-prefix=/build/mips/usr/lib --with-libunistring-prefix=/build/mips/usr/lib --with-libreadline-prefix=/build/mips/usr/lib";
 ADDWITHSYSROOT="1";
-DONTBUILD="x86_32 arm64 mips mips64 powerpc powerpc64";
+DONTBUILD="arm64 mips mips64 powerpc powerpc64";
 AMVER="1.14";
 NONULLCONF="1";
 CHROOTBUILD="1";
