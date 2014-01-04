@@ -2711,6 +2711,9 @@ build_dependancies() {
   #GST Plugins
   build_packages ${1} gst-plugins-good gst-plugins-ugly gst-plugins-bad gst-plugins-good-1 gst-plugins-ugly-1 gst-plugins-bad-1 || return 1
 
+  #Gnome Games
+  build_packages ${1} gnome-chess gnome-klotski gnome-mahjongg gnome-mines gnome-sudoku aisleriot || return 1
+
   #Voip libs
 #XXX  build_packages ${1} openr2 libpri libss7 || return 1
 
