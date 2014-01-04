@@ -2,8 +2,6 @@ VERSION="4.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-OPT_x86_32="--without-guile";
-OPT_arm="--without-guile";
 OPT_powerpc="--without-guile";
 COREBUILD="1";
 if [ ! -e ${ARCHROOT}/${barch}/usr/${C_LIBDIRS} ];then
