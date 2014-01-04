@@ -1,5 +1,0 @@
-#!/bin/bash
-
-python bootstrap.py build/scons || exit 1
-cd build/scons 
-python setup.py install --root=${3}
