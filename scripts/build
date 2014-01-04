@@ -333,12 +333,15 @@ check_create_arch() {
     fi;
   done;
 
-  if [ ! -d ${ARCHROOT}/${1}/usr/lib/glib-2.0/include ];then
-    mkdir -p ${ARCHROOT}/${1}/usr/lib/glib-2.0/include
+  if [ ! -d ${ARCHROOT}/${1}/usr/${C_LIBDIRS}/glib-2.0/include ];then
+    mkdir -p ${ARCHROOT}/${1}/usr/${C_LIBDIRS}/glib-2.0/include
   fi;
 
-  if [ "${MLIBDIR}" ] && [ ! -e ${ARCHROOT}/${1}/usr/${C_LIBDIRS}/glib-2.0 ];then
-    ln -s ${C_LIBDIRS} ${ARCHROOT}/${1}/usr/${C_LIBDIRS}/glib-2.0
+  if [ "${MLIBDIR}" ] && [ ! -h ${ARCHROOT}/${1}/usr/${B_LIBDIRS}/glib-2.0 ];then
+    if [ -d ${ARCHROOT}/${1}/usr/${B_LIBDIRS}/glib-2.0 ];then
+      rm -rf ${ARCHROOT}/${1}/usr/${B_LIBDIRS}/glib-2.0
+    fi;
+    ln -s ${MLIBDIR}/glib-2.0 ${ARCHROOT}/${1}/usr/${B_LIBDIRS}/
   fi;
 
   if [ "${1}" != "${NARCH}" ] || [ -d ${ARCHROOT}/${1} ];then
