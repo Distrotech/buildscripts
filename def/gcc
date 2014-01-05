@@ -1,7 +1,7 @@
 VERSION="4.8.2"
 VERSEP="-";
 PREFIX="/usr";
-ARM7OPTS="--with-arch=armv7-a --with-fpu=vfpv3-d16 --with-float=hard --disable-sjlj-exceptions";
+ARM7OPTS="--with-arch=armv7-a --with-fpu=vfpv3-d16 --with-float=hard --disable-sjlj-exceptions --with-mode=arm";
 CONFOPT="--with-ecj-jar=/usr/share/java/ecj-3.5.2.jar --enable-lto --enable-cloog-backend=isl --enable-java-home 
          --with-system-zlib --with-gmp-lib=${ARCHROOT}/${barch}/usr/${B_LIBDIRS}/${MLIBDIR}";
 OPT_x86_64="--target=x86_64-linux-gnu  --with-multilib-list=m32,m64,mx32 --with-sysroot=/ --enable-multilib
@@ -11,7 +11,7 @@ OPT_x86_32="--target=x86_64-linux-gnux32 --with-multilib-list=m32,m64,mx32 --wit
 OPT_i686="--target=i686-linux-gnu --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk
           --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 OPT_arm="--target=arm-linux-gnueabi --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk
-         --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada ${ARM7OPTS} --with-mode=arm";
+         --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada ${ARM7OPTS}";
 OPT_arm64="--target=aarch64-linux-gnu --disable-multilib --with-sysroot=/ 
            --enable-languages=c,c++,fortran,lto,objc,obj-c++,ada";
 OPT_mips64="--target=mips64-linux-gnuabi64 --with-sysroot=/ --with-abi=64 --with-arch-32=mips32 
