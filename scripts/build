@@ -746,16 +746,16 @@ cmake_cross_build() {
     if [ "${PROJECT}" == "cmake" ];then
       (../bootstrap --prefix=/usr --mandir=share && make ${MAKE_J} && make install) || return 1
     fi;
-    cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES="${EXTRALIBS}" \
-          -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" -DCMAKE_C_LINK_FLAGS="${LDFLAGS}" \
-          -DCMAKE_INSTALL_RPATH:PATH="${RLINK_PATH}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} ${1}${CFGBIN}
+    eval cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES=\"${EXTRALIBS}\" \
+          -DCMAKE_C_FLAGS=\"${CFLAGS}\" -DCMAKE_CXX_FLAGS=\"${CXXFLAGS}\" -DCMAKE_C_LINK_FLAGS=\"${LDFLAGS}\" \
+          -DCMAKE_INSTALL_RPATH:PATH=\"${RLINK_PATH}\" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} ${1}${CFGBIN}
    else
-    cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES="${EXTRALIBS}" \
-          -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" -DCMAKE_C_LINK_FLAGS="${LDFLAGS}" \
-          -DCMAKE_SYSTEM_NAME=Linux  -DCMAKE_FIND_ROOT_PATH="${SYSROOT}/" \
-          -DCMAKE_INSTALL_RPATH:PATH="${RLINK_PATH}" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} \
-          -DCMAKE_C_COMPILER=/usr/bin/${HOST}-gcc -DCMAKE_C_COMPILER_ENV_VAR="${CC_SYSROOT}" \
-          -DCMAKE_CXX_COMPILER=/usr/bin/${HOST}-g++ -DCMAKE_CXX_COMPILER_ENV_VAR="${CC_SYSROOT}" \
+    eval cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES=\"${EXTRALIBS}\" \
+          -DCMAKE_C_FLAGS=\"${CFLAGS}\" -DCMAKE_CXX_FLAGS=\"${CXXFLAGS}\" -DCMAKE_C_LINK_FLAGS=\"${LDFLAGS}\" \
+          -DCMAKE_SYSTEM_NAME=Linux  -DCMAKE_FIND_ROOT_PATH=\"${SYSROOT}/\" \
+          -DCMAKE_INSTALL_RPATH:PATH=\"${RLINK_PATH}\" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} \
+          -DCMAKE_C_COMPILER=/usr/bin/${HOST}-gcc -DCMAKE_C_COMPILER_ENV_VAR=\"${CC_SYSROOT}\" \
+          -DCMAKE_CXX_COMPILER=/usr/bin/${HOST}-g++ -DCMAKE_CXX_COMPILER_ENV_VAR=\"${CC_SYSROOT}\" \
           -DGNU_HOST=${3} -DCMAKE_TOOLCHAIN_FILE=${SCRIPTDIR}/cmake_${2}.cross ${1}${CFGBIN}
   fi;
   cmake ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} ${1}${CFGBIN}
@@ -2653,7 +2653,7 @@ build_dependancies() {
 
   #Webkit bits
   build_packages ${1} glib-networking libsoup aspell hunspell enchant gtkspell libsecret libwebp \
-    geoip-api-c geoclue geoclue-2 doxygen ruby webkitgtk || return 1
+    geoip-api-c geoclue geoclue-2 geocode-glib doxygen ruby webkitgtk || return 1
 
   #Desktop (Gnome3)
   build_packages ${1} gucharmap gnome-calculator evince ||return 1
@@ -2672,7 +2672,7 @@ build_dependancies() {
 
   #Other bits
   build_packages ${1} alsa-oss alsa-plugins alsa-tools alsa-utils TiMidity calamaris dirac netatalk mod_perl \
-    mod_python nut omniORB dtc qemu wxWidgets taglib xerces-c maven jhylafax admin_console || return 1
+    mod_python nut omniORB dtc qemu wxWidgets taglib xerces-c maven jhylafax admin_console lua || return 1
 
   #XFCE
   build_packages ${1} xfce4-dev-tools libxfce4util xfconf libxfce4ui garcon exo xfce4-panel tumbler \
@@ -2680,9 +2680,10 @@ build_dependancies() {
     thunar-volman xfce4-taskmanager xfce4-dict xfce4-mixer xfwm4-themes xfce4-icon-theme \
     tango-icon-theme hicolor-icon-theme gnome-themes || return 1
 
-#XXX
   #Evolution
-  build_packages ${1} libgdata libgweather libpst libical gtkhtml gtkimageview evolution-data-server clutter clutter-gtk || return 1
+  build_packages ${1} libgdata libgweather libpst libical gtkhtml gtkimageview librest telepathy-glib \
+    libaccounts-glib gnome-online-accounts uhttpmock googletest protobuf re2 libphonenumber libphonenumber-java \
+    evolution-data-server clutter clutter-gtk libchamplain highlight bogofilter evolution || return 1
 
   #Mono if bootstrap good
   if [ -x /usr/bin/gmcs ];then
