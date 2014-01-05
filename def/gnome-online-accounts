@@ -1,0 +1,5 @@
+VERSION="3.10.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+GITMODULES="1";

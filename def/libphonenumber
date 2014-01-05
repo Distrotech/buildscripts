@@ -1,0 +1,7 @@
+VERSION="5.9"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="-DUSE_RE2:BOOL=ON";
+CFGPTH="cpp";
+CFGBIN="cpp/";
+ADDLDFLAG="-lboost_system";

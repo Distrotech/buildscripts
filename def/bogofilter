@@ -1,0 +1,6 @@
+VERSION="20140105"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+CFGPTH="bogofilter";
+CFGBIN="bogofilter/";
