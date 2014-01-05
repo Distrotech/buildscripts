@@ -1,5 +1,5 @@
-VERSION="2.32.3"
+VERSION="3.10.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--disable-uoa --with-openldap --with-krb5 --enable-vala-bindings --without-phonenumber";
 CHROOTBUILD="1";

@@ -1,4 +1,4 @@
-VERSION="2.32.3"
+VERSION="3.10.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--disable-nm --with-openldap";
+CONFOPT="--with-krb5 --with-openldap --enable-contact-maps";

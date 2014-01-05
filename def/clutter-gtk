@@ -1,4 +1,4 @@
-VERSION="0.11.4";
+VERSION="1.4.4";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-introspection=yes CLUTTER_CFLAGS=-I=/usr/include/clutter-1.0";
