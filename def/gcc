@@ -61,11 +61,11 @@ LANG_mips64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_powerpc="--enable-languages=c,c++,fortran,lto,objc,obj-c++,go,ada,java";
 LANG_powerpc64="--enable-languages=c,c++,fortran,lto,objc,obj-c++,go,ada,java";
 ADDBUILDSYSROOT="1";
-ADDLDFLAG="-L${ARCHROOT}/${barch}/usr/${B_LIBDIRS} -L${ARCHROOT}/${barch}/usr/${B_LIBDIRS}/${MLIBDIR} -lstdc++";
+ADDLDFLAG="-L${ARCHROOT}/${barch}/usr/${B_LIBDIRS} -L${ARCHROOT}/${barch}/usr/${B_LIBDIRS}/${MLIBDIR} -L/usr/${HOST}/${B_LIBDIRS} -lstdc++";
 COREBUILD="1";
 NOMLIBDIR="1";
 MLIBDIRLN="libasan.so libatomic.so libgcc_s.so libgcj_bc.so libgcj.so libgcj-tools.so libgfortran.so
            libgij.so libgomp.so libgo.so libitm.so libmudflap.so libmudflapth.so libobjc.so
            libquadmath.so libssp.so libstdc++.so libasan.a libatomic.a libgfortran.a libgo.a
            libgobegin.a libgomp.a libiberty.a libitm.a libmudflap.a libmudflapth.a libobjc.a
-           libquadmath.a libssp.a libssp_nonshared.a libstdc++.a libsupc++.a";
+           libquadmath.a libssp.a libssp_nonshared.a libstdc++.a libsupc++.a libstdc++.la";
