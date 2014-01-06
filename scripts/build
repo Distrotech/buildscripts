@@ -1923,7 +1923,7 @@ build_gcc_bootstrap() {
 	      ${NATIVE})return 0;;
             esac;
           fi;
-          (cd ${GCCBOOTDEST}/usr/${2};rsync -Ra lib*/*so* ${ARCHROOT}/${1}/usr/)
+#          (cd ${GCCBOOTDEST}/usr/${2};rsync -Ra lib*/*so* ${ARCHROOT}/${1}/usr/)
           rsync -a ${GCCBOOTDEST}/ ${ARCHROOT}/${1}/
         fi
        elif [ -e /usr/bin/${2}-gcc.null ] && [ "${4}" == "boot" ];then
@@ -2407,13 +2407,13 @@ bootstrap_arch_root() {
       build_packages ${arch} libtool || exit 1
       #Build full cross compiler
       (build_gcc_bootstrap ${arch} ${HOST} ${NARCH} cross) || exit 1
-      case ${NARCH} in
-        x86_*)
-          case ${arch} in
-            i[3-6]86|x86_*)rsync -avP /usr/${B_LIBDIRS}/libstdc++* /usr/${HOST}/${B_LIBDIRS}/;;
-          esac;
-        ;;
-      esac;
+#      case ${NARCH} in
+#        x86_*)
+#          case ${arch} in
+#            i[3-6]86|x86_*)(cd /usr/;rsync -avPR ${B_LIBDIRS}/libstdc++* ${C_LIBDIRS}/libstdc++* /usr/${HOST}/);;
+#          esac;
+#        ;;
+#      esac;
     fi;
 
     #handle hybrid/cross builds
@@ -2427,7 +2427,7 @@ bootstrap_arch_root() {
       fontconfig jpeg tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac libsigsegv ncurses ncursesw \
       onig slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude libtirpc flex \
       Linux-PAM readline popt dialog util-linux bash coreutils bison sed texinfo libunistring libatomic_ops gc \
-      guile make gzip tar rsync grep xz diffutils patch gperf m4 cpio findutils nano less glib pkg-config \
+      glib pkg-config gzip tar rsync grep xz diffutils patch gperf m4 cpio findutils nano less \
       libxslt gdbm gawk iana-etc tzdata binutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 \
       automake-1.13 automake-1.14 file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl \
       which groff || return 1
@@ -2441,7 +2441,7 @@ bootstrap_arch_root() {
       fi;
     fi;
 
-    build_packages ${arch} perl Python c-ares curl git unzip zip linux_logo ||return 1
+    build_packages ${arch} perl Python c-ares curl git unzip zip linux_logo guile make ||return 1
 
     #Pacakges used in native bootstrap
     build_packages ${arch} cmake dbus gengetopt gettext gtk-doc help2man libcap libcap-ng libcroco nasm OpenSP openjade xmlto yasm || return 1) || return 1;
@@ -3157,7 +3157,7 @@ build_bootstrap() {
 
   echo "Shared tools"
   build_packages ${1} bison flex sed gawk make rsync grep gzip \
-    tar xz diffutils libtool gperf m4 cpio Python git findutils patch \
+    tar xz diffutils libtool gperf m4 cpio Python findutils patch \
     iana-etc tzdata || return 1
 
   echo "Packages for static root"
