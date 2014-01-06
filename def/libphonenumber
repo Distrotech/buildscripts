@@ -1,7 +1,15 @@
 VERSION="5.9"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="-DUSE_RE2:BOOL=ON";
+CONFOPT="-DUSE_RE2:BOOL=ON
+         -DBoost_DATE_TIME_LIBRARY_DEBUG:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libboost_date_time.so
+         -DBoost_DATE_TIME_LIBRARY_RELEASE:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libboost_date_time.so
+         -DGTEST_LIB:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libgtest.so
+         -DPROTOBUF_LIB:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libprotobuf.so
+         -DRE2_LIB:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libre2.so
+         -DICU_I18N_LIB:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libicui18n.so
+         -DICU_UC_LIB:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libicuuc.so";
 CFGPTH="cpp";
 CFGBIN="cpp/";
 ADDLDFLAG="-lboost_system";
+FIXUPLIB="1";

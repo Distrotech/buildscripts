@@ -2681,8 +2681,8 @@ build_dependancies() {
     tango-icon-theme hicolor-icon-theme gnome-themes || return 1
 
   #Evolution
-  build_packages ${1} libgdata libgweather libpst libical gtkhtml gtkimageview librest telepathy-glib \
-    libaccounts-glib gnome-online-accounts uhttpmock googletest protobuf re2 libphonenumber libphonenumber-java \
+  build_packages ${1} telepathy-glib librest libaccounts-glib gnome-online-accounts uhttpmock libgdata libgweather \
+    libpst libical gtkhtml gtkimageview googletest protobuf re2 libphonenumber libphonenumber-java \
     evolution-data-server clutter clutter-gtk libchamplain highlight bogofilter evolution || return 1
 
   #Mono if bootstrap good

@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 GITMODULES="1";
+CLEARFLAGS="1";
