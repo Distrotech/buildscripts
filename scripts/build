@@ -2556,8 +2556,13 @@ build_dependancies() {
       gs-fonts ijs libspectre cairo poppler atk gdk-pixbuf libvdpau mozjs polkit libmicrohttpd LVM2 cryptsetup systemd libgusb colord || return 1
   fi;
 
-  build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala \
-    libdrm intltool llvm talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
+  build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango || return 1
+
+  if [ ! -x ${ARCHROOT}/${1}/usr/bin/valac ];then
+    build_packages ${1} vala-bootstrap || return 1
+  fi;
+
+  build_packages ${1} libdrm intltool llvm talloc tevent libevent libverto krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
     module-init-tools Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh LVM2 cryptsetup systemd || return 1
 
   if [ "${NARCH}" == "${1}" ];then
