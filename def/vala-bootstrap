@@ -4,3 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 CHROOTBUILD="1";
 ALIAS="vala";
+if [ -x ${ARCHROOT}/${barch}/usr/bin/valac ];then
+  DONTBUILD="${barch}";
+fi;

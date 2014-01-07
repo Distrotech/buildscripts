@@ -2652,16 +2652,16 @@ build_dependancies() {
     libdvdnav MPlayer clucene-core libzip mdds boost libixion liborcus iso-codes || return 1
 
   #Gnoem (Base)
-  build_packages ${1} shared-mime-info gnome-common gnome-desktop-3 gnome-icon-theme gnome-icon-theme-symbolic \
-    gnome-icon-theme-extras gnome-themes-standard gsettings-desktop-schemas itstool yelp-xsl yelp-tools \
-    libnotify startup-notification || return 1
+  build_packages ${1} shared-mime-info gnome-common itstool gsettings-desktop-schemas gnome-desktop-3 \
+    icon-naming-utils gnome-icon-theme gnome-icon-theme-symbolic gnome-icon-theme-extras gnome-themes-standard \
+    yelp-xsl yelp-tools libnotify startup-notification || return 1
 
   #Webkit bits
   build_packages ${1} glib-networking libsoup aspell hunspell enchant gtkspell libsecret libwebp \
     geoip-api-c geoclue geoclue-2 geocode-glib doxygen ruby webkitgtk || return 1
 
   #Desktop (Gnome3)
-  build_packages ${1} gucharmap gnome-calculator evince ||return 1
+  build_packages ${1} desktop-file-utils gucharmap gnome-calculator evince ||return 1
 
   #Epiphany/Yelp
   build_packages ${1} gcr yelp libwnck-3 epiphany || return 1
@@ -2669,7 +2669,7 @@ build_dependancies() {
   #Desktop (Gnome / apps)
   build_packages ${1} libgnome libart libgnomecanvas libbonoboui libgnomeui glade libnotify \
     vte gnome-keyring gnome-desktop libwnck libopenraw libxkbfile libxklavier xpdf \
-    icon-naming-utils eog aterm file-roller libgsf wv abiword libgnomecanvas leafpad ffmpegthumbnailer \
+    libpeas eog aterm file-roller libgsf wv abiword libgnomecanvas leafpad ffmpegthumbnailer \
     gtk-engines libunique || return 1
 
   #Linphone
@@ -2701,7 +2701,7 @@ build_dependancies() {
     dtsguiapp || return 1
 
   #Other GUI apps
-  build_packages ${1} FreeRDP vte3 Remmina pycups desktop-file-utils system-config-printer sip PyQt-x11 \
+  build_packages ${1} FreeRDP vte3 Remmina pycups system-config-printer sip PyQt-x11 \
     python-notify notify-python reportlab hplip mm-common libsigcxx2 libtorrent rtorrent djview4 \
     gnuchess ctl CTL openexr_ctl openexr_viewers xmlcopyeditor dia || return 1
 
