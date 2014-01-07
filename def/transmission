@@ -1,4 +1,0 @@
-VERSION="1.93"
-VERSEP="-";
-PREFIX="/usr";
-CONFOPT="--enable-gtk";

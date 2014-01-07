@@ -1,0 +1,6 @@
+VERSION="2.8.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+NOCCOPT="1";
+CLEARFLAGS="1";
