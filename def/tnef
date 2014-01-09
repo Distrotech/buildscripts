@@ -1,4 +1,4 @@
-VERSION="1.4.9"
+VERSION="1.4.10"
 VERSEP="-";
-PREFIX="/usr";
+PREFIX="/opt/MailScanner";
 CONFOPT="";
