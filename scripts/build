@@ -2507,17 +2507,8 @@ build_dependancies() {
     build_packages ${1} expat libxml2 libxslt || return 1
   fi;
 
-  #Add required perl modules from cpan may not need libxml only expat !!!
-  for pmod in XML::Parser XML::SAX Font::TTF XML::Simple Archive::Zip Pod::Simple::Search YAML File::Temp \
-              Term::ReadKey Text::WrapI18N Unicode::GCString;do
-    if [ ! -e ${STATDIR}/${1}/done/${pmod} ];then
-      if [ "${NARCH}" == "${1}" ];then
-        (cpan -i ${pmod} && touch ${STATDIR}/${1}/done/${pmod}) || return 1
-       else
-        (chroot ${ARCHROOT}/${1} cpan -f -i ${pmod}) && touch ${STATDIR}/${1}/done/${pmod}
-      fi;
-    fi;
-  done
+  #Perl modules
+  build_packages ${1} perl-modules || return 1
 
   if [ "${1}" == "${NARCH}" ];then
     /sbin/ldconfig >/dev/null 2>&1
@@ -2686,9 +2677,9 @@ build_dependancies() {
     tango-icon-theme hicolor-icon-theme gnome-themes || return 1
 
   #Evolution
-  build_packages ${1} telepathy-glib librest libaccounts-glib gnome-online-accounts uhttpmock libgdata libgweather \
-    libpst libical gtkhtml gtkimageview googletest protobuf re2 libphonenumber libphonenumber-java \
-    evolution-data-server clutter clutter-gtk libchamplain highlight bogofilter evolution || return 1
+  build_packages ${1} telepathy-glib librest libaccounts-glib gnome-online-accounts uhttpmock liboauth \
+    libgdata libgweather libpst libical gtkhtml gtkimageview googletest protobuf re2 libphonenumber \
+    libphonenumber-java evolution-data-server clutter clutter-gtk libchamplain highlight bogofilter evolution || return 1
 
   #Mono if bootstrap good
   if [ -x /usr/bin/gmcs ];then
@@ -2718,7 +2709,7 @@ build_dependancies() {
   build_packages ${1} gst-plugins-good gst-plugins-ugly gst-plugins-bad gst-plugins-good-1 gst-plugins-ugly-1 gst-plugins-bad-1 || return 1
 
   #Gnome Games
-  build_packages ${1} gnome-chess gnome-klotski gnome-mahjongg gnome-mines pycairo pygobject3 gnome-sudoku aisleriot || return 1
+  build_packages ${1} gnome-chess gnome-klotski gnome-mahjongg gnome-mines Python3 pycairo pygobject3 gnome-sudoku aisleriot || return 1
 
   #Voip libs
 #XXX  build_packages ${1} openr2 libpri libss7 || return 1
