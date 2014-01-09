@@ -1,10 +1,8 @@
-VERSION="3.3.0"
+VERSION="3.3.3"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-shared --enable-ipv6 ac_cv_buggy_getaddrinfo=no ac_cv_have_long_long_format=yes
          ac_cv_file__dev_ptmx=yes ac_cv_file__dev_ptc=no";
-ALIAS="Python";
+ALIAS="cpython";
 LDISCC="0";
-GITREPO="Python";
-GITBRANCH="Python-3.3.0";
 CHROOTBUILD="1";
