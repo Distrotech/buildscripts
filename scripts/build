@@ -2659,9 +2659,9 @@ build_dependancies() {
 
   #Desktop (Gnome / apps)
   build_packages ${1} libgnome libart libgnomecanvas libbonoboui libgnomeui glade libnotify \
-    vte gnome-keyring gnome-desktop libwnck libopenraw libxkbfile libxklavier xpdf \
+    gtkspell-2 vte gnome-keyring gnome-desktop libwnck libopenraw libxkbfile libxklavier xpdf \
     libpeas eog aterm file-roller libgsf wv abiword libgnomecanvas leafpad ffmpegthumbnailer \
-    gtk-engines libunique || return 1
+    gtk-engines libunique pidgin || return 1
 
   #Linphone
   build_packages ${1} oRTP spandsp mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk libosip2 exosip linphone || return 1
