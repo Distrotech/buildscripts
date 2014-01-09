@@ -1,0 +1,7 @@
+VERSION="5.18.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+MAKEOPTS="ARCH=${barch}";
+CHROOTBUILD="1";
