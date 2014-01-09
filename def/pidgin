@@ -1,8 +1,7 @@
-VERSION="2.10.7"
+VERSION="2.11.7"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--disable-gtkspell --disable-vv --disable-meanwhile --disable-nm";
-OPT_x86_32="--with-tclconfig=/usr/libx32 --with-tkconfig=/usr/libx32";
-ADDCFLAG="-I=/usr/lib/perl5/5.16.2/${HOST}-thread-multi -I=/usr/lib/perl5/5.16.2/${HOST}-thread-multi/CORE";
-ADDLDFLAG="-L=/usr/lib/perl5/5.16.2/${HOST}-thread-multi/CORE";
-SYSROOTPATH="1";
+CONFOPT="--disable-vv --disable-nm --disable-meanwhile --with-tclconfig=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}
+         --with-tkconfig=${ARCHROOT}/${barch}/usr/${C_LIBDIRS} --enable-cyrus-sasl --enable-mono";
+ADDLDFLAG="-L=/usr/lib/perl5/5.18.1/${HOST}-thread-multi/CORE";
+CHROOTBUILD="1";
