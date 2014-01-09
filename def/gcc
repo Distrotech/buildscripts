@@ -68,4 +68,7 @@ MLIBDIRLN="libasan.so libatomic.so libgcc_s.so libgcj_bc.so libgcj.so libgcj-too
            libgij.so libgomp.so libgo.so libitm.so libmudflap.so libmudflapth.so libobjc.so
            libquadmath.so libssp.so libstdc++.so libasan.a libatomic.a libgfortran.a libgo.a
            libgobegin.a libgomp.a libiberty.a libitm.a libmudflap.a libmudflapth.a libobjc.a
-           libquadmath.a libssp.a libssp_nonshared.a libstdc++.a libsupc++.a libstdc++.la";
+           libquadmath.a libssp.a libssp_nonshared.a libstdc++.a libsupc++.a libstdc++.la
+           libssp.la libasan.la libatomic.la libgcj.la libgcj-tools.la libgfortran.la
+           libgij.la libgo.la libgomp.la libitm.la libmudflap.la libmudflapth.la libobjc.la
+           libquadmath.la libssp_nonshared.la libsupc++.la libtsan.la";
