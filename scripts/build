@@ -667,30 +667,30 @@ make_cc_destdir() {
     if [ "${ADDCFLAG}" ];then
       CC_SYSROOT="${CC_SYSROOT} ${ADDCFLAG}"
     fi;
-    /usr/bin/make ${MAKE_J} V=1 AR="${AR}" RANLIB=${RANLIB} LD="${LD}" SYSROOT=${SYSROOT} \
-      CXX="${CXX} ${CC_SYSROOT}" CC="${CC} ${CC_SYSROOT}" ${MAKEOPTS} \
+    eval /usr/bin/make ${MAKE_J} V=1 AR=\"${AR}\" RANLIB=${RANLIB} LD=\"${LD}\" SYSROOT=${SYSROOT} \
+      CXX=\"${CXX} ${CC_SYSROOT}\" CC=\"${CC} ${CC_SYSROOT}\" ${MAKEOPTS} \
       ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS}
     RES=$?
     if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
-      /usr/bin/make V=1 AR="${AR}" RANLIB=${RANLIB} LD="${LD}" SYSROOT=${SYSROOT} \
-        CXX="${CXX} ${CC_SYSROOT}" CC="${CC} ${CC_SYSROOT}" ${MAKEOPTS} \
+      eval /usr/bin/make V=1 AR=\"${AR}\" RANLIB=${RANLIB} LD=\"${LD}\" SYSROOT=${SYSROOT} \
+        CXX=\"${CXX} ${CC_SYSROOT}\" CC=\"${CC} ${CC_SYSROOT}\" ${MAKEOPTS} \
         ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
      elif [ ${RES} != 0 ];then
       return 1
     fi;
-    /usr/bin/make V=1 AR="${AR}" RANLIB=${RANLIB} LD="${LD}" SYSROOT=${SYSROOT} \
-        CXX="${CXX} ${CC_SYSROOT}" CC="${CC} ${CC_SYSROOT}" ${ARCHMOPT} DESTDIR=${DIST_ROOT} \
+    eval /usr/bin/make V=1 AR=\"${AR}\" RANLIB=${RANLIB} LD=\"${LD}\" SYSROOT=${SYSROOT} \
+        CXX=\"${CXX} ${CC_SYSROOT}\" CC=\"${CC} ${CC_SYSROOT}\" ${ARCHMOPT} DESTDIR=${DIST_ROOT} \
         ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install  || return 1
    else
-    /usr/bin/make ${MAKE_J} V=1 LDFLAGS="${LDFLAGS}" CFLAGS="${CFLAGS}" AR="${AR}" RANLIB=${RANLIB} LD="${LD}" \
-      CXX="${CXX} ${CC_SYSROOT}" CC="${CC} ${CC_SYSROOT}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
-    /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
+    eval /usr/bin/make ${MAKE_J} V=1 LDFLAGS=\"${LDFLAGS}\" CFLAGS=\"${CFLAGS}\" AR=\"${AR}\" RANLIB=${RANLIB} LD=\"${LD}\" \
+      CXX=\"${CXX} ${CC_SYSROOT}\" CC=\"${CC} ${CC_SYSROOT}\" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
+    eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
 
     RES=$?
     if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
-      /usr/bin/make V=1 LDFLAGS="${LDFLAGS}" CFLAGS="${CFLAGS}" AR="${AR}" RANLIB=${RANLIB} LD="${LD}" \
-        CXX="${CXX} ${CC_SYSROOT}" CC="${CC} ${CC_SYSROOT}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
-      /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
+      eval /usr/bin/make V=1 LDFLAGS=\"${LDFLAGS}\" CFLAGS=\"${CFLAGS}\" AR=\"${AR}\" RANLIB=${RANLIB} LD=\"${LD}\" \
+        CXX=\"${CXX} ${CC_SYSROOT}\" CC=\"${CC} ${CC_SYSROOT}\" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
+      eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
      elif [ ${RES} != 0 ];then
       return 1
     fi;
@@ -1854,12 +1854,10 @@ build_gcc_bootstrap() {
                 ${CONFOPT} ${!MARCH} ${GCCOPTS} || return 1
 
 
-  if [ "${BOOTSTRAP}" == "1" ];then
-    if [ "${NMLIBDIR}" ];then
-      rsync -a ${BUILDDIR}/usr/${NLIBDIR}/${NMLIBDIR}/crt*.o gcc/
-     else
-      rsync -a ${BUILDDIR}/usr/${NLIBDIR}/crt*.o gcc/
-    fi;
+  if [ "${NMLIBDIR}" ];then
+    rsync -a ${BUILDDIR}/usr/${NLIBDIR}/${NMLIBDIR}/crt*.o gcc/
+   else
+    rsync -a ${BUILDDIR}/usr/${NLIBDIR}/crt*.o gcc/
   fi;
 
   if [ ! -d ${2}/libstdc++-v3 ];then
