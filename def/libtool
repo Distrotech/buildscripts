@@ -9,3 +9,4 @@ SYSROOTFIXUP="0";
 STATICOPT="--disable-shared";
 STATICMOPT="LDFLAGS=-static";
 AMVER="1.13";
+MLIBDIRLN="libltdl.so";
