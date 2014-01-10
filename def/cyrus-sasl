@@ -15,3 +15,4 @@ NOCCOPT="1";
 FIXUPLIB="1";
 AMVER="1.13";
 BUILDDIR="0";
+MLIBDIRLN="libsasl2.so";
