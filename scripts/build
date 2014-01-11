@@ -74,7 +74,7 @@ export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA_VER JAVA6_VER M2_VER QT_VER
 
 #Parse cmdline opts
 #Adding a arch here may require you adding tupple/kernel arch/libdirs and bellow in arch_config
-ALLARCHLIST="i686 arm x86_64 x86_32 mips mips64 powerpc powerpc64";
+ALLARCHLIST="i686 arm x86_64 x86_32 mips mips64 powerpc powerpc64 win32 win64";
 ARCHMPAT=${ALLARCHLIST// /|}
 ALLARCH="0";
 
@@ -138,11 +138,14 @@ arch_config() {
     arm)TUPPLE=arm-linux-gnueabi;;
     mips64)TUPPLE=mips64-linux-gnuabi64;;
     x86_32)TUPPLE=x86_64-linux-gnux32;;
+    win32)TUPPLE=i686-w64-mingw32;;
+    win64)TUPPLE=x86_64-w64-mingw32;;
     *)TUPPLE=${1}-linux-gnu;;
   esac;
 
   #Set Libdir
   case ${1} in
+    win*)SETLIBDIR="lib";;
     x86_32)SETLIBDIR="libx32";;
     arm64)SETLIBDIR="lib";;
     *64)SETLIBDIR="lib64";;
@@ -312,13 +315,17 @@ check_create_arch() {
 
   export B_LIBDIRS HOST KARCH QCPU QT_SPEC MLIBDIR
 
+  if [ ! -d ${ARCHROOT} ];then
+    mkdir -p ${ARCHROOT}
+  fi;
+
+  if [ "${1:0:3}" == "win" ];then
+     return 0;
+  fi;
+
   HDIR=${BASEROOT}/${1}
   if [ ! -d ${HDIR} ];then
     mkdir -p ${HDIR}/usr/include
-  fi;
-
-  if [ ! -d ${ARCHROOT} ];then
-    mkdir -p ${ARCHROOT}
   fi;
 
   #Core utils barfs when bootstraping
@@ -632,12 +639,17 @@ tar_package() {
 
 sysroot_fixup() {
   if [ "${SYSROOTFIXUP}" == "1" ];then
+    if [ "${1:0:3}" == "win" ];then
+      ARCHUSR="mingw";
+     else
+      ARCHUSR="usr";
+    fi;
     #Replace all libtools with the "sysroot" version
     for ltool in `find . -name libtool`;do
       if [ -x ${ltool} ];then
-        if [ -d ${ARCHROOT}/${1} ] && [ -e ${ARCHROOT}/${1}/usr/bin/libtool ];then
+        if [ -d ${ARCHROOT}/${1} ] && [ -e ${ARCHROOT}/${1}/${ARCHUSR}/bin/libtool ];then
           rm ${ltool}
-          cp ${ARCHROOT}/${1}/usr/bin/libtool ${ltool}
+          cp ${ARCHROOT}/${1}/${ARCHUSR}/bin/libtool ${ltool}
          elif [ -e /usr/bin/libtool ];then
           rm ${ltool}
           cp /usr/bin/libtool ${ltool}
@@ -662,7 +674,16 @@ make_cc_destdir() {
     export LD="${HOST}-ld --sysroot=${SYSROOT}/ --rpath-link=${RLINK_PATH}"
   fi;
 
-  if [ "${NOMAKEFLAGS}" == "1" ];then
+  if [ "${STDMAKEOPTS}" ];then
+    eval /usr/bin/make ${MAKE_J} V=1 ${STDMAKEOPTS} ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS}
+    RES=$?
+    if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
+      eval /usr/bin/make V=1 ${STDMAKEOPTS} ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
+     elif [ ${RES} != 0 ];then
+      return 1
+    fi;
+    eval /usr/bin/make V=1 ${STDMAKEOPTS} ${ARCHMOPT} DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${MAKEITARGETS} install  || return 1
+   elif [ "${NOMAKEFLAGS}" == "1" ];then
     unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
     if [ "${ADDCFLAG}" ];then
       CC_SYSROOT="${CC_SYSROOT} ${ADDCFLAG}"
@@ -838,7 +859,7 @@ autoconf_cross_build() {
   fi;
 
   #Disable shared libs for c++ libs where libstdc++ is not shared
-  if [ "${STDCSTATIC}" ] && [ ! -f ${SYSROOT}/usr/${B_LIBDIRS}/libstdc++.so ] && [ ! -f /usr/${3}/${B_LIBDIRS}/libstdc++.so ] && [ "${BOOTSTRAP}" == "0" ];then
+  if [ "${2:0:3}" != "win" ] && [ "${STDCSTATIC}" ] && [ ! -f ${SYSROOT}/usr/${B_LIBDIRS}/libstdc++.so ] && [ ! -f /usr/${3}/${B_LIBDIRS}/libstdc++.so ] && [ "${BOOTSTRAP}" == "0" ];then
       STDOPTSX="${STDOPTSX} ${STDCSTATIC}";
   fi;
 
@@ -1151,7 +1172,14 @@ build_project() {
     export QTDIR=/opt/qt-${QT_VER}
   fi;
 
-  CFLAGS="${ADDCFLAG} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/usr/lib/glib-2.0/include -I=/usr/include/glib-2.0 -I=/usr/include/gtk-3.0 -I=/usr/include/gtk-2.0 -I=/usr/include/dbus-1.0 -I=/opt/xfce/include -I=/usr/${C_LIBDIRS}/glib-2.0/include";
+  if [ "${barch:0:3}" == "win" ];then
+    ARCHPREFIX="/mingw";
+    PREFIX=${ARCHPREFIX};
+   else
+    ARCHPREFIX="/usr";
+  fi;
+
+  CFLAGS="${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${ARCHPREFIX}/X11R7/include -I=${ARCHPREFIX}/lib/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=${ARCHPREFIX}/xfce/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include";
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
@@ -1168,8 +1196,12 @@ build_project() {
   export FORCE_UNSAFE_CONFIGURE=1
 
   PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/share/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/qt-5/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig";
-  RLINK_PATH="${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/qt-5/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio";
-  BASE_LIBPATH="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/qt-5/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS}"
+  if [ "${barch:0:3}" == "win" ];then
+    RLINK_PATH="${SYSROOT}/mingw/lib";
+   else
+    RLINK_PATH="${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/qt-5/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio";
+  fi;
+  BASE_LIBPATH="-L=${ARCHPREFIX}/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/qt-5/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS}"
 
   if [ "${C_LIBDIRS}" != "${B_LIBDIRS}" ];then
     PKG_CONFIG_PATH="${SYSROOT}/${C_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${C_LIBDIRS}/pkgconfig:${PKG_CONFIG_PATH}";
@@ -1177,7 +1209,7 @@ build_project() {
     BASE_LIBPATH="-L=/${C_LIBDIRS} -L=/usr/${C_LIBDIRS} ${BASE_LIBPATH}"
   fi;
 
-  export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH} ${BASE_LIBPATH} -I=/include -I=/usr/include -I=/usr/X11R7/include -I=/opt/xfce/include";
+  export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH} ${BASE_LIBPATH} -I=/include -I=${ARCHPREFIX}/include -I=${ARCHPREFIX}/X11R7/include -I=/opt/xfce/include";
 
   if [ "${BOOTSTRAP}" == "0" ];then
     CC="/usr/bin/${HOST}-gcc";
@@ -1188,7 +1220,7 @@ build_project() {
     CXX="${HOST}-g++"
     LD="${HOST}-ld"
   fi;
-  export CC CXX PKG_CONFIG_PATH RLINK_PATH MLIBDIRLN
+  export CC CXX PKG_CONFIG_PATH RLINK_PATH MLIBDIRLN ARCHPREFIX
   if [ "${BOOTSTRAP}" == "0" ];then
     export LD_LIBRARY_PATH="${RLINK_PATH}"
   fi;
@@ -1648,6 +1680,7 @@ build_bootstrap_binutils() {
    else
     C_LIBDIRS=${B_LIBDIRS}
   fi;
+
   run_configure ${C_LIBDIRS} .. ${PROGPRE} --target=${2} --build=${BUILD} --host=${BUILD} \
                 ${CONFOPT} ${ARCHOPT} ${CSYSROOT} CC=${BUILD}-gcc || return 1
   make ${MAKE_J} configure-host || return 1
@@ -1830,7 +1863,14 @@ build_gcc_bootstrap() {
    else
     BUILDDIR=/
   fi;
-  LDFLAGS_FOR_TARGET="-L${BUILDDIR}/usr/${TLIBDIR} -L${BUILDDIR}/${TLIBDIR} -L${ARCHROOT}/${1}/usr/${C_LIBDIRS}"
+ 
+  if [ "${1:0:3}" != "win" ];then
+    TPREFIX=${PREFIX}
+   else
+    TPREFIX=/mingw
+  fi;
+
+  LDFLAGS_FOR_TARGET="-L${BUILDDIR}/${TPREFIX}/${TLIBDIR} -L${TPREFIX}/${TLIBDIR} -L${ARCHROOT}/${1}/${TPREFIX}/${C_LIBDIRS}"
   if [ "${1}" == "${NARCH}" ] && [ ! -x /usr/${2}/bin/ld ];then
     LDFLAGS_FOR_TARGET="${LDFLAGS_FOR_TARGET} -B${BUILDDIR}/usr/${2}/bin";
   fi;
@@ -1850,6 +1890,7 @@ build_gcc_bootstrap() {
 #  fi;
 
   export CFLAGS CXXFLAGS LDFLAGS
+
   run_configure ${USELIBDIR} .. ${PROGPRE} --build=${BUILD} --host=${THOST} --target=${2} --with-build-sysroot=${BUILDDIR} \
                 ${CONFOPT} ${!MARCH} ${GCCOPTS} || return 1
 
@@ -1922,7 +1963,9 @@ build_gcc_bootstrap() {
             esac;
           fi;
 #          (cd ${GCCBOOTDEST}/usr/${2};rsync -Ra lib*/*so* ${ARCHROOT}/${1}/usr/)
-          rsync -a ${GCCBOOTDEST}/ ${ARCHROOT}/${1}/
+          if [ "${1:0:3}" != "win" ];then
+            rsync -a ${GCCBOOTDEST}/ ${ARCHROOT}/${1}/
+          fi;
         fi
        elif [ -e /usr/bin/${2}-gcc.null ] && [ "${4}" == "boot" ];then
         rsync -aP ${GCCBOOTDEST}/ /
@@ -2820,6 +2863,36 @@ bootstrap_native() {
   (build_glibc_march ${NARCH}) || return 1
 }
 
+windows_build_toolchain() {
+  arch_config ${1}
+
+
+  if [ ! -d ${ARCHROOT}/${1} ];then
+    mkdir -p ${ARCHROOT}/${1}
+  fi;
+
+  echo "Binutils for ${1} ${TUPPLE}"
+  (build_bootstrap_binutils ${1} ${TUPPLE}) || return 1
+
+  build_packages ${1} mingw-w64-headers || return 1
+
+  if [ ! -x /usr/bin/${TUPPLE}-gcc ];then
+    echo "GCC Null Compiler to bootstrap crt"
+    (build_gcc_bootstrap ${1} ${TUPPLE} ${2} null) || return 1
+  fi;
+
+  build_packages ${1} mingw-w64-crt libtool mingw-w64-winpthreads mingw-w64-libmangle mingw-w64-pseh mingw-w64-winstorecompat || return 1
+
+  echo "GCC Cross Compiler"
+  (build_gcc_bootstrap ${1} ${TUPPLE} ${2} cross) || return 1
+
+  build_packages ${1} mingw-w64-gendef mingw-w64-genidl mingw-w64-genpeimg mingw-w64-widl || return 1
+
+#ecj with sysroot ??
+  build_packages ${1} dlfn-win32 zlib regex \
+    libtool gmp mpfr mpc isl cloog gcc libunistring icu make libiconv xz openssl libxml2 libxslt gettext libffi glib libcroco || return 1
+}
+
 bootstrap_toolchain() {
   #Is LD good ?? create symlinks needed
   for binarch in ${HOST} ${BUILD};do
@@ -3291,6 +3364,11 @@ for barch in ${ARCHLIST};do
 
   #Check arch build dir exists Setup linux headers and env vars
   check_create_arch ${barch}
+
+  if [ "${barch:0:3}" == "win" ];then
+    (windows_build_toolchain ${barch} ${NARCH})
+    continue
+  fi;
 
   JAVA_VER=${DEF_JAVA_VER}
   QT_VER="${DEF_QT_VER}";
