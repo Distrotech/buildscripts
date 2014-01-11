@@ -1,0 +1,12 @@
+VERSION="3.1.0"
+VERSEP="-";
+if [ "${barch:0:3}" != "win" ];then
+  PREFIX="/usr";
+ else
+  PREFIX="/mingw";
+fi;
+CONFOPT="--enable-shared";
+ADDWITHSYSROOT="1";
+ALIAS="mingw-w64";
+CFGPTH="mingw-w64-tools/genidl";
+CFGBIN="genidl/";

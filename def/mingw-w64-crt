@@ -1,0 +1,16 @@
+VERSION="3.1.0"
+VERSEP="-";
+PREFIX="/mingw";
+CONFOPTS="";
+STDOPTS="--host=${HOST} --build=${BUILD} --enable-lib32 --prefix=${PREFIX}";
+ADDWITHSYSROOT="1";
+OPT_win64="--enable-lib64 --enable-lib32";
+ALIAS="mingw-w64";
+if [ "${barch:0:3}" != "win" ];then
+  DONTBUILD="${barch}";
+fi;
+CFGPTH="mingw-w64-crt";
+CFGBIN="mingw-w64-crt/";
+NOCCOPT="1";
+ADDCC="0";
+CLEARFLAGS="1";

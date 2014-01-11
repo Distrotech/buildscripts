@@ -1,0 +1,11 @@
+VERSION="3.1.0"
+VERSEP="-";
+PREFIX="/mingw";
+CONFOPT="--enable-shared";
+ADDWITHSYSROOT="1";
+ALIAS="mingw-w64";
+if [ "${barch:0:3}" != "win" ];then
+  DONTBUILD="${barch}";
+fi;
+CFGPTH="mingw-w64-libraries/winstorecompat";
+CFGBIN="winstorecompat/";
