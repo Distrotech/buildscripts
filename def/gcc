@@ -23,6 +23,10 @@ OPT_powerpc="--target=powerpc-linux-gnu --with-sysroot=/ --with-jvm-root-dir=/us
              --enable-languages=c,c++,fortran,lto,objc,obj-c++,go,ada,java --disable-libsanitizer";
 OPT_powerpc64="--target=powerpc64-linux-gnu --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk
              --enable-languages=c,c++,fortran,lto,objc,obj-c++,go,ada,java --disable-libsanitizer";
+OPT_win32="--target=i686-w64-mingw32 --with-sysroot=/ --with-jvm-root-dir=/mingw/lib/jvm/gcj-jdk
+          --disable-multilib --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go";
+OPT_win64="--target=x86_64-w64-mingw32 --with-sysroot=/ --with-jvm-root-dir=/mingw/lib/jvm/gcj-jdk
+          --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go";
 DEPENDS="gmp mpfr mpc isl cloog";
 SYSROOTFIXUP="0";
 NOCCOPT="1";
@@ -43,6 +47,7 @@ BOOTOPT_x86_32="--disable-multilib";
 BOOTOPT_x86_64="--disable-multilib";
 BOOTOPT_arm="${ARM7OPTS} --enable-multilib --with-mode=arm";
 BOOTOPT_arm64="--enable-multilib";
+BOOTOPT_win32="--disable-multilib";
 CROSSOPT_x86_32="--with-multilib-list=m32,m64,mx32";
 CROSSOPT_x86_64="--with-multilib-list=m32,m64,mx32";
 CROSSOPT_powerpc="--disable-multilib --disable-libsanitizer";
@@ -51,6 +56,7 @@ CROSSOPT_arm="${ARM7OPTS} --with-mode=arm";
 CROSSOPT_arm64="--disable-multilib --disable-libatomic";
 CROSSOPT_mips="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
 CROSSOPT_mips64="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=64";
+CROSSOPT_win32="--disable-multilib";
 LANG_i686="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_x86_32="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_x86_64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
@@ -60,6 +66,8 @@ LANG_mips="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_mips64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_powerpc="--enable-languages=c,c++,fortran,lto,objc,obj-c++,go,ada,java";
 LANG_powerpc64="--enable-languages=c,c++,fortran,lto,objc,obj-c++,go,ada,java";
+LANG_win32="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
+LANG_win64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 ADDBUILDSYSROOT="1";
 ADDLDFLAG="-L${ARCHROOT}/${barch}/usr/${B_LIBDIRS} -L${ARCHROOT}/${barch}/usr/${B_LIBDIRS}/${MLIBDIR} -L/usr/${HOST}/${B_LIBDIRS} -lstdc++";
 COREBUILD="1";

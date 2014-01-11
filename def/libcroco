@@ -1,5 +1,9 @@
 VERSION="0.6.8"
 VERSEP="-";
-PREFIX="/usr";
 CONFOPT="";
-ADDCFLAG="-I=/usr/include/libxml2";
+if [ "${barch:0:3}" == "win" ];then
+  PREFIX="/mingw";
+ else
+  PREFIX="/usr";
+fi
+ADDCFLAG="-I=${PREFIX}/include/libxml2";

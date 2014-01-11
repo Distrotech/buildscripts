@@ -12,4 +12,6 @@ OPTX_powerpc64="--with-cross-build=/usr/src/icu/icu-52.1/build-${NARCH}";
 OPTX_i686="--with-cross-build=/usr/src/icu/icu-52.1/build-${NARCH}";
 OPTX_x86_32="--with-cross-build=/usr/src/icu/icu-52.1/build-${NARCH}";
 OPTX_x86_64="--with-cross-build=/usr/src/icu/icu-52.1/build-${NARCH}";
+OPTX_win32="--with-cross-build=/usr/src/icu/icu-52.1/build-${NARCH}";
+OPTX_win64="--with-cross-build=/usr/src/icu/icu-52.1/build-${NARCH}";
 NODIET="1";

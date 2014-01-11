@@ -1,7 +1,11 @@
 VERSION="3.0.13"
 VERSEP="-";
-PREFIX="/usr";
-STDOPTS="--prefix=/usr --libdir=/usr/${B_LIBDIRS} --host=${HOST}";
+if [ "${barch:0:3}" == "win" ];then
+  PREFIX="/mingw";
+ else
+  PREFIX="/usr";
+fi;
+STDOPTS="--prefix=${PREFIX} --libdir=${PREFIX}/${B_LIBDIRS} --host=${HOST}";
 CONFOPT="";
 OPT_arm="--with-gcc-arch=arm TARGET=ARM TARGETDIR=arm";
 OPT_x86_64="--with-gcc-arch=x86_64";

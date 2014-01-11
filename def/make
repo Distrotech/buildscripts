@@ -3,6 +3,8 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 OPT_powerpc="--without-guile";
+OPT_win32="--without-guile";
+OPT_win64="--without-guile";
 COREBUILD="1";
 if [ ! -e ${ARCHROOT}/${barch}/usr/${C_LIBDIRS} ];then
   CONFOPT="${CONFOPT} --without-guile";

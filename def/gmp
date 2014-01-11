@@ -6,6 +6,8 @@ CONFOPT="--enable-cxx";
 OPT_i686="--with-pic ABI=32";
 OPT_x86_32="--with-pic ABI=x32";
 OPT_x86_64="--with-pic ABI=64";
+OPT_win32="--disable-static --enable-shared";
+OPT_win64="--disable-static --enable-shared ABI=64";
 ADDWITHSYSROOT="1";
 SYSROOTFIXUP="1";
 ADDCFLAG="-fPIC";
@@ -16,3 +18,6 @@ GITREPO="gmp-5.1";
 AMVER="1.14";
 CLEARFLAGS="1";
 MAKE_J="-j2";
+if [ "${barch}" == "win64" ];then
+  MAKEOPTS="GMP_LDFLAGS=-no-undefined LIBGMP_LDFLAGS=-Wl,.libs/libgmp-3.dll.def";
+fi;

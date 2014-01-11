@@ -1,7 +1,13 @@
 VERSION="2.38.1"
 VERSEP="-";
-PREFIX="/usr";
-CONFOPT="--enable-static --enable-shared --disable-libelf";
+CONFOPT="--enable-shared --disable-libelf";
+if [ "${barch:0:3}" != "win" ];then
+  CONFOPT="${CONFOPT} --enable-static";
+  PREFIX="/usr";
+ else
+  CONFOPT="${CONFOPT} --disable-static";
+  PREFIX="/mingw";
+fi;
 OPT_mips="glib_cv_stack_grows=no glib_cv_uscore=no ac_cv_func_posix_getpwuid_r=yes ac_cv_func_posix_getgrgid_r=yes 
             ac_cv_alignof_guint32=4 ac_cv_alignof_guint64=4 ac_cv_alignof_unsigned_long=4 
             glib_cv_long_long_format=ll glib_cv_sane_realloc=yes glib_cv_have_strlcpy=no glib_cv_va_val_copy=yes 
@@ -43,3 +49,4 @@ OPT_powerpc64="glib_cv_stack_grows=no glib_cv_uscore=no ac_cv_func_posix_getpwui
             glib_cv_monotonic_clock=no ac_cv_func_nonposix_getpwuid_r=no ac_cv_func_printf_unix98=no  
             ac_cv_func_vsnprintf_c99=yes";
 ADDWITHSYSROOT="1";
+ADDCFLAG="-I=${PREFIX}/lib/libffi-3.0.13/include";

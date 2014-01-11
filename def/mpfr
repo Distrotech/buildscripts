@@ -3,3 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 STDCSTATIC="--disable-shared LDFLAGS=-static";
+OPT_win32="--disable-static --enable-shared";
+OPT_win64="--disable-static --enable-shared";
