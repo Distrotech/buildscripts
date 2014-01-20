@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 EXTRALIBS="-llzma";
 FIXUPLIB="1";
+USEMINGW="1";
