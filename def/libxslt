@@ -12,6 +12,9 @@ OPT_powerpc="--with-python=/build/powerpc/usr";
 OPT_powerpc64="--with-python=/build/powerpc64/usr";
 OPT_win32="--without-python --with-libxml-include-prefix=${ARCHROOT}/${barch}/mingw/include/libxml2";
 OPT_win64="--without-python --with-libxml-include-prefix=${ARCHROOT}/${barch}/mingw/include/libxml2";
-if [ "${barch:0:3}" == "win" ];then
+OPT_cyg32="--without-python --with-libxml-include-prefix=${ARCHROOT}/${barch}/usr/include/libxml2";
+OPT_cyg64="--without-python --with-libxml-include-prefix=${ARCHROOT}/${barch}/usr/include/libxml2";
+if [ "${barch:0:3}" == "win" ] || [ "${barch:0:3}" == "cyg" ];then
   ADDCFLAG="-I=/mingw/include/libxml2"
 fi;
+USEMINGW="1";
