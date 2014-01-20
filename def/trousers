@@ -2,3 +2,5 @@ VERSION="0.3.10"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+USEMINGW="1";
+DONTBUILD="cyg32 cyg64";
