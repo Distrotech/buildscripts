@@ -1,9 +1,13 @@
 VERSION="3.1.0"
 VERSEP="-";
-PREFIX="/mingw";
-CONFOPT="--enable-secure-api --enable-idl";
 ALIAS="mingw-w64";
-if [ "${barch:0:3}" != "win" ];then
+if [ "${barch:0:3}" == "win" ];then
+  PREFIX="/mingw";
+  CONFOPT="--enable-secure-api --enable-idl";
+ elif [ "${barch:0:3}" == "cyg" ];then
+  PREFIX="/usr";
+  CONFOPT="--enable-w32api";  
+ else
   DONTBUILD="${barch}";
 fi;
 CFGPTH="mingw-w64-headers";

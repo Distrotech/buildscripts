@@ -1,12 +1,19 @@
 VERSION="3.1.0"
 VERSEP="-";
-PREFIX="/mingw";
+if [ "${barch:0:3}" == "win" ];then
+  PREFIX="/mingw";
+ else
+  PREFIX="/usr";
+fi;
 CONFOPTS="";
-STDOPTS="--host=${HOST} --build=${BUILD} --enable-lib32 --prefix=${PREFIX}";
+STDOPTS="--host=${HOST} --build=${BUILD} --prefix=${PREFIX}";
 ADDWITHSYSROOT="1";
+OPT_win32="--enable-lib32";
 OPT_win64="--enable-lib64 --enable-lib32";
+OPT_cyg32="--enable-lib32 --enable-w32api CFLAGS=-I=/usr/include/w32api";
+OPT_cyg64="--enable-lib64 --enable-lib32 --enable-w32api CFLAGS=-I=/usr/include/w32api";
 ALIAS="mingw-w64";
-if [ "${barch:0:3}" != "win" ];then
+if [ "${barch:0:3}" != "win" ] &&  [ "${barch:0:3}" != "cyg" ];then
   DONTBUILD="${barch}";
 fi;
 CFGPTH="mingw-w64-crt";
