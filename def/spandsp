@@ -3,3 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes";
 GITBRANCH="master";
+if [ "${barch:0:3}" == "win" ];then
+  EXTRALIBS="-lws2_32";
+fi;
+
