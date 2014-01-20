@@ -1,20 +1,30 @@
 VERSION="1.0.7"
 VERSEP="-";
-PREFIX="/usr";
 NOCCOPT="1";
 BUILDDIR="0";
-STDOPTS="--prefix=/usr --mandir=/usr/share/man --libdir=/usr/${C_LIBDIRS} --shlibdir=/usr/${C_LIBDIRS}";
-CONFOPT="--enable-nonfree --enable-shared --enable-vdpau --enable-bzlib --enable-libtheora
-         --enable-gpl --enable-libfreetype --enable-libmp3lame --enable-libdc1394 --enable-libcelt
-         --enable-libschroedinger --enable-libspeex --enable-libaacplus --enable-libfaac
-         --enable-libvorbis --enable-zlib --enable-libvpx --enable-vaapi --enable-gpl --enable-version3
-         --enable-libxvid --enable-libopencore-amrnb --enable-libopencore-amrwb 
-         --enable-libvo-aacenc --enable-libvo-amrwbenc --enable-libnut --enable-libx264 --enable-libgsm 
-         --enable-version3 --enable-librtmp --enable-libopenjpeg
-         --enable-avresample --enable-vda --enable-fontconfig --enable-libass --enable-openssl --enable-libbluray 
-         --enable-libutvideo --enable-libpulse --enable-libmodplug --enable-gnutls
-         --enable-libcaca --enable-libxavs --enable-libfdk-aac --enable-libcdio --enable-libtwolame --enable-libiec61883
-         --enable-libopus --enable-vdpau --disable-stripping --enable-openal";
+if [ "${barch:0:3}" == "win" ];then
+  PREFIX="/mingw";
+  CONFOPT="--enable-shared --enable-static --enable-gpl --enable-libgsm --enable-libvpx --enable-libx264
+           --enable-libvorbis --enable-libtheora --enable-libspeex --enable-openssl --enable-gnutls --enable-nonfree";
+ else
+  PREFIX="/usr";
+  CONFOPT="--enable-nonfree --enable-shared --enable-vdpau --enable-bzlib --enable-libtheora
+           --enable-gpl --enable-libfreetype --enable-libmp3lame --enable-libdc1394 --enable-libcelt
+           --enable-libschroedinger --enable-libspeex --enable-libaacplus --enable-libfaac
+           --enable-libvorbis --enable-zlib --enable-libvpx --enable-vaapi --enable-gpl --enable-version3
+           --enable-libxvid --enable-libopencore-amrnb --enable-libopencore-amrwb 
+           --enable-libvo-aacenc --enable-libvo-amrwbenc --enable-libnut --enable-libx264 --enable-libgsm 
+           --enable-version3 --enable-librtmp --enable-libopenjpeg
+           --enable-avresample --enable-vda --enable-fontconfig --enable-libass --enable-openssl --enable-libbluray 
+           --enable-libutvideo --enable-libpulse --enable-libmodplug --enable-gnutls
+           --enable-libcaca --enable-libxavs --enable-libfdk-aac --enable-libcdio --enable-libtwolame --enable-libiec61883
+           --enable-libopus --enable-vdpau --disable-stripping --enable-openal";
+fi;
+STDOPTS="--prefix=${PREFIX} --mandir=${PREFIX}/share/man --libdir=${PREFIX}/${C_LIBDIRS} --shlibdir=${PREFIX}/${C_LIBDIRS} --host-os=linux";
+OPT_win32="--enable-cross-compile --sysroot=${ARCHROOT}/${barch} --arch=x86 --target-os=mingw32 --cross-prefix=${HOST}- 
+          --host-cc=/usr/bin/gcc";
+OPT_win64="--enable-cross-compile --sysroot=${ARCHROOT}/${barch} --arch=x86_64 --target-os=mingw32 --cross-prefix=${HOST}- 
+          --host-cc=/usr/bin/gcc";
 OPT_i686="--enable-cross-compile --sysroot=/build/i686 --arch=i686 --target-os=linux --cross-prefix=i686-linux-gnu- 
           --cpu=i686 --extra-cflags=-m32 --extra-ldflags=-m32 --host-cc=/usr/bin/gcc
           --enable-libopencv --enable-frei0r --enable-libv4l2";
