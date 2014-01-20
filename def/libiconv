@@ -1,7 +1,7 @@
 VERSION="1.14"
 VERSEP="-";
-PREFIX="/mingw";
+PREFIX="/usr";
 CONFOPT="--enable-shared";
-if [ "${barch:0:3}" != "win" ];then
+if [ "${barch:0:3}" != "win" ] && [ "${barch:0:3}" != "cyg" ];then
   DONTBUILD="${barch}";
 fi;
