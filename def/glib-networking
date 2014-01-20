@@ -1,4 +1,13 @@
 VERSION="2.37.2"
 VERSEP="-";
-PREFIX="/usr";
+if [ "${barch:0:3}" == "win" ];then
+  PREFIX="/mingw";
+ else
+  PREFIX="/usr";
+fi;
+ADDWITHSYSROOT="1";
 CONFOPT="--with-ca-certificates=/etc/ssl/certs";
+ADDCFLAG="-I=${PREFIX}/lib/glib-2.0/include -I=${PREFIX}/include/glib-2.0/ -I=${PREFIX}/include/p11-kit-1 -I=${PREFIX}/include/gsettings-desktop-schemas";
+#LDFLAGS="-L=/mingw/lib"
+NOCCOPT="1";
+CLEARFLAGS="1";
