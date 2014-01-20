@@ -1,5 +1,13 @@
 VERSION="0.22.0"
+XVERSION_win32="0.20.0";
+XVERSION_win64="0.20.0";
 VERSEP="-";
-PREFIX="/usr";
-CONFOPT="";
-AMVER="1.11";
+if [ "${barch:0:3}" == "win" ];then
+  PREFIX="/mingw";
+ else
+  PREFIX="/usr";
+fi;
+CONFOPT="--with-srtp=${PREFIX} --disable-strict";
+AMVER="1.14";
+CLEARFLAGS="1";
+NOCCOPT="1";
