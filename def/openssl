@@ -6,3 +6,4 @@ BUILDDIR="0";
 FIXUPLIB="1";
 ADDCFLAG="-fPIC";
 MLIBDIRLN="libcrypto.so libssl.so"
+USEMINGW="1";
