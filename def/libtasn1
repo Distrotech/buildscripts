@@ -1,4 +1,9 @@
 VERSION="3.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+if [ "${barch:0:3}" == "win" ] || [ "${barch:0:3}" == "cyg" ];then
+  USEMINGW="1";
+  CONFOPT="HELP2MAN=true";
+ else
+  CONFOPT="";
+fi;
