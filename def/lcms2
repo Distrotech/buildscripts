@@ -2,3 +2,4 @@ VERSION="2.5"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+USEMINGW="1";
