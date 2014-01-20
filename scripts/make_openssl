@@ -19,25 +19,25 @@ case ${1} in
        SARCH=powerpc;;
   x86_64)TYPE=linux-x86_64
       SARCH=${1};;
-  win32)TYPE=mingw
+  win32|cyg32)TYPE=mingw
       SARCH=${1};;
-  win64)TYPE=mingw64
+  win64|cyg64)TYPE=mingw64
       SARCH=${1};;
 esac;
 
 if [ "${1}" == "${NARCH}" ] && [ ! -d /build/${1} ];then
-  INCDIR=/usr/include
+  INCDIR=${ARCHPREFIX}/include
  else
-  INCDIR=/build/${1}/usr/include 
+  INCDIR=/build/${1}${ARCHPREFIX}/include 
 fi;
 
 make clean
 rm Makefile Makefile.bak
 SYSROOT=`${2}-gcc -print-sysroot`
 ./Configure --prefix=${ARCHPREFIX} --openssldir=/etc/openssl shared zlib-dynamic ${TYPE} 
-make LDFLAGS="-L${SYSROOT}/usr/lib" AR="${AR} r" RANLIB=${RANLIB} \
+make LDFLAGS="-L${SYSROOT}/${ARCHPREFIX}/lib" AR="${AR} r" RANLIB=${RANLIB} \
   CC="${CC}" CROSS_COMPILE=${HOST}- ARCH=${SARCH} INCLUDEDIR=${INCDIR} INSTALL_PREFIX=${3} \
-  MANDIR=/usr/share/man all install || exit 1
+  MANDIR=${ARCHPREFIX}/share/man all install || exit 1
 
 rm -rf ${3}/etc/openssl/certs
 ln -s ../ssl/certs ${3}/etc/openssl/certs
