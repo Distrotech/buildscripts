@@ -1,5 +1,14 @@
 VERSION="0.1"
 VERSEP="-";
+if [ "${barch:0:3}" == "win" ];then
+  WXVER="msw"
+  PREFIX="/mingw";
+ else
+  WXVER="gtk2"
+  PREFIX="/usr";
+fi;
+CONFOPT="";
+CONFOPTX="--with-wx-config=${ARCHROOT}/${barch}${PREFIX}/${C_LIBDIRS}/wx/config/${HOST}-${WXVER}-unicode-3.0";
 PREFIX="/usr";
 CONFOPT="";
 GITBRANCH="master";
