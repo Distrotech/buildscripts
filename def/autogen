@@ -6,3 +6,4 @@ ADDCFLAG="-I=/usr/include/guile/2.0";
 OPT_mips="--target=mips-linux-gnu";
 DONTBUILD="arm64 mips mips64 powerpc powerpc64";
 AMVER="1.14";
+CHROOTBUILD="1";
