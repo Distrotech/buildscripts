@@ -1,12 +1,16 @@
 VERSION="2.38.1"
 VERSEP="-";
 CONFOPT="--enable-shared --disable-libelf";
-if [ "${barch:0:3}" != "win" ];then
-  CONFOPT="${CONFOPT} --enable-static";
-  PREFIX="/usr";
- else
+if [ "${barch:0:3}" == "win" ];then
   CONFOPT="${CONFOPT} --disable-static";
   PREFIX="/mingw";
+ elif [ "${barch:0:3}" == "cyg" ];then
+  USEMINGW="1";
+  CONFOPT="${CONFOPT} --disable-static";
+  PREFIX="/usr";
+ else
+  CONFOPT="${CONFOPT} --enable-static";
+  PREFIX="/usr";
 fi;
 OPT_mips="glib_cv_stack_grows=no glib_cv_uscore=no ac_cv_func_posix_getpwuid_r=yes ac_cv_func_posix_getgrgid_r=yes 
             ac_cv_alignof_guint32=4 ac_cv_alignof_guint64=4 ac_cv_alignof_unsigned_long=4 
