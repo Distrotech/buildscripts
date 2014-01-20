@@ -3,3 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 FIXUPLIB="1";
+USEMINGW="1";
+CLEARFLAGS="1";
