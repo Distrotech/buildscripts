@@ -1,9 +1,15 @@
-VERSION="1.2.0"
-VERSION_arm="20131227";
+VERSION="1.2.0";
+VERSION_arm="20140119";
+VERSION_win32="20140119";
+VERSION_win64="20140119";
 VERSEP="-";
-PREFIX="/usr";
+if [ "${barch:0:3}" == "win" ];then
+  PREFIX="/mingw";
+ else
+  PREFIX="/usr";
+fi;
 CONFOPT="--enable-vp8 --enable-pic --enable-shared --enable-static --disable-unit-tests";
-STDOPTS="--prefix=/usr";
+STDOPTS="--prefix=${PREFIX}";
 OPT_arm="--target=armv7-linux-gcc --extra-cflags=-mhard-float";
 OPT_arm64="--target=aarch64-linux-gcc";
 OPT_mips="--target=mips32-linux-gcc";
@@ -13,8 +19,13 @@ OPT_powerpc64="--target=ppc64-linux-gcc";
 OPT_i686="--target=x86-linux-gcc --as=yasm";
 OPT_x86_64="--target=x86_64-linux-gcc --as=yasm";
 OPT_x86_32="--target=x86_64-linux-gcc --as=yasm";
+OPT_cyg32="--target=i686-w64-mingw32";
+OPT_win32="--target=x86-win32-gcc --as=yasm";
+OPT_win64="--target=x86_64-win64-gcc --as=yasm";
 FIXUPLIB="1";
 NOCCOPT="1";
 ADDCC="0";
 LDISCC="1";
 CLEARFLAGS="1";
+DONTBUILD="cyg32 cyg64";
+NODIET="1";
