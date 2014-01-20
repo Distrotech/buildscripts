@@ -9,3 +9,4 @@ CONFOPT="";
 OPT_arm="ac_cv_type_pid_t=yes ac_cv_func_getacl=no gl_cv_func_memchr_works=yes";
 ADDCFLAG="-I=/${PREFIX}/include/libxml2 -I=/${PREFIX}/include/libcroco-0.6/libcroco -O2";
 AMVER="1.13";
+USEMINGW="1";
