@@ -1,12 +1,21 @@
 VERSION="1.36.1"
 VERSEP="-";
-PREFIX="/usr";
+if [ "${barch:0:3}" == "win" ];then
+  PREFIX="/mingw";
+ else
+  PREFIX="/usr";
+fi;
 CONFOPT="--enable-explicit-deps";
 XPOSTINST="ln -s  pango-1.0/pango /build/i686/usr/include/pango";
 ADDCC="0";
-ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/cairo -I=/usr/include -I=/usr/X11R7/include/pixman-1";
+ADDCFLAG="-I=${PREFIX}/include/freetype2 -I=${PREFIX}/include/cairo -I=${PREFIX}/include -I=${PREFIX}/X11R7/include/pixman-1";
 NONULLCONF="1";
 CLEARFLAGS="1";
 OPT_arm64="--enable-introspection=no";
+OPT_cyg32="--enable-introspection=no";
+OPT_win32="--enable-introspection=no";
+OPT_win64="--enable-introspection=no";
 AMVER="1.13";
 CHROOTBUILD="1";
+USEMIINGW="1";
+NOCCOPT="1";
