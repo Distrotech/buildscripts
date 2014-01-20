@@ -5,5 +5,5 @@ CONFOPT="--enable-introspection=yes CLUTTER_CFLAGS=-I=/usr/include/clutter-1.0";
 ADDCFLAG="-I=/usr/include/gtk-2.0 -I=/usr/include/cogl -I=/usr/include/json-glib-1.0/ -I=/usr/${C_LIBDIRS}/glib-2.0/include"
 BUILDDIR="0";
 CLEARFLAGS="1";
-AMVER="1.12";
+AMVER="1.14";
 CHROOTBUILD="1";
