@@ -1,9 +1,13 @@
 VERSION="4.8.2"
 VERSEP="-";
-PREFIX="/usr";
+if [ "${barch:0:3}" == "win" ];then
+  PREFIX="/mingw";
+ else
+  PREFIX="/usr";
+fi;
 ARM7OPTS="--with-arch=armv7-a --with-fpu=vfpv3-d16 --with-float=hard --disable-sjlj-exceptions --with-mode=arm";
 CONFOPT="--with-ecj-jar=/usr/share/java/ecj-3.5.2.jar --enable-lto --enable-cloog-backend=isl --enable-java-home 
-         --with-system-zlib --with-gmp-lib=${ARCHROOT}/${barch}/usr/${B_LIBDIRS}/${MLIBDIR}";
+         --with-system-zlib --with-gmp-lib=${ARCHROOT}/${barch}/${PREFIX}/${B_LIBDIRS}/${MLIBDIR}";
 OPT_x86_64="--target=x86_64-linux-gnu  --with-multilib-list=m32,m64,mx32 --with-sysroot=/ --enable-multilib
             --with-jvm-root-dir=/usr/lib64/jvm/gcj-jdk --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 OPT_x86_32="--target=x86_64-linux-gnux32 --with-multilib-list=m32,m64,mx32 --with-sysroot=/ --enable-multilib
@@ -27,6 +31,8 @@ OPT_win32="--target=i686-w64-mingw32 --with-sysroot=/ --with-jvm-root-dir=/mingw
           --disable-multilib --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go";
 OPT_win64="--target=x86_64-w64-mingw32 --with-sysroot=/ --with-jvm-root-dir=/mingw/lib/jvm/gcj-jdk
           --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go";
+OPT_cyg32="--target=i686-pc-cygwin --with-sysroot=/ --disable-multilib
+           --enable-languages=c,c++,fortran,lto,objc,obj-c++,go";
 DEPENDS="gmp mpfr mpc isl cloog";
 SYSROOTFIXUP="0";
 NOCCOPT="1";
@@ -37,7 +43,7 @@ BASEOPT2="--without-lto --disable-libitm --disable-libmudflap  --disable-libswsp
           --disable-libatomic --disable-libssp --disable-libquadmath";
 NULLOPT="${BASEOPT} ${BASEOPT2} --with-system-zlib --enable-languages=c --with-newlib --disable-decimal-float --disable-shared --disable-threads";
 BOOTOPT="${BASEOPT} ${BASEOPT2} --enable-languages=c,c++,ada";
-SHAREDOPT="--with-system-zlib --enable-lto --enable-cloog-backend=isl --enable-languages=c,c++,ada";
+SHAREDOPT="--with-system-zlib --enable-lto --enable-cloog-backend=isl";
 BOOTOPT_mips="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32 --disable-multilib";
 BOOTOPT_mips64="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=64 --disable-multilib";
 BOOTOPT_powerpc="--disable-multilib --disable-libsanitizer";
@@ -48,6 +54,8 @@ BOOTOPT_x86_64="--disable-multilib";
 BOOTOPT_arm="${ARM7OPTS} --enable-multilib --with-mode=arm";
 BOOTOPT_arm64="--enable-multilib";
 BOOTOPT_win32="--disable-multilib";
+BOOTOPT_cyg32="--disable-multilib --enable-version-specific-runtime-libs";
+BOOTOPT_cyg32="--enable-version-specific-runtime-libs";
 CROSSOPT_x86_32="--with-multilib-list=m32,m64,mx32";
 CROSSOPT_x86_64="--with-multilib-list=m32,m64,mx32";
 CROSSOPT_powerpc="--disable-multilib --disable-libsanitizer";
@@ -57,6 +65,8 @@ CROSSOPT_arm64="--disable-multilib --disable-libatomic";
 CROSSOPT_mips="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
 CROSSOPT_mips64="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=64";
 CROSSOPT_win32="--disable-multilib";
+CROSSOPT_cyg32="--disable-multilib --enable-version-specific-runtime-libs";
+CROSSOPT_cyg64="--enable-version-specific-runtime-libs";
 LANG_i686="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_x86_32="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_x86_64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
@@ -68,6 +78,8 @@ LANG_powerpc="--enable-languages=c,c++,fortran,lto,objc,obj-c++,go,ada,java";
 LANG_powerpc64="--enable-languages=c,c++,fortran,lto,objc,obj-c++,go,ada,java";
 LANG_win32="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_win64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
+LANG_cyg32="--enable-languages=c,c++,fortran,lto,objc,obj-c++,go";
+LANG_cyg64="--enable-languages=c,c++,fortran,lto,objc,obj-c++,go";
 ADDBUILDSYSROOT="1";
 ADDLDFLAG="-L${ARCHROOT}/${barch}/usr/${B_LIBDIRS} -L${ARCHROOT}/${barch}/usr/${B_LIBDIRS}/${MLIBDIR} -L/usr/${HOST}/${B_LIBDIRS} -lstdc++";
 COREBUILD="1";
@@ -80,3 +92,5 @@ MLIBDIRLN="libasan.so libatomic.so libgcc_s.so libgcj_bc.so libgcj.so libgcj-too
            libssp.la libasan.la libatomic.la libgcj.la libgcj-tools.la libgfortran.la
            libgij.la libgo.la libgomp.la libitm.la libmudflap.la libmudflapth.la libobjc.la
            libquadmath.la libssp_nonshared.la libsupc++.la libtsan.la";
+CLEARFLAGS="1";
+NOSYSROOTLT="1";
