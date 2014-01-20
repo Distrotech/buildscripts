@@ -1,5 +1,9 @@
-VERSION="2.0.20"
+VERSION="2.0.20";
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--with-pth-prefix=${ARCHROOT}/${barch}/${PREFIX} gnupg_cv_pth_is_sane=yes";
 NONULLCONF="1";
+OPT_cyg32="--with-libiconv-prefix=${ARCHROOT}/${barch}/${PREFIX} --with-ldap=${ARCHROOT}/${barch}/${PREFIX}";
+CLEARFLAGS="1";
+NOCCOPT="1";
+DONTBUILD="cyg32 cyg64";

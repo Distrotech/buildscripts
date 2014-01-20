@@ -1,17 +1,19 @@
-VERSION="3.2.6"
+VERSION="3.2.8.1"
 VERSEP="-";
-PREFIX="/usr";
-CONFOPT="--disable-rpath";
-OPT_powerpc="--with-libnettle-prefix=/build/powerpc/usr/";
-OPT_powerpc64="--with-libnettle-prefix=/build/powerpc64/usr/";
-OPT_mips="--with-libnettle-prefix=/build/mips/usr/";
-OPT_mips64="--with-libnettle-prefix=/build/mips64/usr/";
-OPT_arm="--with-libnettle-prefix=/build/arm/usr/";
-OPT_arm64="--with-libnettle-prefix=/build/arm64/usr/";
-OPT_i686="--with-libnettle-prefix=/build/i686/usr/";
-OPT_x86_64="--with-libnettle-prefix=/build/x86_64/usr/";
-OPT_x86_32="--with-libnettle-prefix=/build/x86_32/usr/";
+CONFOPT="--disable-rpath --with-libnettle-prefix=${ARCHROOT}/${barch}/${PREFIX}";
+if [ "${barch:0:3}" == "win" ];then
+  PREFIX="/mingw";
+  CONFOPT="${CONFOPT} --enable-local-libopts --disable-tests MAKEINFO=/usr/bin/true";
+  EXTRALIBS="-levil";
+ elif [ "${barch:0:3}" == "cyg" ];then
+  USEMINGW="1";
+  PREFIX="/usr";
+  CONFOPT="${CONFOPT} --enable-local-libopts --disable-tests MAKEINFO=/usr/bin/true";
+ else
+  PREFIX="/usr";
+fi;
+OPT_x86_32="--enable-local-libopts";
 ADDWITHSYSROOT="1";
-ADDCFLAG="-I=/usr/include/p11-kit-1 -I=/usr/include/guile/2.0";
+ADDCFLAG="-I=/${PREFIX}/include/p11-kit-1 -I=/${PREFIX}/include/guile/2.0 -I=${PREFIX}/include/evil-1";
 BUILDDIR="0";
 AMVER="1.14";
