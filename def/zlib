@@ -7,12 +7,21 @@ OPT_i686="--host=i686-linux-gnu --build=x86_64-linux-gnu";
 OPT_x86_32="--host=x86_64-linux-gnux32 --build=x86_64-linux-gnu";
 OPT_arm="--host=arm-linux-gnueabi --build=x86_64-linux-gnu -DCMAKE_C_COMPILER=arm-linux-gnueabi-gcc";
 OPT_x86_64="--host=x86_64-linux-gnu --build=x86_64-linux-gnu";
-MOPT_win32="-f win32/Makefile.gcc PREFIX=${HOST}- SHARED_MODE=1 LIBRARY_PATH=/mingw/lib BINARY_PATH=/mingw/bin INCLUDE_PATH=/mingw/include"
-MOPT_win64="-f win32/Makefile.gcc PREFIX=${HOST}- SHARED_MODE=1 LIBRARY_PATH=/mingw/lib BINARY_PATH=/mingw/bin INCLUDE_PATH=/mingw/include"
 FIXUPLIB="1";
-if [ "${barch:0:3}" != "win" ];then
+if [ "${barch:0:3}" != "win" ] && [ "${barch:0:3}" != "cyg" ];then
   LDISCC="0";
  else
+  NOMAKEFLAGS="1";
+  if [ "${barch:0:3}" == "win" ];then
+    MOPT_win32="-f win32/Makefile.gcc PREFIX=${HOST}- SHARED_MODE=1 LIBRARY_PATH=/mingw/lib BINARY_PATH=/mingw/bin INCLUDE_PATH=/mingw/include"
+    MOPT_win64="-f win32/Makefile.gcc PREFIX=${HOST}- SHARED_MODE=1 LIBRARY_PATH=/mingw/lib BINARY_PATH=/mingw/bin INCLUDE_PATH=/mingw/include"
+   else
+    MOPT_cyg32="-f win32/Makefile.gcc PREFIX=${HOST}- SHARED_MODE=1 LIBRARY_PATH=/usr/lib BINARY_PATH=/usr/bin INCLUDE_PATH=/usr/include"
+    MOPT_cyg64="-f win32/Makefile.gcc PREFIX=${HOST}- SHARED_MODE=1 LIBRARY_PATH=/usr/lib BINARY_PATH=/usr/bin INCLUDE_PATH=/usr/include"
+    MOPT_win32="-f win32/Makefile.gcc PREFIX=${HOST}- SHARED_MODE=1 LIBRARY_PATH=/usr/lib BINARY_PATH=/usr/bin INCLUDE_PATH=/usr/include"
+    MOPT_win64="-f win32/Makefile.gcc PREFIX=${HOST}- SHARED_MODE=1 LIBRARY_PATH=/usr/lib BINARY_PATH=/usr/bin INCLUDE_PATH=/usr/include"
+  fi;
+  USEMINGW="1";
   LDISCC="1";
 fi;
 BUILDDIR="0";
