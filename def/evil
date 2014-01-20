@@ -1,0 +1,10 @@
+VERSION="1.7.10"
+VERSEP="-";
+PREFIX="/mingw";
+CONFOPT="--disable-static --enable-shared";
+if [ "${barch:0:3}" != "win" ];then
+  DONTBUILD="${barch}";
+fi;
+SYSROOTFIXUP="0";
+AMVER="1.14";
+BUILDDIR="0";
