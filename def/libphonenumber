@@ -13,3 +13,4 @@ CFGPTH="cpp";
 CFGBIN="cpp/";
 ADDLDFLAG="-lboost_system";
 FIXUPLIB="1";
+CHROOTBUILD="1";

@@ -2,3 +2,4 @@ VERSION="0.12.5"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-vala";
+CHROOTBUILD="1";
