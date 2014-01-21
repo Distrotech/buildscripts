@@ -1,8 +1,7 @@
-VERSION="2.5.1"
+VERSION="20090805"
 VERSEP="-";
 PREFIX="/mingw";
 CONFOPT="--enable-shared";
-GITBRANCH="master";
 if [ "${barch:0:3}" != "win" ];then
   DONTBUILD="${barch}";
 fi;
