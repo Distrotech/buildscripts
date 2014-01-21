@@ -6,3 +6,4 @@ BUILDDIR="0";
 FIXUPLIB="1";
 NOMAKEFLAGS="1";
 MLIBDIRLN="libselinux.so  libsemanage.so  libsepol.so";
+DONTBUILD="cyg32 cyg64";

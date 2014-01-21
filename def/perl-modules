@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 MAKEOPTS="ARCH=${barch}";
 CHROOTBUILD="1";
+DONTBUILD="cyg32 cyg64";

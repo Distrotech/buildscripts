@@ -19,3 +19,4 @@ MLIBDIRLN="libc.a libc.so libc_nonshared.a libm.so libm.a libdl.so libdl.a
            libpthread.so libpthread.a librt.so librt.a crti.o crt1.o crtn.o
            libresolv.so libresolv.a libcrypt.so libcrypt.a libutil.a libutil.so
            libthread_db.so Scrt1.o";
+DONTBUILD="cyg32 cyg64";

@@ -17,6 +17,6 @@ MOPT_arm64="USE_64=1";
 MOPT_mips64="USE_64=1";
 MOPT_powerpc="CPU_ARCH=ppc FREEBL_LOWHASH=0";
 MOPT_powerpc64="USE_64=1";
-DONTBUILD="arm64";
+DONTBUILD="arm64 cyg32 cyg64";
 GITBRANCH="master";
 CHROOTBUILD="1";

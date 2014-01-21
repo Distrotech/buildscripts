@@ -6,3 +6,4 @@ BUILDDIR="0";
 MAKEITARGETS="install-dev install-lib";
 ADDCFLAG="-fPIC";
 FIXUPLIB="1";
+DONTBUILD="cyg32 cyg64";

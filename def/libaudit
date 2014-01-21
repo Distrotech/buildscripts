@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="--without-python";
 AMVER="1.14";
 MAKE_J="-j2";
+DONTBUILD="cyg32 cyg64";

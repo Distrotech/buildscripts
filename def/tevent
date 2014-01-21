@@ -17,3 +17,4 @@ GITREPO="samba";
 CFGPTH="lib/tevent";
 CFGBIN="tevent/"
 CHROOTBUILD="1";
+DONTBUILD="cyg32 cyg64";

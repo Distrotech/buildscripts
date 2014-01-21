@@ -6,3 +6,4 @@ CFGPTH="build_unix";
 CFGBIN="unix/";
 BUILDDIR="0";
 GITBRANCH="master";
+DONTBUILD="cyg32 cyg64";

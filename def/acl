@@ -7,3 +7,4 @@ MAKEITARGETS="install-dev install-lib";
 ADDCFLAG="-fPIC";
 FIXUPLIB="1";
 ADDWITHSYSROOT="1";
+DONTBUILD="cyg32 cyg64";

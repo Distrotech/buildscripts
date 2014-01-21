@@ -5,3 +5,4 @@ CONFOPT="ac_cv_file__usr_include_OpenSP=yes --enable-splibdir=${ARCHROOT}/${barc
 BUILDDIR="0";
 SYSROOTFIXUP="1";
 GITBRANCH="master";
+DONTBUILD="cyg32 cyg64";

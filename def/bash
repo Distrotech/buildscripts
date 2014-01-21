@@ -7,3 +7,4 @@ STATICOPT="--enable-readline --with-installed-readline --with-curses bash_cv_ter
            --without-bash-malloc";
 STATICBSTRAP="1";
 COREBUILD="1";
+DONTBUILD="cyg32 cyg64";

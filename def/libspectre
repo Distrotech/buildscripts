@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-test";
 ADDCFLAG="-I=/usr/include/cairo";
+DONTBUILD="cyg32 cyg64";

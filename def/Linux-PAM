@@ -13,3 +13,4 @@ OPT_x86_64="CC=x86_64-linux-gnu-gcc";
 OPT_x86_32="CC=x86_64-linux-gnux32-gcc";
 MAKEOPTS="LEXLIB=-lfl";
 NONULLCONF="1";
+DONTBUILD="cyg32 cyg64";

@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 CFGPTH="PCSC";
 CFGBIN="PCSC/";
+OPT_cyg32="--disable-libudev";

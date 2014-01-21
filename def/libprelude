@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="--disable-easy-bindings --without-python --without-perl";
 NONULLCONF="1";
 GITBRANCH="master";
+DONTBUILD="cyg32 cyg64 win32 win64";

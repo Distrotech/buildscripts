@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 OPT_arm64="--without-python";
+DONTBUILD="cyg32 cyg64";

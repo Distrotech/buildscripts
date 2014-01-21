@@ -2,3 +2,6 @@ VERSION="0.2.5"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+OPT_cyg32="--without-tevent";
+OPT_cyg64="--without-tevent";
+DONTBUILD="cyg32 cyg64";

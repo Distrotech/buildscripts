@@ -13,6 +13,6 @@ OPT_powerpc64="ac_cv_buggy_getaddrinfo=no ac_cv_have_long_long_format=yes";
 FIXUPLIB="0";
 ADDCFLAG="-I=/usr/include/python2.7";
 NOCCOPT="1";
-DONTBUILD="mips64 arm64";
+DONTBUILD="mips64 arm64 cyg32 cyg64";
 CHROOTBUILD="1";
 ALIAS="cpython";

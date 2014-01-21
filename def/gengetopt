@@ -2,3 +2,4 @@ VERSION="2.22.6"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+DONTBUILD="cyg32 cyg64";

@@ -23,3 +23,4 @@ if which asciidoc >/dev/null 2>&1;then
   MAKETARGETS="man";
   MAKEITARGETS="install-doc";
 fi;
+DONTBUILD="cyg32 cyg64";
