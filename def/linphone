@@ -2,6 +2,12 @@ VERSION="3.6.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-strict --enable-external-mediastreamer --enable-external-ortp";
+OPT_win32="--disable-notify"
 AMVER="1.11";
-ADDCFLAG="-I=/usr/X11R7/include";
-ADDLDFLAG="-L=/usr/X11R7/${B_LIBDIRS}";
+if [ "${barch:0:3}" != "win" ];then
+  ADDCFLAG="-I=/usr/X11R7/include";
+  ADDLDFLAG="-L=/usr/X11R7/${B_LIBDIRS}";
+ else
+  MAKEOPTS="RC=${HOST}-windres";
+fi;
+AMVER="1.14";
