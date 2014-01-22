@@ -74,7 +74,7 @@ export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA_VER JAVA6_VER M2_VER QT_VER
 
 #Parse cmdline opts
 #Adding a arch here may require you adding tupple/kernel arch/libdirs and bellow in arch_config
-ALLARCHLIST="i686 arm x86_64 x86_32 mips mips64 powerpc powerpc64 win32 win64";
+ALLARCHLIST="i686 arm x86_64 x86_32 mips mips64 powerpc powerpc64 win32 win64 cyg32 cyg64";
 ARCHMPAT=${ALLARCHLIST// /|}
 ALLARCH="0";
 
@@ -140,6 +140,8 @@ arch_config() {
     x86_32)TUPPLE=x86_64-linux-gnux32;;
     win32)TUPPLE=i686-w64-mingw32;;
     win64)TUPPLE=x86_64-w64-mingw32;;
+    cyg32)TUPPLE=i686-pc-cygwin;;
+    cyg64)TUPPLE=x86_64-pc-cygwin;;
     *)TUPPLE=${1}-linux-gnu;;
   esac;
 
@@ -319,7 +321,7 @@ check_create_arch() {
     mkdir -p ${ARCHROOT}
   fi;
 
-  if [ "${1:0:3}" == "win" ];then
+  if [ "${1:0:3}" == "win" ] || [ "${1:0:3}" == "cyg" ];then
      return 0;
   fi;
 
@@ -706,7 +708,6 @@ make_cc_destdir() {
     eval /usr/bin/make ${MAKE_J} V=1 LDFLAGS=\"${LDFLAGS}\" CFLAGS=\"${CFLAGS}\" AR=\"${AR}\" RANLIB=${RANLIB} LD=\"${LD}\" \
       CXX=\"${CXX} ${CC_SYSROOT}\" CC=\"${CC} ${CC_SYSROOT}\" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
     eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
-
     RES=$?
     if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
       eval /usr/bin/make V=1 LDFLAGS=\"${LDFLAGS}\" CFLAGS=\"${CFLAGS}\" AR=\"${AR}\" RANLIB=${RANLIB} LD=\"${LD}\" \
@@ -748,7 +749,9 @@ cmake_cross_build() {
     unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS LD
 
     if [ "${C_LIBDIRS}" != "${B_LIBDIRS}" ];then
-      LDFLAGS="-L${ARCHROOT}/${2}/${B_LIBDIRS} -L${ARCHROOT}/${2}/${C_LIBDIRS} -L${ARCHROOT}/${2}/usr/${B_LIBDIRS} -L${ARCHROOT}/${2}/usr/${C_LIBDIRS}"
+      if [ ! "${NOSYSROOTLT}" ] || [ "${NOSYSROOTLT}" == "0" ];then
+        LDFLAGS="-L=${C_LIBDIRS} -L=/usr/${C_LIBDIRS}"
+      fi;
     fi;
 
     if [ "${ADDLDFLAG}" ];then
@@ -802,11 +805,14 @@ cmake_cross_build() {
 
 autoconf_cross_build() {
   if [ "${CLEARFLAGS}" ] && [ "${CLEARFLAGS}" == "1" ];then
-    unset CFLAGS CPPFLAGS CXXFLAGS
+    unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+    if [ "${B_LIBDIRS}" != "${C_LIBDIRS}" ];then
+      if [ ! "${NOSYSROOTLT}" ] || [ "${NOSYSROOTLT}" == "0" ];then
+        LDFLAGS="-L=${C_LIBDIRS} -L=/usr/${C_LIBDIRS}"
+      fi;
+    fi;
     if [ "${ADDLDFLAG}" ];then
-      LDFLAGS="${ADDLDFLAG} -L${ARCHROOT}/${2}/${B_LIBDIRS} -L${ARCHROOT}/${2}/${C_LIBDIRS} -L${ARCHROOT}/${2}/usr/${C_LIBDIRS}"
-     else
-      LDFLAGS="-L${ARCHROOT}/${2}/${B_LIBDIRS} -L${ARCHROOT}/${2}/${C_LIBDIRS} -L${ARCHROOT}/${2}/usr/${C_LIBDIRS}"
+      LDFLAGS="${ADDLDFLAG} ${LDFLAGS}";
     fi;
     if [ "${BOOTSTRAP}" == "1" ] && [ "${PROJECT}" != "glibc" ];then
       LDFLAGS="${LDFLAGS} -Wl,--rpath-link=${RLINK_PATH} --sysroot=${ARCHROOT}/${2}";
@@ -820,6 +826,9 @@ autoconf_cross_build() {
       export CFLAGS="${ADDCFLAG}"
 #      export CPPFLAGS="${ADDCFLAG}"
       export CXXFLAGS="${ADDCFLAG}"
+    fi;
+    if [ "${ADDCXXFLAG}" ];then
+      export CXXFLAGS="${CXXFLAGS} ${ADDCXXFLAG}"
     fi;
    else
     export CC="${CC} ${CC_SYSROOT}"
@@ -859,7 +868,7 @@ autoconf_cross_build() {
   fi;
 
   #Disable shared libs for c++ libs where libstdc++ is not shared
-  if [ "${2:0:3}" != "win" ] && [ "${STDCSTATIC}" ] && [ ! -f ${SYSROOT}/usr/${B_LIBDIRS}/libstdc++.so ] && [ ! -f /usr/${3}/${B_LIBDIRS}/libstdc++.so ] && [ "${BOOTSTRAP}" == "0" ];then
+  if [ "${2:0:3}" != "win" ] && [ "${2:0:3}" != "cyg" ] && [ "${STDCSTATIC}" ] && [ ! -f ${SYSROOT}/usr/${B_LIBDIRS}/libstdc++.so ] && [ ! -f /usr/${3}/${B_LIBDIRS}/libstdc++.so ] && [ "${BOOTSTRAP}" == "0" ];then
       STDOPTSX="${STDOPTSX} ${STDCSTATIC}";
   fi;
 
@@ -959,7 +968,6 @@ build_project() {
   shift;
   addopts=$@
 
-
   check_java
 
   if [ "${MLIBDIR}" ];then
@@ -973,6 +981,16 @@ build_project() {
   DONTBUILDPAT=${DONTBUILD// /|}
   if [ "${DONTBUILD}" ] && [[ ${barch} =~ ${DONTBUILDPAT} ]];then
     return 0;
+  fi;
+
+  ORIGARCH=${barch};
+  if [ "${ORIGARCH:0:3}" == "cyg" ] && [ "${USEMINGW}" ] && [ "${USEMINGW}" == "1" ];then
+    NEWARCH="win${ORIGARCH:3}";
+    barch=${NEWARCH}
+    check_create_arch ${barch}
+   else
+    NEWARCH=${ORIGARCH}
+    USEMINGW="0";
   fi;
 
   if [ "${addopts}" ];then
@@ -994,7 +1012,7 @@ build_project() {
     return 1;
   fi;
 
-  AVER=VERSION_${barch}
+  AVER=VERSION_${ORIGARCH}
   if [ "${!AVER}" ];then
     VERSION=${!AVER}
   fi;
@@ -1046,15 +1064,20 @@ build_project() {
     return 1
   fi;
 
-  if [ "${CHROOTBUILD}" ] && [ "${CHROOTBUILD}" == "1" ] && [ "${barch}" != "${NARCH}" ];then
-    (rsync -aR ${SRCDIR}/${PSOURCEDIR}/ ${ARCHROOT}/${barch}/
-     (cd ${ARCHROOT}/${barch}/${SRCDIR}/${PSOURCEDIR}/
-      if [ -d .git ];then
+  if [ ! "${GITCLEAN}" ];then
+    export GITCLEAN=1;
+  fi;
+
+  if [ "${CHROOTBUILD}" ] && [ "${CHROOTBUILD}" == "1" ] && [ "${NEWARCH}" != "${NARCH}" ] && [ "${NEWARCH:0:3}" != "cyg" ] && [ "${NEWARCH:0:3}" != "win" ];then
+    echo "${PROJECT}"
+    (rsync -aR ${SRCDIR}/${PSOURCEDIR}/ ${ARCHROOT}/${NEWARCH}/
+     (cd ${ARCHROOT}/${NEWARCH}/${SRCDIR}/${PSOURCEDIR}/
+      if [ -d .git ] && [ "${GITCLEAN}" == "1" ];then
         git reset --hard
         git clean -x -f -d
      fi;)
-     /usr/bin/env -i - TERM=${TERM} NARCH=${barch} CLEANOPT=${BOOTCLEAN} RUNBASHRC=1 chroot ${ARCHROOT}/${barch} ${SCRIPTDIR}/build ${barch} + ${BUILDPROJECT})
-    if [ -e ${STATDIR}/${barch}/fail/${PROJECT} ];then
+     /usr/bin/env -i - TERM=${TERM} NARCH=${NEWARCH} CLEANOPT=${BOOTCLEAN} RUNBASHRC=1 chroot ${ARCHROOT}/${NEWARCH} ${SCRIPTDIR}/build ${NEWARCH} + ${BUILDPROJECT})
+    if [ -e ${STATDIR}/${ORIGARCH}/fail/${PROJECT} ];then
       return 1
      else
       return 0
@@ -1112,9 +1135,9 @@ build_project() {
      export RSYNC=true
   fi;
 
-  if [ -d ${ARCHROOT}/${barch} ] && [ ! -h ${ARCHROOT}/${barch} ];then
-    export SYSROOT=${ARCHROOT}/${barch};
-   elif [ "${barch}" == "${NARCH}" ];then
+  if [ -d ${ARCHROOT}/${NEWARCH} ] && [ ${NEWARCH} != ${NARCH} ];then
+    export SYSROOT=${ARCHROOT}/${NEWARCH};
+   elif [ "${NEWARCH}" == "${NARCH}" ];then
     export SYSROOT="";
   fi;
 
@@ -1122,27 +1145,27 @@ build_project() {
     return 0;
   fi;
 
-  MOPTIN=MOPT_${barch}
-  AOPTIN=OPT_${barch}
+  MOPTIN=MOPT_${ORIGARCH}
+  AOPTIN=OPT_${ORIGARCH}
 
   #use eval ${MOPTIN}=XXXX to set it
   ARCHMOPT=${!MOPTIN}
   ARCHOPT=${!AOPTIN}
 
-  if [ "${barch}" != "${NARCH}" ];then
-    XOPTIN=OPTX_${barch}
+  if [ "${ORIGARCH}" != "${NARCH}" ];then
+    XOPTIN=OPTX_${ORIGARCH}
     ARCHXOPT="${CONFOPTX} ${!XOPTIN}"
    else
     ARCHXOPT="";
   fi;
 
   #XXX only when there is a scanner and can execute
-  if [ "${GOBJECTINTRO}" ] && [ "${GOBJECTINTRO}" == "1" ] && [ "${barch}" != "${NARCH}" ];then
+  if [ "${GOBJECTINTRO}" ] && [ "${GOBJECTINTRO}" == "1" ] && [ "${ORIGARCH}" != "${NARCH}" ];then
     SYSROOTPATH=1;
   fi;
 
   if [ "${NARCH}" == "x86_64" ];then
-    if [ "${barch}" == "i686" ] || [ "${barch}" == "x86_32" ];then
+    if [ "${ORIGARCH}" == "i686" ] || [ "${ORIGARCH}" == "x86_32" ];then
       if [ "${SYSROOTPATH}" == "1" ];then
         export PYTHON=${SYSROOT}/usr/bin/python
         export PYTHONHOME=${SYSROOT}/usr
@@ -1166,23 +1189,28 @@ build_project() {
     export PYTHONHOME=${SYSROOT}/usr
   fi;
 
-  if [ -d ${ARCHROOT}/${barch}/opt/qt-${QT_VER} ] && [ ! -h ${ARCHROOT}/${barch} ] && [ ${barch} != ${NARCH} ];then
-    export QTDIR=${ARCHROOT}/${barch}/opt/qt-${QT_VER}
+  if [ -d ${ARCHROOT}/${ORIGARCH}/opt/qt-${QT_VER} ] && [ ! -h ${ARCHROOT}/${ORIGARCH} ] && [ ${ORIGARCH} != ${NARCH} ];then
+    export QTDIR=${ARCHROOT}/${ORIGARCH}/opt/qt-${QT_VER}
    elif [ -d /opt/qt-${QT_VER} ];then
     export QTDIR=/opt/qt-${QT_VER}
   fi;
 
-  if [ "${barch:0:3}" == "win" ];then
+  if [ "${ORIGARCH:0:3}" == "win" ] && [ "${USEMINGW}" == "0" ];then
     ARCHPREFIX="/mingw";
     PREFIX=${ARCHPREFIX};
+   elif [ "${NEWARCH:0:3}" == "win" ] && [ "${USEMINGW}" == "1" ];then
+    ARCHPREFIX="/usr";
    else
     ARCHPREFIX="/usr";
   fi;
 
-  CFLAGS="${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${ARCHPREFIX}/X11R7/include -I=${ARCHPREFIX}/lib/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=${ARCHPREFIX}/xfce/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include";
+  CFLAGS="${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${ARCHPREFIX}/X11R7/include -I=${ARCHPREFIX}/lib/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=${ARCHPREFIX}/xfce/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include";
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
+  if [ "${NEWARCH:0:3}" == "cyg" ];then
+    CFLAGS="${CFLAGS} -I/usr/${HOST}/include";
+  fi;
   export CXXFLAGS=${CFLAGS}
 
   if [ "${SETCPPTOC}" == "1" ];then
@@ -1195,13 +1223,19 @@ build_project() {
   fi;
   export FORCE_UNSAFE_CONFIGURE=1
 
-  PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/usr/X11R7/share/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/qt-5/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig";
-  if [ "${barch:0:3}" == "win" ];then
+  PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/${ARCHPREFIX}/X11R7/share/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/qt-5/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig";
+  if [ "${ORIGARCH:0:3}" == "win" ] && [ "${USEMINGW}" == "0" ];then
     RLINK_PATH="${SYSROOT}/mingw/lib";
    else
     RLINK_PATH="${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/qt-5/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio";
   fi;
-  BASE_LIBPATH="-L=${ARCHPREFIX}/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/qt-5/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=/usr/X11R7/${B_LIBDIRS}"
+  BASE_LIBPATH="-L=${ARCHPREFIX}/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/qt-5/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=${ARCHPREFIX}/X11R7/${B_LIBDIRS}"
+
+  if [ "${NEWARCH:0:3}" == "cyg" ];then
+    BASE_LIBPATH="-L=${ARCHPREFIX}/${B_LIBDIRS}/w32api ${BASE_LIBPATH}";
+    RLINK_PATH="${SYSROOT}${ARCHPREFIX}/${B_LIBDIRS}/w32api:${RLINK_PATH}";
+    CFLAGS="${CFLAGS} -I=${ARCHPREFIX}/include/w32api";
+  fi;
 
   if [ "${C_LIBDIRS}" != "${B_LIBDIRS}" ];then
     PKG_CONFIG_PATH="${SYSROOT}/${C_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${C_LIBDIRS}/pkgconfig:${PKG_CONFIG_PATH}";
@@ -1228,13 +1262,9 @@ build_project() {
   #XXX /build AKA ARCHROOT
   if [ ! "${ADDGCCDIR}" ] || [ "${ADDGCCDIR}" == "1" ];then
     GCCDIR=$( ${CC} ${CC_SYSROOT} -print-libgcc-file-name |sed -e "s/libgcc\.a$//" -e "s/x32\/$//" -e "s/32\/$//" )
-    if [ "${GCCDIR}" ] && [ -d ${GCCDIR}/include ] && [ -d ${ARCHROOT}/${barch} ] && \
-       [ ! -d ${ARCHROOT}/${barch}/${GCCDIR}/include ];then
-      rsync -avPR ${GCCDIR}/ ${ARCHROOT}/${barch}/
+    if [ "${GCCDIR}" ] && [ -d ${GCCDIR}/include ];then
       CFLAGS="${CFLAGS} -I${GCCDIR}/include";
-     elif [ -d ${GCCDIR}/include ];then
-      CFLAGS="${CFLAGS} -I${GCCDIR}/include";
-     elif [ -d ${GCCDIR}/../include ];then
+     elif [ "${GCCDIR}" ] && [ -d ${GCCDIR}/../include ];then
       CFLAGS="${CFLAGS} -I${GCCDIR}/../include";
     fi;
   fi;
@@ -1257,20 +1287,20 @@ build_project() {
   export YACC="bison -y"
 
   if [ ${BUILDDIR} == "1" ];then
-    if [ ! -d build-${barch} ];then
-      mkdir build-${barch}
+    if [ ! -d build-${ORIGARCH} ];then
+      mkdir build-${ORIGARCH}
      elif [ "${CLEANOPT}" == "clean" ] || [ "${CLEANOPT}" == "distclean" ];then
-      rm -rf build-${barch} > /dev/null 2>&1
-      mkdir build-${barch}
+      rm -rf build-${ORIGARCH} > /dev/null 2>&1
+      mkdir build-${ORIGARCH}
     fi;
-    cd build-${barch}
+    cd build-${ORIGARCH}
    elif [ "${NOCLEAN}" != "1" ];then
     if [ "${CLEANOPT}" == "clean" ];then
       /usr/bin/make ${CLEANOPT} > /dev/null 2>&1
      else
       (/usr/bin/make ${MAKEOPTS} ${ARCHOPT} distclean || /usr/bin/make ${MAKEOPTS} ${ARCHOPT} clean
        /usr/bin/make distclean || /usr/bin/make clean) > /dev/null 2>&1
-       if [ -d .git ];then
+       if [ -d .git ] && [ "${GITCLLEAN}" == "1" ];then
          git reset --hard;git clean -x -f -d
        fi;
     fi;
@@ -1280,7 +1310,7 @@ build_project() {
     (cd ${TOPDIR};autoreconf -i -f)
   fi;
 
-  export DIST_ROOT=${PKGBUILDDIR}/${barch}/${PKG}
+  export DIST_ROOT=${PKGBUILDDIR}/${ORIGARCH}/${PKG}
   if [ -d ${DIST_ROOT} ];then
     rm -rf ${DIST_ROOT}
   fi;
@@ -1293,23 +1323,23 @@ build_project() {
     export CC="${CC} ${CC_SYSROOT}"
     export CXX="${CXX} ${CC_SYSROOT}"
     export CONFOPT="${CONFOPT} ${ARCHOPT} ${ARCHXOPT}";
-    ${SCRIPTDIR}/make_${PROJECT} ${barch} ${HOST} ${DIST_ROOT} ${CLEANOPT} || return 1
+    ${SCRIPTDIR}/make_${PROJECT} ${ORIGARCH} ${HOST} ${DIST_ROOT} ${CLEANOPT} || return 1
    elif [ -e ${TOPDIR}${CFGBIN}configure ] && [ "${PROJECT}" != "cmake" ];then
     if [ ! -x ${TOPDIR}${CFGBIN}configure ];then
       chmod 755 ${TOPDIR}${CFGBIN}configure
     fi;
-    autoconf_cross_build ${TOPDIR} ${barch} ${HOST} || return 1;
+    autoconf_cross_build ${TOPDIR} ${NEWARCH} ${HOST} || return 1;
    elif [ -e ${TOPDIR}${CFGBIN}./cmake ] || [ -e ${TOPDIR}${CFGBIN}/CMakeLists.txt ] || [ "${PROJECT}" == "cmake" ];then
-    cmake_cross_build ${TOPDIR} ${barch} ${HOST} || return 1;
+    cmake_cross_build ${TOPDIR} ${NEWARCH} ${HOST} || return 1;
    elif [ -e ${TOPDIR}${CFGBIN}./Imakefile ];then
-    imake_cross_build ${barch} || return 1;
+    imake_cross_build ${NEWARCH} || return 1;
    elif [ -e ${TOPDIR}${CFGBIN}./setup.py ];then
-    if [ "${NARCH}" == "${barch}" ];then
+    if [ "${NARCH}" == "${NEWARCH}" ];then
       python${PYVER} setup.py clean --all
       python${PYVER} ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
      else
-      ${ARCHROOT}/${barch}/usr/bin/python${PYVER} setup.py clean --all
-      ${ARCHROOT}/${barch}/usr/bin/python${PYVER} ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
+      ${ARCHROOT}/${NEWARCH}/usr/bin/python${PYVER} setup.py clean --all
+      ${ARCHROOT}/${NEWARCH}/usr/bin/python${PYVER} ${TOPDIR}${CFGBIN}./setup.py install --root=${DIST_ROOT} || return 1
     fi;
    elif [ -e ${TOPDIR}${CFGBIN}./Makefile.PL ];then
      perl Makefile.PL ${CONFOPT}
@@ -1331,16 +1361,16 @@ build_project() {
     return 1
   fi;
 
-  if [ ! -d ${STATDIR}/${barch}/done ];then
-    mkdir -p ${STATDIR}/${barch}/done
+  if [ ! -d ${STATDIR}/${ORIGARCH}/done ];then
+    mkdir -p ${STATDIR}/${ORIGARCH}/done
   fi;
 
-  if [ -e ${STATDIR}/${barch}/fail/${BUILDPROJECT} ];then
-    rm ${STATDIR}/${barch}/fail/${BUILDPROJECT}
+  if [ -e ${STATDIR}/${ORIGARCH}/fail/${BUILDPROJECT} ];then
+    rm ${STATDIR}/${ORIGARCH}/fail/${BUILDPROJECT}
   fi;
-  touch ${STATDIR}/${barch}/change
-  touch ${STATDIR}/${barch}/done/${BUILDPROJECT}
-  echo ${BUILDPROJECT} >> ${STATDIR}/${barch}/built
+  touch ${STATDIR}/${ORIGARCH}/change
+  touch ${STATDIR}/${ORIGARCH}/done/${BUILDPROJECT}
+  echo ${BUILDPROJECT} >> ${STATDIR}/${ORIGARCH}/built
 
   if [ "${FIXUPLIB}" == "1" ];then
     for libdir in / /usr /usr/local ${PREFIX};do
@@ -1365,8 +1395,8 @@ build_project() {
     libtool finish ${DIST_ROOT}${libdir}/${C_LIBDIRS}
   fi;
 
-  if [ -d ${DIST_ROOT}${ARCHROOT}/${barch} ];then
-    rsync -avP ${DIST_ROOT}${ARCHROOT}/${barch}/ ${DIST_ROOT}/ && rm -rf ${DIST_ROOT}${ARCHROOT}
+  if [ -d ${DIST_ROOT}${ARCHROOT}/${ORIGWARCH} ];then
+    rsync -avP ${DIST_ROOT}${ARCHROOT}/${ORIGARCH}/ ${DIST_ROOT}/ && rm -rf ${DIST_ROOT}${ARCHROOT}
   fi;
 
   for pylib in python2.7 python3.3;do
@@ -1401,7 +1431,7 @@ build_project() {
     if [ ! -x ${SRCDIR}/${PSOURCEDIR}/.build-info/post-install ];then
       chmod 750 ${SRCDIR}/${PSOURCEDIR}/.build-info/post-install
     fi
-    eval ${SRCDIR}/${PSOURCEDIR}/.build-info/post-install ${barch} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT}
+    eval ${SRCDIR}/${PSOURCEDIR}/.build-info/post-install ${ORIGARCH} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT}
   fi;
 
   #Dist conf process dist configs
@@ -1414,27 +1444,24 @@ build_project() {
   fi
 
   #Build Distributibils
-  tar_package ${DIST_ROOT} ${PKGDISTDIR}/${barch} ${PKG} > /dev/null 2>&1
+  tar_package ${DIST_ROOT} ${PKGDISTDIR}/${ORIGARCH} ${PKG} > /dev/null 2>&1
 
-  if [ "${BOOTSTRAP}" == "0" ] && [ "${barch}" == "${NARCH}" ];then
+  if [ "${BOOTSTRAP}" == "0" ] && [ "${ORIGARCH}" == "${NARCH}" ];then
     if [ -d ${DIST_ROOT} ];then
       ${RSYNC} -avP ${DIST_ROOT}/ /
     fi;
-#     elif [ "${barch}" == "x86_32" ] && [ "${NARCH}" == "x86_64" ];then
-#      if [ -d ${DIST_ROOT}/${B_LIBDIRS} ];then
-#        ${RSYNC} -avP ${DIST_ROOT}/${B_LIBDIRS} /
-#      fi;
-#      if [ -d ${DIST_ROOT}/usr/${B_LIBDIRS} ];then
-#        ${RSYNC} -avP ${DIST_ROOT}/usr/${B_LIBDIRS} /usr/
-#      fi;
    elif [ "${BOOTSTRAP}" == "1" ] && [ "${GCCDEPENDS}" ];then
-    rsync -avP ${DIST_ROOT}/ ${BASEROOT}/${barch}/
+    rsync -avP ${DIST_ROOT}/ ${BASEROOT}/${ORIGARCH}/
   fi;
 
-  if [ -d ${ARCHROOT}/${barch} ] && [ ! "${COREBUILD}" ];then
-    ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${barch}/
-   elif [ -d ${ARCHROOT}/${barch} ] && [ "${COREBUILD}" ];then
-    ${RSYNC} -avP --exclude=bin ${DIST_ROOT}/ ${ARCHROOT}/${barch}/
+  if [ -d ${ARCHROOT}/${ORIGARCH} ] && [ ! "${COREBUILD}" ];then
+    ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${ORIGARCH}/
+   elif [ -d ${ARCHROOT}/${ORIGARCH} ] && [ "${ORIGARCH:0:3}" == "win" ];then
+    ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${ORIGARCH}/
+   elif [ -d ${ARCHROOT}/${ORIGARCH} ] && [ "${ORIGARCH:0:3}" == "cyg" ];then
+    ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${ORIGARCH}/
+   elif [ -d ${ARCHROOT}/${ORIGARCH} ] && [ "${COREBUILD}" ];then
+    ${RSYNC} -avP --exclude=bin ${DIST_ROOT}/ ${ARCHROOT}/${ORIGARCH}/
   fi;
 
   if [ ! "${NODIET}" ];then
@@ -1444,11 +1471,11 @@ build_project() {
   (if [ "${DIETBUILD}" == "1" ] && [ "${NODIET}" != "1" ];then
     if [ "${BUILDDIR}" == "1" ];then
       cd ..
-      rm -rf build-${barch}
+      rm -rf build-${NEWARCH}
      else
       (/usr/bin/make ${MAKEOPTS} ${ARCHOPT} distclean || /usr/bin/make ${MAKEOPTS} ${ARCHOPT} clean
       /usr/bin/make distclean || /usr/bin/make clean
-      if [ -d .git ];then
+      if [ -d .git ] && [ "${GITCLEAN}" == "1" ];then
         git reset --hard
         git clean -x -f -d
         if [ -e .gitmodules ];then
@@ -1475,7 +1502,7 @@ setup_build_dir() {
 }
 
 build_glibc() {
-  if [ -e ${STATDIR}/${1}/done/glibc ];then
+  if [ -e ${STATDIR}/${1}/done/glibc ] || [ "${1:0:3}" == "win" ] || [ "${1:0:3}" == "cyg" ];then
     return;
   fi;
 
@@ -1746,6 +1773,12 @@ build_gcc_bootstrap() {
     TMLIBDIR=${NMLIBDIR}
   fi;
 
+  if [ "${TARCH:0:3}" == "win" ];then
+    TAPRE="/mingw";
+   else
+    TAPRE="/usr";
+  fi;
+
   . ${DEFDIR}/gcc
   AVER=VERSION_${1}
   if [ "${!AVER}" ];then
@@ -1776,6 +1809,11 @@ build_gcc_bootstrap() {
    elif [ "${4}" == "shared" ];then
     MARCH=BOOTOPT_${1}
     CONFOPT="${SHAREDOPT} ${SYSROOT} ${CONFOPTX} --with-gmp-lib=${ARCHROOT}/${3}/usr/${TLIBDIR}/${TMLIBDIR}";
+    if [ "${1:0:3}" != "cyg" ];then
+      CONFOPT="${CONFOPT} --enable-languages=c,c++,ada";
+     else
+      CONFOPT="${CONFOPT} --enable-languages=c,c++";
+    fi;
     CFLAGS="-fPIC -O2";
     CXXFLAGS="-fPIC -O2";
     SDIROPT=-shared
@@ -1787,7 +1825,7 @@ build_gcc_bootstrap() {
     LDFLAGS="${LDFLAGS} -L${ARCHROOT}/${1}/usr/${C_LIBDIRS}";
    elif [ ! "${4}" ] || [ "${4}" == "null" ];then
     MARCH=BOOTOPT_${1}
-    CONFOPT="${NULLOPT} ${SYSROOT} CC=${BUILD}-gcc CXX=${BUILD}-g++ --with-gmp-lib=${ARCHROOT}/${3}/usr/${TLIBDIR}/${TMLIBDIR}"
+    CONFOPT="${NULLOPT} ${SYSROOT} CC=${THOST}-gcc CXX=${THOST}-g++ --with-gmp-lib=${ARCHROOT}/${3}/${TAPRE}/${TLIBDIR}/${TMLIBDIR}"
     CFLAGS="-fPIC -O2";
     CXXFLAGS="-fPIC -O2";
     SDIROPT=-null
@@ -1806,12 +1844,17 @@ build_gcc_bootstrap() {
      else
       LDFLAGS="-L${ARCHROOT}/${3}/${TLIBDIR} -L${ARCHROOT}/${3}/usr/${TLIBDIR}";
     fi;
+
     export CFLAGS CXXFLAGS
     CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${TLIBDIR}/jvm/gcj-jdk-${1} --enable-cxx-flags=-I=/usr/include
              CFLAGS=-I=/usr/include ${LANGOPT} ${SYSROOT} --with-ecj-jar=/usr/share/java/ecj-3.5.2.jar --enable-java-home --without-x"
     SDIROPT=-cross
   fi;
   TARGPKG=${GCC}${SDIROPT}
+
+  if [ -d ${ARCHROOT}/${1}/${TAPRE}/include/w32api ];then
+    CONFOPT="${CONFOPT} CFLAGS=-I${ARCHROOT}/${1}/${TAPRE}/include/w32api";
+  fi;
 
   if [ "${TARCH}" == "${1}" ];then
     GCCBOOTDEST=${TOOLDIR}/${TARCH}/${TARGPKG}
@@ -1858,7 +1901,7 @@ build_gcc_bootstrap() {
       mkdir -p ${TOOLPKG}/${1}/${GLIBC}
     fi;
     tar -cJf ${TOOLPKG}/${1}/${GLIBC}/${GLIBC}-headers.tar.xz usr/include)
-   elif [ -d ${ARCHROOT}/${1}/ ] && [ ! -h ${ARCHROOT}/${1} ];then
+   elif [ -d ${ARCHROOT}/${1}/ ] && [ "${1}" != "${3}" ];then
     BUILDDIR=${ARCHROOT}/${1}/
    else
     BUILDDIR=/
@@ -1869,6 +1912,7 @@ build_gcc_bootstrap() {
    else
     TPREFIX=/mingw
   fi;
+  PREFIX="/usr";
 
   LDFLAGS_FOR_TARGET="-L${BUILDDIR}/${TPREFIX}/${TLIBDIR} -L${TPREFIX}/${TLIBDIR} -L${ARCHROOT}/${1}/${TPREFIX}/${C_LIBDIRS}"
   if [ "${1}" == "${NARCH}" ] && [ ! -x /usr/${2}/bin/ld ];then
@@ -1963,7 +2007,7 @@ build_gcc_bootstrap() {
             esac;
           fi;
 #          (cd ${GCCBOOTDEST}/usr/${2};rsync -Ra lib*/*so* ${ARCHROOT}/${1}/usr/)
-          if [ "${1:0:3}" != "win" ];then
+          if [ "${1:0:3}" != "win" ] && [ "${1:0:3}" != "cyg" ];then
             rsync -a ${GCCBOOTDEST}/ ${ARCHROOT}/${1}/
           fi;
         fi
@@ -2218,7 +2262,7 @@ fixup_glibc_link() {
 }
 
 setup_hybrid_boot() {
-  if [ "${1}" == "${2}" ];then
+  if [ "${1}" == "${2}" ] || [ "${1:0:3}" == "cyg" ];then
     return 0;
   fi;
 
@@ -2389,7 +2433,7 @@ setup_hybrid_boot() {
   if [ "${ERROR}" == "0" ];then
     touch ${ARCHROOT}/${1}/usr/${NLIBDIR}/${NMLIBDIR}/.distro_done
    else
-    echo "ERROR";read
+    echo "ERROR";
   fi;
 }
 
@@ -2464,7 +2508,7 @@ bootstrap_arch_root() {
 
     #GCC needs system zlib glibc can use selinux/gd Add packages for a build enviroment
     BOOTCLEAN=distclean
-    build_packages ${arch} libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat libxml2 freetype \
+    build_packages ${arch} libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat xz libxml2 freetype \
       fontconfig jpeg tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac libsigsegv ncurses ncursesw \
       onig slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude libtirpc flex \
       Linux-PAM readline popt dialog util-linux bash coreutils bison sed texinfo libunistring libatomic_ops gc \
@@ -2485,7 +2529,7 @@ bootstrap_arch_root() {
     build_packages ${arch} perl Python c-ares curl git unzip zip linux_logo guile make ||return 1
 
     #Pacakges used in native bootstrap
-    build_packages ${arch} cmake dbus gengetopt gettext gtk-doc help2man libcap libcap-ng libcroco nasm OpenSP openjade xmlto yasm || return 1) || return 1;
+    build_packages ${arch} cmake dbus gengetopt libcroco gettext gtk-doc help2man libcap libcap-ng libcroco nasm OpenSP intltool openjade xmlto yasm || return 1) || return 1;
   done;
 }
 
@@ -2705,7 +2749,7 @@ build_dependancies() {
     gtk-engines libunique pidgin || return 1
 
   #Linphone
-  build_packages ${1} oRTP spandsp mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk libosip2 exosip linphone || return 1
+  build_packages ${1} libsrtp oRTP spandsp mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk libosip2 exosip linphone || return 1
 
   #Other bits
   build_packages ${1} alsa-oss alsa-plugins alsa-tools alsa-utils TiMidity calamaris dirac netatalk mod_perl \
@@ -2863,12 +2907,15 @@ bootstrap_native() {
   (build_glibc_march ${NARCH}) || return 1
 }
 
-windows_build_toolchain() {
+cygwin_build_toolchain() {
+  if [ ! -d ${ARCHROOT}/win${1:3} ];then
+    mkdir -p ${ARCHROOT}/win${1:3}
+  fi;
+
   arch_config ${1}
 
-
-  if [ ! -d ${ARCHROOT}/${1} ];then
-    mkdir -p ${ARCHROOT}/${1}
+  if [ ! -e ${ARCHROOT}/${1} ];then
+    ln -srf ${ARCHROOT}/win${1:3} ${ARCHROOT}/${1}
   fi;
 
   echo "Binutils for ${1} ${TUPPLE}"
@@ -2881,7 +2928,47 @@ windows_build_toolchain() {
     (build_gcc_bootstrap ${1} ${TUPPLE} ${2} null) || return 1
   fi;
 
-  build_packages ${1} mingw-w64-crt libtool mingw-w64-winpthreads mingw-w64-libmangle mingw-w64-pseh mingw-w64-winstorecompat || return 1
+  build_packages ${1} mingw-w64-crt || return 1
+
+  for libln in libadvapi32.a libshell32.a libuser32.a libkernel32.a libntdll.a;do
+    if [ -e ${ARCHROOT}/${1}/usr/${SETLIBDIR}/w32api/${libln} ] && [ ! -e ${ARCHROOT}/${1}/usr/${SETLIBDIR}/${libln} ];then
+      ln -srf ${ARCHROOT}/${1}/usr/${SETLIBDIR}/w32api/${libln} ${ARCHROOT}/${1}/usr/${SETLIBDIR}
+    fi;
+  done;
+
+  build_packages ${1} libtool || return 1
+
+  echo "GCC Cross Compiler"
+  (build_gcc_bootstrap ${1} ${TUPPLE} ${2} cross) || return 1
+
+  build_packages ${1} libtool cygwin libiconv libcrypt || return 1
+  rsync -a /build/${1}/usr/${TUPPLE}/ /usr/${TUPPLE}/
+}
+
+windows_build_toolchain() {
+  arch_config ${1}
+
+  if [ ! -d ${ARCHROOT}/${1} ];then
+    mkdir -p ${ARCHROOT}/${1}
+  fi;
+
+  echo "Binutils for ${1} ${TUPPLE}"
+  (build_bootstrap_binutils ${1} ${TUPPLE}) || return 1
+
+  build_packages ${1} mingw-w64-headers || return 1
+
+  #symlink needed to build CRT
+  if [ -e ${ARCHROOT}/${1}/mingw/ ] && [ ! -e ${ARCHROOT}/${1}/${TUPPLE} ];then
+    ln -sr ${ARCHROOT}/${1}/mingw/ ${ARCHROOT}/${1}/${TUPPLE}
+  fi;
+
+  if [ ! -x /usr/bin/${TUPPLE}-gcc ];then
+    echo "GCC Null Compiler to bootstrap crt"
+    (build_gcc_bootstrap ${1} ${TUPPLE} ${2} null) || return 1
+  fi;
+
+  build_packages ${1} mingw-w64-crt libtool mingw-w64-winpthreads mingw-w64-libmangle mingw-w64-pseh || return 1
+  #mingw-w64-winstorecompat not avail with 2.0.8
 
   echo "GCC Cross Compiler"
   (build_gcc_bootstrap ${1} ${TUPPLE} ${2} cross) || return 1
@@ -2889,8 +2976,14 @@ windows_build_toolchain() {
   build_packages ${1} mingw-w64-gendef mingw-w64-genidl mingw-w64-genpeimg mingw-w64-widl || return 1
 
 #ecj with sysroot ??
-  build_packages ${1} dlfn-win32 zlib regex \
-    libtool gmp mpfr mpc isl cloog gcc libunistring icu make libiconv xz openssl libxml2 libxslt gettext libffi glib libcroco || return 1
+  build_packages ${1} evil zlib regex libtool gmp mpfr mpc isl cloog gcc binutils libunistring icu \
+    make libiconv xz openssl libxml2 libxslt gettext libffi pcre glib libcroco c-ares curl cyrus-sasl \
+    unixODBC openldap libidn libpng tiff jpeg freetype expat fontconfig libtasn1 p11-kit nettle \
+    libgpg-error libgcrypt gnutls gd lcms2 pixman cairo poppler graphite2 harfbuzz pango atk \
+    gdk-pixbuf gtk+ SDL wxWidgets dtsapplib sqlite-autoconf dtsguiapp leafpad libsoup libosip2 \
+    exosip libsrtp oRTP spandsp libogg libvorbis opencore-amr vo-amrwbenc opus speex libilbc-webrtc \
+    libvpx gsm libtheora x264 ffmpeg mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk \
+    gsettings-desktop-schemas glib-networking linphone || return 1
 }
 
 bootstrap_toolchain() {
@@ -3365,11 +3458,6 @@ for barch in ${ARCHLIST};do
   #Check arch build dir exists Setup linux headers and env vars
   check_create_arch ${barch}
 
-  if [ "${barch:0:3}" == "win" ];then
-    (windows_build_toolchain ${barch} ${NARCH})
-    continue
-  fi;
-
   JAVA_VER=${DEF_JAVA_VER}
   QT_VER="${DEF_QT_VER}";
   case ${barch} in
@@ -3379,7 +3467,14 @@ for barch in ${ARCHLIST};do
   esac;
 
   #ensure the tool chain is in place unless not bootstraping
-  if [ ! "${NOBOOTSTRAP}" ] || [ "${NOBOOTSTRAP}" != "1" ];then
+  if [ "${barch:0:3}" == "win" ];then
+    (windows_build_toolchain ${barch} ${NARCH}) || continue
+   elif [ "${barch:0:3}" == "cyg" ];then
+    (cygwin_build_toolchain ${barch} ${NARCH}) || continue
+    if [ ! "${NOBOOTSTRAP}" ] || [ "${NOBOOTSTRAP}" != "1" ];then
+      bootstrap_toolchain ${barch} || continue;
+    fi;
+   elif [ ! "${NOBOOTSTRAP}" ] || [ "${NOBOOTSTRAP}" != "1" ];then
     bootstrap_toolchain ${barch} || continue;
   fi;
 
@@ -3392,11 +3487,13 @@ for barch in ${ARCHLIST};do
     done;
    elif (( $# == 1 ));then
     if [ ${1} == "buildall" ];then
-       (buildall_arch ${barch})
+       if [ "${barch:0:3}" != "win" ];then
+         (buildall_arch ${barch})
+       fi;
      elif check_package ${1};then
       (build_project ${1} ${barch} || failpkg ${1} ${barch})
     fi;
-   else
+   elif [ "${barch:0:3}" != "win" ];then
     (buildall_arch ${barch})
   fi;
 done;
