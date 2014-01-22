@@ -3,6 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-strict --enable-external-mediastreamer --enable-external-ortp";
 OPT_win32="--disable-notify"
+OPT_win64="--disable-notify"
 AMVER="1.11";
 if [ "${barch:0:3}" != "win" ];then
   ADDCFLAG="-I=/usr/X11R7/include";
