@@ -2948,8 +2948,8 @@ cygwin_build_toolchain() {
 windows_build_toolchain() {
   arch_config ${1}
 
-  if [ ! -d ${ARCHROOT}/${1} ];then
-    mkdir -p ${ARCHROOT}/${1}
+  if [ ! -d ${ARCHROOT}/${1}/usr ];then
+    mkdir -p ${ARCHROOT}/${1}/usr
   fi;
 
   echo "Binutils for ${1} ${TUPPLE}"
@@ -2972,6 +2972,11 @@ windows_build_toolchain() {
 
   echo "GCC Cross Compiler"
   (build_gcc_bootstrap ${1} ${TUPPLE} ${2} cross) || return 1
+
+  if [ ! -e ${ARCHROOT}/${1}/usr/${TUPPLE} ] && [ -e /usr/${TUPPLE} ];then
+    ln -sr /usr/${TUPPLE} ${ARCHROOT}/${1}/usr
+  fi;
+
 
   build_packages ${1} mingw-w64-gendef mingw-w64-genidl mingw-w64-genpeimg mingw-w64-widl || return 1
 

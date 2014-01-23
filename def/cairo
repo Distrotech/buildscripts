@@ -22,3 +22,4 @@ if [ "${barch:0:3}" == "win" ];then
   NOCCOPT="1";
   CLEARFLAGS="1";
 fi;
+ADDWITHSYSROOT="1";
