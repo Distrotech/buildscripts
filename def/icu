@@ -1,6 +1,10 @@
 VERSION="52.1"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-cross-build=/usr/src/icu/icu-52.1/build-${NARCH}";
+if [ "${barch}" == "${NARCH}" ];then
+  CONFOPT="";
+ else
+  CONFOPT="--with-cross-build=/usr/src/icu/icu-52.1/build-${NARCH}";
+fi;
 CFGBIN="source/";
 NODIET="1";
