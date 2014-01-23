@@ -23,8 +23,8 @@ OPT_x86_32="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CON
           --with-mpfr=/usr/libx32";
 OPT_x86_64="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CONFIG=/build/x86_64/usr/bin/cups-config";
 OPT_cyg32="--disable-cups --enable-introspection=no WINDRES=${HOST}-windres --with-gdktarget=win32";
-OPT_win32="--disable-cups --enable-introspection=no WINDRES=${HOST}-windres --with-gdktarget=win32";
-OPT_win64="--disable-cups --enable-introspection=no WINDRES=${HOST}-windres --with-gdktarget=win32";
+OPT_win32="--disable-cups --enable-introspection=no WINDRES=${HOST}-windres --with-gdktarget=win32 --disable-glibtest";
+OPT_win64="--disable-cups --enable-introspection=no WINDRES=${HOST}-windres --with-gdktarget=win32 --disable-glibtest";
 ADDCFLAG="-I=${PREFIX}/include/gio-unix-2.0 -I=${PREFIX}/include/cairo -I=${PREFIX}/include/freetype2
           -I=${PREFIX}/include/pango-1.0 -I=${PREFIX}/include/gdk-pixbuf-2.0 -I=${PREFIX}/include/glib-2.0
           -I=${PREFIX}/include/atk-1.0 -I=${PREFIX}/lib/glib-2.0/include -I=/mingw/glib-2.0/include";
