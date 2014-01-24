@@ -776,9 +776,8 @@ cmake_cross_build() {
    else
     eval cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES=\"${EXTRALIBS}\" \
           -DCMAKE_C_FLAGS=\"${CFLAGS}\" -DCMAKE_CXX_FLAGS=\"${CXXFLAGS}\" -DCMAKE_C_LINK_FLAGS=\"${LDFLAGS}\" \
-          -DCMAKE_SYSTEM_NAME=Linux  -DCMAKE_FIND_ROOT_PATH=\"${SYSROOT}/\" \
-          -DCMAKE_INSTALL_RPATH:PATH=\"${RLINK_PATH}\" ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} \
-          -DCMAKE_C_COMPILER=/usr/bin/${HOST}-gcc -DCMAKE_C_COMPILER_ENV_VAR=\"${CC_SYSROOT}\" \
+          -DCMAKE_FIND_ROOT_PATH=\"${SYSROOT}/\" -DCMAKE_INSTALL_RPATH:PATH=\"${RLINK_PATH}\" ${CONFOPT} \
+          ${ARCHXOPT} ${ARCHOPT} -DCMAKE_C_COMPILER=/usr/bin/${HOST}-gcc -DCMAKE_C_COMPILER_ENV_VAR=\"${CC_SYSROOT}\" \
           -DCMAKE_CXX_COMPILER=/usr/bin/${HOST}-g++ -DCMAKE_CXX_COMPILER_ENV_VAR=\"${CC_SYSROOT}\" \
           -DGNU_HOST=${3} -DCMAKE_TOOLCHAIN_FILE=${SCRIPTDIR}/cmake_${2}.cross ${1}${CFGBIN}
   fi;
@@ -2984,10 +2983,10 @@ windows_build_toolchain() {
   build_packages ${1} evil zlib regex libtool gmp mpfr mpc isl cloog gcc binutils libunistring icu \
     make libiconv xz openssl libxml2 libxslt gettext libffi pcre glib libcroco c-ares curl cyrus-sasl \
     unixODBC openldap libidn libpng tiff jpeg freetype expat fontconfig libtasn1 p11-kit nettle \
-    libgpg-error libgcrypt gnutls gd lcms2 pixman cairo poppler graphite2 harfbuzz pango atk \
+    libgpg-error libgcrypt gnutls libvpx gd lcms2 pixman cairo poppler graphite2 harfbuzz pango atk \
     gdk-pixbuf gtk+ SDL wxWidgets dtsapplib sqlite-autoconf dtsguiapp leafpad libsoup libosip2 \
     exosip libsrtp oRTP spandsp libogg libvorbis opencore-amr vo-amrwbenc opus speex libilbc-webrtc \
-    libvpx gsm libtheora x264 ffmpeg mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk \
+    gsm libtheora x264 ffmpeg mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk \
     gsettings-desktop-schemas glib-networking linphone || return 1
 }
 
