@@ -1,4 +1,4 @@
-VERSION="2.24.18"
+VERSION="2.24.22"
 VERSEP="-";
 if [ "${barch:0:3}" != "win" ] && [ "${barch:0:3}" != "cyg" ];then
   EXTRALIBS="-lxcb -lXau -lXdmcp -ldl -lm -lpthread -lrt";
