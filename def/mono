@@ -3,11 +3,14 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 XCONFOPT="--with-tls mono_cv_clang=no mono_cv_uscore=no --with-sigaltstack=yes";
-OPT_arm="CFLAGS=-DARM_FPU_NONE";
 NOCCOPT="1";
 ADDCC="0";
 CLEARFLAGS="1";
-DONTBUILD="x86_32";
+DONTBUILD="x86_32 arm";
 BUILDDIR="0";
 NOCROSS="1";
 ADDCFLAG="-I=/usr/${C_LIBDIRS}/glib-2.0/include";
+CHROOTBUILD="1";
+RPMPROVIDES="mono(Microsoft.Build.Utilities.v3.5) mono(Mono.CompilerServices.SymbolWriter) mono(System.ComponentModel.DataAnnotations) \
+ mono(System.Configuration.Install) mono(System.IdentityModel.Selectors) mono(System.Reactive.Interfaces) mono(System.Runtime.Serialization) \
+ mono(System.Runtime.Serialization.Formatters.Soap) mono(System.Web.WebPages.Deployment)";

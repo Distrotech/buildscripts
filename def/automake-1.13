@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 GITREPO="automake";
 GITBRANCH="distrotech-automake-1.13.4";
+RPMOBSOLETE_doc="automake-1.12 automake-1.11 automake-1.10 automake-1.9";

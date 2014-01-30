@@ -5,4 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 EXTRALIBS="-lltdl -lutil -lssl -lcrypto -ldl";
 GITBRANCH="master";
-DISTCONF="ldap.conf";
+DISTCONF="ldap-nss.conf";

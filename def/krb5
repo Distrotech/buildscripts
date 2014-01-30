@@ -13,8 +13,12 @@ OPT_powerpc64="krb5_cv_attr_constructor_destructor=yes,yes ac_cv_func_regcomp=ye
 OPT_i686="krb5_cv_attr_constructor_destructor=yes,yes ac_cv_func_regcomp=yes ac_cv_printf_positional=yes";
 OPT_x86_64="krb5_cv_attr_constructor_destructor=yes,yes ac_cv_func_regcomp=yes ac_cv_printf_positional=yes";
 OPT_x86_32="krb5_cv_attr_constructor_destructor=yes,yes ac_cv_func_regcomp=yes ac_cv_printf_positional=yes";
+OPT_cyg32="--disable-shared --enable-static --without-system-verto --without-tcl krb5_cv_attr_constructor_destructor=yes,yes ac_cv_func_regcomp=yes ac_cv_printf_positional=yes";
+OPT_cyg64="--without-system-verto --without-tcl krb5_cv_attr_constructor_destructor=yes,yes ac_cv_func_regcomp=yes ac_cv_printf_positional=yes";
 ADDCFLAG="-I../../../src/util/verto -I../../../../src/util/verto";
 LDISCC="0";
 STATICOPT="--disable-shared --enable-static --without-system-verto --without-tcl";
 STATICMOPT="LDFLAGS=-static";
 STATICINSTLIBS="1";
+DONTBUILD="cyg32 cyg64";
+RPMINTDEPS="0";

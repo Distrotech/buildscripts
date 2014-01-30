@@ -18,3 +18,4 @@ if [ "${barch:0:3}" != "win" ] && [ "${barch:0:3}" != "cyg" ];then
   EXTRALIBS="-ldl -lltdl -lutil";
 fi;
 MLIBDIRLN="libldap.so liblber.so";
+RPMINTDEPS="0";

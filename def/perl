@@ -11,3 +11,6 @@ OPT_arm="-Dcc=/usr/bin/arm-linux-gnueabi-gcc -A ldflags=-L=/usr/lib -A append:li
 OPT_powerpc="-Dcc=/usr/bin/powerpc-linux-gnu-gcc -A ldflags=-L=/usr/lib";
 DONTBUILD="arm64 cyg32 cyg64";
 CHROOTBUILD="1";
+RPMVERSION="5.018001";
+RPMEPOCH="1";
+RPMPROVIDES="perl(getopts.pl) perl(-F) perl(-f)";

@@ -1,7 +1,7 @@
 VERSION="9.06";
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-system-libtiff --with-install-cups --disable-gtk";
+CONFOPT="--with-system-libtiff --without-install-cups --disable-gtk";
 CONFOPTX="--disable-gtk";
 BUILDDIR="0";
 ADDCFLAG="-fPIC";

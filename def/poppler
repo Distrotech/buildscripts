@@ -13,3 +13,4 @@ OPT_cyg64="--enable-introspection=no";
 OPT_win32="--enable-introspection=no ac_cv_func_strcat_s=no";
 OPT_win64="--enable-introspection=no ac_cv_func_strcat_s=no";
 USEMINGW="1";
+RPMOBSOLETE="xpdf";

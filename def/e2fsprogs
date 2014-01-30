@@ -1,6 +1,6 @@
 VERSION="1.42.7"
 VERSEP="-";
 PREFIX="/";
-CONFOPT="--enable-elf-shlibs --disable-libblkid --disable-libuuid --disable-uuidd";
+CONFOPT="--enable-elf-shlibs --disable-libblkid --disable-libuuid --disable-uuidd --disable-fsck";
 FIXUPLIB="1";
 ADDCC="0";

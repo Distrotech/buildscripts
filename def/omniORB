@@ -1,4 +1,4 @@
-VERSION="4.1.6"
+VERSION="4.1.7"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="PYTHON=/build/${barch}/usr/bin/python";
@@ -8,3 +8,4 @@ BUILDDIR="0";
 CFGPTH="omniORB";
 CFGBIN="omniORB/";
 CHROOTBUILD="1";
+RPMINTDEPS="0";

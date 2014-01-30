@@ -1,7 +1,8 @@
 VERSION="0.83"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--without-iso-read --without-iso-info  --without-cd-read  --without-cd-info --without-cd-drive --without-cdda-player 
+         --disable-cxx --disable-static --enable-shared";
 ALIAS="libcdio";
 BUILDDIR="0";
 GITBRANCH="distrotech-libcdio-cdda";

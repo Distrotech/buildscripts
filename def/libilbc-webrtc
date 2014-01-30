@@ -1,6 +1,7 @@
 VERSION="svn"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+LIBDIRPRE="/ilbc-webrtc";
+CONFOPT="--includedir=/usr/include${LIBDIRPRE}";
 AUTORECONF="1";
 GITBRANCH="master";

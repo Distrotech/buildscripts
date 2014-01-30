@@ -1,8 +1,8 @@
 VERSION="1.9.1"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--disable-syslogd --with-pam --with-gnu-ld --disable-ifconfig --enable-ncurses ac_cv_lib_termcap_tgetent=no
-         ac_cv_header_termcap_h=no --disable-tftpd";
+CONFOPT="--disable-syslogd --with-pam --with-gnu-ld --disable-ifconfig --disable-logger --enable-ncurses ac_cv_lib_termcap_tgetent=no
+         ac_cv_header_termcap_h=no --disable-tftpd --disable-tftp --disable-hostname";
 ADDCC="0";
 OPT_arm="--with-ncurses-include-dir=/build/arm/usr/include";
 OPT_arm64="--with-ncurses-include-dir=/build/arm64/usr/include";

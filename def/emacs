@@ -5,3 +5,4 @@ CONFOPT="";
 NOSVNROOT="1";
 MAKEOPTS="CRT_DIR=/usr/${B_LIBDIRS}/";
 CHROOTBUILD="1";
+INFOREMOVE="info.info.gz";

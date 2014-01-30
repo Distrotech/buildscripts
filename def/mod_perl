@@ -4,3 +4,4 @@ PREFIX="/usr";
 BUILDDIR="0";
 CONFOPT="MP_APXS=${SYSROOT}/opt/apache2/bin/apxs  MP_APR_CONFIG=${SYSROOT}/usr/bin/apr-1-config";
 ADDCFLAG="-D_FILE_OFFSET_BITS=64 -fno-stack-protector";
+RPMPROVIDES="perl(Apache2::FunctionTable) perl(Apache2::StructureTable) perl(Apache::TestConfigParse) perl(Apache::TestConfigPerl)";

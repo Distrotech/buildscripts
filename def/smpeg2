@@ -3,3 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 ALIAS="smpeg";
+RPMOBSOLETE_base="smpeg";
+RPMOBSOLETE_dbg="smpeg";

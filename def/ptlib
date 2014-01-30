@@ -9,3 +9,4 @@ LDISCC="1";
 MAKEALL="optshared";
 NODIET="1";
 GITBRANCH="master";
+RPMINTDEPS="0";

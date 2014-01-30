@@ -2,3 +2,4 @@ VERSION="3.0.3"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-gtk=2 --without-root-certs ac_cv_file__dev_random=yes";
+RPMOBSOLETE="libgnome-keyring";

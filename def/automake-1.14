@@ -1,6 +1,7 @@
-VERSION="0"
+VERSION="1"
 VERSEP=".";
 PREFIX="/usr";
 CONFOPT="";
 GITREPO="automake";
-GITBRANCH="distrotech-automake-1.14.0";
+GITBRANCH="distrotech-automake-1.14.1";
+RPMOBSOLETE_doc="automake-1.13 automake-1.12 automake-1.11 automake-1.10 automake-1.9";

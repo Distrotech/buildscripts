@@ -1,17 +1,18 @@
 VERSION="8.21"
 VERSEP="-";
 PREFIX="/";
-CONFOPT="FORCE_UNSAFE_CONFIGURE=1";
-ADDCFLAG="-std=c99";
-OPT_i686="--enable-no-install-program=arch,hostname";
-OPT_x86_32="--enable-no-install-program=arch,hostname,factor";
-OPT_x86_64="--enable-no-install-program=arch,hostname";
-OPT_mips="--enable-no-install-program=arch,hostname,factor";
-OPT_mips64="--enable-no-install-program=arch,hostname";
-OPT_arm="--enable-no-install-program=arch,hostname";
-OPT_arm64="--enable-no-install-program=arch,hostname,factor";
-OPT_powerpc="--enable-no-install-program=arch,hostname,factor";
-OPT_powerpc64="--enable-no-install-program=arch,hostname";
+CONFOPT="FORCE_UNSAFE_CONFIGURE=1 --disable-gcc-warning ac_cv_func___fpending=yes";
+ADDCFLAG="-std=c99 -I./lib";
+OPT_i686="--enable-no-install-program=arch,hostname,kill,uptime";
+OPT_x86_32="--enable-no-install-program=arch,hostname,factor,kill,uptime";
+OPT_x86_64="--enable-no-install-program=arch,hostname,kill,uptime";
+OPT_mips="--enable-no-install-program=arch,hostname,factor,kill,uptime";
+OPT_mips64="--enable-no-install-program=arch,hostname,kill,uptime";
+OPT_arm="--enable-no-install-program=arch,hostname,kill,uptime";
+OPT_arm64="--enable-no-install-program=arch,hostname,factor,kill,uptime";
+OPT_powerpc="--enable-no-install-program=arch,hostname,factor,kill,uptime";
+OPT_powerpc64="--enable-no-install-program=arch,hostname,kill,uptime";
+OPT_cyg32="--enable-no-install-program=arch,hostname,kill,uptime,find-mount-point,df,du,stat,hostid,chroot,who,pinky,users,nice,stty,uptime,base64,chown,chcon,cat,chgrp,cksum,basename,chmod,comm,cp,csplit,cut,date,dd,copy";
 MAKEOPTS="NARCH=${NARCH} WERROR_CFLAGS=";
 ADDCC="0";
 STATICOPT="--disable-gcc-warnings LDFLAGS=\"-static -L=/usr/${C_LIBDIRS}\" FORCE_UNSAFE_CONFIGURE=1";
@@ -19,3 +20,8 @@ STATICMOPT="NARCH=${NARCH} pkglibexec_PROGRAMS=";
 AMVER="1.13";
 NODIET="1";
 STATICBSTRAP="1";
+if [ "${barch:0:3}" == "cyg" ];then
+  CLEARFLAGS="1";
+fi;
+DONTBUILD="cyg32 cyg64";
+RPMOBSOLETE="mktemp";

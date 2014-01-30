@@ -33,3 +33,7 @@ FIXUPLIB="1";
 NODIET="1";
 GITBRANCH="master";
 MLIBDIRLN="libmysqlclient.so libmysqlclient_r.so";
+RPMPROVIDES="perl(lib::mtr_gcov.pl) perl(lib::mtr_gprof.pl) perl(lib::mtr_io.pl) perl(lib::mtr_misc.pl) perl(lib::mtr_process.pl) perl(lib::v1/mtr_cases.pl) \
+ perl(lib::v1/mtr_gcov.pl) perl(lib::v1/mtr_gprof.pl) perl(lib::v1/mtr_im.pl) perl(lib::v1/mtr_io.pl) perl(lib::v1/mtr_match.pl) perl(lib::v1/mtr_misc.pl) \
+ perl(lib::v1/mtr_process.pl) perl(lib::v1/mtr_report.pl) perl(lib::v1/mtr_stress.pl) perl(lib::v1/mtr_timer.pl) perl(lib::v1/mtr_unique.pl) perl(mtr_io.pl) \
+ perl(mtr_misc.pl)";

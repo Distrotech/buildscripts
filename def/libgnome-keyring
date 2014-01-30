@@ -2,3 +2,4 @@ VERSION="3.0.3"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+DONTBUILD="${barch}";

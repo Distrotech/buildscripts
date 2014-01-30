@@ -10,3 +10,4 @@ ADDLDFLAG="-L=/opt/qt-4/${B_LIBDIRS}";
 DISTCONF="avahi/avahi-daemon.conf avahi/avahi-autoipd.action";
 CHROOTBUILD="1";
 DONTBUILD="cyg32 cyg64";
+RPMOBSOLETE="avahi-nogui";

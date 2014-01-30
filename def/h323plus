@@ -10,3 +10,4 @@ ADDCC="0";
 MAKEALL="optshared";
 GITBRANCH="master";
 NODIET="1";
+RPMINTDEPS="0";

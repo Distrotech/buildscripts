@@ -3,3 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
+MANREMOVE="man2/flistxattr.2 man2/lsetxattr.2 man2/getxattr.2 man2/lremovexattr.2 man2/fremovexattr.2 \
+  man2/listxattr.2 man2/fsetxattr.2 man2/setxattr.2 man2/removexattr.2 man2/fgetxattr.2 man2/lgetxattr.2 man2/llistxattr.2";

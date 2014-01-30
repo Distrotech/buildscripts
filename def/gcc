@@ -94,3 +94,4 @@ MLIBDIRLN="libasan.so libatomic.so libgcc_s.so libgcj_bc.so libgcj.so libgcj-too
            libquadmath.la libssp_nonshared.la libsupc++.la libtsan.la";
 CLEARFLAGS="1";
 NOSYSROOTLT="1";
+RPMINTDEPS="0";

@@ -1,5 +1,5 @@
 VERSION="4.1.4"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--includedir=/usr/include/ungif";
 GITBRANCH="master";

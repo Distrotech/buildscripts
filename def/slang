@@ -5,3 +5,4 @@ CONFOPT="--with-x";
 BUILDDIR="0";
 ADDLDFLAG="-L../src/elfobjs";
 ADDCFLAG="-I../../src/";
+RPMINTDEPS="0";

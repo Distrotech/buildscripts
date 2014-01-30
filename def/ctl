@@ -5,4 +5,4 @@ CONFOPT="";
 GITREPO="CTL";
 GITBRANCH="ctl-1.5";
 FIXUPLIB="1";
-DONTBUILD="arm powerpc powerpc64";
+DONTBUILD="${barch}";

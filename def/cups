@@ -17,3 +17,4 @@ XOPT_arm="ac_cv_header_gssapi_gssapi_h=yes ac_cv_header_gssapi_gssapi_generic_h=
 XADDCFLAG="-I=/usr/include/libpng15 -I=/usr/include/libusb-1.0";
 XEXTRALIBS="-lresolv -ldl -lrt -shared-libgcc";
 DONTBUILD="cyg32 cyg64";
+RPMOBSOLETE="lprng";

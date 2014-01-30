@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 MAKEOPTS="LUA_LIBS=-llua";
+RPMPROVIDES="perl(MT::Entry) perl(MT::Plugin) perl(MT::Template::Context) perl(MT::WeblogPublisher)";
