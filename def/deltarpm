@@ -1,0 +1,6 @@
+VERSION="3.6"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+CHROOTBUILD="1";

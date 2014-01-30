@@ -1,0 +1,7 @@
+VERSION="20130729-b"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-shared";
+BUILDDIR="0";
+EXTRALIBS="-L=/usr/${C_LIBDIRS}";
+FIXUPLIB="1";

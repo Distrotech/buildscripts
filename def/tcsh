@@ -1,0 +1,5 @@
+VERSION="6.18.01"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+GITBRANCH="master";

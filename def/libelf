@@ -1,0 +1,8 @@
+VERSION="0.8.13"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+GITBRANCH="master";
+NOCCOPT="1";
+DONTBUILD="${barch}";

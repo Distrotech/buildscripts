@@ -1,0 +1,7 @@
+VERSION="R49"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+CHROOTBUILD="1";
+GITBRANCH="master";
