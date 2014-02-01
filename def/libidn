@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 AMVER="1.14";
 MLIBDIRLN="libidn.so";
+AUTORECONF="1";
