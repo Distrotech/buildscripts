@@ -1932,7 +1932,7 @@ build_gcc_bootstrap() {
    else
     BUILDDIR=/
   fi;
- 
+
   if [ "${1:0:3}" != "win" ];then
     TPREFIX=${PREFIX}
    else
@@ -1964,11 +1964,10 @@ build_gcc_bootstrap() {
   run_configure ${USELIBDIR} .. ${PROGPRE} --build=${BUILD} --host=${THOST} --target=${2} --with-build-sysroot=${BUILDDIR} \
                 ${CONFOPT} ${!MARCH} ${GCCOPTS} || return 1
 
-
-  if [ "${NMLIBDIR}" ];then
-    rsync -a ${BUILDDIR}/usr/${NLIBDIR}/${NMLIBDIR}/crt*.o gcc/
+  if [ "${MLIBDIR}" ];then
+    rsync -a ${BUILDDIR}/usr/${B_LIBDIRS}/${MLIBDIR}/crt*.o gcc/
    else
-    rsync -a ${BUILDDIR}/usr/${NLIBDIR}/crt*.o gcc/
+    rsync -a ${BUILDDIR}/usr/${B_LIBDIRS}/crt*.o gcc/
   fi;
 
   if [ ! -d ${2}/libstdc++-v3 ];then
