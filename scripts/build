@@ -2763,7 +2763,7 @@ build_dependancies() {
 
   build_packages ${1} gnustep-make gnustep-base SOPE acpid bind clamav coova-chilli dhcp dovecot freetds hylafax mcrypt mm  \
     nss-mdns nss_ldap pam_ldap proftpd radius samba sipsak squid squidGuard tnef webalizer wine libdvdcss libdvdread \
-    libdvdnav MPlayer clucene-core libzip mdds boost libixion liborcus iso-codes || return 1
+    libdvdnav MPlayer clucene-core libzip mdds boost libixion liborcus iso-codes ffcall || return 1
 
   #Gnoem (Base)
   build_packages ${1} shared-mime-info gnome-common itstool gsettings-desktop-schemas gnome-desktop-3 \
