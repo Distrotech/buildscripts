@@ -4,7 +4,7 @@ PREFIX="/usr";
 STDOPTS="--prefix=/usr";
 OPT_x86_64="--host=x86_64-linux-gnu --enable-shared --disable-asm";
 OPT_x86_32="--host=x86_64-linux-gnux32 --enable-shared --enable-pic";
-OPT_i686="--host=i686-linux-gnu --enable-shared --enable-pic" --diasable-static;
+OPT_i686="--host=i686-linux-gnu --enable-shared --enable-pic";
 OPT_mips="--host=mips-linux-gnu --enable-shared --enable-pic";
 OPT_mips64="--host=mips64-linux-gnuabi64 --enable-shared --enable-pic";
 OPT_powerpc="--host=powerpc-linux-gnu --enable-shared --enable-pic";
