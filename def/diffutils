@@ -1,8 +1,9 @@
 VERSION="3.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--disable-gcc-warnings";
 ADDCFLAG="-std=c99";
 MAKEOPTS="WERROR_CFLAGS=";
 STATICOPT="LDFLAGS=-static --disable-gcc-warnings";
 XSTATICMOPT="LDFLAGS=-static LIBCSTACK=-lc LIBSIGSEGV=-lsigsegv";
+DONTBUILD="cyg32 cyg64";
