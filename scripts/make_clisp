@@ -1,7 +1,0 @@
-#!/bin/bash
-
-sh ./configure --disable-option-checking --prefix=/usr --mandir=/usr/share/man --libdir=/usr/${B_LIBDIRS} FORCE_UNSAFE_CONFIGURE=1 
-cd src
-makemake > Makefile
-make -j8 || make
-make DESTDIR=${3} install
