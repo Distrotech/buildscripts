@@ -1,5 +1,5 @@
-VERSION="2_5_1"
-VERSEP="_";
+VERSION="2.5.2"
+VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 NOCCOPT="1";
