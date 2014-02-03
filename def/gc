@@ -1,6 +1,6 @@
 VERSION="7.2d"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--enable-cplusplus";
 BUILDDIR="0";
 DONTBUILD="arm64";
