@@ -5,8 +5,8 @@ CONFOPT="";
 BUILDDIR="0";
 MAKE_J="-j1";
 MAKEOPTS="LIBDIR=${B_LIBDIRS}";
-DONTBUILD="arm arm64 mips mips64 powerpc powerpc64";
 
-if [ ! -d /usr/share/tomcat8 ];then
-  mkdir -p /usr/share/tomcat8
-fi;
+#We need wine to build
+case ${NARCH} in
+	x86_32|arm*|powepc*|ppc*|mips*)DONTBUILD="${barch}";;
+esac;
