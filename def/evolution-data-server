@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-uoa --with-openldap --with-krb5 --enable-vala-bindings --without-phonenumber";
 CHROOTBUILD="1";
+OPT_x86_32="--disable-goa";
