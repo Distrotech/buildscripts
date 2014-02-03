@@ -5,3 +5,4 @@ CONFOPT="";
 CFGPTH="CTL";
 CFGBIN="CTL/";
 DONTBUILD="arm powerpc powerpc64";
+RPMOBSOLETE="ctl";
