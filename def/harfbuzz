@@ -1,7 +1,7 @@
 VERSION="0.9.18"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--with-graphite2=yes";
 ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/cairo";
 CHROOTBUILD="1";
 ADDCXXFLAG="-std=gnu++0x";
