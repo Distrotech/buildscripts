@@ -44,6 +44,10 @@ export ORIG_PATH=${PATH}
 unset JAVA_HOME ANT_HOME M2_HOME QTDIR
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/X11R7/bin:/opt/xfce/bin
 
+if [ -d /opt/texlive ];then
+  PATH=${PATH}:/opt/texlive/bin/${NARCH}-linux
+fi;
+
 XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /usr/share/docbook2X/xslt/catalog.xml'
 LANG=${LANG:=en_ZA.UTF8}
 
@@ -494,8 +498,10 @@ tarball_load_pkg() {
   mkdir -p ${SRCDIR}/${2}/${3}
   cd ${SRCDIR}/${2}
   TARBALL=$(basename ${1})
-  wget -c ${1} || return 1
-  tar -C ${3} --strip-components=1 -xf ${TARBALL} ||return 1
+  if [ ! -d ${3} ] || [ ! -e ${TARBALL} ];then
+    wget -c ${1} || return 1
+    tar -C ${3} --strip-components=1 -xf ${TARBALL} ||return 1
+  fi;
 }
 
 check_package() {
@@ -1075,7 +1081,14 @@ build_project() {
         git reset --hard
         git clean -x -f -d
      fi;)
-     /usr/bin/env -i - TERM=${TERM} NARCH=${NEWARCH} CLEANOPT=${BOOTCLEAN} RUNBASHRC=1 chroot ${ARCHROOT}/${NEWARCH} ${SCRIPTDIR}/build ${NEWARCH} + ${BUILDPROJECT})
+     SETARCH="";
+     case ${NARCH} in
+       x86_64|x86_32)
+         case ${NEWARCH} in
+           i[3-6]86|x86_64)SETARCH="setarch ${NEWARCH}";;
+         esac;;
+     esac;
+     ${SETARCH} /usr/bin/env -i - TERM=${TERM} NARCH=${NEWARCH} CLEANOPT=${BOOTCLEAN} RUNBASHRC=1 chroot ${ARCHROOT}/${NEWARCH} ${SCRIPTDIR}/build ${NEWARCH} + ${BUILDPROJECT})
     if [ -e ${STATDIR}/${ORIGARCH}/fail/${PROJECT} ];then
       return 1
      else
@@ -1203,7 +1216,7 @@ build_project() {
     ARCHPREFIX="/usr";
   fi;
 
-  CFLAGS="${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${ARCHPREFIX}/X11R7/include -I=${ARCHPREFIX}/lib/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=${ARCHPREFIX}/xfce/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include";
+  CFLAGS="${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${ARCHPREFIX}/X11R7/include -I=${ARCHPREFIX}/lib/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=/opt/xfce/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include";
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
