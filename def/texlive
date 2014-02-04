@@ -11,11 +11,19 @@ STDOPTS="--prefix=${PREFIX} --includedir=/usr/include --libdir=/usr/${C_LIBDIRS}
   --mandir=${PREFIX}/texmf-dist/doc/man --bindir=${PREFIX}/bin/${barch}-linux
   --x-libraries=${ARCHROOT}/${barch}/usr/X11R7/include
   --x-libraries=${ARCHROOT}/${barch}/usr/X11R7/${B_LIBDIRS}";
-if [ "${BUILDPROJECT}" == "texlive-boot" ] && [ "${BUILD}" == "${HOST}" ];then
-  STDOPTS="${STDOPTS} --enable-xindy --enable-xindy-rules --enable-xindy-doc";
- elif [ "${BUILDPROJECT}" == "texlive" ];then
-  RPMOBSOLETE="texlive-boot";
-  CHROOTBUILD="1";
-fi;
+case ${BUILDPROJECT} in
+  texlive-boot)
+    if [ "${BUILD}" == "${HOST}" ] || [ -x ${ARCHROOT}/${barch}/usr/bin/clisp ];then
+      DONTBUILD="${barch}";
+    fi;;
+  texlive)
+    if [ -x ${ARCHROOT}/${barch}/usr/bin/clisp ];then
+      STDOPTS="${STDOPTS} --enable-xindy --enable-xindy-rules --enable-xindy-doc";
+      RPMOBSOLETE="texlive-boot";
+      CHROOTBUILD="1";
+     else
+      DONTBUILD="${barch}";
+    fi;;
+esac;
 ADDWITHSYSROOT="1";
 ALIAS="texlive";
