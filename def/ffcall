@@ -2,3 +2,4 @@ VERSION="cvs"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+GITBRANCH="master";
