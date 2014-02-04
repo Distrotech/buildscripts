@@ -1,7 +1,6 @@
-VERSION="1.2.0";
+VERSION="20140204";
 VERSION_arm="20140119";
-VERSION_win32="20140119";
-VERSION_win64="20140119";
+VERSION_x86_32="1.2.0";
 VERSEP="-";
 if [ "${barch:0:3}" == "win" ];then
   PREFIX="/mingw";
@@ -18,7 +17,7 @@ OPT_powerpc="--target=ppc32-linux-gcc";
 OPT_powerpc64="--target=ppc64-linux-gcc";
 OPT_i686="--target=x86-linux-gcc --as=yasm";
 OPT_x86_64="--target=x86_64-linux-gcc --as=yasm";
-OPT_x86_32="--target=x86_64-linux-gcc --as=yasm";
+OPT_x86_32="--target=x86_64-linux-gcc --as=yasm --extra-cflags=-mx32";
 OPT_cyg32="--target=i686-w64-mingw32";
 OPT_win32="--target=x86-win32-gcc --as=yasm";
 OPT_win64="--target=x86_64-win64-gcc --as=yasm";
@@ -28,4 +27,3 @@ ADDCC="0";
 LDISCC="1";
 CLEARFLAGS="1";
 DONTBUILD="cyg32 cyg64";
-NODIET="1";
