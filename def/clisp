@@ -9,3 +9,7 @@ ADDCC="0";
 SYSROOTFIXUP="0";
 CHROOTBUILD="1";
 GITBRANCH="master";
+if [ -e /proc/sys/fs/binfmt_misc/${barch} ];then
+  DONTBUILD="${barch}";
+fi
+
