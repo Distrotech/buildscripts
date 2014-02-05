@@ -1,15 +1,23 @@
-VERSION="3"
+VERSION="5"
 VERSEP=".";
 PREFIX="/usr";
 CONFOPT="--with-jdk-home=${JAVA_HOME}";
 CONFOPTX="--disable-bootstrap";
 OPT_x86_32="--enable-zero";
 OPT_arm="--enable-zero";
-DONTBUILD="arm arm64 mips mips64 powerpc powerpc64";
+DONTBUILD="arm arm64 mips mips64 powerpc64";
 NOCCOPT="1";
 NOCROSS="1";
 AMVER="1.14";
-CLEARFLAGS="1";
-JAVA_VER="1.7.0_45";
+#CLEARFLAGS="1";
+JAVA_VER="1.7.0_51";
 ADDCFLAG="-I=/usr/X11R7/include -I${JAVA_HOME}/include"
+ADDLDFLAG="-Wl,--rpath-link=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}:${ARCHROOT}/${barch}/usr/${B_LIBDIRS}";
 ADDCC="0";
+case ${NARCH} in
+  x86_32|x86_64|i686)
+    case ${barch} in
+      x86_32|x86_64|i686)CHROOTBUILD="1";;
+    esac;;
+esac;
+GITCLEAN="0";
