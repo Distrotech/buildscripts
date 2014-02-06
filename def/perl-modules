@@ -11,4 +11,5 @@ RPMPROVIDES="perl(AnyEvent::BDB) perl(BDB) perl(Cocoa::EventLoop) perl(Event::Li
 	perl(Unicode::LineBreak::Constants) perl(VMS::Stdio) perl(Win32) perl(Win32::IPHelper) perl(Win32::ODBC) \
         perl(Win32::Registry) perl(Win32::TieRegistry) perl(XML::SAX::PurePerl::DTDDecls) perl(XML::SAX::PurePerl::DocType) \
 	perl(XML::SAX::PurePerl::EncodingDetect) perl(XML::SAX::PurePerl::XMLDecl) perl(YAML::Tiny) perl(common::sense) \
-	perl(Mac::BuildTools) perl(Mac::InternetConfig) perl(VMS::Filespec) perl(VMS::Stdio) perl(Your::Module::Here) perl(unicore::Name)";
+	perl(Mac::BuildTools) perl(Mac::InternetConfig) perl(VMS::Filespec) perl(VMS::Stdio) perl(Your::Module::Here) \
+        perl(unicore::Name) perl(Tk::LabRadio)";
