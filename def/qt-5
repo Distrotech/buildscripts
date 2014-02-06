@@ -6,3 +6,10 @@ OPT_x86_32="-no-javascript-jit -no-optimized-qmake";
 NOCCOPT="1";
 BUILDDIR="0";
 DONTBUILD="arm64 powerpc";
+case ${barch} in
+  x86_64|x86_32|i[3-6]86)
+    case ${NARCH} in
+      x86_64|x86_32|i[3-6]86)CHROOTBUILD="1";;
+    esac;;
+esac;
+
