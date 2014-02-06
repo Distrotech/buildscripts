@@ -8,7 +8,7 @@ fi;
 CONFOPT="--enable-explicit-deps";
 XPOSTINST="ln -s  pango-1.0/pango /build/i686/usr/include/pango";
 ADDCC="0";
-ADDCFLAG="-I=${PREFIX}/include/freetype2 -I=${PREFIX}/include/cairo -I=${PREFIX}/include -I=${PREFIX}/X11R7/include/pixman-1";
+ADDCFLAG="-I=${PREFIX}/include/freetype2 -I=${PREFIX}/include/cairo -I=${PREFIX}/include -I=${X11DIR}/include/pixman-1";
 NONULLCONF="1";
 CLEARFLAGS="1";
 OPT_arm64="--enable-introspection=no";

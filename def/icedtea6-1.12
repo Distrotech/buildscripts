@@ -8,6 +8,6 @@ NOCCOPT="1";
 NOCROSS="1";
 AMVER="1.14";
 CLEARFLAGS="1";
-ADDCFLAG="-I=/usr/X11R7/include -I=/usr/${B_LIBDIRS}/jvm/gcj-jdk/include"
+ADDCFLAG="-I=${X11DIR}/include -I=/usr/${B_LIBDIRS}/jvm/gcj-jdk/include"
 ADDCC="0";
 CHROOTBUILD="1";

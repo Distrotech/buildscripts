@@ -29,7 +29,7 @@ OPT_i686="--enable-cross-compile --sysroot=/build/i686 --arch=i686 --target-os=l
           --cpu=i686 --extra-cflags=-m32 --extra-ldflags=-m32 --host-cc=/usr/bin/gcc
           --enable-libopencv --enable-frei0r --enable-libv4l2";
 OPT_arm="--enable-cross-compile --sysroot=/build/arm --arch=arm --target-os=linux --cross-prefix=arm-linux-gnueabi-
-         --extra-ldflags=-Wl,--rpath-link=/build/arm/usr/lib:/build/arm/lib:/build/arm/usr/X11R7/lib
+         --extra-ldflags=-Wl,--rpath-link=/build/arm/usr/lib:/build/arm/lib:/build/arm/${X11DIR}/lib
          --host-cc=/usr/bin/gcc --enable-libv4l2 --disable-asm";
 OPT_x86_32="--enable-cross-compile --sysroot=/build/x86_32 --arch=x86_64 --target-os=linux 
           --cross-prefix=x86_64-linux-gnux32- --extra-cflags=-mx32 --extra-ldflags=-mx32
@@ -37,20 +37,20 @@ OPT_x86_32="--enable-cross-compile --sysroot=/build/x86_32 --arch=x86_64 --targe
           --enable-libopencv --enable-frei0r --enable-libv4l2";
 OPT_x86_64="--sysroot=/build/x86_64 --enable-libopencv --enable-frei0r --enable-libv4l2";
 OPT_mips="--enable-cross-compile --sysroot=/build/mips --arch=mips --target-os=linux --cross-prefix=mips-linux-gnu-
-         --extra-ldflags=-Wl,--rpath-link=/build/mips/usr/lib:/build/mips/lib:/build/mips/usr/X11R7/lib
+         --extra-ldflags=-Wl,--rpath-link=/build/mips/usr/lib:/build/mips/lib:/build/mips/${X11DIR}/lib
          --host-cc=/usr/bin/gcc --enable-libv4l2";
 OPT_mips64="--enable-cross-compile --sysroot=/build/mips64 --arch=mips64 --target-os=linux --cross-prefix=mips64-linux-gnuabi64-
-         --extra-ldflags=-Wl,--rpath-link=/build/mips64/usr/lib64:/build/mips64/lib64:/build/mips64/usr/X11R7/lib644
+         --extra-ldflags=-Wl,--rpath-link=/build/mips64/usr/lib64:/build/mips64/lib64:/build/mips64/${X11DIR}/lib644
          --host-cc=/usr/bin/gcc --disable-mips32r2 --disable-mipsdspr1 --disable-mipsdspr2 --extra-cxxflags=-fpermissive
          --enable-libv4l2";
 OPT_powerpc="--enable-cross-compile --sysroot=/build/powerpc --arch=powerpc --target-os=linux --cross-prefix=powerpc-linux-gnu-
-         --extra-ldflags=-Wl,--rpath-link=/build/powerpc/usr/lib:/build/powerpc/lib:/build/powerpc/usr/X11R7/lib
+         --extra-ldflags=-Wl,--rpath-link=/build/powerpc/usr/lib:/build/powerpc/lib:/build/powerpc/${X11DIR}/lib
          --host-cc=/usr/bin/gcc --enable-libv4l2";
 OPT_powerpc64="--enable-cross-compile --sysroot=/build/powerpc64 --arch=powerpc --target-os=linux --cross-prefix=powerpc64-linux-gnu-
-         --extra-ldflags=-Wl,--rpath-link=/build/powerpc64/usr/lib64:/build/powerpc64/lib64:/build/powerpc64/usr/X11R7/lib64
+         --extra-ldflags=-Wl,--rpath-link=/build/powerpc64/usr/lib64:/build/powerpc64/lib64:/build/powerpc64/${X11DIR}/lib64
          --host-cc=/usr/bin/gcc --enable-libv4l2";
 OPT_arm64="--enable-cross-compile --sysroot=/build/arm64 --arch=arm64 --target-os=linux --cross-prefix=aarch64-linux-gnu-
-         --extra-ldflags=-Wl,--rpath-link=/build/arm/usr/lib:/build/arm/lib:/build/arm/usr/X11R7/lib
+         --extra-ldflags=-Wl,--rpath-link=/build/arm/usr/lib:/build/arm/lib:/build/arm/${X11DIR}/lib
          --host-cc=/usr/bin/gcc --disable-asm";
 ADDCFLAG="-fPIC -I=/usr/include/openjpeg-1.5";
 XADDLDFLAG="-L../libavutil -lavutil";

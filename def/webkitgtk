@@ -9,7 +9,7 @@ TARBALLURL="http://webkitgtk.org/releases/webkitgtk-2.2.3.tar.xz";
 CLEARFLAGS="1";
 NOCCOPT="1";
 LDISCC="0";
-ADDCFLAG="-I=/usr/X11R7/include -I=/usr/${C_LIBDIRS}/glib-2.0/include"
+ADDCFLAG="-I=${X11DIR}/include -I=/usr/${C_LIBDIRS}/glib-2.0/include"
 ADDWITHSYSROOT="1";
 SYSROOTFIXUP="0";
 CHROOTBUILD="1";

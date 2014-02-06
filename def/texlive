@@ -9,17 +9,17 @@ STDOPTS="--prefix=${PREFIX} --includedir=/usr/include --libdir=/usr/${C_LIBDIRS}
   --with-system-t1lib --with-system-libpng --with-system-zlib --enable-etex --disable-native-texlive-build
   --enable-ttf2pk2 --enable-xdv2pdf --datarootdir=${PREFIX}  --infodir=${PREFIX}/texmf-dist/doc/info
   --mandir=${PREFIX}/texmf-dist/doc/man --bindir=${PREFIX}/bin/${barch}-linux
-  --x-libraries=${ARCHROOT}/${barch}/usr/X11R7/include
-  --x-libraries=${ARCHROOT}/${barch}/usr/X11R7/${B_LIBDIRS}";
+  --x-libraries=${ARCHROOT}/${barch}/${X11DIR}/include
+  --x-libraries=${ARCHROOT}/${barch}/${X11DIR}/${B_LIBDIRS}";
 case ${BUILDPROJECT} in
   texlive-boot)
     if [ "${BUILD}" == "${HOST}" ] || [ -x ${ARCHROOT}/${barch}/usr/bin/clisp ];then
       DONTBUILD="${barch}";
     fi;;
   texlive)
+    RPMOBSOLETE="texlive-boot";
     if [ -x ${ARCHROOT}/${barch}/usr/bin/clisp ];then
       STDOPTS="${STDOPTS} --enable-xindy --enable-xindy-rules --enable-xindy-doc";
-      RPMOBSOLETE="texlive-boot";
       CHROOTBUILD="1";
      else
       DONTBUILD="${barch}";
@@ -27,3 +27,7 @@ case ${BUILDPROJECT} in
 esac;
 ADDWITHSYSROOT="1";
 ALIAS="texlive";
+RPMPROVIDES="perl(Pedigree) perl(TeXLive::TLConfFile) perl(TeXLive::TLConfig) perl(TeXLive::TLDownload) \
+             perl(TeXLive::TLPDB) perl(TeXLive::TLPOBJ) perl(TeXLive::TLPaper) perl(TeXLive::TLUtils) \
+             perl(TeXLive::TLWinGoo) perl(only) perl(pdfTeX)";
+

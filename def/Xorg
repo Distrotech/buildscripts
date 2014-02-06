@@ -1,5 +1,6 @@
 VERSION="git"
 VERSEP="-";
-PREFIX="/usr/X11R7";
+PREFIX="/opt/Xorg";
 CONFOPT="";
 BUILDDIR="0";
+STEPBUILD="1";

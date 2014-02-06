@@ -1,5 +1,5 @@
 VERSION="1.0.5"
 VERSEP="-";
-PREFIX="/usr/X11R7";
+PREFIX="${X11DIR}";
 CONFOPT="";
 AMVER="1.9";

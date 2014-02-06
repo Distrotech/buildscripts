@@ -1,20 +1,20 @@
 VERSION="1.0.2"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="-DXINERAMA_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libXinerama.so
-         -DX11_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libX11.so
-         -DXKBFILE_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libxkbfile.so
-         -DXEXT_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libXext.so
-         -DXCURSOR_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libXcursor.so
-         -DXV_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libXv.so
-         -DXSHM_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libXShm.so
-         -DXEXT_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
-         -DXCURSOR_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
-         -DX11_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
-         -DXV_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
-         -DXSHM_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
-         -DXINERAMA_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
-         -DXKBFILE_INCLUDE_DIR:PATH=/build/${barch}/usr/X11R7/include
+CONFOPT="-DXINERAMA_LIBRARY:FILEPATH=/build/${barch}/${X11DIR}/${B_LIBDIRS}/libXinerama.so
+         -DX11_LIBRARY:FILEPATH=/build/${barch}/${X11DIR}/${B_LIBDIRS}/libX11.so
+         -DXKBFILE_LIBRARY:FILEPATH=/build/${barch}/${X11DIR}/${B_LIBDIRS}/libxkbfile.so
+         -DXEXT_LIBRARY:FILEPATH=/build/${barch}/${X11DIR}/${B_LIBDIRS}/libXext.so
+         -DXCURSOR_LIBRARY:FILEPATH=/build/${barch}/${X11DIR}/${B_LIBDIRS}/libXcursor.so
+         -DXV_LIBRARY:FILEPATH=/build/${barch}/${X11DIR}/${B_LIBDIRS}/libXv.so
+         -DXSHM_LIBRARY:FILEPATH=/build/${barch}/${X11DIR}/${B_LIBDIRS}/libXShm.so
+         -DXEXT_INCLUDE_DIR:PATH=/build/${barch}/${X11DIR}/include
+         -DXCURSOR_INCLUDE_DIR:PATH=/build/${barch}/${X11DIR}/include
+         -DX11_INCLUDE_DIR:PATH=/build/${barch}/${X11DIR}/include
+         -DXV_INCLUDE_DIR:PATH=/build/${barch}/${X11DIR}/include
+         -DXSHM_INCLUDE_DIR:PATH=/build/${barch}/${X11DIR}/include
+         -DXINERAMA_INCLUDE_DIR:PATH=/build/${barch}/${X11DIR}/include
+         -DXKBFILE_INCLUDE_DIR:PATH=/build/${barch}/${X11DIR}/include
          -DOPENSSL_SSL_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libssl.so
          -DOPENSSL_CRYPTO_LIBRARY:FILEPATH=/build/${barch}/usr/${B_LIBDIRS}/libcrypto.so
          -DZLIB_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libz.so

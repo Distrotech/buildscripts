@@ -6,8 +6,8 @@ OPT_win32="--disable-notify"
 OPT_win64="--disable-notify"
 AMVER="1.11";
 if [ "${barch:0:3}" != "win" ];then
-  ADDCFLAG="-I=/usr/X11R7/include";
-  ADDLDFLAG="-L=/usr/X11R7/${B_LIBDIRS}";
+  ADDCFLAG="-I=${X11DIR}/include";
+  ADDLDFLAG="-L=${X11DIR}/${B_LIBDIRS}";
  else
   MAKEOPTS="RC=${HOST}-windres";
 fi;

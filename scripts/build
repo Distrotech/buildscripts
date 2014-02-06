@@ -19,7 +19,7 @@ DISTRONAME="Distro Solutions"
 
 DEF_JAVA_VER="1.7.0_51";
 DEF_QT_VER="5";
-
+export X11DIR="/opt/Xorg";
 PYVER=2;
 
 JAVA6_VER="1.6.0_27";
@@ -42,7 +42,7 @@ export ORIG_PATH=${PATH}
 
 #Cleanup the enviroment
 unset JAVA_HOME ANT_HOME M2_HOME QTDIR
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/X11R7/bin:/opt/xfce/bin
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${X11DIR}/bin:/opt/xfce/bin
 
 if [ -d /opt/texlive ];then
   PATH=${PATH}:/opt/texlive/bin/${NARCH}-linux
@@ -271,6 +271,15 @@ check_java() {
     export PATH=${PATH}:${M2_HOME}/bin
   fi;
 
+  if [ -d /opt/forrest ];then
+    export FORREST_HOME=/opt/forrest
+  fi;
+
+  if [ -d /opt/fop ];then
+    export FOP_HOME=/opt/fop
+    export PATH=${PATH}:/opt/fop
+  fi;
+
   if [ ! "${JAVA_HOME}" ];then
     if [ -d /usr/${NLIBDIR}/jvm/jdk-${JAVA_VER} ];then
       export JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-${JAVA_VER}"
@@ -337,7 +346,7 @@ check_create_arch() {
   fi;
 
   #Core utils barfs when bootstraping
-  for incdir in /usr/X11R7/include /usr/${C_LIBDIRS}/glib-2.0/include /opt/qt-${QT_VER}/include \
+  for incdir in ${X11DIR}/include /usr/${C_LIBDIRS}/glib-2.0/include /opt/qt-${QT_VER}/include \
                 /usr/include/glib-2.0 /usr/include/dbus-1.0 /opt/xfce/include \
                 /usr/include/gtk-3.0 /usr/include/gtk-2.0;do
     if [ ! -d ${incdir} ] && [ "${BOOTSTRAP}" == "0" ];then
@@ -561,7 +570,7 @@ strip_path() {
 }
 
 strip_rootdir() {
-  for extrapath in ${1} ${1}/usr `ls -d ${1}/opt/* 2>/dev/null` ${1}/usr/X11R7;do
+  for extrapath in ${1} ${1}/usr `ls -d ${1}/opt/* 2>/dev/null` ${1}/${X11DIR};do
     for append in bin sbin lib libx32 lib64 lib/i686 libx32/i686 lib64/x86_64;do
       if [ -d ${extrapath}/${append} ];then
         strip_path ${extrapath}/${append} 2>/dev/null
@@ -670,7 +679,7 @@ sysroot_fixup() {
     #Filter all -L / -I bits and rebase to sysroot
     for mfile in `find . -name Makefile` ${ADDFILTER};do
       sed -i -e "s/\-L\/\//\-L\//g" -e "s/\-L\(\/usr\/\)li[bx3246]\+/\-L=\1${B_LIBDIRS}/g" \
-             -e "s/\-L\(\/usr\/X11R7\/\)li[bx3246]\+/\-L=\1${B_LIBDIRS}/g" \
+             -e "s/\-L\(\/opt\/Xorg\/\)li[bx3246]\+/\-L=\1${B_LIBDIRS}/g" \
              -e "s/\-L\(\/\)li[bx3246]\+/\-L=\1${B_LIBDIRS}/g" \
              -e "s/\-I\//\-I=\//g" $mfile
     done
@@ -743,10 +752,10 @@ imake_cross_build() {
 
   sysroot_fixup ${1}
 
-  /usr/bin/make V=1 CXX="${CXX} ${CC_SYSROOT}" CC="${CC_TMP} ${CC_SYSROOT}" SHLIBDIR=/usr/X11R7/${B_LIBDIRS} \
-       LOCAL_LDFLAGS="-L=/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
-  /usr/bin/make V=1 CXX="${CXX} ${CC_SYSROOT}" CC="${CC_TMP} ${CC_SYSROOT}" SHLIBDIR=/usr/X11R7/${B_LIBDIRS} \
-       LOCAL_LDFLAGS="-L=/usr/X11R7/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} DESTDIR=${DIST_ROOT} ${MAKEITARGETS} install || return 1
+  /usr/bin/make V=1 CXX="${CXX} ${CC_SYSROOT}" CC="${CC_TMP} ${CC_SYSROOT}" SHLIBDIR=${X11DIR}/${B_LIBDIRS} \
+       LOCAL_LDFLAGS="-L=${X11DIR}/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || return 1
+  /usr/bin/make V=1 CXX="${CXX} ${CC_SYSROOT}" CC="${CC_TMP} ${CC_SYSROOT}" SHLIBDIR=${X11DIR}/${B_LIBDIRS} \
+       LOCAL_LDFLAGS="-L=${X11DIR}/${B_LIBDIRS}" ${MAKEOPTS} ${ARCHMOPT} DESTDIR=${DIST_ROOT} ${MAKEITARGETS} install || return 1
 }
 
 cmake_cross_build() {
@@ -850,7 +859,15 @@ autoconf_cross_build() {
   fi;
 
   if [ ! "${STDOPTS}" ];then
-    STDOPTSX="--prefix=${PREFIX} --sysconfdir=/etc/${SYSCONFPRE} --mandir=${PREFIX}/share/man --localstatedir=/var${STATEDIRPRE} --infodir=${PREFIX}/share/info" 
+    if [ ${PREFIX:0:5} == "/opt/" ] && [ "${SYSLAYOUT}" != "1" ];then
+      STDOPTSX="--prefix=${PREFIX} --sysconfdir=/etc/opt/${PREFIX:5}/${SYSCONFPRE} --mandir=${PREFIX}/share/man --localstatedir=/varopt/${PREFIX:5}/${STATEDIRPRE} --infodir=${PREFIX}/share/info"
+     elif [ ${PREFIX:0:4} == "/usr" ];then
+      STDOPTSX="--prefix=${PREFIX} --sysconfdir=/etc/${SYSCONFPRE} --mandir=${PREFIX}/share/man --localstatedir=/var${STATEDIRPRE} --infodir=${PREFIX}/share/info --includedir=/usr/include"
+     elif [ ${PREFIX} == "/" ];then
+      STDOPTSX="--prefix=${PREFIX} --sysconfdir=/etc/${SYSCONFPRE} --mandir=${PREFIX}/share/man --localstatedir=/var${STATEDIRPRE} --infodir=${PREFIX}/share/info --includedir=/usr/include"
+     else
+      STDOPTSX="--prefix=${PREFIX} --sysconfdir=/etc/${SYSCONFPRE} --mandir=${PREFIX}/share/man --localstatedir=/var${STATEDIRPRE} --infodir=${PREFIX}/share/info"
+    fi;
     if [ "${B_LIBDIRS}" ];then
       if [ ! "{NOMLIBDIR}" ] || [ "${NOMLIBDIR}" != "1" ];then
         if [ "${MLIBDIR}" ];then
@@ -1026,7 +1043,7 @@ build_project() {
   eval ${AVER}=""
 
   #For null config i need this set up early
-  export ACLOCAL_PATH=/usr/share/aclocal:/usr/share/xfce4/dev-tools/m4macros:/usr/X11R7/share/aclocal:./m4
+  export ACLOCAL_PATH=/usr/share/aclocal:/usr/share/xfce4/dev-tools/m4macros:${X11DIR}/share/aclocal:./m4
   if [ "${AMVER}" ];then
     ACLOCAL=aclocal-${AMVER}
     AUTOMAKE=automake-${AMVER}
@@ -1107,6 +1124,10 @@ build_project() {
   fi;
   export SYSROOTFIXUP;
 
+  if [ ! "${SYSLAYOUT}" ];then
+    SYSLAYOUT="0";
+  fi;
+
   if [ ! "${FIXUPLIB}" ];then
     FIXUPLIB="0";
   fi;
@@ -1184,7 +1205,7 @@ build_project() {
         export PYTHON=${SYSROOT}/usr/bin/python
         export PYTHONHOME=${SYSROOT}/usr
         export PYTHONPATH=${SYSROOT}/usr/${B_LIBDIRS}/gobject-introspection/giscanner:${SYSROOT}/usr/${B_LIBDIRS}/gobject-introspection
-        export PATH="${SYSROOT}/sbin:${SYSROOT}/bin:${SYSROOT}/usr/sbin:${SYSROOT}/usr/bin:${SYSROOT}/usr/X11R7/bin:${SYSPATH}";
+        export PATH="${SYSROOT}/sbin:${SYSROOT}/bin:${SYSROOT}/usr/sbin:${SYSROOT}/usr/bin:${SYSROOT}/${X11DIR}/bin:${SYSPATH}";
         eval `chroot ${SYSROOT} /usr/bin/perl -V:privlib -V:archlib -V:sitearch -V:sitelib`
         export PERL5LIB=${SYSROOT}/${privlib}:${SYSROOT}/${archlib}:${SYSROOT}/${sitearch}:${SYSROOT}/${sitelib}
       fi;
@@ -1193,7 +1214,7 @@ build_project() {
         export PYTHON=${SYSROOT}/usr/bin/python
         export PYTHONHOME=${SYSROOT}/usr
         export PYTHONPATH=${SYSROOT}/usr/${B_LIBDIRS}/gobject-introspection/giscanner:${SYSROOT}/usr/${B_LIBDIRS}/gobject-introspection
-        export PATH="${SYSROOT}/sbin:${SYSROOT}/bin:${SYSROOT}/usr/sbin:${SYSROOT}/usr/bin:${SYSROOT}/usr/X11R7/bin:${SYSPATH}";
+        export PATH="${SYSROOT}/sbin:${SYSROOT}/bin:${SYSROOT}/usr/sbin:${SYSROOT}/usr/bin:${SYSROOT}/${X11DIR}/bin:${SYSPATH}";
       fi;
     fi;
   fi;
@@ -1218,7 +1239,7 @@ build_project() {
     ARCHPREFIX="/usr";
   fi;
 
-  CFLAGS="${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${ARCHPREFIX}/X11R7/include -I=${ARCHPREFIX}/lib/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=/opt/xfce/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include";
+  CFLAGS="${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=${ARCHPREFIX}/lib/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=/opt/xfce/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include";
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
@@ -1237,13 +1258,13 @@ build_project() {
   fi;
   export FORCE_UNSAFE_CONFIGURE=1
 
-  PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/X11R7/${B_LIBDIRS}/pkgconfig:${SYSROOT}/${ARCHPREFIX}/X11R7/share/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/qt-5/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig";
+  PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}${X11DIR}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/${X11DIR}/share/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/qt-5/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig";
   if [ "${ORIGARCH:0:3}" == "win" ] && [ "${USEMINGW}" == "0" ];then
     RLINK_PATH="${SYSROOT}/mingw/lib";
    else
-    RLINK_PATH="${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/usr/X11R7/${B_LIBDIRS}:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/qt-5/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio";
+    RLINK_PATH="${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${X11DIR}/${B_LIBDIRS}:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/qt-5/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio";
   fi;
-  BASE_LIBPATH="-L=${ARCHPREFIX}/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/qt-5/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=${ARCHPREFIX}/X11R7/${B_LIBDIRS}"
+  BASE_LIBPATH="-L=${ARCHPREFIX}/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/qt-5/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=${X11DIR}/${B_LIBDIRS}"
 
   if [ "${NEWARCH:0:3}" == "cyg" ];then
     BASE_LIBPATH="-L=${ARCHPREFIX}/${B_LIBDIRS}/w32api ${BASE_LIBPATH}";
@@ -1257,7 +1278,7 @@ build_project() {
     BASE_LIBPATH="-L=/${C_LIBDIRS} -L=/usr/${C_LIBDIRS} ${BASE_LIBPATH}"
   fi;
 
-  export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH} ${BASE_LIBPATH} -I=/include -I=${ARCHPREFIX}/include -I=${ARCHPREFIX}/X11R7/include -I=/opt/xfce/include";
+  export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH} ${BASE_LIBPATH} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=/opt/xfce/include";
 
   if [ "${BOOTSTRAP}" == "0" ];then
     CC="/usr/bin/${HOST}-gcc";
@@ -1326,11 +1347,18 @@ build_project() {
 
   export DIST_ROOT=${PKGBUILDDIR}/${ORIGARCH}/${PKG}
   if [ -d ${DIST_ROOT} ];then
-    rm -rf ${DIST_ROOT}
+    if [ ! "${STEPBUILD}" ] || [ "${STEPBUILD}" == "0" ];then
+      rm -rf ${DIST_ROOT}
+      mkdir -p ${DIST_ROOT}
+     elif [ "${NOCLEAN}" != "1" ];then
+      rm -rf ${DIST_ROOT}
+      mkdir -p ${DIST_ROOT}
+    fi;
+   else
+    mkdir -p ${DIST_ROOT}
   fi;
-  mkdir -p ${DIST_ROOT}
 
-  export LDFLAGS CPPFLAGS CXXFLAGS CFLAGS MAKE_J
+  export LDFLAGS CPPFLAGS CXXFLAGS CFLAGS MAKE_J PREFIX
   if [ "${QTMAKE}" ] && [ "${QTMAKE}" == "1" ];then
     (${QTDIR}/bin/qmake -r && make ${MAKE_J} && make INSTALL_ROOT=${DIST_ROOT}/${PREFIX} install) || return 1
    elif [ -x ${SCRIPTDIR}/make_${PROJECT} ];then
@@ -2081,7 +2109,7 @@ build_qemu_static() {
   QEMU=qemu${VERSEP}${VERSION}
   export PREFIX
 
-  export PKG_CONFIG_PATH="/${NLIBDIR}/pkgconfig:/usr/${NLIBDIR}/pkgconfig:/opt/apache2/${NLIBDIR}/pkgconfig:/usr/share/${NLIBDIR}/pkgconfig:/usr/X11R7/${NLIBDIR}/pkgconfig:/lib/pkgconfig:/usr/lib/pkgconfig:/opt/qt-${QT_VER}/${NLIBDIR}/pkgconfig:/opt/xfce/${NLIBDIR}/pkgconfig";
+  export PKG_CONFIG_PATH="/${NLIBDIR}/pkgconfig:/usr/${NLIBDIR}/pkgconfig:/opt/apache2/${NLIBDIR}/pkgconfig:/usr/share/${NLIBDIR}/pkgconfig:${X11DIR}/${NLIBDIR}/pkgconfig:/lib/pkgconfig:/usr/lib/pkgconfig:/opt/qt-${QT_VER}/${NLIBDIR}/pkgconfig:/opt/xfce/${NLIBDIR}/pkgconfig";
 
   QEMU_DIR=${TOOLDIR}/${NARCH}/${QEMU}-static
   QEMU_PTH=${TOOLPKG}/${NARCH}/${QEMU}-static
@@ -2312,7 +2340,7 @@ setup_hybrid_boot() {
   fi;
 
   if [ "${QCPU}" ];then
-    for emldir in /${B_LIBDIRS} /usr/${B_LIBDIRS} /usr/X11R7 /opt;do
+    for emldir in /${B_LIBDIRS} /usr/${B_LIBDIRS} ${X11DIR} /opt;do
       if [ ! -d /usr/gnemul/qemu-${QCPU}${emldir} ];then
         mkdir -p /usr/gnemul/qemu-${QCPU}${emldir}
       fi;
@@ -2326,8 +2354,8 @@ setup_hybrid_boot() {
       mount --bind ${ARCHROOT}/${1}/usr/${B_LIBDIRS} /usr/gnemul/qemu-${QCPU}/usr/${B_LIBDIRS}
     fi;
 
-    if [ -e ${ARCHROOT}/${1}/usr/X11R7/${B_LIBDIRS}/libX11.so ] && [ ! -e /usr/gnemul/qemu-${QCPU}/usr/X11R7/${B_LIBDIRS}/libX11.so ];then
-      mount --bind ${ARCHROOT}/${1}/usr/X11R7 /usr/gnemul/qemu-${QCPU}/usr/X11R7
+    if [ -e ${ARCHROOT}/${1}/${X11DIR}/${B_LIBDIRS}/libX11.so ] && [ ! -e /usr/gnemul/qemu-${QCPU}/${X11DIR}/${B_LIBDIRS}/libX11.so ];then
+      mount --bind ${ARCHROOT}/${1}/${X11DIR} /usr/gnemul/qemu-${QCPU}/${X11DIR}
     fi;
 
     if [ "`ls /${ARCHROOT}/${1}/opt`" ] &&  [ ! "`ls /usr/gnemul/qemu-${QCPU}/opt`" ];then
@@ -2583,7 +2611,7 @@ setup_ldconf() {
       (cat <<EOF
 ${ARCHROOT}/${arch}/${SETLIBDIR}
 ${ARCHROOT}/${arch}/usr/${SETLIBDIR}
-${ARCHROOT}/${arch}/usr/X11R7/${SETLIBDIR}
+${ARCHROOT}/${arch}/${X11DIR}/${SETLIBDIR}
 EOF
       ) > /etc/ld.so.conf.d/${arch}.conf
     fi;

@@ -29,7 +29,7 @@ ADDCFLAG="-I=${PREFIX}/include/gio-unix-2.0 -I=${PREFIX}/include/cairo -I=${PREF
           -I=${PREFIX}/include/pango-1.0 -I=${PREFIX}/include/gdk-pixbuf-2.0 -I=${PREFIX}/include/glib-2.0
           -I=${PREFIX}/include/atk-1.0 -I=${PREFIX}/lib/glib-2.0/include -I=/mingw/glib-2.0/include";
 AMVER="1.12";
-ADDLDFLAG="-L=${PREFIX}/${B_LIBDIRS} -L=${PREFIX}/X11R7/${B_LIBDIRS}";
+ADDLDFLAG="-L=${PREFIX}/${B_LIBDIRS} -L=${X11DIR}/${B_LIBDIRS}";
 OPT_arm64="--enable-introspection=no";
 GITREPO="gtk";
 CLEARFLAGS="1";

@@ -2,8 +2,8 @@ VERSION="1.0.0"
 VERSEP="-";
 PREFIX="/usr";
 CLEARFLAGS="1";
-ADDCFLAG="-I=/usr/X11R7/include -I=/usr/X11R7/include/X11 -I=/usr/include/gtk-3.0";
-ADDLDFLAG="-L=/usr/X11R7/${B_LIBDIRS} -L=/usr/${C_LIBDIRS}";
+ADDCFLAG="-I=${X11DIR}/include -I=${X11DIR}/include/X11 -I=/usr/include/gtk-3.0";
+ADDLDFLAG="-L=${X11DIR}/${B_LIBDIRS} -L=/usr/${C_LIBDIRS}";
 CONFOPT="-DWITH_TELEPATHY:BOOL=OFF -DWITH_APPINDICATOR=OFF
          -DCAIRO_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libcairo.so
          -DGLIB2_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libglib-2.0.so
@@ -16,13 +16,13 @@ CONFOPT="-DWITH_TELEPATHY:BOOL=OFF -DWITH_APPINDICATOR=OFF
          -DATK_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libatk-1.0.so
          -DGDKPIXBUF_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libgdk_pixbuf-2.0.so
          -DGLIB2_INCLUDE_DIR_PART2:PATH=/build/${barch}/usr/${C_LIBDIRS}/glib-2.0/include
-         -DXKBFILE_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libxkbfile.so
+         -DXKBFILE_LIBRARY:FILEPATH=/build/${barch}/${X11DIR}/${B_LIBDIRS}/libxkbfile.so
          -DFREERDP_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libfreerdp-core.so
          -DFREERDP_CHANNELS_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libfreerdp-channels.so
          -DFREERDP_CODEC_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libfreerdp-codec.so
          -DFREERDP_GDI_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libfreerdp-gdi.so
          -DFREERDP_KBD_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libfreerdp-kbd.so
          -DFREERDP_RAIL_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libfreerdp-rail.so
-         -DX11_X11_LIB:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libX11.so
-         -DAVAHI_LIBRARY:FILEPATH=/build/${barch}/usr/X11R7/${B_LIBDIRS}/libavahi-core.so
+         -DX11_X11_LIB:FILEPATH=/build/${barch}/${X11DIR}/${B_LIBDIRS}/libX11.so
+         -DAVAHI_LIBRARY:FILEPATH=/build/${barch}/${X11DIR}/${B_LIBDIRS}/libavahi-core.so
          -DGCRYPT_LIBRARY:FILEPATH=/build/${barch}/usr/${C_LIBDIRS}/libgcrypt.so";

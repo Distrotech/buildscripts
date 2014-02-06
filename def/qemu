@@ -6,7 +6,7 @@ STDOPTS="--prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir
 OPT_x86_64="--libdir=/usr/lib64";
 OPT_x86_32="--libdir=/usr/libx32";
 NOCCOPT="1";
-ADDCFLAG="-I=/usr/X11R7/include/";
+ADDCFLAG="-I=${X11DIR}/include/";
 CHROOTBUILD="1";
 STATICBSTRAP="1";
 RPMINTDEPS="0";
