@@ -17,37 +17,32 @@ AOPT=OPT_${1}
 ARCHOPT=${!AOPT}
 
 sync_fin() {
-  if [ ! -d ${1}/${PREFIX} ];then
-    mkdir -p ${1}/${PREFIX}
-  fi;
-
   #LD Cache
-  if [ ! -d ${1}/etc/ld.so.conf.d ];then
-    mkdir -p ${1}/etc/ld.so.conf.d
+  if [ ! -d ${DESTDIR}/etc/ld.so.conf.d ];then
+    mkdir -p ${DESTDIR}/etc/ld.so.conf.d
   fi;
-  echo "/usr/X11R7/${B_LIBDIRS}" > ${1}/etc/ld.so.conf.d/xwin_${BARCH}.conf
+  echo "${PREFIX}/${B_LIBDIRS}" > ${DESTDIR}/etc/ld.so.conf.d/xwin_${BARCH}.conf
 
-  if [ "${NARCH}" == "${BARCH}" ] && [ ! -h ${ARCHROOT}/${NARCH} ];then
-    rsync -a ${DESTDIR}${PREFIX}/ /${PREFIX}/
-  fi;
+#  if [ "${NARCH}" == "${BARCH}" ] && [ ! -h ${ARCHROOT}/${NARCH} ];then
+#    rsync -a ${DESTDIR}/ /
+#  fi;
 
   #Clean up failed pkg
   if [ "${2}" ] && [ "${2}" == "1" ];then
-    for pkgfail in `awk -F: '$1 == "FAIL" {printf "%s\n",substr($2,2)}' ${1}.done`;do
-      if [ -e ${pkgfail}/Makefile ];then
-        make -C ${pkgfail} clean distclean
-      fi;
-      if [ -e ${pkgfail}/config.log ];then
-        rm ${pkgfail}/config.log
-      fi;
-    done;
+#    for pkgfail in `awk -F: '$1 == "FAIL" {printf "%s\n",substr($2,2)}' ${1}.done`;do
+#      if [ -e ${pkgfail}/Makefile ];then
+#        make -C ${pkgfail} clean distclean
+#      fi;
+#      if [ -e ${pkgfail}/config.log ];then
+#        rm ${pkgfail}/config.log
+#      fi;
+#    done;
     exit ${2}
   fi;
 
-  if [ ! -d ${1}${PREFIX} ];then
-    mkdir -p ${1}${PREFIX}
+  if [ -h ${SYSROOT}/${PREFIX} ];then
+    rm ${SYSROOT}/${PREFIX}
   fi;
-  rsync -a ${DESTDIR}${PREFIX}/ ${1}${PREFIX}/
 
   exit 0
 }
@@ -55,8 +50,7 @@ sync_fin() {
 NARCH=`uname -m`
 
 export BARCH=${1}
-export PREFIX=/usr/X11R7
-export DESTDIR=/build/${1}
+export DESTDIR=${3}
 export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:${DESTDIR}${PREFIX}/${B_LIBDIRS}/pkgconfig
 export DPATH=${DESTDIR}${PREFIX}
 export MAKEFLAGS=${MAKE_J}
@@ -74,6 +68,20 @@ if [ "${4}" ];then
   ./util/modular/build.sh -L |awk '{printf "if [ -e %s/Makefile ];then make -C %s distclean;fi\n",$1, $1}' |sh
   rm ${1}.tobuild ${1}.done
   touch ${1}.done
+  rm -rf ${3}
+fi;
+
+if [ ! -d ${SYSROOT}/${PREFIX}/${B_LIBDIRS} ];then
+  if [ ! -d ${3}/${PREFIX} ];then
+    mkdir -p ${3}/${PREFIX}
+  fi;
+  if [ -d ${SYSROOT}/${PREFIX} ];then
+    rm -rf ${SYSROOT}/${PREFIX}
+  fi;
+  ln -sr ${3}/${PREFIX}  ${SYSROOT}/${PREFIX}
+  if [ ! -d ${3}/${PREFIX}/include ];then
+    mkdir -p ${3}/${PREFIX}/include
+  fi;
 fi;
 
 (for pkg in `./util/modular/build.sh -L |grep -vE "(^driver/xf86-video-newport)|(^driver/xf86-video-sis)|(^mesa)${FILTER}"`;do
@@ -92,15 +100,17 @@ fi;
 
 export CC_FOR_BUILD=gcc
 export CXX_FOR_BUILD=g++
-export CFLAGS="${CFLAGS} -I=/usr/${B_LIBDIRS}/glib-2.0/include"
+export CFLAGS="${CFLAGS} -I=/usr/${B_LIBDIRS}/glib-2.0/include -I${DESTDIR}/${PREFIX}/include"
+export LDFLAGS="${LDFLAGS} -L${DESTDIR}/${PREFIX}/${B_LIBDIRS}"
+TRPREFIX=$(echo ${PREFIX} |tr '/' '_')
 CONFFLAGS="--host=${2} --build=${BUILD} --with-sysroot --libdir=${PREFIX}/${B_LIBDIRS} --disable-selective-werror ${ARCHOPT}
            ac_cv_file__dev_urandom=yes --with-utmp-file=/var/run/utmp --with-wtmp-file=/var/log/wtmp
-           ac_cv_file__usr_X11R7_include_xorg_dri_h=yes ac_cv_file__usr_X11R7_include_xorg_sarea_h=yes
-           ac_cv_file__usr_X11R7_include_xorg_dristruct_h=yes ac_cv_file__usr_X11R7_include_xorg_damage_h=yes
-           xorg_cv_malloc0_returns_null=yes"
+           ac_cv_file_${TRPREFIX}_include_xorg_dri_h=yes ac_cv_file_${TRPREFIX}_include_xorg_sarea_h=yes
+           ac_cv_file_${TRPREFIX}_include_xorg_dristruct_h=yes ac_cv_file_${TRPREFIX}_include_xorg_damage_h=yes
+           xorg_cv_malloc0_returns_null=yes --sysconfdir=/etc --localstatedir=/var"
 
 if [ "${NARCH}" != "${1}" ];then
-  CONFFLAGS="${CONFFLAGS} MKFONTDIR=/usr/X11R7/bin/mkfontdir MKFONTSCALE=/usr/X11R7/bin/mkfontscale";
+  CONFFLAGS="${CONFFLAGS} MKFONTDIR=${PREFIX}/bin/mkfontdir MKFONTSCALE=${PREFIX}/bin/mkfontscale";
 fi;
 export CONFFLAGS
 
@@ -116,4 +126,4 @@ if [ -e ${PREFIX}/include/mibstore.h ] && [ ! -s ${PREFIX}/include/mibstore.h ];
   rm ${PREFIX}/include/mibstore.h
 fi;
 
-sync_fin ${3} 0
+sync_fin ${SYSROOT} 0
