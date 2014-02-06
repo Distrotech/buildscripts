@@ -29,3 +29,4 @@ MOPT_powerpc64="LIBTOOL=/build/powerpc64/usr/build-1/libtool";
 MOPT_x86_32="LIBTOOL=/build/x86_32/usr/build-1/libtool";
 GITBRANCH="master";
 DISTCONF="httpd/httpd.conf";
+SYSLAYOUT="1";

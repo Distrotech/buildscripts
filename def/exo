@@ -5,3 +5,4 @@ CONFOPT="--datarootdir=/usr/share ac_cv_func_mmap_fixed_mapped=yes";
 ADDCFLAG="-I=/opt/xfce/include/xfce4 -I=/usr/include/cairo -I=/usr/include/pango-1.0
           -I=/usr/include/gdk-pixbuf-2.0 -I=/usr/include/atk-1.0";
 NOMLIBDIR="1";
+SYSLAYOUT="1";
