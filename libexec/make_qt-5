@@ -23,7 +23,7 @@ if [ "${4}" ] || [ ! -e Makefile ];then
   fi;
   ./init-repository
   if [ "${1}" == "x86_32" ];then
-    git submodule deinit -f qtjsbackend qtscript
+    git submodule deinit -f qtscript qtdeclarative
   fi;
   ./configure ${CONFOPT} -xplatform ${QT_SPEC} -platform ${QT_HOSTSPEC} || exit 1
 fi;

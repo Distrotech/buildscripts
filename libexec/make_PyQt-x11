@@ -3,5 +3,6 @@
 export PYTHONHOME=/build/${1}/usr
 /build/${1}/usr/bin/python2.7 configure.py --confirm-license
 
+sed -i -e "s/.*\-strip.*//" Makefile
 make ${MAKE_J}
-make DESTDIR=${3} install
+make INSTALL_ROOT=${3} install
