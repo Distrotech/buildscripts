@@ -11,3 +11,4 @@ DISTCONF="avahi/avahi-daemon.conf avahi/avahi-autoipd.action";
 CHROOTBUILD="1";
 DONTBUILD="cyg32 cyg64";
 RPMOBSOLETE="avahi-nogui";
+QT_VER="4";
