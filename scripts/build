@@ -62,6 +62,8 @@ TOOLPKG=${PKGDISTDIR}${ARCHROOT}
 TOOLDIR=${DISTDIR}/cross
 BASEROOT=${DISTDIR}/root
 SCRIPTDIR=${DISTDIR}/scripts
+DTSETCDIR=${DISTDIR}/etc
+DTSLEXEC=${DISTDIR}/libexec
 PKGBUILDDIR=${DISTDIR}${ARCHROOT}
 GITURL=${GITURL}
 GITUPDATE=1;
@@ -796,7 +798,7 @@ cmake_cross_build() {
           -DCMAKE_FIND_ROOT_PATH=\"${SYSROOT}/\" -DCMAKE_INSTALL_RPATH:PATH=\"${RLINK_PATH}\" ${CONFOPT} \
           ${ARCHXOPT} ${ARCHOPT} -DCMAKE_C_COMPILER=/usr/bin/${HOST}-gcc -DCMAKE_C_COMPILER_ENV_VAR=\"${CC_SYSROOT}\" \
           -DCMAKE_CXX_COMPILER=/usr/bin/${HOST}-g++ -DCMAKE_CXX_COMPILER_ENV_VAR=\"${CC_SYSROOT}\" \
-          -DGNU_HOST=${3} -DCMAKE_TOOLCHAIN_FILE=${SCRIPTDIR}/cmake_${2}.cross ${1}${CFGBIN}
+          -DGNU_HOST=${3} -DCMAKE_TOOLCHAIN_FILE=${DTSETCDIR}/cmake_${2}.cross ${1}${CFGBIN}
   fi;
   cmake ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} ${1}${CFGBIN}
 
@@ -1361,11 +1363,11 @@ build_project() {
   export LDFLAGS CPPFLAGS CXXFLAGS CFLAGS MAKE_J PREFIX
   if [ "${QTMAKE}" ] && [ "${QTMAKE}" == "1" ];then
     (${QTDIR}/bin/qmake -r && make ${MAKE_J} && make INSTALL_ROOT=${DIST_ROOT}/${PREFIX} install) || return 1
-   elif [ -x ${SCRIPTDIR}/make_${PROJECT} ];then
+   elif [ -x ${DTSLEXEC}/make_${PROJECT} ];then
     export CC="${CC} ${CC_SYSROOT}"
     export CXX="${CXX} ${CC_SYSROOT}"
     export CONFOPT="${CONFOPT} ${ARCHOPT} ${ARCHXOPT}";
-    ${SCRIPTDIR}/make_${PROJECT} ${ORIGARCH} ${HOST} ${DIST_ROOT} ${CLEANOPT} || return 1
+    ${DTSLEXEC}/make_${PROJECT} ${ORIGARCH} ${HOST} ${DIST_ROOT} ${CLEANOPT} || return 1
    elif [ -e ${TOPDIR}${CFGBIN}configure ] && [ "${PROJECT}" != "cmake" ];then
     if [ ! -x ${TOPDIR}${CFGBIN}configure ];then
       chmod 755 ${TOPDIR}${CFGBIN}configure
@@ -1958,7 +1960,15 @@ build_gcc_bootstrap() {
   SRDIR=${BASEROOT}/${1}
   if [ -d ${PKGBUILDDIR}/${1}/${GLIBC}/usr/include ] && [ -d ${SRDIR}/usr/include/linux ] &&
      [ "${4}" == "static" ];then
-    BUILDDIR=${SRDIR}
+    if [ -e ${ARCHROOT}/${1}/usr/${B_LIBDIRS}/libc.so ];then
+      if [ "${1}" == "${3}" ];then
+        BUILDDIR=/
+       else
+        BUILDDIR=${ARCHROOT}/${1}/
+      fi
+     else
+      BUILDDIR=${SRDIR}
+    fi;
     (cd ${PKGBUILDDIR}/${1}/${GLIBC}
 #    if [ -d ${PKGBUILDDIR}/${1}/${GCC} ];then
 #      rsync -a ${PKGBUILDDIR}/${1}/${GCC}/ ${SRDIR}/
@@ -3443,7 +3453,7 @@ if test -e /etc/os-release;then
 fi;
 export BOOTSTRAP_STATIC=${BOOTSTRAP}
 
-if [ ! -d ${DEFDIR} ] || [ ! -d ${DISTDIR}/scripts ];then
+if [ ! -d ${DEFDIR} ] || [ ! -d ${SCRIPTDIR}];then
   git clone ${GITURL}/buildscripts.git ${DISTDIR}/
 fi;
 
