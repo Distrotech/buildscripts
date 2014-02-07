@@ -1,5 +1,0 @@
-#!/bin/bash
-
-gcj -Wl,-Bsymbolic -findirect-dispatch --main=org.eclipse.jdt.internal.compiler.batch.Main ${1} \
-    -o ${2}
-
