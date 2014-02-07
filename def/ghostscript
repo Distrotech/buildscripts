@@ -16,3 +16,9 @@ OPT_x86_32="cross_compiling=yes";
 OPT_i686="cross_compiling=yes";
 GITBRANCH="master";
 DONTBUILD="cyg32 cyg64";
+case ${barch} in
+  x86_64|x86_32|i[3-6]86)
+    case ${NARCH} in
+      x86_64|x86_32|i[3-6]86)CHROOTBUILD="1";;
+    esac;;
+esac;
