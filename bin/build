@@ -57,12 +57,14 @@ DISTDIR=${DISTDIR:=/dist}
 ARCHROOT=/build
 DTSETCDIR=${DISTDIR}/etc
 DEFDIR=${DTSETCDIR}/builddef
-PKGDISTDIR=${DISTDIR}/pkg
-TOOLPKG=${PKGDISTDIR}${ARCHROOT}
 DTSLEXEC=${DISTDIR}/libexec
 SCRIPTDIR=${DISTDIR}/bin
 SKELDIR=${DTSETCDIR}/skel
-PKGBUILDDIR=${DISTDIR}${ARCHROOT}
+PKGBUILDDIR=${DISTDIR}/var
+DTSSRVDIR=${DISTDIR}/srv
+PKGDISTDIR=${DTSSRVDIR}/tar
+TOOLPKG=${PKGDISTDIR}/core
+PKGDESTDIR=${PKGBUILDDIR}/destdir
 BASEROOT=${PKGBUILDDIR}/bootstrap
 STATDIR=${PKGBUILDDIR}/status
 GITURL=${GITURL}
@@ -1349,7 +1351,7 @@ build_project() {
     (cd ${TOPDIR};autoreconf -i -f)
   fi;
 
-  export DIST_ROOT=${PKGBUILDDIR}/${ORIGARCH}/${PKG}
+  export DIST_ROOT=${PKGDESTDIR}/${ORIGARCH}/${PKG}
   if [ -d ${DIST_ROOT} ];then
     if [ ! "${STEPBUILD}" ] || [ "${STEPBUILD}" == "0" ];then
       rm -rf ${DIST_ROOT}
@@ -1565,8 +1567,8 @@ setup_build_dir() {
   if [ -d build-${4}-${1}${5} ] && [ "${BOOTCLEAN}" ];then
     rm -rf build-${4}-${1}${5}
   fi;
-  if [ -d ${PKGBUILDDIR}/${4}/${1}/${3}${5} ] && [ "${BOOTCLEAN}" ];then
-    rm -rf ${PKGBUILDDIR}/${4}/${1}/${3}${5}
+  if [ -d ${PKGDESTDIR}/${4}/${1}/${3}${5} ] && [ "${BOOTCLEAN}" ];then
+    rm -rf ${PKGDESTDIR}/${4}/${1}/${3}${5}
   fi;
   if [ ! -d build-${4}-${1}${5} ];then
     mkdir build-${4}-${1}${5}
@@ -1743,14 +1745,14 @@ build_bootstrap_binutils() {
   BINUTILS=${PNAME}
 
   if [ "${1}" == "${NARCH}" ];then
-    DIST_ROOT=${PKGBUILDDIR}/${NARCH}/${BINUTILS}-static
+    DIST_ROOT=${PKGDESTDIR}/${NARCH}/${BINUTILS}-static
     if [ "${BOOTSTRAP}" == "0" ];then
       CSYSROOT="--with-sysroot=/"
      else
       CSYSROOT="--with-sysroot=${ARCHROOT}/${1}"
     fi
    else
-    DIST_ROOT=${PKGBUILDDIR}/${NARCH}/${1}/${BINUTILS}
+    DIST_ROOT=${PKGDESTDIR}/${NARCH}/${1}/${BINUTILS}
     CSYSROOT="--with-sysroot=${ARCHROOT}/${1}"
   fi;
 
@@ -1930,10 +1932,10 @@ build_gcc_bootstrap() {
   fi;
 
   if [ "${TARCH}" == "${1}" ];then
-    GCCBOOTDEST=${PKGBUILDDIR}/${TARCH}/${TARGPKG}
+    GCCBOOTDEST=${PKGDESTDIR}/${TARCH}/${TARGPKG}
     PROGPRE="";
    else
-    GCCBOOTDEST=${PKGBUILDDIR}/${TARCH}/${1}/${TARGPKG}
+    GCCBOOTDES=${PKGDESTDIR}/${TARCH}/${1}/${TARGPKG}
     PROGPRE="--program-prefix=${2}-";
   fi;
   USELIBDIR=${TLIBDIR}
@@ -1960,7 +1962,7 @@ build_gcc_bootstrap() {
 
   #Use GLIBC/Kern headers only [Virgin] / Build dir / sysroot
   SRDIR=${BASEROOT}/${1}
-  if [ -d ${PKGBUILDDIR}/${1}/${GLIBC}/usr/include ] && [ -d ${SRDIR}/usr/include/linux ] &&
+  if [ -d ${PKGDESTDIR}/${1}/${GLIBC}/usr/include ] && [ -d ${SRDIR}/usr/include/linux ] &&
      [ "${4}" == "static" ];then
     if [ -e ${ARCHROOT}/${1}/usr/${B_LIBDIRS}/libc.so ];then
       if [ "${1}" == "${3}" ];then
@@ -1971,9 +1973,9 @@ build_gcc_bootstrap() {
      else
       BUILDDIR=${SRDIR}
     fi;
-    (cd ${PKGBUILDDIR}/${1}/${GLIBC}
-#    if [ -d ${PKGBUILDDIR}/${1}/${GCC} ];then
-#      rsync -a ${PKGBUILDDIR}/${1}/${GCC}/ ${SRDIR}/
+    (cd ${PKGDESTDIR}/${1}/${GLIBC}
+#    if [ -d ${PKGDESTDIR}/${1}/${GCC} ];then
+#      rsync -a ${PKGDESTDIR}/${1}/${GCC}/ ${SRDIR}/
 #    fi;
      if [ ! -e ${SRDIR}/usr/include/stdio.h ];then
        rsync -aR . usr/include ${SRDIR}/
@@ -2123,7 +2125,7 @@ build_qemu_static() {
 
   export PKG_CONFIG_PATH="/${NLIBDIR}/pkgconfig:/usr/${NLIBDIR}/pkgconfig:/opt/apache2/${NLIBDIR}/pkgconfig:/usr/share/${NLIBDIR}/pkgconfig:${X11DIR}/${NLIBDIR}/pkgconfig:/lib/pkgconfig:/usr/lib/pkgconfig:/opt/qt-${QT_VER}/${NLIBDIR}/pkgconfig:/opt/xfce/${NLIBDIR}/pkgconfig";
 
-  QEMU_DIR=${PKGBUILDDIR}/${NARCH}/${QEMU}-static
+  QEMU_DIR=${PKGDESTDIR}/${NARCH}/${QEMU}-static
   QEMU_PTH=${TOOLPKG}/${NARCH}/${QEMU}-static
   DIST_PKG=${QEMU_PTH}/${QEMU}-static.tar.xz
 
@@ -2190,7 +2192,7 @@ build_static_tool() {
 
   PATH=${PATH}:.
 
-  if [ -d ${PKGBUILDDIR}/${1}/${STATICTOOL}-static ];then
+  if [ -d ${PKGDESTDIR}/${1}/${STATICTOOL}-static ];then
     return
   fi;
 
@@ -2276,25 +2278,25 @@ build_static_tool() {
     if [ ! -x ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-config ];then
       chmod 750 ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-config
     fi
-    eval ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-config ${1} ${SRCDIR}/${4}/${STATICTOOL} ${PKGBUILDDIR}/${1}/${STATICTOOL}-static
+    eval ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-config ${1} ${SRCDIR}/${4}/${STATICTOOL} ${PKGDESTDIR}/${1}/${STATICTOOL}-static
   fi;
 
   eval make ${MAKE_J} ${STATICMOPT} || eval make ${STATICMOPT} || return 1
-  eval make ${STATICMOPT} DESTDIR=${PKGBUILDDIR}/${1}/${STATICTOOL}-static install || return 1
+  eval make ${STATICMOPT} DESTDIR=${PKGDESTDIR}/${1}/${STATICTOOL}-static install || return 1
 
   #Postinstall hook
   if [ -e ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install ];then
     if [ ! -x ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install ];then
       chmod 750 ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install
     fi
-    eval ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install ${1} ${SRCDIR}/${4}/${STATICTOOL} ${PKGBUILDDIR}/${1}/${STATICTOOL}-static
+    eval ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install ${1} ${SRCDIR}/${4}/${STATICTOOL} ${PKGDESTDIR}/${1}/${STATICTOOL}-static
   fi;
 
   if [ "${STATICINSTLIBS}" ] && [ "${STATICINSTLIBS}" == "1" ];then
     if [ -d ${ARCHROOT}/${1} ];then
-      rsync -avP ${PKGBUILDDIR}/${1}/${STATICTOOL}-static/usr/${3}/*.a ${ARCHROOT}/${1}/usr/${3}/
+      rsync -avP ${PKGDESTDIR}/${1}/${STATICTOOL}-static/usr/${3}/*.a ${ARCHROOT}/${1}/usr/${3}/
      else
-      rsync -avP ${PKGBUILDDIR}/${1}/${STATICTOOL}-static/usr/${3}/*.a /usr/${3}/
+      rsync -avP ${PKGDESTDIR}/${1}/${STATICTOOL}-static/usr/${3}/*.a /usr/${3}/
     fi;
   fi;
 
@@ -2303,7 +2305,7 @@ build_static_tool() {
      rm -rf build-${1}-static
   fi;
 
-  tar_package ${PKGBUILDDIR}/${1}/${STATICTOOL}-static ${TOOLPKG}/${1} ${STATICTOOL}-static > /dev/null 2>&1
+  tar_package ${PKGDESTDIR}/${1}/${STATICTOOL}-static ${TOOLPKG}/${1} ${STATICTOOL}-static > /dev/null 2>&1
 }
 
 static_toolbuild() {
@@ -2425,7 +2427,7 @@ setup_hybrid_boot() {
    if [ "${pkg}" == "gcc" ];then
      PNAME=${PNAME}-cross
    fi;
-   PDIR=${PKGDISTDIR}/build/${NARCH}/${1}/${PNAME}
+   PDIR=${TOOLPKG}/${NARCH}/${1}/${PNAME}
    if [ ! -d ${PDIR} ];then
      return 1
    fi;
@@ -3120,10 +3122,10 @@ bootstrap_toolchain() {
 
   #Add QEMU static to build
   if [ -d ${ARCHROOT}/${1}/usr/bin ] && [ "${QCPU}" ] && [ "${1}" != "${NARCH}" ] && \
-     [ -f ${PKGBUILDDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ];then
+     [ -f ${PKGDESTDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ];then
     if [ ! -f ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static ] || \
-       [ ${PKGBUILDDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static -nt ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static ];then
-      cp ${PKGBUILDDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static
+       [ ${PKGDESTDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static -nt ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static ];then
+      cp ${PKGDESTDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static
     fi;
   fi;
 
@@ -3131,11 +3133,11 @@ bootstrap_toolchain() {
 
 #     mips64)
 #       #Need stubs-o32.h from 32bit
-#       rsync -aP ${PKGBUILDDIR}/mips/${GLIBC}/usr/include/gnu/stubs-o32.h ${ARCHROOT}/${1}/usr/include/gnu/
+#       rsync -aP ${PKGDESTDIR}/mips/${GLIBC}/usr/include/gnu/stubs-o32.h ${ARCHROOT}/${1}/usr/include/gnu/
 #
 #       #Add the 32bit libs to 64bit for sysroot
-#       rsync -aP ${PKGBUILDDIR}/mips/${GLIBC}/lib ${ARCHROOT}/${1}/
-#       rsync -aP ${PKGBUILDDIR}/mips/${GLIBC}/usr/lib ${ARCHROOT}/${1}/usr/
+#       rsync -aP ${PKGDESTDIR}/mips/${GLIBC}/lib ${ARCHROOT}/${1}/
+#       rsync -aP ${PKGDESTDIR}/mips/${GLIBC}/usr/lib ${ARCHROOT}/${1}/usr/
 #     ;;
 }
 
@@ -3227,16 +3229,16 @@ install_pkg_to_toolchain() {
    get_pkg_name ${1}
    STATICBSTRAP=${STATICBSTRAP:=0};
 
-   if [ "${1}" == "gcc" ] && [ -d ${PKGBUILDDIR}/${2}/${PNAME}-boot ];then
-     PKG=${PKGDISTDIR}/build/${2}/${PNAME}-boot
+   if [ "${1}" == "gcc" ] && [ -d ${PKGDESTDIR}/${2}/${PNAME}-boot ];then
+     PKG=${TOOLPKG}/${2}/${PNAME}-boot
      PNAME="${PNAME}-boot"
-    elif [ "${STATICBSTRAP}" == "1" ] && [ -d ${PKGBUILDDIR}/${2}/${PNAME}-static ];then
-     PKG=${PKGDISTDIR}/build/${2}/${PNAME}-static
+    elif [ "${STATICBSTRAP}" == "1" ] && [ -d ${PKGDESTDIR}/${2}/${PNAME}-static ];then
+     PKG=${TOOLPKG}/${2}/${PNAME}-static
      PNAME="${PNAME}-static"
     elif [ "${STATICBSTRAP}" == "0" ] && [ -d ${PKGDISTDIR}/${2}/${PNAME} ];then
      PKG=${PKGDISTDIR}/${2}/${PNAME}
-    elif [ -d ${PKGBUILDDIR}/${2}/${PNAME}-static ];then
-     PKG=${PKGDISTDIR}/build/${2}/${PNAME}-static
+    elif [ -d ${PKGDESTDIR}/${2}/${PNAME}-static ];then
+     PKG=${TOOLPKG}/${2}/${PNAME}-static
      PNAME="${PNAME}-static"
     else
       echo "Bad/missing build ${PNAME}"
@@ -3297,8 +3299,8 @@ build_toolchain_dir() {
   sleep 1
   clear
 
-  if [ -e ${PKGDISTDIR}/build/${1}/kernel-headers.tar.xz ];then
-    tar --exclude=*/.dbg/* -C ${BUILDROOTDIR} -xJf ${PKGDISTDIR}/build/${1}/kernel-headers.tar.xz;
+  if [ -e ${TOOLPKG}/${1}/kernel-headers.tar.xz ];then
+    tar --exclude=*/.dbg/* -C ${BUILDROOTDIR} -xJf ${TOOLPKG}/${1}/kernel-headers.tar.xz;
   fi;
 
   if [ ! -e ${BUILDROOTDIR}/usr/include/asm ];then
