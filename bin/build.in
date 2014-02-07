@@ -239,15 +239,18 @@ dialog_config() {
 mnt_archroot() {
   BINDFS="mount --bind";
 
-  if [ ! -d ${DISTDIR}/bin ];then
-    if [ ! -d ${DISTDIR} ];then
-      mkdir -p ${DISTDIR}
+  if [ ! -d ${ARCHROOT}/${1}/${PKGDISTDIR} ];then
+    if [ ! -d ${ARCHROOT}/${1}/${DTSSRVDIR} ];then
+      mkdir -p ${ARCHROOT}/${1}/${DTSSRVDIR}
     fi;
-    git clone ${GITURL}/buildscripts.git ${DISTDIR}/
+    ${BINDFS} ${DTSSRVDIR} ${ARCHROOT}/${1}/${DTSSRVDIR}
   fi;
 
-  if [ ! -d ${ARCHROOT}/${1}/${DISTDIR}/bin ];then
-    ${BINDFS} ${DISTDIR} ${ARCHROOT}/${1}/${DISTDIR}
+  if [ ! -d ${ARCHROOT}/${1}/${PKGDESTDIR} ];then
+    if [ ! -d ${ARCHROOT}/${1}/${PKGBUILDDIR} ];then
+      mkdir -p ${ARCHROOT}/${1}/${PKGBUILDDIR}
+    fi;
+    ${BINDFS} ${PKGBUILDDIR} ${ARCHROOT}/${1}/${PKGBUILDDIR}
   fi;
 
   if [ ! -d ${ARCHROOT}/${1}/sys/dev ];then
@@ -2592,7 +2595,7 @@ bootstrap_arch_root() {
 
     #GCC needs system zlib glibc can use selinux/gd Add packages for a build enviroment
     BOOTCLEAN=distclean
-    build_packages ${arch} libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat xz libxml2 freetype \
+    build_packages ${arch} dtsbuild libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat xz libxml2 freetype \
       fontconfig jpeg tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac libsigsegv ncurses ncursesw \
       onig slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude libtirpc flex \
       Linux-PAM readline popt dialog util-linux bash coreutils bison sed texinfo libunistring libatomic_ops gc \
