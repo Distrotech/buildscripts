@@ -53,15 +53,17 @@ LANG=${LANG:=en_ZA.UTF8}
 
 #Setup layout path
 SRCDIR=/usr/src
-DISTDIR=${DISTDIR:=/dist}
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+DISTDIR=${prefix}
 ARCHROOT=/build
-DTSETCDIR=${DISTDIR}/etc
+DTSETCDIR=@sysconfdir@/@PACKAGE_NAME@
 DEFDIR=${DTSETCDIR}/builddef
-DTSLEXEC=${DISTDIR}/libexec
-SCRIPTDIR=${DISTDIR}/bin
+DTSLEXEC=@libexecdir@/@PACKAGE_NAME@
+SCRIPTDIR=@bindir@
 SKELDIR=${DTSETCDIR}/skel
-PKGBUILDDIR=${DISTDIR}/var
-DTSSRVDIR=${DISTDIR}/srv
+PKGBUILDDIR=@localstatedir@
+DTSSRVDIR=@SRVDIR@
 PKGDISTDIR=${DTSSRVDIR}/tar
 TOOLPKG=${PKGDISTDIR}/core
 PKGDESTDIR=${PKGBUILDDIR}/destdir
@@ -237,14 +239,14 @@ dialog_config() {
 mnt_archroot() {
   BINDFS="mount --bind";
 
-  if [ ! -d ${DISTDIR}/.git ];then
+  if [ ! -d ${DISTDIR}/bin ];then
     if [ ! -d ${DISTDIR} ];then
-      mkdir ${DISTDIR}
+      mkdir -p ${DISTDIR}
     fi;
     git clone ${GITURL}/buildscripts.git ${DISTDIR}/
   fi;
 
-  if [ ! -d ${ARCHROOT}/${1}/${DISTDIR}/.git ];then
+  if [ ! -d ${ARCHROOT}/${1}/${DISTDIR}/bin ];then
     ${BINDFS} ${DISTDIR} ${ARCHROOT}/${1}/${DISTDIR}
   fi;
 
@@ -1496,7 +1498,7 @@ build_project() {
   if [ "${MLIBDIRLN}" ] && [ "${MLIBDIR}" ];then
     for libln in ${MLIBDIRLN};do
       if [ -e ${DIST_ROOT}${PREFIX}/${C_LIBDIRS}/${libln} ];then
-        ln -f -s ${MLIBDIR}/${libln} ${DIST_ROOT}/${PREFIX}/${B_LIBDIRS}/
+        ln -sfr ${DIST_ROOT}/${PREFIX}/${B_LIBDIRS}/${MLIBDIR}/${libln} ${DIST_ROOT}/${PREFIX}/${B_LIBDIRS}/${libln}
       fi;
     done;
   fi;
