@@ -3,7 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 STDOPTS="--prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var --libdir=/usr/${C_LIBDIRS}";
-CONFOPTX="--cross-compile --cross-answers=${SCRIPTDIR}/waf_cross_${barch}.ans";
+CONFOPTX="--cross-compile --cross-answers=${DTSETCDIR}/waf_cross/waf_cross_${barch}.ans";
 BUILDDIR="0";
 NOCCOPT="1";
 ADDCFLAG="-I=/usr/include/python2.7";
