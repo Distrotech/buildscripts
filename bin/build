@@ -56,14 +56,15 @@ SRCDIR=/usr/src
 DISTDIR=${DISTDIR:=/dist}
 ARCHROOT=/build
 STATDIR=${DISTDIR}/status
-DEFDIR=${DISTDIR}/etc/builddef
+DTSETCDIR=${DISTDIR}/etc
+DEFDIR=${DTSETCDIR}/etc/builddef
 PKGDISTDIR=${DISTDIR}/pkg
 TOOLPKG=${PKGDISTDIR}${ARCHROOT}
 TOOLDIR=${DISTDIR}/cross
 BASEROOT=${DISTDIR}/root
 SCRIPTDIR=${DISTDIR}/bin
-DTSETCDIR=${DISTDIR}/etc
 DTSLEXEC=${DISTDIR}/libexec
+SKELDIR=${DTSETCDIR}/skel
 PKGBUILDDIR=${DISTDIR}${ARCHROOT}
 GITURL=${GITURL}
 GITUPDATE=1;
@@ -374,7 +375,7 @@ check_create_arch() {
     if [ ! -d ${ARCHROOT}/${1}/etc ];then
       mkdir -p ${ARCHROOT}/${1}/etc
       ln -s ../proc/self/mounts ${ARCHROOT}/${1}/etc/mtab
-      rsync -a ${DISTDIR}/res/ ${ARCHROOT}/${1}/
+      rsync -a ${SKELDIR}/ ${ARCHROOT}/${1}/
       if [ -x /bin/domainname ];then
         echo "domainname $(domainname)" > ${ARCHROOT}/${1}/etc/resolv.conf
         echo "search $(domainname)" >> ${ARCHROOT}/${1}/etc/resolv.conf
@@ -3326,7 +3327,7 @@ build_toolchain_dir() {
   ${STRIP} ${BUILDROOTDIR}/bin/* ${BUILDROOTDIR}/sbin/* ${BUILDROOTDIR}/usr/bin/* ${BUILDROOTDIR}/usr/sbin/* >/dev/null 2>&1
 
   #Install terminfo DB / Stub files / CPAN config / etc resources
-  for xsync in "${DISTDIR}/res/" "-R /usr/share/terminfo" "-R /lib/terminfo";do
+  for xsync in "${SKELDIR}/" "-R /usr/share/terminfo" "-R /lib/terminfo";do
     rsync -a ${xsync} ${BUILDROOTDIR}/
   done
 
