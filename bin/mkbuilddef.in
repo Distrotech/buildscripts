@@ -6,7 +6,7 @@ if [ ! "$3" ];then
 fi;
 
 prefix=${prefix}
-DTSETCDIR=/etc/opt/dtsbuild
+DTSETCDIR=@sysconfdir@/@PACKAGE_NAME@
 
 PROJ=${1}
 shift;

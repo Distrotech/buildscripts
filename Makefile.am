@@ -2,7 +2,7 @@ DIST_TARGETS = dist-gzip dist-bzip2 dist-xz dist-zip
 
 EXTRA_DIST = bin etc libexec
 
-bin_SCRIPTS = bin/build
+bin_SCRIPTS = bin/build bin/mkbuilddef
 
 libexecdir=@libexecdir@/$(PACKAGE_NAME)
 
