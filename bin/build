@@ -61,7 +61,7 @@ PKGDISTDIR=${DISTDIR}/pkg
 TOOLPKG=${PKGDISTDIR}${ARCHROOT}
 TOOLDIR=${DISTDIR}/cross
 BASEROOT=${DISTDIR}/root
-SCRIPTDIR=${DISTDIR}/scripts
+SCRIPTDIR=${DISTDIR}/bin
 DTSETCDIR=${DISTDIR}/etc
 DTSLEXEC=${DISTDIR}/libexec
 PKGBUILDDIR=${DISTDIR}${ARCHROOT}
@@ -3453,7 +3453,7 @@ if test -e /etc/os-release;then
 fi;
 export BOOTSTRAP_STATIC=${BOOTSTRAP}
 
-if [ ! -d ${DEFDIR} ] || [ ! -d ${SCRIPTDIR}];then
+if [ ! -d ${DEFDIR} ] || [ ! -d ${SCRIPTDIR} ];then
   git clone ${GITURL}/buildscripts.git ${DISTDIR}/
 fi;
 
