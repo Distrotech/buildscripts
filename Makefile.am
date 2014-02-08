@@ -30,6 +30,6 @@ distclean-local:
 	-rm -rf autom4te.cache
 
 install-data-local:
-	$(INSTALL) -d $(DESTDIR)$(sysconfdir) $(SRVDIR) $(localstatedir) $(YUMREPOCONFDIR)
+	$(INSTALL) -d $(DESTDIR)$(sysconfdir) $(DESTDIR)$(localstatedir) $(DESTDIR)$(YUMREPOCONFDIR)
 	$(INSTALL) etc/yum_repo.conf $(DESTDIR)$(YUMREPOCONFDIR)/$(PACKAGE_NAME).conf
 	cp -rp etc/* $(DESTDIR)$(sysconfdir)
