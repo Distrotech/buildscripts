@@ -2,15 +2,12 @@ VERSION="20130529";
 VERSEP="-";
 PREFIX="/opt/texlive";
 CONFOPT="--host=${HOST} --build=${BUILD}";
-STDOPTS="--prefix=${PREFIX} --includedir=/usr/include --libdir=/usr/${C_LIBDIRS} --enable-mktextex-default
-  --with-banner-add=\" - Distro Solutions\" --enable-shared --with-system-libgs --with-system-harfbuzz
-  --with-system-icu --with-system-teckit --with-system-graphite2 --with-system-zziplib --with-system-xpdf
-  --with-system-poppler --with-system-cairo --with-system-pixman  --with-system-gd --with-system-freetype2
-  --with-system-t1lib --with-system-libpng --with-system-zlib --enable-etex --disable-native-texlive-build
-  --enable-ttf2pk2 --enable-xdv2pdf --datarootdir=${PREFIX}  --infodir=${PREFIX}/texmf-dist/doc/info
-  --mandir=${PREFIX}/texmf-dist/doc/man --bindir=${PREFIX}/bin/${barch}-linux
-  --x-libraries=${ARCHROOT}/${barch}/${X11DIR}/include
-  --x-libraries=${ARCHROOT}/${barch}/${X11DIR}/${B_LIBDIRS}";
+STDOPTS="--prefix=${PREFIX} --includedir=/usr/include --libdir=/usr/${C_LIBDIRS} --with-banner-add=\" - Distro Solutions\"
+  --enable-shared --with-system-libgs --with-system-harfbuzz --with-system-icu --with-system-teckit --with-system-graphite2
+  --with-system-zziplib --with-system-xpdf --with-system-poppler --with-system-cairo --with-system-pixman  --with-system-gd
+  --with-system-freetype2 --with-system-t1lib --with-system-libpng --with-system-zlib --enable-etex --disable-native-texlive-build
+  --enable-ttf2pk2 --enable-xdv2pdf --datarootdir=${PREFIX}  --infodir=${PREFIX}/texmf-dist/doc/info --mandir=${PREFIX}/texmf-dist/doc/man
+  --bindir=${PREFIX}/bin/${barch}-linux --x-libraries=${ARCHROOT}/${barch}/${X11DIR}/includ --x-libraries=${ARCHROOT}/${barch}/${X11DIR}/${B_LIBDIRS}";
 case ${BUILDPROJECT} in
   texlive-boot)
     if [ "${BUILD}" == "${HOST}" ] || [ -x ${ARCHROOT}/${barch}/usr/bin/clisp ];then
