@@ -589,6 +589,7 @@ LIBOBJS
 YUMREPOCONFDIR
 SRVDIRYUM
 SRVDIRTAR
+SRCDIR
 SRVDIR
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
@@ -660,6 +661,7 @@ ac_user_opts='
 enable_option_checking
 enable_silent_rules
 with_srvdir
+with_src_dir
 with_srvdir_tar
 with_srvdir_yum
 with_yum_repo_conf_dir
@@ -1289,6 +1291,8 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-srvdir           toplevel direcrory for tar packages and yum
                           repository (${prefix}/srv/${PACKAGE_NAME}
+  --with-src-dir          directory source is built in should not be in
+                          ${SRVDIR}
   --with-srvdir-tar       toplevel direcrory to place tar packages
                           (${SRVDIR}/tar)
   --with-srvdir-yum       toplevel direcrory to place rpm packages
@@ -2347,6 +2351,14 @@ else
 fi
 
 
+
+# Check whether --with-src_dir was given.
+if test "${with_src_dir+set}" = set; then :
+  withval=$with_src_dir;
+fi
+
+
+
 if test "x$prefix" = "x/opt"; then :
 
   if test x$SRVDIR = x${prefix}/srv/${PACKAGE_NAME} ; then :
@@ -2358,10 +2370,20 @@ fi
   if test x$sysconfdir = x'${prefix}/etc'; then :
   sysconfdir=/etc/opt/${PACKAGE_NAME}
 fi
+  if test "x$with_src_dir" = "x"; then :
+  SRCDIR=/var/opt/${PACKAGE_NAME}-src
+else
+  SRCDIR=$with_src_dir
+fi
   prefix=${prefix}/${PACKAGE_NAME};
 
 else
 
+  if test "x$with_src_dir" = "x"; then :
+  SRCDIR=/usr/src/${PACKAGE_NAME}-src
+else
+  SRCDIR=$with_src_dir
+fi
   if test x$libexecdir = x'${exec_prefix}/libexec' ; then :
   libexecdir='${exec_prefix}/libexec/${PACKAGE_NAME}'
 fi

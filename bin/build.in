@@ -52,9 +52,9 @@ XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /us
 LANG=${LANG:=en_ZA.UTF8}
 
 #Setup layout path
-SRCDIR=/usr/src
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+SRCDIR=@SRCDIR@
 DISTDIR=${prefix}
 ARCHROOT=/build
 DTSETCDIR=@sysconfdir@
@@ -392,7 +392,7 @@ check_create_arch() {
         echo "nameserver ::1" > ${ARCHROOT}/${1}/etc/resolv.conf
       fi;
     fi;
-    for adir in / /root /dev /proc /sys /usr/src ${DISTDIR} /tmp ${ARCHROOT};do
+    for adir in / /root /dev /proc /sys ${SRCDIR} ${DISTDIR} /tmp ${ARCHROOT};do
       if [ ! -d ${ARCHROOT}/${1}/${adir} ];then
         mkdir -p ${ARCHROOT}/${1}/${adir}
       fi;
@@ -3392,7 +3392,7 @@ build_bootstrap() {
   echo "Linux Headers"
   if [ ! -d ${SRCDIR}/linux/usr/include/linux ];then
     (git_load_pkg linux -3 master linux &&
-     cd /usr/src/linux/linux-3 &&
+     cd ${SRCDIR}/linux/linux-3 &&
      make INSTALL_HDR_PATH=${SRCDIR}/linux/usr headers_install_all) || return 1
   fi;
   check_create_arch ${1}
@@ -3544,7 +3544,7 @@ fi;
 if [ ! -d ${SRCDIR}/linux/usr/include/linux ] && [ ! "${RUNBASHRC}" ];then
   echo "Linux Headers"
   (git_load_pkg linux -3 master linux &&
-  cd /usr/src/linux/linux-3 &&
+  cd ${SRCDIR}/linux/linux-3 &&
   make INSTALL_HDR_PATH=${SRCDIR}/linux/usr headers_install_all) || exit 1
 fi;
 

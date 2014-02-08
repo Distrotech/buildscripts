@@ -8,12 +8,17 @@ AC_ARG_WITH([srvdir], AS_HELP_STRING([--with-srvdir], [toplevel direcrory for ta
 AS_IF([test "x$with_srvdir" = "x"], [SRVDIR=${prefix}/srv/${PACKAGE_NAME}], [SRVDIR=$with_srvdir])
 AC_SUBST(SRVDIR)
 
+AC_ARG_WITH([src_dir], AS_HELP_STRING([--with-src-dir], [directory source is built in should not be in ${SRVDIR}]))
+AC_SUBST(SRCDIR)
+
 AS_IF([test "x$prefix" = "x/opt"], [
   AS_IF([test x$SRVDIR = x${prefix}/srv/${PACKAGE_NAME} ], [SRVDIR=/srv/opt/${PACKAGE_NAME}])
   AS_IF([test x$localstatedir = x'${prefix}/var' ], [localstatedir=/var/opt/${PACKAGE_NAME}])
   AS_IF([test x$sysconfdir = x'${prefix}/etc'], [sysconfdir=/etc/opt/${PACKAGE_NAME}])
+  AS_IF([test "x$with_src_dir" = "x"], [SRCDIR=/var/opt/${PACKAGE_NAME}-src], [SRCDIR=$with_src_dir])
   prefix=${prefix}/${PACKAGE_NAME};
 ], [
+  AS_IF([test "x$with_src_dir" = "x"], [SRCDIR=/usr/src/${PACKAGE_NAME}-src], [SRCDIR=$with_src_dir])
   AS_IF([test x$libexecdir = x'${exec_prefix}/libexec' ], [libexecdir='${exec_prefix}/libexec/${PACKAGE_NAME}'])
   AS_IF([test x$sysconfdir = x'${prefix}/etc'], [sysconfdir=${prefix}/etc/${PACKAGE_NAME}])
 ])
