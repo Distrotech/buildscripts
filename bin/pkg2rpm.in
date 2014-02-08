@@ -219,8 +219,8 @@ pkg_rpm_arch() {
     if [ ! -e ${STATDIR}/${1}/done/${pkg} ];then
       continue;
     fi;
-    (pkg2rpm ${1} ${pkg}) 
-  done; 
+    (pkg2rpm ${1} ${pkg})
+  done;
   rm -rf ${TMPDIR}
 
   if [ -d ${RPMDIR}/repodata ];then
@@ -233,4 +233,8 @@ pkg_rpm_arch() {
   yum --installroot=${RPMROOT} --skip-broken -y update
 }
 
-pkg_rpm_arch ${1}
+if [ "${1}" ];then
+  pkg_rpm_arch ${1}
+ else
+  pkg_rpm_arch ${NARCH}
+fi;
