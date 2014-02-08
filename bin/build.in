@@ -1575,6 +1575,7 @@ setup_build_dir() {
     fi;
     if [ -d ${PKGDESTDIR}/${4}/${1}/${3}${5} ];then
       rm -rf ${PKGDESTDIR}/${4}/${1}/${3}${5}
+    fi;
   fi;
   if [ ! -d build-${4}-${1}${5} ];then
     mkdir build-${4}-${1}${5}
