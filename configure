@@ -2363,7 +2363,7 @@ if test x$sysconfdir = x'${prefix}/etc'; then :
   sysconfdir=${prefix}/etc
 fi
 
-ac_config_files="$ac_config_files Makefile bin/build bin/mkbuilddef"
+ac_config_files="$ac_config_files Makefile bin/build bin/mkbuilddef bin/pkg2rpm"
 
 
 cat >confcache <<\_ACEOF
@@ -3086,6 +3086,7 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "bin/build") CONFIG_FILES="$CONFIG_FILES bin/build" ;;
     "bin/mkbuilddef") CONFIG_FILES="$CONFIG_FILES bin/mkbuilddef" ;;
+    "bin/pkg2rpm") CONFIG_FILES="$CONFIG_FILES bin/pkg2rpm" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

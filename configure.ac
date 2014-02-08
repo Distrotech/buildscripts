@@ -20,6 +20,6 @@ AS_IF([test "x$prefix" = "x/opt"], [
 
 AS_IF([test x$sysconfdir = x'${prefix}/etc'], [sysconfdir=${prefix}/etc])
 
-AC_CONFIG_FILES([Makefile bin/build bin/mkbuilddef])
+AC_CONFIG_FILES([Makefile bin/build bin/mkbuilddef bin/pkg2rpm])
 
 AC_OUTPUT

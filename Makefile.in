@@ -81,7 +81,7 @@ DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(top_srcdir)/bin/build.in $(top_srcdir)/bin/mkbuilddef.in \
-	COPYING install-sh missing
+	$(top_srcdir)/bin/pkg2rpm.in COPYING install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -89,7 +89,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
-CONFIG_CLEAN_FILES = bin/build bin/mkbuilddef
+CONFIG_CLEAN_FILES = bin/build bin/mkbuilddef bin/pkg2rpm
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -232,7 +232,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 DIST_TARGETS = dist-gzip dist-bzip2 dist-xz dist-zip
 EXTRA_DIST = bin etc libexec
-bin_SCRIPTS = bin/build bin/mkbuilddef
+bin_SCRIPTS = bin/build bin/mkbuilddef bin/pkg2rpm
 libexec_SCRIPTS = \
 	libexec/make_apache-ant \
 	libexec/make_boost \
@@ -295,6 +295,8 @@ $(am__aclocal_m4_deps):
 bin/build: $(top_builddir)/config.status $(top_srcdir)/bin/build.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 bin/mkbuilddef: $(top_builddir)/config.status $(top_srcdir)/bin/mkbuilddef.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+bin/pkg2rpm: $(top_builddir)/config.status $(top_srcdir)/bin/pkg2rpm.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
