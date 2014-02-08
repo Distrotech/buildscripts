@@ -9,7 +9,7 @@
 /Makefile
 /autom4te.cache/
 /bin/build
+/bin/pkg2rpm
 /bin/mkbuilddef
 /config.log
 /config.*
-
