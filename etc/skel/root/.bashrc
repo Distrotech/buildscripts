@@ -48,8 +48,14 @@ for libpth in /usr /usr/X11R7 /opt/qt-5 /opt/qt-4 /opt/xfce;do
   fi;
 done;
 
-unset JAVA_HOME ANT_HOME M2_HOME QTDIR
+unset JAVA_HOME ANT_HOME M2_HOME QTDIR FOP_HOME FORREST_HOME
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/apache2/bin:/usr/X11R7/bin:/opt/xfce/bin
+MANPATH=/usr/share/man
+
+if [ -d /opt/texlive ];then
+  PATH=${PATH}:/opt/texlive/bin/x86_64-linux
+  MANPATH=${MANPATH}:/opt/texlive/texmf-dist/doc/man
+fi;
 
 if [ "${JAVA_VER}" ] && [ -d /usr/${HOST_LIBDIR}/jvm/jdk-${JAVA_VER} ];then
   export JAVA_HOME=/usr/${HOST_LIBDIR}/jvm/jdk-${JAVA_VER}
@@ -74,6 +80,15 @@ fi;
 if [ "${QT_VER}" ] && [ -d /opt/qt-${QT_VER} ];then
   export QTDIR=/opt/qt-${QT_VER}
   PATH=${PATH}:${QTDIR}/bin
+fi;
+
+if [ -d /opt/fop ];then
+  export FOP_HOME=/opt/fop
+  PATH=${PATH}:${FOP_HOME}
+fi;
+
+if [ -d /opt/dtsbuild/bin ];then
+  PATH=${PATH}:/opt/dtsbuild/bin
 fi;
 
 if [ -d /opt/apache2/bin ];then
