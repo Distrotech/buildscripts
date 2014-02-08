@@ -1,0 +1,229 @@
+#!/bin/bash
+
+#Based on http://linuxlefty.com/linux/convert-tar-rpm-package.html
+
+#need to clean up / reinstall scrollkeeper db when done
+#perl pod files
+#info dir files
+
+SRCDIR=/usr/src
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+ARCHROOT=/build
+DEFDIR=@sysconfdir@/builddef
+STATDIR=@localstatedir@/status
+PKGDISTDIR=@SRVDIR@/tar
+RPMDIR=@SRVDIR@/yum
+
+NARCH=x86_64
+PKGURL=http://github.com/Distrotech
+RPMBROOT=/root/rpmbuild
+
+STATICPKG="bash coreutils nano less texinfo pkg-config util-linux git dialog";
+
+mkrpmspec() {
+cat <<EOF
+Name: ${4}
+Epoch: ${RPMEPOCH}
+Version: ${7}
+Release: ${3}
+Summary: ${4} installed files
+Group: Distrotech ${1}
+License: Refer to sourcecode
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-$(whoami)-%(%{__id_u} -n)
+URL: ${PKGURL}/${5}
+AutoReqProv: ${AUTODEP}
+${SRPMPROVIDES}
+${RPM_OBSOLETE}
+
+%define _arch ${1}
+%global _use_internal_dependency_generator ${RPMINTDEPS}
+
+%description
+${4} installed files
+
+%install
+rm -rf %{buildroot}
+mkdir -p %{buildroot}
+tar -C %{buildroot} -xf ${6}
+find %{buildroot} -empty -type d -delete
+if [ ! -d %{buildroot}/var/spool/pkg ];then
+  mkdir -p %{buildroot}/var/spool/pkg/
+fi;
+touch %{buildroot}/var/spool/pkg/${4}-${7}-${3}.${1}
+if [ -e %{buildroot}/usr/share/info/dir ] || [ -e %{buildroot}/share/info/dir ];then
+  rm -f %{buildroot}/usr/share/info/dir %{buildroot}/share/info/dir
+fi;
+if [ -d %{buildroot}/var/lib/scrollkeeper ];then
+  rm -rf %{buildroot}/var/lib/scrollkeeper
+fi;
+
+%clean
+rm -rf %{buildroot}
+
+%post
+if [ -d /usr/share/omf ] && [ -x /usr/bin/scrollkeeper-update ];then
+  /usr/bin/scrollkeeper-update
+fi;
+
+%files
+/var/spool/pkg/${4}-${7}-${3}.${1}
+EOF
+tar -tf ${6} |grep -vE "(/$|^usr\/share\/info\/dir$|^share\/info\/dir$|^var\/lib\/scrollkeeper)" |awk '{printf "/%s*\n",$1}'
+}
+
+pkg2rpm() {
+  . ${DEFDIR}/${2}
+
+  DONTBUILDPAT=${DONTBUILD// /|}
+  if [ "${DONTBUILD}" ] && [[ ${1} =~ ${DONTBUILDPAT} ]];then
+    return 0;
+  fi;
+
+  AVER=VERSION_${1}
+  if [ "${!AVER}" ];then
+    VERSION=${!AVER}
+  fi;
+  eval ${AVER}=""
+
+  if [ "${GITREPO}" ];then
+    git=${GITREPO}
+   elif [ "${ALIAS}" ];then
+    git=${ALIAS}
+   else
+    git=${2}
+  fi;
+
+  PNAME=${2}${VERSEP}${VERSION}
+
+  if [ ! -d ${RPMDIR}/${1}/${2}/${PNAME} ];then
+    mkdir -p ${RPMDIR}/${1}/${2}/${PNAME}
+  fi;
+
+  for pfile in `ls -d ${PKGDISTDIR}/${1}/${PNAME}/${PNAME}*tar.xz 2>/dev/null`;do
+    TFSIZE=$(stat -c %s ${pfile})
+    if [ "${TFSIZE}" == "76" ] || [ "${TFSIZE}" == "112" ];then
+      continue
+    fi;
+
+    tfile=$(basename ${pfile})
+    if [ "${tfile}" == "${PNAME}.tar.xz" ];then
+      xpkg="";
+      if [ "${RPMPROVIDES}" ];then
+        SRPMPROVIDES="Provides: ${RPMPROVIDES}";
+      fi;
+     else
+      xfile=${tfile#${PNAME}}
+      xpkg=${xfile%.tar.xz}
+    fi;
+
+    if [ "${xpkg}" == "-dbg" ];then
+      AUTODEP="0"
+     else
+      AUTODEP="1"
+    fi;
+
+    if [ ! "${RPMINTDEPS}" ] || [ "${RPMINTDEPS}" == "1" ];then
+       RPMINTDEPS="1";
+     else
+       RPMINTDEPS="0";
+    fi
+
+    if [ "${RPMVERSION}" ];then
+      RVERSION=${RPMVERSION};
+     else
+      RVERSION=$(echo ${VERSION} |tr '-' '~')
+    fi;
+
+    if [ ! "${RPMEPOCH}" ];then
+      RPMEPOCH=0;
+    fi;
+
+    if [ "${RPMOBSOLETE}" ];then
+      RPM_OBSOLETE="Obsoletes: ${RPMOBSOLETE}${xpkg}";
+     else
+      if [ "${xpkg}" ];then
+        RPM_SUB_OBSOLETE=RPMOBSOLETE_${xpkg:1}
+       else
+        RPM_SUB_OBSOLETE=RPMOBSOLETE_base
+      fi;
+      if [ "${!RPM_SUB_OBSOLETE}" ];then
+        RPM_OBSOLETE="Obsoletes:";
+	for rpm_sub_ob in ${!RPM_SUB_OBSOLETE};do
+          RPM_OBSOLETE="${RPM_OBSOLETE} ${rpm_sub_ob}${xpkg}";
+        done;
+      fi;
+      eval ${RPM_SUB_OBSOLETE}=""
+    fi;
+
+    rpmname=${2}${xpkg}
+
+    RPMIVER=$(rpm -qi --root=${RPMROOT} ${rpmname}.${1} |awk '$1 == "Version" {print $3}')
+    if [ "${RPMIVER}" ] && [ "${RPMIVER}" == "${RVERSION}" ];then
+      release=$(rpm -qi --root=${RPMROOT} ${rpmname}.${1} |awk '$1 == "Release" {print $3}')
+     else
+      release=0
+    fi
+    orig_release=${release}
+
+    RPM_FILE=${rpmname}-${RVERSION}-${release}.${1}.rpm;
+    if [ ! -e ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ] || [ ${pfile} -nt ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
+      export AUTODEP RPMINTDEPS RPMPROVIDES RPMEPOCH RPM_OBSOLETE
+      let release++
+      if [ -e ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
+        rm ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
+      fi;
+      RPM_FILE=${rpmname}-${RVERSION}-${release}.${1}.rpm;
+      mkrpmspec ${1} ${VERSION} ${release} ${rpmname} ${git} ${pfile} ${RVERSION} > ${TMPDIR}/${rpmname}.spec
+      rpmbuild -bb ${TMPDIR}/${rpmname}.spec --target=${1}
+      if [ -e ${RPMBROOT}/RPMS/${1}/${RPM_FILE} ];then
+        mv ${RPMBROOT}/RPMS/${1}/${RPM_FILE} ${RPMDIR}/${1}/${2}/${PNAME}/
+      fi;
+    fi;
+
+    if [ ! "${RPMIVER}" ] && [ -e ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
+      rpm -ivh --force --nodeps --root=${RPMROOT} ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
+     elif [ ${release} != ${orig_release} ] && [ -e ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
+      rpm -Uvh --force --nodeps --root=${RPMROOT} ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
+    fi;
+
+    unset SRPMPROVIDES RPM_OBSOLETE
+  done;
+}
+
+pkg_rpm_arch() {
+  if [ ! -d ${STATDIR}/${1} ];then
+    return 1;
+  fi;
+
+  if [ "${1}" == "${NARCH}" ];then
+     RPMROOT="/";
+   else
+     RPMROOT="${ARCHROOT}/${1}";
+    if [ -d ${RPMROOT}/etc/yum/repos.d ] && [ "`find  ${RPMROOT}/etc/yum/repos.d/ -empty`" ];then
+      rsync -a /etc/yum/repos.d/ ${RPMROOT}etc/yum/repos.d/
+    fi;
+  fi;
+  TMPDIR=$( mktemp -d -p /tmp rpmspec_${1}.XXXXXXXXXXX)
+
+  export TMPDIR RPMROOT
+
+  for pkg in `ls ${DEFDIR}`;do
+    if [ ! -e ${STATDIR}/${1}/done/${pkg} ];then
+      continue;
+    fi;
+    (pkg2rpm ${1} ${pkg}) 
+  done; 
+  rm -rf ${TMPDIR}
+
+  if [ -d ${RPMDIR}/repodata ];then
+    createrepo --update ${RPMDIR}
+   else
+    createrepo ${RPMDIR}
+  fi;
+
+  yum --installroot=${RPMROOT} clean all
+  yum --installroot=${RPMROOT} --skip-broken -y update
+}
+
+pkg_rpm_arch ${1}
