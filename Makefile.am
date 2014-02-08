@@ -31,5 +31,5 @@ distclean-local:
 
 install-data-local:
 	$(INSTALL) -d $(DESTDIR)$(sysconfdir) $(DESTDIR)$(localstatedir) $(DESTDIR)$(YUMREPOCONFDIR)
-	$(INSTALL) etc/yum_repo.conf $(DESTDIR)$(YUMREPOCONFDIR)/$(PACKAGE_NAME).conf
+	$(INSTALL) etc/yum_repo.conf $(DESTDIR)$(YUMREPOCONFDIR)/$(PACKAGE_NAME).repo
 	cp -rp etc/{builddef,waf_cross,skel,cmake_cross} $(DESTDIR)$(sysconfdir)

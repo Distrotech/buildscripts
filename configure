@@ -2347,6 +2347,30 @@ else
 fi
 
 
+if test "x$prefix" = "x/opt"; then :
+
+  if test x$SRVDIR = x${prefix}/srv/${PACKAGE_NAME} ; then :
+  SRVDIR=/srv/opt/${PACKAGE_NAME}
+fi
+  if test x$localstatedir = x'${prefix}/var' ; then :
+  localstatedir=/var/opt/${PACKAGE_NAME}
+fi
+  if test x$sysconfdir = x'${prefix}/etc'; then :
+  sysconfdir=/etc/opt/${PACKAGE_NAME}
+fi
+  prefix=${prefix}/${PACKAGE_NAME};
+
+else
+
+  if test x$libexecdir = x'${exec_prefix}/libexec' ; then :
+  libexecdir='${exec_prefix}/libexec/${PACKAGE_NAME}'
+fi
+  if test x$sysconfdir = x'${prefix}/etc'; then :
+  sysconfdir=${prefix}/etc/${PACKAGE_NAME}
+fi
+
+fi
+
 
 # Check whether --with-srvdir_tar was given.
 if test "${with_srvdir_tar+set}" = set; then :
@@ -2385,31 +2409,6 @@ else
   YUMREPOCONFDIR=$with_yum_repo_conf_dir
 fi
 
-
-
-if test "x$prefix" = "x/opt"; then :
-
-  if test x$SRVDIR = x${prefix}/srv/${PACKAGE_NAME} ; then :
-  SRVDIR=/srv/opt/${PACKAGE_NAME}
-fi
-  if test x$localstatedir = x'${prefix}/var' ; then :
-  localstatedir=/var/opt/${PACKAGE_NAME}
-fi
-  if test x$sysconfdir = x'${prefix}/etc'; then :
-  sysconfdir=/etc/opt/${PACKAGE_NAME}
-fi
-  prefix=${prefix}/${PACKAGE_NAME};
-
-else
-
-  if test x$libexecdir = x'${exec_prefix}/libexec' ; then :
-  libexecdir='${exec_prefix}/libexec/${PACKAGE_NAME}'
-fi
-  if test x$sysconfdir = x'${prefix}/etc'; then :
-  sysconfdir=${prefix}/etc/${PACKAGE_NAME}
-fi
-
-fi
 
 if test x$sysconfdir = x'${prefix}/etc'; then :
   sysconfdir=${prefix}/etc
