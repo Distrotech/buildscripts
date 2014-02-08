@@ -2344,15 +2344,21 @@ fi
   localstatedir=/var/opt/${PACKAGE_NAME}
 fi
   if test x$sysconfdir = x'${prefix}/etc'; then :
-  sysconfdir=/etc/opt
+  sysconfdir=/etc/opt/${PACKAGE_NAME}
 fi
   prefix=${prefix}/${PACKAGE_NAME};
 
+else
+
+  if test x$libexecdir = x'${exec_prefix}/libexec' ; then :
+  libexecdir='${exec_prefix}/libexec/${PACKAGE_NAME}'
+fi
+  if test x$sysconfdir = x'${prefix}/etc'; then :
+  sysconfdir=${prefix}/etc/${PACKAGE_NAME}
 fi
 
-if test x$exec_prefix = x'${prefix}'; then :
-  exec_prefix=${prefix}
 fi
+
 if test x$sysconfdir = x'${prefix}/etc'; then :
   sysconfdir=${prefix}/etc
 fi

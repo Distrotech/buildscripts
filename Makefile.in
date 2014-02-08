@@ -212,7 +212,7 @@ includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
-libexecdir = @libexecdir@/$(PACKAGE_NAME)
+libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
@@ -665,8 +665,8 @@ distclean-local:
 	-rm -rf autom4te.cache
 
 install-data-local:
-	$(INSTALL) -d $(DESTDIR)$(sysconfdir)/$(PACKAGE_NAME) $(SRVDIR) $(localstatedir)
-	cp -rp etc/* $(DESTDIR)$(sysconfdir)/$(PACKAGE_NAME)
+	$(INSTALL) -d $(DESTDIR)$(sysconfdir) $(SRVDIR) $(localstatedir)
+	cp -rp etc/* $(DESTDIR)$(sysconfdir)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

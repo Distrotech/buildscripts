@@ -4,8 +4,6 @@ EXTRA_DIST = bin etc libexec
 
 bin_SCRIPTS = bin/build bin/mkbuilddef
 
-libexecdir=@libexecdir@/$(PACKAGE_NAME)
-
 libexec_SCRIPTS	= \
 	libexec/make_apache-ant \
 	libexec/make_boost \
@@ -32,5 +30,5 @@ distclean-local:
 	-rm -rf autom4te.cache
 
 install-data-local:
-	$(INSTALL) -d $(DESTDIR)$(sysconfdir)/$(PACKAGE_NAME) $(SRVDIR) $(localstatedir)
-	cp -rp etc/* $(DESTDIR)$(sysconfdir)/$(PACKAGE_NAME)
+	$(INSTALL) -d $(DESTDIR)$(sysconfdir) $(SRVDIR) $(localstatedir)
+	cp -rp etc/* $(DESTDIR)$(sysconfdir)
