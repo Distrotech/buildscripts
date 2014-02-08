@@ -13,3 +13,4 @@
 /bin/mkbuilddef
 /config.log
 /config.*
+/etc/yum_repo.conf

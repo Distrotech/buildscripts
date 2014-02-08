@@ -586,6 +586,9 @@ PACKAGE_URL=''
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+YUMREPOCONFDIR
+SRVDIRYUM
+SRVDIRTAR
 SRVDIR
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
@@ -657,6 +660,9 @@ ac_user_opts='
 enable_option_checking
 enable_silent_rules
 with_srvdir
+with_srvdir_tar
+with_srvdir_yum
+with_yum_repo_conf_dir
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1282,7 +1288,13 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-srvdir           toplevel direcrory for tar packages and yum
-                          repository
+                          repository (${prefix}/srv/${PACKAGE_NAME}
+  --with-srvdir-tar       toplevel direcrory to place tar packages
+                          (${SRVDIR}/tar)
+  --with-srvdir-yum       toplevel direcrory to place rpm packages
+                          (${SRVDIR}/yum)
+  --with-yum-repo-conf-dir
+                          yum repo config directory (/etc/yum/repos.d)
 
 Report bugs to <gregory@distrotech.co.za>.
 _ACEOF
@@ -2335,6 +2347,46 @@ else
 fi
 
 
+
+# Check whether --with-srvdir_tar was given.
+if test "${with_srvdir_tar+set}" = set; then :
+  withval=$with_srvdir_tar;
+fi
+
+if test "x$with_srvdir_tar" = "x"; then :
+  SRVDIRTAR=${SRVDIR}/tar
+else
+  SRVDIRTAR=$with_srvdir_tar
+fi
+
+
+
+# Check whether --with-srvdir_yum was given.
+if test "${with_srvdir_yum+set}" = set; then :
+  withval=$with_srvdir_yum;
+fi
+
+if test "x$with_srvdir_yum" = "x"; then :
+  SRVDIRYUM=${SRVDIR}/yum
+else
+  SRVDIRYUM=$with_srvdir_yum
+fi
+
+
+
+# Check whether --with-yum_repo_conf_dir was given.
+if test "${with_yum_repo_conf_dir+set}" = set; then :
+  withval=$with_yum_repo_conf_dir;
+fi
+
+if test "x$with_yum_repo_conf_dir" = "x"; then :
+  YUMREPOCONFDIR=/etc/yum/repos.d
+else
+  YUMREPOCONFDIR=$with_yum_repo_conf_dir
+fi
+
+
+
 if test "x$prefix" = "x/opt"; then :
 
   if test x$SRVDIR = x${prefix}/srv/${PACKAGE_NAME} ; then :
@@ -2363,7 +2415,7 @@ if test x$sysconfdir = x'${prefix}/etc'; then :
   sysconfdir=${prefix}/etc
 fi
 
-ac_config_files="$ac_config_files Makefile bin/build bin/mkbuilddef bin/pkg2rpm"
+ac_config_files="$ac_config_files Makefile bin/build bin/mkbuilddef bin/pkg2rpm etc/yum_repo.conf"
 
 
 cat >confcache <<\_ACEOF
@@ -3087,6 +3139,7 @@ do
     "bin/build") CONFIG_FILES="$CONFIG_FILES bin/build" ;;
     "bin/mkbuilddef") CONFIG_FILES="$CONFIG_FILES bin/mkbuilddef" ;;
     "bin/pkg2rpm") CONFIG_FILES="$CONFIG_FILES bin/pkg2rpm" ;;
+    "etc/yum_repo.conf") CONFIG_FILES="$CONFIG_FILES etc/yum_repo.conf" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
