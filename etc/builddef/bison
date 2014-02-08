@@ -7,4 +7,4 @@ STATICOPT="LDFLAGS=-static";
 STATICMOPT="LDFLAGS=-static";
 AMVER="1.14";
 BUILDDIR="0";
-
+OPT_cyg32="ac_cv_have_decl___fpending=yes";

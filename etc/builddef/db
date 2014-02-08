@@ -13,3 +13,4 @@ OPT_powerpc="ac_cv_func_pstat_getdynamic=no";
 OPT_powerpc64="ac_cv_func_pstat_getdynamic=no";
 ADDCC="0";
 GITBRANCH="master";
+DONTBUILD="cyg32 cyg64";

@@ -14,3 +14,4 @@ STATICOPT="--disable-shared --enable-ddate --enable-arch --enable-last --enable-
 STATICMOPT="LDFLAGS=\"-all-static -L=/usr/${C_LIBDIRS}\"";
 AMVER="1.12";
 STATICBSTRAP="1";
+DONTBUILD="cyg32 cyg64";
