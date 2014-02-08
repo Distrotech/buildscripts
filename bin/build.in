@@ -1250,7 +1250,7 @@ build_project() {
     ARCHPREFIX="/usr";
   fi;
 
-  CFLAGS="${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=${ARCHPREFIX}/lib/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=/opt/xfce/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include";
+  CFLAGS="${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=${ARCHPREFIX}/lib/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=/opt/xfce/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include -I=${ARCHPREFIX}/include/security";
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
