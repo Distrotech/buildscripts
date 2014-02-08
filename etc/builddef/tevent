@@ -1,0 +1,15 @@
+VERSION="0.9.19"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+STDOPTS="--prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var --libdir=/usr/${C_LIBDIRS}";
+CONFOPTX="--cross-compile --cross-answers=${DTSETCDIR}/waf_cross/waf_cross_${barch}.ans";
+BUILDDIR="0";
+NOCCOPT="1";
+ADDCFLAG="-I=/usr/include/python2.7";
+GITBRANCH="tevent-0.9.19";
+GITREPO="samba";
+CFGPTH="lib/tevent";
+CFGBIN="tevent/"
+CHROOTBUILD="1";
+DONTBUILD="cyg32 cyg64";

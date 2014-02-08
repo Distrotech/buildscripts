@@ -1,7 +1,0 @@
-VERSION="2.3.2"
-VERSEP="-";
-PREFIX="/usr";
-CONFOPT="--enable-all --enable-nanorc";
-SYSROOTFIXUP="1";
-STATICOPT="LDFLAGS=\"-static -L=/usr/${C_LIBDIRS}\" --enable-all LIBS=-ldl";
-STATICBSTRAP="1";

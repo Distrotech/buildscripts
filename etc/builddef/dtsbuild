@@ -1,0 +1,7 @@
+VERSION="0.1"
+VERSEP="-";
+PREFIX="/opt/${BUILDPROJECT=}";
+STDOPTS="--prefix=/opt";
+ALIAS="buildscripts";
+GITBRANCH="master";
+BUILDDIR="0";

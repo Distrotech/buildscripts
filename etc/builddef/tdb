@@ -1,0 +1,13 @@
+VERSION="1.2.12"
+VERSEP="-";
+PREFIX="/usr";
+STDOPTS="--prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var --libdir=/usr/${C_LIBDIRS}";
+CONFOPT="";
+CONFOPTX="--cross-compile --cross-answers=${DTSETCDIR}/waf_cross/waf_cross_${barch}.ans";
+BUILDDIR="0";
+NOCCOPT="1";
+GITBRANCH="tdb-1.2.12";
+GITREPO="samba";
+CFGPTH="lib/tdb";
+CFGBIN="tdb/"
+CHROOTBUILD="1";

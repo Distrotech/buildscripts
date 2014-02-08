@@ -4,3 +4,12 @@
 /build
 /cross
 /yum
+/srv
+/var
+/Makefile
+/autom4te.cache/
+/bin/build
+/bin/mkbuilddef
+/config.log
+/config.*
+

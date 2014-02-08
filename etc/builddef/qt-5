@@ -1,0 +1,14 @@
+VERSION="5.2.0"
+VERSEP="-";
+PREFIX="/opt/qt-5";
+CONFOPT="-opensource -openssl-linked -confirm-license -prefix ${PREFIX} -v -system-sqlite -libdir ${PREFIX}/${B_LIBDIRS} -sysroot ${ARCHROOT}/${barch}";
+OPT_x86_32="-no-javascript-jit -no-optimized-qmake -no-pch";
+NOCCOPT="1";
+BUILDDIR="0";
+DONTBUILD="x86_32 arm64 powerpc";
+case ${barch} in
+  x86_64|x86_32|i[3-6]86)
+    case ${NARCH} in
+      x86_64|x86_32|i[3-6]86)CHROOTBUILD="1";;
+    esac;;
+esac;

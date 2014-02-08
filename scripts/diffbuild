@@ -1,1 +1,0 @@
-diff -qr /build/arm/ /build/i686/ |grep -vE "(^Files)|(: pam_[a-z0-9\_]+.a$)|(usr/include/asm:)|(: arm-embed)|(: i686-pc)" 

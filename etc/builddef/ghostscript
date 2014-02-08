@@ -1,0 +1,24 @@
+VERSION="9.06";
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-system-libtiff --without-install-cups --disable-gtk";
+CONFOPTX="--disable-gtk";
+BUILDDIR="0";
+ADDCFLAG="-fPIC";
+MAKEITARGETS="soinstall";
+OPT_arm="cross_compiling=yes";
+OPT_arm64="cross_compiling=yes";
+OPT_mips="cross_compiling=yes";
+OPT_mips64="cross_compiling=yes";
+OPT_powerpc="cross_compiling=yes";
+OPT_powerpc64="cross_compiling=yes";
+OPT_x86_32="cross_compiling=yes";
+OPT_i686="cross_compiling=yes";
+GITBRANCH="master";
+DONTBUILD="cyg32 cyg64";
+case ${barch} in
+  x86_64|x86_32|i[3-6]86)
+    case ${NARCH} in
+      x86_64|x86_32|i[3-6]86)CHROOTBUILD="1";;
+    esac;;
+esac;

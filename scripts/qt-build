@@ -1,3 +1,0 @@
-make confclean clean distclean
-./configure --prefix=/opt/qt-4 -opensource -openssl-linked -confirm-license -I ${X11DIR}/include
-make all install
