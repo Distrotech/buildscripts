@@ -1,0 +1,3 @@
+[@PACKAGE_NAME@]
+name = @PACKAGE_STRING@
+baseurl = file://@SRVDIRYUM@

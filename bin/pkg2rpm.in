@@ -12,8 +12,8 @@ exec_prefix=@exec_prefix@
 ARCHROOT=/build
 DEFDIR=@sysconfdir@/builddef
 STATDIR=@localstatedir@/status
-PKGDISTDIR=@SRVDIR@/tar
-RPMDIR=@SRVDIR@/yum
+PKGDISTDIR=@SRVDIRTAR@
+RPMDIR=@SRVDIRYUM@
 
 NARCH=${NARCH:=$( uname -m )}
 case ${NARCH} in

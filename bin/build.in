@@ -64,7 +64,7 @@ SCRIPTDIR=@bindir@
 SKELDIR=${DTSETCDIR}/skel
 PKGBUILDDIR=@localstatedir@
 DTSSRVDIR=@SRVDIR@
-PKGDISTDIR=${DTSSRVDIR}/tar
+PKGDISTDIR=@SRVDIRTAR@
 TOOLPKG=${PKGDISTDIR}/core
 PKGDESTDIR=${PKGBUILDDIR}/staging
 BASEROOT=${PKGBUILDDIR}/bootstrap
@@ -239,14 +239,14 @@ dialog_config() {
 mnt_archroot() {
   BINDFS="mount --bind";
 
-  if [ ! -d ${ARCHROOT}/${1}/${PKGDISTDIR} ];then
-    if [ ! -d ${ARCHROOT}/${1}/${DTSSRVDIR} ];then
-      mkdir -p ${ARCHROOT}/${1}/${DTSSRVDIR}
+  if [ ! -d ${ARCHROOT}/${1}/${PKGDISTDIR}/${1} ];then
+    if [ ! -d ${ARCHROOT}/${1}/${PKGDISTDIR} ];then
+      mkdir -p ${ARCHROOT}/${1}/${PKGDISTDIR}
     fi;
-    ${BINDFS} ${DTSSRVDIR} ${ARCHROOT}/${1}/${DTSSRVDIR}
+    ${BINDFS} ${PKGDISTDIR} ${ARCHROOT}/${1}/${PKGDISTDIR}
   fi;
 
-  if [ ! -d ${ARCHROOT}/${1}/${PKGDESTDIR} ];then
+  if [ ! -d ${ARCHROOT}/${1}/${PKGBUILDDIR}/bootstrap ];then
     if [ ! -d ${ARCHROOT}/${1}/${PKGBUILDDIR} ];then
       mkdir -p ${ARCHROOT}/${1}/${PKGBUILDDIR}
     fi;
