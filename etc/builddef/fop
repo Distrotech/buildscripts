@@ -1,0 +1,5 @@
+VERSION="1.1"
+VERSEP="-";
+PREFIX="/opt/fop";
+CONFOPT="";
+BUILDDIR="0";
