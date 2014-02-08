@@ -11,11 +11,13 @@ AC_SUBST(SRVDIR)
 AS_IF([test "x$prefix" = "x/opt"], [
   AS_IF([test x$SRVDIR = x${prefix}/srv/${PACKAGE_NAME} ], [SRVDIR=/srv/opt/${PACKAGE_NAME}])
   AS_IF([test x$localstatedir = x'${prefix}/var' ], [localstatedir=/var/opt/${PACKAGE_NAME}])
-  AS_IF([test x$sysconfdir = x'${prefix}/etc'], [sysconfdir=/etc/opt])
+  AS_IF([test x$sysconfdir = x'${prefix}/etc'], [sysconfdir=/etc/opt/${PACKAGE_NAME}])
   prefix=${prefix}/${PACKAGE_NAME};
+], [
+  AS_IF([test x$libexecdir = x'${exec_prefix}/libexec' ], [libexecdir='${exec_prefix}/libexec/${PACKAGE_NAME}'])
+  AS_IF([test x$sysconfdir = x'${prefix}/etc'], [sysconfdir=${prefix}/etc/${PACKAGE_NAME}])
 ])
 
-AS_IF([test x$exec_prefix = x'${prefix}'], [exec_prefix=${prefix}])
 AS_IF([test x$sysconfdir = x'${prefix}/etc'], [sysconfdir=${prefix}/etc])
 
 AC_CONFIG_FILES([Makefile bin/build bin/mkbuilddef])
