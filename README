@@ -1,0 +1,37 @@
+Build scripts for Distro Solutions
+==================================
+
+This package contains build scripts and build definitions for building the distro from source (git).
+
+To install 
+  ./configure --prefix=/opt && make install
+  Please note the configure files proccess /opt to layout according to FHS /opt/<PACKAGE>
+  using any other options will require explicitly setting all layout.
+
+The following will be installed
+  /opt/dtsbuild/bin [Main scripts add this to PATH]
+  /opt/dtsbuild/libexec [Scripts for packages that cant be automated]
+  /etc/opt/dtsbuild/builddef [Build definition files used to build the files]
+  /etc/opt/dtsbuild/skel [Skel dir for built arch's sysroot's]
+  /etc/opt/dtsbuild/{cmake_cross,waf_cross} [Per arch files for cross compiling with waf/cmake]
+
+Build Directory
+  /var/opt/dtsbuild/{staging,bootstrap,status}
+  
+  staging
+    When source is built it is installed into the staging area for packaging this directory contains
+    The following layout is used
+      <ARCH><PACKAGE+VERSION>
+  bootstrap
+    This directory contains a system bootstrap where kernel headers are installed to allow bootstraping a arch.
+    The following layout is used
+      <ARCH>
+  status
+    This is a stamp directory that is used to record build status
+    The following layout is used
+      <ARCH>/done a file is touched when a package is built
+      <ARCH>/fail a file is stamped when the package fails
+      <ARCH>{built,done,output/} not currently used
+
+Packages
+  /srv/opt/dtsbuild/{tar,yum} Packaged output in tar.xz and rpm format.
