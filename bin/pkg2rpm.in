@@ -15,7 +15,14 @@ STATDIR=@localstatedir@/status
 PKGDISTDIR=@SRVDIR@/tar
 RPMDIR=@SRVDIR@/yum
 
-NARCH=x86_64
+NARCH=${NARCH:=$( uname -m )}
+case ${NARCH} in
+  ppc|powerpc)NARCH=powerpc;;
+  ppc64|powerpc64)NARCH=powerpc64;;
+  arm*)NARCH=arm;;
+  aarch64)NARCH=arm64;;
+esac;
+
 PKGURL=http://github.com/Distrotech
 RPMBROOT=/root/rpmbuild
 
