@@ -6,12 +6,9 @@
 #perl pod files
 #info dir files
 
-SRCDIR=/usr/src
-prefix=@prefix@
-exec_prefix=@exec_prefix@
 ARCHROOT=/build
 DEFDIR=@sysconfdir@/builddef
-STATDIR=@localstatedir@/status
+STATDIR=@BUILDDIR@/status
 PKGDISTDIR=@SRVDIRTAR@
 RPMDIR=@SRVDIRYUM@
 
@@ -230,7 +227,7 @@ pkg_rpm_arch() {
   fi;
 
   yum --installroot=${RPMROOT} clean all
-  yum --installroot=${RPMROOT} --skip-broken -y update
+  yum --installroot=${RPMROOT} --skip-broken --assumeyes update
 }
 
 if [ "${1}" ];then

@@ -52,8 +52,6 @@ XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /us
 LANG=${LANG:=en_ZA.UTF8}
 
 #Setup layout path
-prefix=@prefix@
-exec_prefix=@exec_prefix@
 SRCDIR=@SRCDIR@
 DISTDIR=${prefix}
 ARCHROOT=/build
@@ -62,7 +60,7 @@ DEFDIR=${DTSETCDIR}/builddef
 DTSLEXEC=@libexecdir@
 SCRIPTDIR=@bindir@
 SKELDIR=${DTSETCDIR}/skel
-PKGBUILDDIR=@localstatedir@
+PKGBUILDDIR=@BUILDDIR@
 DTSSRVDIR=@SRVDIR@
 PKGDISTDIR=@SRVDIRTAR@
 TOOLPKG=${PKGDISTDIR}/core
