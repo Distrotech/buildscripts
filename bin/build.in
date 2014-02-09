@@ -52,17 +52,15 @@ XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /us
 LANG=${LANG:=en_ZA.UTF8}
 
 #Setup layout path
-prefix=@prefix@
-exec_prefix=@exec_prefix@
 SRCDIR=@SRCDIR@
 DISTDIR=${prefix}
-ARCHROOT=/build
+ARCHROOT=@ARCHROOT@
 DTSETCDIR=@sysconfdir@
 DEFDIR=${DTSETCDIR}/builddef
 DTSLEXEC=@libexecdir@
 SCRIPTDIR=@bindir@
 SKELDIR=${DTSETCDIR}/skel
-PKGBUILDDIR=@localstatedir@
+PKGBUILDDIR=@BUILDDIR@
 DTSSRVDIR=@SRVDIR@
 PKGDISTDIR=@SRVDIRTAR@
 TOOLPKG=${PKGDISTDIR}/core
@@ -354,6 +352,11 @@ check_create_arch() {
   HDIR=${BASEROOT}/${1}
   if [ ! -d ${HDIR} ];then
     mkdir -p ${HDIR}/usr/include
+  fi;
+
+  #Create symlink to / for  sysroot of native arch
+  if [ "${1}" == "${NARCH}" ] && [ ! -e ${ARCHROOT}/${1} ];then
+    ln -sr / ${ARCHROOT}/${1}
   fi;
 
   #Core utils barfs when bootstraping

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+getdepends() {
+  yum deplist ${1} |\
+    awk '/provider:/ {print $2}' |sed -e "s/\(.*\)-[a-z]\+\..*/\1/" -e  "s/\(.*\)\..*/\1/"
+}
+
+getalldeps() {
+  (getdepends ${1}
+  for subpkg in dbg doc libs dev conf locale jre jdk;do
+    getdepends ${1}-${subpkg}
+  done) |sort |uniq |awk -v PKG=${1} '$1 != PKG {printf "echo -n \"%s \"\n",$1}' |sh
+}
+
+DEPENDS=$(getalldeps ${1})
+echo ${DEPENDS}

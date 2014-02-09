@@ -5,8 +5,7 @@ if [ ! "$3" ];then
   exit 1;
 fi;
 
-prefix=${prefix}
-DTSETCDIR=@sysconfdir@/@PACKAGE_NAME@
+DEFDIR=@sysconfdir@/builddef
 
 PROJ=${1}
 shift;
@@ -31,4 +30,4 @@ if [ -d /usr/src/${PROJ}/${PROJ}${VERSEP}${VERSION} ] &&\
    [ ! -e /usr/src/${PROJ}/${PROJ}${VERSEP}${VERSION}/configure ];then
   echo "BUILDDIR=\"0\";";
 fi;
-) > ${DTSETCDIR)/${PROJ}
+) > ${DEFDIR)/${PROJ}

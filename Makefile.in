@@ -81,7 +81,7 @@ DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(top_srcdir)/bin/build.in $(top_srcdir)/bin/mkbuilddef.in \
-	$(top_srcdir)/bin/pkg2rpm.in \
+	$(top_srcdir)/bin/pkg2rpm.in $(top_srcdir)/bin/umount-arch.in \
 	$(top_srcdir)/etc/yum_repo.conf.in COPYING install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -91,7 +91,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES = bin/build bin/mkbuilddef bin/pkg2rpm \
-	etc/yum_repo.conf
+	bin/umount-arch etc/yum_repo.conf
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -161,10 +161,12 @@ distcleancheck_listfiles = find . -type f -print
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+ARCHROOT = @ARCHROOT@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BUILDDIR = @BUILDDIR@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 ECHO_C = @ECHO_C@
@@ -238,7 +240,12 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 DIST_TARGETS = dist-gzip dist-bzip2 dist-xz dist-zip
 EXTRA_DIST = bin etc libexec
-bin_SCRIPTS = bin/build bin/mkbuilddef bin/pkg2rpm
+bin_SCRIPTS = \
+	bin/build \
+	bin/mkbuilddef \
+	bin/pkg2rpm \
+	bin/umount-arch
+
 libexec_SCRIPTS = \
 	libexec/make_apache-ant \
 	libexec/make_boost \
@@ -303,6 +310,8 @@ bin/build: $(top_builddir)/config.status $(top_srcdir)/bin/build.in
 bin/mkbuilddef: $(top_builddir)/config.status $(top_srcdir)/bin/mkbuilddef.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 bin/pkg2rpm: $(top_builddir)/config.status $(top_srcdir)/bin/pkg2rpm.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+bin/umount-arch: $(top_builddir)/config.status $(top_srcdir)/bin/umount-arch.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 etc/yum_repo.conf: $(top_builddir)/config.status $(top_srcdir)/etc/yum_repo.conf.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
