@@ -6,7 +6,7 @@
 #perl pod files
 #info dir files
 
-ARCHROOT=/build
+ARCHROOT=@ARCHROOT@
 DEFDIR=@sysconfdir@/builddef
 STATDIR=@BUILDDIR@/status
 PKGDISTDIR=@SRVDIRTAR@

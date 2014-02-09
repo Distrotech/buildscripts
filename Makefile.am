@@ -2,7 +2,11 @@ DIST_TARGETS = dist-gzip dist-bzip2 dist-xz dist-zip
 
 EXTRA_DIST = bin etc libexec
 
-bin_SCRIPTS = bin/build bin/mkbuilddef bin/pkg2rpm
+bin_SCRIPTS = \
+	bin/build \
+	bin/mkbuilddef \
+	bin/pkg2rpm \
+	bin/umount-arch
 
 libexec_SCRIPTS	= \
 	libexec/make_apache-ant \

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ ! "${1}" ];then
+  echo "Arch must be specified ${0} <ARCH>\n";
+  exit 1
+fi;
+
+
+for mntdir in proc dev/pts dev sys @BUILDDIR@ @SRVDIRTAR@;do
+  umount @ARCHROOT@/${1}/${mntdir} || echo "Unmount ${mntdir} failed"
+done

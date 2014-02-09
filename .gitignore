@@ -10,6 +10,7 @@
 /autom4te.cache/
 /bin/build
 /bin/pkg2rpm
+/bin/umount-arch
 /bin/mkbuilddef
 /config.log
 /config.*

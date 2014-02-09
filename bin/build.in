@@ -54,7 +54,7 @@ LANG=${LANG:=en_ZA.UTF8}
 #Setup layout path
 SRCDIR=@SRCDIR@
 DISTDIR=${prefix}
-ARCHROOT=/build
+ARCHROOT=@ARCHROOT@
 DTSETCDIR=@sysconfdir@
 DEFDIR=${DTSETCDIR}/builddef
 DTSLEXEC=@libexecdir@
@@ -352,6 +352,11 @@ check_create_arch() {
   HDIR=${BASEROOT}/${1}
   if [ ! -d ${HDIR} ];then
     mkdir -p ${HDIR}/usr/include
+  fi;
+
+  #Create symlink to / for  sysroot of native arch
+  if [ "${1}" == "${NARCH}" ] && [ ! -e ${ARCHROOT}/${1} ];then
+    ln -sr / ${ARCHROOT}/${1}
   fi;
 
   #Core utils barfs when bootstraping
