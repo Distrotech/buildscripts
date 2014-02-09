@@ -586,11 +586,12 @@ PACKAGE_URL=''
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
-YUMREPOCONFDIR
-SRVDIRYUM
-SRVDIRTAR
+BUILDDIR
 SRCDIR
 SRVDIR
+SRVDIRYUM
+SRVDIRTAR
+YUMREPOCONFDIR
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
 AM_DEFAULT_V
@@ -662,6 +663,7 @@ enable_option_checking
 enable_silent_rules
 with_srvdir
 with_src_dir
+with_build_dir
 with_srvdir_tar
 with_srvdir_yum
 with_yum_repo_conf_dir
@@ -1289,10 +1291,10 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-srvdir           toplevel direcrory for tar packages and yum
-                          repository (${prefix}/srv/${PACKAGE_NAME}
-  --with-src-dir          directory source is built in should not be in
-                          ${SRVDIR}
+  --with-srv-dir          toplevel direcrory for tar packages and yum
+                          repository
+  --with-src-dir          where the source is checked out and built
+  --with-build-dir        staging/bootstrap directory
   --with-srvdir-tar       toplevel direcrory to place tar packages
                           (${SRVDIR}/tar)
   --with-srvdir-yum       toplevel direcrory to place rpm packages
@@ -2344,54 +2346,89 @@ if test "${with_srvdir+set}" = set; then :
 fi
 
 
-if test "x$with_srvdir" = "x"; then :
-  SRVDIR=${prefix}/srv/${PACKAGE_NAME}
-else
-  SRVDIR=$with_srvdir
-fi
-
-
-
-# Check whether --with-src_dir was given.
+# Check whether --with-src-dir was given.
 if test "${with_src_dir+set}" = set; then :
   withval=$with_src_dir;
 fi
 
 
+# Check whether --with-build-dir was given.
+if test "${with_build_dir+set}" = set; then :
+  withval=$with_build_dir;
+fi
+
 
 if test "x$prefix" = "x/opt"; then :
 
-  if test x$SRVDIR = x${prefix}/srv/${PACKAGE_NAME} ; then :
-  SRVDIR=/srv/opt/${PACKAGE_NAME}
-fi
   if test x$localstatedir = x'${prefix}/var' ; then :
   localstatedir=/var/opt/${PACKAGE_NAME}
 fi
   if test x$sysconfdir = x'${prefix}/etc'; then :
   sysconfdir=/etc/opt/${PACKAGE_NAME}
 fi
+
+  if test "x$with_srv_dir" = "x" ; then :
+  SRVDIR=/srv/opt/${PACKAGE_NAME}
+else
+  SRVDIR=$with_srv_dir
+fi
   if test "x$with_src_dir" = "x"; then :
-  SRCDIR=/var/opt/${PACKAGE_NAME}-src
+  SRCDIR=$localstatedir/src
 else
   SRCDIR=$with_src_dir
 fi
+  if test "x$with_build_dir" = "x"; then :
+  BUILDDIR=$localstatedir/build
+else
+  BUILDDIR=$with_build_dir
+fi
+
   prefix=${prefix}/${PACKAGE_NAME};
-
-else
-
-  if test "x$with_src_dir" = "x"; then :
-  SRCDIR=/usr/src/${PACKAGE_NAME}-src
-else
-  SRCDIR=$with_src_dir
+  if test "x$exec_prefix" = "xNONE"; then :
+  exec_prefix=${prefix}
 fi
   if test x$libexecdir = x'${exec_prefix}/libexec' ; then :
-  libexecdir='${exec_prefix}/libexec/${PACKAGE_NAME}'
+  libexecdir=${exec_prefix}/libexec
+fi
+
+else
+
+  if test x$localstatedir = x'${prefix}/var' ; then :
+  localstatedir=${prefix}/var
 fi
   if test x$sysconfdir = x'${prefix}/etc'; then :
   sysconfdir=${prefix}/etc/${PACKAGE_NAME}
 fi
 
+  if test "x$with_srv_dir" = "x" ; then :
+  SRVDIR=${prefix}/srv/${PACKAGE_NAME}
+else
+  SRVDIR=$with_srv_dir
 fi
+  if test "x$with_src_dir" = "x"; then :
+  SRCDIR=$localstatedir/src/${PACKAGE_NAME}
+else
+  SRCDIR=$with_src_dir
+fi
+  if test "x$with_build_dir" = "x"; then :
+  BUILDDIR=$localstatedir/lib/${PACKAGE_NAME}
+else
+  BUILDDIR=$with_build_dir
+fi
+
+  if test "x$exec_prefix" = "xNONE"; then :
+  exec_prefix=${prefix}
+fi
+  if test x$libexecdir = x'${exec_prefix}/libexec' ; then :
+  libexecdir=${exec_prefix}/libexec/${PACKAGE_NAME}
+fi
+
+fi
+
+if test x$bindir = x'${exec_prefix}/bin' ; then :
+  bindir=${exec_prefix}/bin
+fi
+
 
 
 # Check whether --with-srvdir_tar was given.
@@ -2406,7 +2443,6 @@ else
 fi
 
 
-
 # Check whether --with-srvdir_yum was given.
 if test "${with_srvdir_yum+set}" = set; then :
   withval=$with_srvdir_yum;
@@ -2417,7 +2453,6 @@ if test "x$with_srvdir_yum" = "x"; then :
 else
   SRVDIRYUM=$with_srvdir_yum
 fi
-
 
 
 # Check whether --with-yum_repo_conf_dir was given.
@@ -2431,12 +2466,18 @@ else
   YUMREPOCONFDIR=$with_yum_repo_conf_dir
 fi
 
-
 if test x$sysconfdir = x'${prefix}/etc'; then :
   sysconfdir=${prefix}/etc
 fi
 
 ac_config_files="$ac_config_files Makefile bin/build bin/mkbuilddef bin/pkg2rpm etc/yum_repo.conf"
+
+
+
+
+
+
+
 
 
 cat >confcache <<\_ACEOF
@@ -3621,3 +3662,14 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
 $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
 
+
+printf "\n\nDirectory Layout\n"
+
+printf "%-40s: %s\n" "bindir" "${bindir}"
+printf "%-40s: %s\n" "libexecdir" "${libexecdir}"
+printf "%-40s: %s\n" "sysconfdir" "${sysconfdir}"
+printf "%-40s: %s\n" "tardir" "${SRVDIRTAR}"
+printf "%-40s: %s\n" "yumdir" "${SRVDIRYUM}"
+printf "%-40s: %s\n" "srcdir" "${SRCDIR}"
+printf "%-40s: %s\n" "builddir" "${BUILDDIR}"
+printf "%-40s: %s\n" "repodir" "${YUMREPOCONFDIR}"
