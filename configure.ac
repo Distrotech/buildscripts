@@ -23,8 +23,8 @@ AS_IF([test "x$prefix" = "x/opt"], [
   AS_IF([test x$sysconfdir = x'${prefix}/etc'], [sysconfdir=${prefix}/etc/${PACKAGE_NAME}])
 
   AS_IF([test "x$with_srv_dir" = "x" ], [SRVDIR=${prefix}/srv/${PACKAGE_NAME}], [SRVDIR=$with_srv_dir])
-  AS_IF([test "x$with_src_dir" = "x"], [SRCDIR=$localstatedir/src/${PACKAGE_NAME}], [SRCDIR=$with_src_dir])
-  AS_IF([test "x$with_build_dir" = "x"], [BUILDDIR=$localstatedir/lib/${PACKAGE_NAME}], [BUILDDIR=$with_build_dir])
+  AS_IF([test "x$with_src_dir" = "x"], [SRCDIR=$localstatedir/lib/${PACKAGE_NAME}/src], [SRCDIR=$with_src_dir])
+  AS_IF([test "x$with_build_dir" = "x"], [BUILDDIR=$localstatedir/lib/${PACKAGE_NAME}/build], [BUILDDIR=$with_build_dir])
 
   AS_IF([test "x$exec_prefix" = "xNONE"], [exec_prefix=${prefix}])
   AS_IF([test x$libexecdir = x'${exec_prefix}/libexec' ], [libexecdir=${exec_prefix}/libexec/${PACKAGE_NAME}])

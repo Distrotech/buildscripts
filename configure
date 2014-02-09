@@ -2406,12 +2406,12 @@ else
   SRVDIR=$with_srv_dir
 fi
   if test "x$with_src_dir" = "x"; then :
-  SRCDIR=$localstatedir/src/${PACKAGE_NAME}
+  SRCDIR=$localstatedir/lib/${PACKAGE_NAME}/src
 else
   SRCDIR=$with_src_dir
 fi
   if test "x$with_build_dir" = "x"; then :
-  BUILDDIR=$localstatedir/lib/${PACKAGE_NAME}
+  BUILDDIR=$localstatedir/lib/${PACKAGE_NAME}/build
 else
   BUILDDIR=$with_build_dir
 fi
