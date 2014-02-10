@@ -237,18 +237,28 @@ dialog_config() {
 mnt_archroot() {
   BINDFS="mount --bind";
 
-  if [ ! -d ${ARCHROOT}/${1}/${PKGDISTDIR}/${1} ];then
-    if [ ! -d ${ARCHROOT}/${1}/${PKGDISTDIR} ];then
-      mkdir -p ${ARCHROOT}/${1}/${PKGDISTDIR}
+  if [ "${1}" != "${NARCH}" ];then
+    if [ ! -d ${ARCHROOT}/${1}/${PKGDISTDIR}/${1} ];then
+      if [ ! -d ${ARCHROOT}/${1}/${PKGDISTDIR} ];then
+        mkdir -p ${ARCHROOT}/${1}/${PKGDISTDIR}
+      fi;
+      ${BINDFS} ${PKGDISTDIR} ${ARCHROOT}/${1}/${PKGDISTDIR}
     fi;
-    ${BINDFS} ${PKGDISTDIR} ${ARCHROOT}/${1}/${PKGDISTDIR}
+
+    if [ ! -d ${ARCHROOT}/${1}/${PKGBUILDDIR}/bootstrap/${1} ];then
+      if [ ! -d ${ARCHROOT}/${1}/${PKGBUILDDIR} ];then
+        mkdir -p ${ARCHROOT}/${1}/${PKGBUILDDIR}
+      fi;
+      ${BINDFS} ${PKGBUILDDIR} ${ARCHROOT}/${1}/${PKGBUILDDIR}
+    fi;
   fi;
 
-  if [ ! -d ${ARCHROOT}/${1}/${PKGBUILDDIR}/bootstrap ];then
-    if [ ! -d ${ARCHROOT}/${1}/${PKGBUILDDIR} ];then
-      mkdir -p ${ARCHROOT}/${1}/${PKGBUILDDIR}
-    fi;
-    ${BINDFS} ${PKGBUILDDIR} ${ARCHROOT}/${1}/${PKGBUILDDIR}
+  if [ ! -d ${ARCHROOT}/${1}/${PKGDISTDIR}/${1} ];then
+    mkdir -p ${ARCHROOT}/${1}/${PKGDISTDIR}/${1}
+  fi;
+
+  if [ ! -d ${ARCHROOT}/${1}/${PKGBUILDDIR}/bootstrap/${1} ];then
+    mkdir -p ${ARCHROOT}/${1}/${PKGBUILDDIR}/bootstrap/${1}
   fi;
 
   if [ ! -d ${ARCHROOT}/${1}/sys/dev ];then
