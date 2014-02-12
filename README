@@ -16,7 +16,7 @@ The following will be installed
   /etc/opt/dtsbuild/{cmake_cross,waf_cross} [Per arch files for cross compiling with waf/cmake]
 
 Build Directory
-  /var/opt/dtsbuild/{staging,bootstrap,status}
+  /var/opt/dtsbuild/build/{staging,bootstrap,status}
   
   staging
     When source is built it is installed into the staging area for packaging this directory contains
@@ -32,6 +32,10 @@ Build Directory
       <ARCH>/done a file is touched when a package is built
       <ARCH>/fail a file is stamped when the package fails
       <ARCH>{built,done,output/} not currently used
+
+Sysroot/Source
+  /var/opt/dtsbuild/src tree where source is unpacked and built
+  /var/opt/dtsbuild/sysroot system sysroot per arch
 
 Packages
   /srv/opt/dtsbuild/{tar,yum} Packaged output in tar.xz and rpm format.
