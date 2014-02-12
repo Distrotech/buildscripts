@@ -1,6 +1,6 @@
 VERSION="1.4.6"
 VERSEP="-";
-PREFIX="/usr";
+PREFIX="/opt/apr";
 CONFOPT="";
 SYSROOTFIXUP="1";
 OPT_arm="ac_cv_file__dev_zero=yes ac_cv_func_setpgrp_void=yes apr_cv_process_shared_works=yes
