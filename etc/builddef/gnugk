@@ -3,11 +3,9 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-pgsql --enable-radius --enable-mysql --enable-unixodbc --enable-sqlite 
          --enable-libssh --with-large-fdset=8192 --disable-firebird --enable-h46018 --enable-h46023 --enable-ldap
-	PTLIBDIR=/usr/src/ptlib/ptlib-2.10.1 ac_cv_file__usr_src_ptlib_ptlib_2_10_1_make_unix_mak=yes
-        OPENH323DIR=/usr/src/h323plus/h323plus-v1_24_0 ac_cv_file__usr_src_h323plus_h323plus_v1_24_0_openh323u_mak=yes
-        ac_cv_file__usr_src_h323plus_h323plus_v1_24_0_version_h=yes";
+	PTLIBDIR=${SRCDIR}/ptlib/ptlib-2.10.1 OPENH323DIR=${SRCDIR}/h323plus/h323plus-v1_24_0";
 BUILDDIR="0";
-MAKEOPTS="OPENH323DIR=/usr/src/h323plus/h323plus-v1_24_0 CXXFLAGS= LDFLAGS=-lstdc++";
+MAKEOPTS="OPENH323DIR=${SRCDIR}/h323plus/h323plus-v1_24_0 PTLIBDIR=${SRCDIR}/ptlib/ptlib-2.10.1 CXXFLAGS= LDFLAGS=-lstdc++";
 NOCCOPT="1";
 ADDCC="1";
 LDISCC="1";
