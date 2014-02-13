@@ -1,8 +1,8 @@
 VERSION="v1_24_0"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-localgsm PTLIBDIR=/usr/src/ptlib/ptlib-2.10.1 ac_cv_lib_avcodec_mpeg4_encoder=yes
-         ac_cv_lib_avcodec_h263p_encoder=yes ac_cv_lib_avcodec_h264_decoder=yes --disable-h264 --disable-celt";
+CONFOPT="--enable-localgsm PTLIBDIR=${SRCDIR}/ptlib/ptlib-2.10.1 ac_cv_lib_avcodec_mpeg4_encoder=yes
+         ac_cv_lib_avcodec_h263p_encoder=yes ac_cv_lib_avcodec_h264_decoder=yes --enable-h264 --enable-celt";
 BUILDDIR="0";
 ADDCFLAG="-I../include";
 FIXUPLIB="1";
