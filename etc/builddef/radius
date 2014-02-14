@@ -1,5 +1,4 @@
 VERSION="1.6.1"
 VERSEP="-";
-PREFIX="/usr";
+PREFIX="/opt/radius";
 CONFOPT="--without-guile";
-SYSCONFPRE="radius";
