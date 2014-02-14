@@ -1,9 +1,16 @@
 VERSION="2.40.0"
 VERSEP="-";
-PREFIX="/usr";
+if [ "${barch:0:3}" == "win" ];then
+  PREFIX="/mingw";
+ else
+  PREFIX="/usr";
+fi;
 XXCONFOPT="--enable-pixbuf-loader --enable-gtk-theme";
-ADDCFLAG="-I=/usr/include/cairo -I=/usr/include/libxml2 -I=/usr/include/libcroco-0.6 -I=/usr/include/gdk-pixbuf-2.0
-          -I=/usr/include/vala-0.18 -I=/usr/include/pango-1.0 -I=/usr/include/atk-1.0 -I=/build/i686/usr/include/gtk-3.0";
+ADDCFLAG="-I=${PREFIX}/include/cairo -I=${PREFIX}/include/libxml2 -I=${PREFIX}/include/libcroco-0.6 -I=${PREFIX}/include/gdk-pixbuf-2.0
+          -I=${PREFIX}/include/vala-0.18 -I=${PREFIX}/include/pango-1.0 -I=${PREFIX}/include/atk-1.0 -I=${PREFIX}/include/gtk-3.0
+          -I=${PREFIX}/include/gtk-2.0";
 AMVER="1.14";
 CHROOTBUILD="1";
 SYSROOTFIXUP="1";
+CLEARFLAGS="1";
+OPT_cyg32="--enable-introspection=no";
