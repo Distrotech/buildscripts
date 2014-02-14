@@ -1,16 +1,7 @@
 VERSION="0.5.5";
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="-DWITH_GCRYPT:BOOL=ON -DGCRYPT_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libgcrypt.so";
+CONFOPT="-DWITH_GCRYPT:BOOL=ON -DGCRYPT_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libgcrypt.so 
+         -DZLIB_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libz.so";
 FIXUPLIB="1";
 EXTRALIBS="-lpthread -lrt -ldl";
-OPT_arm="-DZLIB_LIBRARY:FILEPATH=/build/arm/usr/lib/libz.so";
-OPT_arm64="-DZLIB_LIBRARY:FILEPATH=/build/arm64/usr/lib/libz.so";
-OPT_i686="-DZLIB_LIBRARY:FILEPATH=/build/i686/usr/lib/libz.so";
-OPT_x86_32="-DZLIB_LIBRARY:FILEPATH=/build/x86_32/usr/libx32/libz.so";
-OPT_x86_64="-DZLIB_LIBRARY:FILEPATH=/build/x86_64/usr/lib64/libz.so";
-OPT_mips="-DZLIB_LIBRARY:FILEPATH=/build/mips/usr/lib/libz.so";
-OPT_mips64="-DZLIB_LIBRARY:FILEPATH=/build/mips64/usr/lib64/libz.so";
-OPT_powerpc="-DZLIB_LIBRARY:FILEPATH=/build/powerpc/usr/lib/libz.so";
-OPT_powerpc64="-DZLIB_LIBRARY:FILEPATH=/build/powerpc64/usr/lib64/libz.so";
-
