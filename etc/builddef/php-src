@@ -2,21 +2,21 @@ VERSION="5.4.20"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-static=no --with-config-file-path=/etc/php --with-openssl=shared --enable-dbase=shared
-         --enable-ftp=shared --with-mysql=shared,/build/${barch}/usr --with-zlib=shared --enable-safe-mode --with-bz2=shared 
-         --with-mod_charset=shared --enable-calendar=shared --with-db5=shared --with-png-dir=shared,/build/${barch}/usr 
-         --with-gd=shared --with-jpeg-dir=shared,/build/${barch}/usr --with-freetype-dir=shared,/build/${barch}/usr --with-openssl=shared 
+         --enable-ftp=shared --with-mysql=shared,${ARCHROOT}/${barch}/usr --with-zlib=shared --enable-safe-mode --with-bz2=shared 
+         --with-mod_charset=shared --enable-calendar=shared --with-db5=shared --with-png-dir=shared,${ARCHROOT}/${barch}/usr 
+         --with-gd=shared --with-jpeg-dir=shared,${ARCHROOT}/${barch}/usr --with-freetype-dir=shared,${ARCHROOT}/${barch}/usr --with-openssl=shared 
          --enable-oauth --localstatedir=/var --enable-bcmath=shared --with-ncurses=shared --with-gdbm=shared 
-         --with-ndbm=shared --with-ldap=shared,/build/${barch}/usr --with-imap-ssl --with-pic
-         --with-gettext=shared --with-mcal=shared,/build/${barch}/usr -with-curl=shared --with-pear=shared --with-mhash=shared 
+         --with-ndbm=shared --with-ldap=shared,${ARCHROOT}/${barch}/usr --with-imap-ssl --with-pic
+         --with-gettext=shared --with-mcal=shared,${ARCHROOT}/${barch}/usr -with-curl=shared --with-pear=shared --with-mhash=shared 
          --enable-mbstring --with-mbstrings --with-pgsql=shared --with-mcrypt --with-jpeg-dir=shared 
          --with-png-dir=shared --with-sqlite=shared --with-tiff-dir=shared --with-zlib-dir=shared --with-dbm=shared 
-         --with-ldap-sasl=/build/${barch}/usr --with-rrd=shared,/build/${barch}/usr --with-pdo-sqlite=shared,/build/${barch}/usr 
-         --with-unixODBC=/build/${barch}/usr --enable-sockets=shared --enable-pcntl=shared --with-dom=shared --with-iconv=shared 
-         --enable-zip --enable-intl --enable-mbregex --with-imap=shared,/build/${barch}/usr";
+         --with-ldap-sasl=${ARCHROOT}/${barch}/usr --with-rrd=shared,${ARCHROOT}/${barch}/usr --with-pdo-sqlite=shared,${ARCHROOT}/${barch}/usr 
+         --with-unixODBC=${ARCHROOT}/${barch}/usr --enable-sockets=shared --enable-pcntl=shared --with-dom=shared --with-iconv=shared 
+         --enable-zip --enable-intl --enable-mbregex --with-imap=shared,${ARCHROOT}/${barch}/usr";
 CLEARFLAGS="1";
 ADDCFLAG="-fPIC -I=/usr/include/sasl";
 ADDLDFLAG="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/usr/${C_LIBDIRS}"
-OPT_x86_64="--with-libdir=lib64 --with-apxs2=/build/x86_64/opt/apache2/bin/apxs";
-OPT_x86_32="--with-libdir=libx32 --with-apxs2=/build/x86_32/opt/apache2/bin/apxs --disable-phar";
-OPT_i686="--with-libdir=lib --with-apxs2=/build/i686/opt/apache2/bin/apxs";
+OPT_x86_64="--with-libdir=lib64 --with-apxs2=${ARCHROOT}/x86_64/opt/apache2/bin/apxs";
+OPT_x86_32="--with-libdir=libx32 --with-apxs2=${ARCHROOT}/x86_32/opt/apache2/bin/apxs --disable-phar";
+OPT_i686="--with-libdir=lib --with-apxs2=${ARCHROOT}/i686/opt/apache2/bin/apxs";
 CHROOTBUILD="1";
