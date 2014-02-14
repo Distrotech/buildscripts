@@ -2,7 +2,7 @@ VERSION="0.102"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-ADDPATH="/usr/src/dbus-glib/dbus-glib${VERSEP}${VERSION}/build-${barch}/dbus/.libs";
+ADDPATH="${SRCDIR}/dbus-glib/dbus-glib${VERSEP}${VERSION}/build-${barch}/dbus/.libs";
 OPT_arm="ac_cv_have_abstract_sockets=no with_dbus_binding_tool=dbus-binding-tool";
 OPT_mips="ac_cv_have_abstract_sockets=no with_dbus_binding_tool=dbus-binding-tool";
 OPT_arm64="ac_cv_have_abstract_sockets=no with_dbus_binding_tool=dbus-binding-tool";
