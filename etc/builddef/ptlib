@@ -10,3 +10,4 @@ MAKEALL="optshared";
 NODIET="1";
 GITBRANCH="master";
 RPMINTDEPS="0";
+CHROOTBUILD="1";
