@@ -3,7 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-pgsql --enable-radius --enable-mysql --enable-unixodbc --enable-sqlite 
          --enable-libssh --with-large-fdset=8192 --disable-firebird --enable-h46018 --enable-h46023 --enable-ldap
-	PTLIBDIR=${SRCDIR}/ptlib/ptlib-2.10.1 OPENH323DIR=${SRCDIR}/h323plus/h323plus-v1_24_0";
+	PTLIBDIR=${SRCDIR}/ptlib/ptlib-2.10.1 OPENH323DIR=${SRCDIR}/h323plus/h323plus-v1_24_0"
 BUILDDIR="0";
 MAKEOPTS="OPENH323DIR=${SRCDIR}/h323plus/h323plus-v1_24_0 PTLIBDIR=${SRCDIR}/ptlib/ptlib-2.10.1 CXXFLAGS= LDFLAGS=-lstdc++";
 NOCCOPT="1";
