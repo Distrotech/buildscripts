@@ -7,6 +7,7 @@ CONFOPTX="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/${bar
          -DCMAKE_CROSSCOMPILING:BOOL=ON";
 FIXUPLIB="1";
 NODIET="1";
+NOMLIBDIR="1";
 GITBRANCH="master";
 RPMPROVIDES="perl(lib::mtr_gcov.pl) perl(lib::mtr_gprof.pl) perl(lib::mtr_io.pl) perl(lib::mtr_misc.pl) perl(lib::mtr_process.pl) perl(lib::v1/mtr_cases.pl) \
  perl(lib::v1/mtr_gcov.pl) perl(lib::v1/mtr_gprof.pl) perl(lib::v1/mtr_im.pl) perl(lib::v1/mtr_io.pl) perl(lib::v1/mtr_match.pl) perl(lib::v1/mtr_misc.pl) \
