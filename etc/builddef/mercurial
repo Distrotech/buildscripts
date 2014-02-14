@@ -3,6 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-ADDCFLAG="--sysroot=/build/${barch} -I=/usr/include/python2.7";
+ADDCFLAG="--sysroot=${ARCHROOT}/${barch} -I=/usr/include/python2.7";
 ADDLDFLAG="-L=/usr/${B_LIBDIRS}";
 CHROOTBUILD="1";

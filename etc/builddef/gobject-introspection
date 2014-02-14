@@ -10,6 +10,5 @@ MAKEOPTS="V=1";
 NOCCOPT="1";
 EXTRALIBS="-lglib-2.0 -lgmodule-2.0 -lgobject-2.0 -lgthread-2.0 -lgio-2.0 -lpthread -lrt -lresolv -ldl";
 CONFOPT="PYTHON=${ARCHROOT}/${barch}/usr/bin/python2.7";
-XMAKEOPTS="CC=${HOST}-gcc";
 DONTBUILD="arm64 cyg32 cyg64";
 CHROOTBUILD="1";

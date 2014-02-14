@@ -1,14 +1,14 @@
 VERSION="2.0.9"
 VERSEP="-";
 PREFIX="/usr";
-OPT_i686="--with-libltdl-prefix=/build/i686/usr/lib --with-libgmp-prefix=/build/i686/usr/lib --with-libunistring-prefix=/build/i686/usr/lib --with-libreadline-prefix=/build/i686/usr/lib";
-OPT_arm="--with-libltdl-prefix=/build/arm/usr/lib --with-libgmp-prefix=/build/arm/usr/lib --with-libunistring-prefix=/build/arm/usr/lib --with-libreadline-prefix=/build/arm/usr/lib";
-OPT_x86_64="--with-libltdl-prefix=/build/x86_64/usr/lib --with-libgmp-prefix=/build/x86_64/usr/lib --with-libunistring-prefix=/build/x86_64/usr/lib --with-libreadline-prefix=/build/x86_64/usr/lib";
-OPT_x86_32="--with-libltdl-prefix=/build/x86_32/usr/lib -with-libgmp-prefix=/build/x86_32/usr/lib --with-libunistring-prefix=/build/x86_32/usr/lib --with-libreadline-prefix=/build/x86_32/usr/lib";
-OPT_powerpc64="--with-libltdl-prefix=/build/powerpc64/usr/lib64 -with-libgmp-prefix=/build/powerpc64/usr/lib64 --with-libunistring-prefix=/build/powerpc64/usr/lib64 --with-libreadline-prefix=/build/powerpc64/usr/lib64";
-OPT_powerpc="--with-libltdl-prefix=/build/powerpc/usr/lib -with-libgmp-prefix=/build/powerpc/usr/lib --with-libunistring-prefix=/build/powerpc/usr/lib --with-libreadline-prefix=/build/powerpc/usr/lib";
-OPT_mips64="--with-libltdl-prefix=/build/mips64/usr/lib64 -with-libgmp-prefix=/build/mips64/usr/lib64 --with-libunistring-prefix=/build/mips64/usr/lib64 --with-libreadline-prefix=/build/mips64/usr/lib64";
-OPT_mips="--with-libltdl-prefix=/build/mips/usr/lib -with-libgmp-prefix=/build/mips/usr/lib --with-libunistring-prefix=/build/mips/usr/lib --with-libreadline-prefix=/build/mips/usr/lib";
+OPT_i686="--with-libltdl-prefix=${ARCHROOT}/i686/usr/lib --with-libgmp-prefix=${ARCHROOT}/i686/usr/lib --with-libunistring-prefix=${ARCHROOT}/i686/usr/lib --with-libreadline-prefix=${ARCHROOT}/i686/usr/lib";
+OPT_arm="--with-libltdl-prefix=${ARCHROOT}/arm/usr/lib --with-libgmp-prefix=${ARCHROOT}/arm/usr/lib --with-libunistring-prefix=${ARCHROOT}/arm/usr/lib --with-libreadline-prefix=${ARCHROOT}/arm/usr/lib";
+OPT_x86_64="--with-libltdl-prefix=${ARCHROOT}/x86_64/usr/lib --with-libgmp-prefix=${ARCHROOT}/x86_64/usr/lib --with-libunistring-prefix=${ARCHROOT}/x86_64/usr/lib --with-libreadline-prefix=${ARCHROOT}/x86_64/usr/lib";
+OPT_x86_32="--with-libltdl-prefix=${ARCHROOT}/x86_32/usr/lib -with-libgmp-prefix=${ARCHROOT}/x86_32/usr/lib --with-libunistring-prefix=${ARCHROOT}/x86_32/usr/lib --with-libreadline-prefix=${ARCHROOT}/x86_32/usr/lib";
+OPT_powerpc64="--with-libltdl-prefix=${ARCHROOT}/powerpc64/usr/lib64 -with-libgmp-prefix=${ARCHROOT}/powerpc64/usr/lib64 --with-libunistring-prefix=${ARCHROOT}/powerpc64/usr/lib64 --with-libreadline-prefix=${ARCHROOT}/powerpc64/usr/lib64";
+OPT_powerpc="--with-libltdl-prefix=${ARCHROOT}/powerpc/usr/lib -with-libgmp-prefix=${ARCHROOT}/powerpc/usr/lib --with-libunistring-prefix=${ARCHROOT}/powerpc/usr/lib --with-libreadline-prefix=${ARCHROOT}/powerpc/usr/lib";
+OPT_mips64="--with-libltdl-prefix=${ARCHROOT}/mips64/usr/lib64 -with-libgmp-prefix=${ARCHROOT}/mips64/usr/lib64 --with-libunistring-prefix=${ARCHROOT}/mips64/usr/lib64 --with-libreadline-prefix=${ARCHROOT}/mips64/usr/lib64";
+OPT_mips="--with-libltdl-prefix=${ARCHROOT}/mips/usr/lib -with-libgmp-prefix=${ARCHROOT}/mips/usr/lib --with-libunistring-prefix=${ARCHROOT}/mips/usr/lib --with-libreadline-prefix=${ARCHROOT}/mips/usr/lib";
 ADDWITHSYSROOT="1";
 DONTBUILD="arm64 mips mips64 powerpc powerpc64 cyg32 cyg64";
 AMVER="1.14";

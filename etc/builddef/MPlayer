@@ -13,14 +13,14 @@ OPT_x86_64="--libdir=/usr/lib64";
 OPT_i686="--enable-cross-compile  --extra-cflags=-m32";
 OPT_win32="--enable-cross-compile";
 OPT_arm="--target=arm-linux --enable-cross-compile
-         --extra-ldflags=-Wl,--rpath-link=/build/arm/usr/lib:/build/arm/lib:/build/arm/${X11DIR}/lib
+         --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/arm/usr/lib:${ARCHROOT}/arm/lib:${ARCHROOT}/arm/${X11DIR}/lib
          --host-cc=/usr/bin/gcc --disable-vidix --disable-runtime-cpudetection";
 OPT_x86_32="--enable-cross-compile --extra-cflags=-mx32 --extra-ldflags=-mx32
           --libdir=/usr/libx32 --host-cc=/usr/bin/gcc
           --disable-mmx --disable-mp3lib --disable-qtx --disable-win32dll
           --disable-sse --disable-sse2";
 OPT_mips="--enable-cross-compile --cc=mips-linux-gnu-gcc --host-cc=/usr/bin/gcc --target=mips-linux-gnu
-         --extra-ldflags=-Wl,--rpath-link=/build/mips/usr/lib:/build/mips/lib:/build/mips/${X11DIR}/lib";
+         --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/mips/usr/lib:${ARCHROOT}/mips/lib:${ARCHROOT}/mips/${X11DIR}/lib";
 ADDCFLAG="-O2 -I=${PREFIX}/include/fribidi -I=${PREFIX}/include/freetype2";
 ADDLDFLAG="-L=${PREFIX}/${B_LIBDIRS}";
 ADDFILTER="config.mak";

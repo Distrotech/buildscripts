@@ -10,7 +10,7 @@ OPT_powerpc="--with-dri-drivers=nouveau,r200,radeon,swrast";
 OPT_powerpc64="--with-dri-drivers=nouveau,r200,radeon,swrast";
 ADDCC="0";
 ADDCFLAG="-I=/usr/include/libdrm -fPIC";
-ADDLDFLAG="-L/usr/src/Mesa/Mesa-${VERSION}/lib";
+ADDLDFLAG="-L${SRCDIR}/Mesa/Mesa-${VERSION}/lib";
 MAKEOPTS="HOSTCC_LDFLAGS=-L/usr/${NLIBDIR}"
 LDISCC="1";
 AMVER="1.14";

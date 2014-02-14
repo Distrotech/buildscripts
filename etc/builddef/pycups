@@ -3,5 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-MAKEOPTS="PYTHON=/build/${barch}/usr/bin/python";
+MAKEOPTS="PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
 CHROOTBUILD="1";

@@ -2,6 +2,6 @@ VERSION="1.14a"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-ssl=openssl ac_cv_libssl=yes";
-CONFOPTX="--with-libssl-prefix=/build/${barch}/usr";
+CONFOPTX="--with-libssl-prefix=${ARCHROOT}/${barch}/usr";
 EXTRALIBS="-L=/${B_LIBDIRS} -L=/usr/${B_LIBDIRS} -lpthread";
 NOCCOPT="1";

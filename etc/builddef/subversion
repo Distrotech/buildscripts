@@ -2,16 +2,16 @@ VERSION="1.7.7"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-swig --with-ssl --enable-javahl --with-jdk=/usr/${B_LIBDIRS}/jvm/gcj-jdk";
-OPTX_arm="--with-apxs=/build/arm/opt/apache2/bin/apxs --with-apr=/build/arm/usr --with-apr-util=/build/arm/usr
-         --with-gssapi=/build/arm/usr --with-swig=/build/arm/usr --with-neon=/build/arm/usr";
-OPTX_arm64="--with-apxs=/build/arm64/opt/apache2/bin/apxs --with-apr=/build/arm64/usr --with-apr-util=/build/arm64/usr
-         --with-gssapi=/build/arm64/usr --with-swig=/build/arm64/usr --with-neon=/build/arm64/usr";
-OPTX_i686="--with-apxs=/build/i686/opt/apache2/bin/apxs --with-apr=/build/i686/usr --with-apr-util=/build/i686/usr
-          --with-gssapi=/build/i686/usr --with-swig=/build/i686/usr --with-neon=/build/i686/usr";
-OPTX_x86_32="--with-apxs=/build/x86_32/opt/apache2/bin/apxs --with-apr=/build/x86_32/usr --with-apr-util=/build/x86_32/usr
-          --with-gssapi=/build/x86_32/usr --with-swig=/build/x86_32/usr --with-neon=/build/x86_32/usr";
-OPTX_x86_64="--with-apxs=/build/x86_64/opt/apache2/bin/apxs --with-apr=/build/x86_64/usr --with-apr-util=/build/x86_64/usr
-          --with-gssapi=/build/x86_64/usr --with-swig=/build/x86_64/usr/bin/swig --with-neon=/build/x86_64/usr";
+OPTX_arm="--with-apxs=${ARCHROOT}/arm/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/arm/usr --with-apr-util=${ARCHROOT}/arm/usr
+         --with-gssapi=${ARCHROOT}/arm/usr --with-swig=${ARCHROOT}/arm/usr --with-neon=${ARCHROOT}/arm/usr";
+OPTX_arm64="--with-apxs=${ARCHROOT}/arm64/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/arm64/usr --with-apr-util=${ARCHROOT}/arm64/usr
+         --with-gssapi=${ARCHROOT}/arm64/usr --with-swig=${ARCHROOT}/arm64/usr --with-neon=${ARCHROOT}/arm64/usr";
+OPTX_i686="--with-apxs=${ARCHROOT}/i686/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/i686/usr --with-apr-util=${ARCHROOT}/i686/usr
+          --with-gssapi=${ARCHROOT}/i686/usr --with-swig=${ARCHROOT}/i686/usr --with-neon=${ARCHROOT}/i686/usr";
+OPTX_x86_32="--with-apxs=${ARCHROOT}/x86_32/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/x86_32/usr --with-apr-util=${ARCHROOT}/x86_32/usr
+          --with-gssapi=${ARCHROOT}/x86_32/usr --with-swig=${ARCHROOT}/x86_32/usr --with-neon=${ARCHROOT}/x86_32/usr";
+OPTX_x86_64="--with-apxs=${ARCHROOT}/x86_64/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/x86_64/usr --with-apr-util=${ARCHROOT}/x86_64/usr
+          --with-gssapi=${ARCHROOT}/x86_64/usr --with-swig=${ARCHROOT}/x86_64/usr/bin/swig --with-neon=${ARCHROOT}/x86_64/usr";
 ADDCFLAG="-I=/opt/apache/include";
 STATICOPT="--disable-shared --without-berkeley-db --enable-all-static --without-apxs LDFLAGS=-static"
 STATICMOPT="LDFLAGS=-all-static";

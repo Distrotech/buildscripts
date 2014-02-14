@@ -1,5 +1,5 @@
 VERSION="2.8.8"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="PYTHON=/build/${barch}/usr/bin/python --disable-gtktest";
+CONFOPT="PYTHON=${ARCHROOT}/${barch}/usr/bin/python --disable-gtktest";
 ADDCFLAG="-I=/usr/include/python2.7";

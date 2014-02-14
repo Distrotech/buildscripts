@@ -2,7 +2,7 @@ VERSION="1.7.27-2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-OPT_cyg32="--target=i686-pc-cygwin --with-windows-headers=/build/cyg32/usr/include/w32api/ --with-windows-libs=/build/cyg32/usr/lib/w32api";
+OPT_cyg32="--target=i686-pc-cygwin --with-windows-headers=${ARCHROOT}/cyg32/usr/include/w32api/ --with-windows-libs=${ARCHROOT}/cyg32/usr/lib/w32api";
 GITBRANCH="master"
 CLEARFLAGS="1";
 NOCCOPT="1";

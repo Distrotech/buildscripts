@@ -2,28 +2,28 @@ VERSION="svn"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-OPT_arm="-DJPEG_LIBRARY=/build/arm/usr/lib/libjpeg.so -DFONTCONFIG_LIB=/build/arm/usr/lib/libfontconfig.so 
-         -DX11_LIB_SEARCH_PATH=/build/arm/usr/X11R7/lib -DX11_SM_LIB=/build/arm/usr/X11R7/lib/libSM.so
-         -DX11_ICE_LIB=/build/arm/usr/X11R7/lib/libICE.so -DX11_X11_LIB=/build/arm/usr/X11R7/lib/libX11.so
-         -DX11_Xext_LIB=/build/arm/usr/X11R7/lib/libXext.so -DX11_XTest_LIB=/build/arm/usr/X11R7/lib/libXtst.so
-         -DX11_Xft_LIB=/build/arm/usr/X11R7/lib/libXft.so -DX11_Xinerama_LIB=/build/arm/usr/X11R7/lib/libXinerama.so
-         -DX11_Xfixes_LIB=/build/arm/usr/X11R7/lib/libXfixes.so -DX11_Xcursor_LIB=/build/arm/usr/X11R7/lib/libXcursor.so";
-OPT_arm64="-DJPEG_LIBRARY=/build/arm64/usr/lib/libjpeg.so -DFONTCONFIG_LIB=/build/arm64/usr/lib/libfontconfig.so 
-         -DX11_LIB_SEARCH_PATH=/build/arm64/usr/X11R7/lib -DX11_SM_LIB=/build/arm64/usr/X11R7/lib/libSM.so
-         -DX11_ICE_LIB=/build/arm64/usr/X11R7/lib/libICE.so -DX11_X11_LIB=/build/arm64/usr/X11R7/lib/libX11.so
-         -DX11_Xext_LIB=/build/arm64/usr/X11R7/lib/libXext.so -DX11_XTest_LIB=/build/arm64/usr/X11R7/lib/libXtst.so
-         -DX11_Xft_LIB=/build/arm64/usr/X11R7/lib/libXft.so -DX11_Xinerama_LIB=/build/arm64/usr/X11R7/lib/libXinerama.so
-         -DX11_Xfixes_LIB=/build/arm64/usr/X11R7/lib/libXfixes.so -DX11_Xcursor_LIB=/build/arm64/usr/X11R7/lib/libXcursor.so";
-OPT_x86_32="-DJPEG_LIBRARY=/build/x86_32/usr/libx32/libjpeg.so -DFONTCONFIG_LIB=/build/x86_32/usr/libx32/libfontconfig.so 
-         -DX11_LIB_SEARCH_PATH=/build/x86_32/usr/X11R7/libx32 -DX11_SM_LIB=/build/x86_32/usr/X11R7/libx32/libSM.so
-         -DX11_ICE_LIB=/build/x86_32/usr/X11R7/libx32/libICE.so -DX11_X11_LIB=/build/x86_32/usr/X11R7/libx32/libX11.so
-         -DX11_Xext_LIB=/build/x86_32/usr/X11R7/libx32/libXext.so -DX11_XTest_LIB=/build/x86_32/usr/X11R7/libx32/libXtst.so
-         -DX11_Xft_LIB=/build/x86_32/usr/X11R7/libx32/libXft.so -DX11_Xinerama_LIB=/build/x86_32/usr/X11R7/libx32/libXinerama.so
-         -DX11_Xfixes_LIB=/build/x86_32/usr/X11R7/libx32/libXfixes.so -DX11_Xcursor_LIB=/build/x86_32/usr/X11R7/libx32/libXcursor.so";
-OPT_i686="-DJPEG_LIBRARY=/build/i686/usr/lib/libjpeg.so -DFONTCONFIG_LIB=/build/i686/usr/lib/libfontconfig.so 
-         -DX11_LIB_SEARCH_PATH=/build/i686/usr/X11R7/lib -DX11_SM_LIB=/build/i686/usr/X11R7/lib/libSM.so
-         -DX11_ICE_LIB=/build/i686/usr/X11R7/lib/libICE.so -DX11_X11_LIB=/build/i686/usr/X11R7/lib/libX11.so
-         -DX11_Xext_LIB=/build/i686/usr/X11R7/lib/libXext.so -DX11_XTest_LIB=/build/i686/usr/X11R7/lib/libXtst.so
-         -DX11_Xft_LIB=/build/i686/usr/X11R7/lib/libXft.so -DX11_Xinerama_LIB=/build/i686/usr/X11R7/lib/libXinerama.so
-         -DX11_Xfixes_LIB=/build/i686/usr/X11R7/lib/libXfixes.so -DX11_Xcursor_LIB=/build/i686/usr/X11R7/lib/libXcursor.so";
+OPT_arm="-DJPEG_LIBRARY=${ARCHROOT}/arm/usr/lib/libjpeg.so -DFONTCONFIG_LIB=${ARCHROOT}/arm/usr/lib/libfontconfig.so 
+         -DX11_LIB_SEARCH_PATH=${ARCHROOT}/arm/usr/X11R7/lib -DX11_SM_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libSM.so
+         -DX11_ICE_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libICE.so -DX11_X11_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libX11.so
+         -DX11_Xext_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libXext.so -DX11_XTest_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libXtst.so
+         -DX11_Xft_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libXft.so -DX11_Xinerama_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libXinerama.so
+         -DX11_Xfixes_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libXfixes.so -DX11_Xcursor_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libXcursor.so";
+OPT_arm64="-DJPEG_LIBRARY=${ARCHROOT}/arm64/usr/lib/libjpeg.so -DFONTCONFIG_LIB=${ARCHROOT}/arm64/usr/lib/libfontconfig.so 
+         -DX11_LIB_SEARCH_PATH=${ARCHROOT}/arm64/usr/X11R7/lib -DX11_SM_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libSM.so
+         -DX11_ICE_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libICE.so -DX11_X11_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libX11.so
+         -DX11_Xext_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libXext.so -DX11_XTest_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libXtst.so
+         -DX11_Xft_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libXft.so -DX11_Xinerama_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libXinerama.so
+         -DX11_Xfixes_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libXfixes.so -DX11_Xcursor_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libXcursor.so";
+OPT_x86_32="-DJPEG_LIBRARY=${ARCHROOT}/x86_32/usr/libx32/libjpeg.so -DFONTCONFIG_LIB=${ARCHROOT}/x86_32/usr/libx32/libfontconfig.so 
+         -DX11_LIB_SEARCH_PATH=${ARCHROOT}/x86_32/usr/X11R7/libx32 -DX11_SM_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libSM.so
+         -DX11_ICE_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libICE.so -DX11_X11_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libX11.so
+         -DX11_Xext_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libXext.so -DX11_XTest_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libXtst.so
+         -DX11_Xft_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libXft.so -DX11_Xinerama_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libXinerama.so
+         -DX11_Xfixes_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libXfixes.so -DX11_Xcursor_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libXcursor.so";
+OPT_i686="-DJPEG_LIBRARY=${ARCHROOT}/i686/usr/lib/libjpeg.so -DFONTCONFIG_LIB=${ARCHROOT}/i686/usr/lib/libfontconfig.so 
+         -DX11_LIB_SEARCH_PATH=${ARCHROOT}/i686/usr/X11R7/lib -DX11_SM_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libSM.so
+         -DX11_ICE_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libICE.so -DX11_X11_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libX11.so
+         -DX11_Xext_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXext.so -DX11_XTest_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXtst.so
+         -DX11_Xft_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXft.so -DX11_Xinerama_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXinerama.so
+         -DX11_Xfixes_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXfixes.so -DX11_Xcursor_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXcursor.so";
 ADDCFLAG="-fPIC";

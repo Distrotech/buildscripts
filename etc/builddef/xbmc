@@ -1,7 +1,7 @@
 VERSION="13"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-external-ffmpeg --enable-external-libraries --disable-rsxs PYTHON=/build/${barch}/usr/bin/python";
+CONFOPT="--enable-external-ffmpeg --enable-external-libraries --disable-rsxs PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
 ADDCFLAG="-I=/usr/include/python2.7";
 BUILDDIR="0";
 EXTRALIBS="-lpthread";

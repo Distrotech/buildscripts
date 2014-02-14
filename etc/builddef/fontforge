@@ -1,7 +1,7 @@
 VERSION="20120731-b"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-freetype-src=/usr/src/freetype";
+CONFOPT="--with-freetype-src=${SRCDIR}/freetype";
 BUILDDIR="0";
 OPT_arm="ac_cv_file__build_arm_usr_include_freetype2=yes ac_cv_file__usr_include_libxml2_libxml=yes";
 OPT_arm64="ac_cv_file__build_arm64_usr_include_freetype2=yes ac_cv_file__usr_include_libxml2_libxml=yes";

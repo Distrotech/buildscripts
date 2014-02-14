@@ -3,5 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-ADDPATH="/usr/src/groff/groff${VERSEP}${VERSION}/src/roff/groff/";
+ADDPATH="${SRCDIR}/groff/groff${VERSEP}${VERSION}/src/roff/groff/";
 DONTBUILD="cyg32 cyg64";

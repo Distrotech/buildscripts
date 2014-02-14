@@ -6,7 +6,7 @@ CONFOPT="-DQT_QMAKE_EXECUTABLE:PATH=/opt/qt-4/bin/qmake BUILD_TESTING:BOOL=OFF -
         -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libncurses.so";
 CONFOPTX="-DCMAKE_CROSSCOMPILING=TRUE";
 NOCCOPT="1";
-ADDPATH="/usr/src/cmake/cmake-2.8.9/build-${barch}/bin";
+ADDPATH="${SRCDIR}/cmake/cmake-2.8.9/build-${barch}/bin";
 QT_VER="4";
 MAKE_J="-j2";
 DONTBUILD="cyg32 cyg64";
