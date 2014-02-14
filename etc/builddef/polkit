@@ -1,4 +1,4 @@
-VERSION="0.111"
+VERSION="0.112"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-os-type=distrotech INTLTOOL_PERL=/usr/bin/perl --enable-libsystemd-login=no";
