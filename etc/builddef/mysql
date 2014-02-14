@@ -1,38 +1,13 @@
 VERSION="5.5.28"
 VERSEP="-";
-PREFIX="/usr";
-CONFOPT="-DINSTALL_MANDIR=/usr/share/man -DMYSQL_DATADIR=/var/spool/mysql";
-OPT_arm="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/arm/usr/lib/libncurses.so 
-         -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/arm/usr/lib/libncurses.so
-         -DCMAKE_CROSSCOMPILING:BOOL=ON";
-OPT_arm64="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/arm64/usr/lib/libncurses.so 
-         -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/arm64/usr/lib/libncurses.so
-         -DCMAKE_CROSSCOMPILING:BOOL=ON";
-OPT_powerpc="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/powerpc/usr/lib/libncurses.so 
-         -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/powerpc/usr/lib/libncurses.so
-         -DCMAKE_CROSSCOMPILING:BOOL=ON";
-OPT_powerpc64="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/powerpc64/usr/lib64/libncurses.so 
-         -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/powerpc64/usr/lib64/libncurses.so
-         -DCMAKE_CROSSCOMPILING:BOOL=ON";
-OPT_mips="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/mips/usr/lib/libncurses.so 
-         -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/mips/usr/lib/libncurses.so
-         -DCMAKE_CROSSCOMPILING:BOOL=ON";
-OPT_mips64="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/mips64/usr/lib64/libncurses.so 
-         -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/mips64/usr/lib64/libncurses.so
-         -DCMAKE_CROSSCOMPILING:BOOL=ON";
-OPT_i686="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/i686/usr/lib/libncurses.so 
-         -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/i686/usr/lib/libncurses.so
-         -DCMAKE_CROSSCOMPILING:BOOL=ON";
-OPT_x86_32="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/x86_32/usr/libx32/libncurses.so 
-         -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/x86_32/usr/libx32/libncurses.so
-         -DCMAKE_CROSSCOMPILING:BOOL=ON";
-OPT_x86_64="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/x86_64/usr/lib64/libncurses.so 
-         -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/x86_64/usr/lib64/libncurses.so
+PREFIX="/opt/mysql";
+CONFOPT="-DINSTALL_MANDIR=/opt/share/man -DMYSQL_DATADIR=/var/opt/mysql";
+CONFOPTX="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/lib/libncurses.so 
+         -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/lib/libncurses.so
          -DCMAKE_CROSSCOMPILING:BOOL=ON";
 FIXUPLIB="1";
 NODIET="1";
 GITBRANCH="master";
-MLIBDIRLN="libmysqlclient.so libmysqlclient_r.so";
 RPMPROVIDES="perl(lib::mtr_gcov.pl) perl(lib::mtr_gprof.pl) perl(lib::mtr_io.pl) perl(lib::mtr_misc.pl) perl(lib::mtr_process.pl) perl(lib::v1/mtr_cases.pl) \
  perl(lib::v1/mtr_gcov.pl) perl(lib::v1/mtr_gprof.pl) perl(lib::v1/mtr_im.pl) perl(lib::v1/mtr_io.pl) perl(lib::v1/mtr_match.pl) perl(lib::v1/mtr_misc.pl) \
  perl(lib::v1/mtr_process.pl) perl(lib::v1/mtr_report.pl) perl(lib::v1/mtr_stress.pl) perl(lib::v1/mtr_timer.pl) perl(lib::v1/mtr_unique.pl) perl(mtr_io.pl) \

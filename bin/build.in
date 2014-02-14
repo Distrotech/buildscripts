@@ -1265,7 +1265,7 @@ build_project() {
     ARCHPREFIX="/usr";
   fi;
 
-  CFLAGS="${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=${ARCHPREFIX}/lib/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=/opt/xfce/include -I=/opt/apr/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include -I=${ARCHPREFIX}/include/security";
+  CFLAGS="${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=${ARCHPREFIX}/lib/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=/opt/xfce/include -I=/opt/apr/include -I=/opt/mysql/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include -I=${ARCHPREFIX}/include/security";
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
@@ -1284,13 +1284,13 @@ build_project() {
   fi;
   export FORCE_UNSAFE_CONFIGURE=1
 
-  PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}${X11DIR}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/${X11DIR}/share/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/qt-5/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/opt/apr/${B_LIBDIRS}";
+  PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}${X11DIR}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/${X11DIR}/share/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/qt-5/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/opt/apr/${B_LIBDIRS}:${SYSROOT}${ARCHPREFIX}/opt/mysql/${B_LIBDIRS}";
   if [ "${ORIGARCH:0:3}" == "win" ] && [ "${USEMINGW}" == "0" ];then
     RLINK_PATH="${SYSROOT}/mingw/lib";
    else
-    RLINK_PATH="${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${X11DIR}/${B_LIBDIRS}:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/qt-5/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio:${SYSROOT}/opt/apr/${B_LIBDIRS}";
+    RLINK_PATH="${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${X11DIR}/${B_LIBDIRS}:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/qt-5/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio:${SYSROOT}/opt/apr/${B_LIBDIRS}:${SYSROOT}/opt/mysql/${B_LIBDIRS}";
   fi;
-  BASE_LIBPATH="-L=${ARCHPREFIX}/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/qt-5/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=${X11DIR}/${B_LIBDIRS} -L=/opt/apr/${B_LIBDIRS}"
+  BASE_LIBPATH="-L=${ARCHPREFIX}/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/qt-5/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=${X11DIR}/${B_LIBDIRS} -L=/opt/apr/${B_LIBDIRS} -L=/opt/mysql/${B_LIBDIRS}"
 
   if [ "${NEWARCH:0:3}" == "cyg" ];then
     BASE_LIBPATH="-L=${ARCHPREFIX}/${B_LIBDIRS}/w32api ${BASE_LIBPATH}";

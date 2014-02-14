@@ -2,7 +2,7 @@ VERSION="5.4.20"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-static=no --with-config-file-path=/etc/php --with-openssl=shared --enable-dbase=shared
-         --enable-ftp=shared --with-mysql=shared,${ARCHROOT}/${barch}/usr --with-zlib=shared --enable-safe-mode --with-bz2=shared 
+         --enable-ftp=shared --with-mysql=shared,${ARCHROOT}/${barch}/opt/mysql --with-zlib=shared --enable-safe-mode --with-bz2=shared 
          --with-mod_charset=shared --enable-calendar=shared --with-db5=shared --with-png-dir=shared,${ARCHROOT}/${barch}/usr 
          --with-gd=shared --with-jpeg-dir=shared,${ARCHROOT}/${barch}/usr --with-freetype-dir=shared,${ARCHROOT}/${barch}/usr --with-openssl=shared 
          --enable-oauth --localstatedir=/var --enable-bcmath=shared --with-ncurses=shared --with-gdbm=shared 
