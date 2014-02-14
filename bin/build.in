@@ -882,19 +882,21 @@ autoconf_cross_build() {
     export LD="${HOST}-ld --sysroot=${SYSROOT}/ --rpath-link=${RLINK_PATH}"
   fi;
 
+  USEMLIBDIR="1";
   if [ ! "${STDOPTS}" ];then
     if [ ${PREFIX:0:5} == "/opt/" ] && [ "${SYSLAYOUT}" != "1" ];then
       STDOPTSX="--prefix=${PREFIX} --sysconfdir=/etc/opt/${PREFIX:5}/${SYSCONFPRE} --mandir=${PREFIX}/share/man --localstatedir=/varopt/${PREFIX:5}/${STATEDIRPRE} --infodir=${PREFIX}/share/info"
+      USEMLIBDIR=0;
      elif [ ${PREFIX:0:4} == "/usr" ];then
-      STDOPTSX="--prefix=${PREFIX} --sysconfdir=/etc/${SYSCONFPRE} --mandir=${PREFIX}/share/man --localstatedir=/var${STATEDIRPRE} --infodir=${PREFIX}/share/info --includedir=/usr/include"
+      STDOPTSX="--prefix=${PREFIX} --sysconfdir=/etc/${SYSCONFPRE} --mandir=${PREFIX}/share/man --localstatedir=/var${STATEDIRPRE} --infodir=${PREFIX}/share/info";
      elif [ ${PREFIX} == "/" ];then
-      STDOPTSX="--prefix=${PREFIX} --sysconfdir=/etc/${SYSCONFPRE} --mandir=${PREFIX}/share/man --localstatedir=/var${STATEDIRPRE} --infodir=${PREFIX}/share/info --includedir=/usr/include"
+      STDOPTSX="--prefix=${PREFIX} --sysconfdir=/etc/${SYSCONFPRE} --mandir=${PREFIX}/share/man --localstatedir=/var${STATEDIRPRE} --infodir=${PREFIX}/share/info --includedir=/usr/include${INCDIRPRE}"
      else
       STDOPTSX="--prefix=${PREFIX} --sysconfdir=/etc/${SYSCONFPRE} --mandir=${PREFIX}/share/man --localstatedir=/var${STATEDIRPRE} --infodir=${PREFIX}/share/info"
     fi;
     if [ "${B_LIBDIRS}" ];then
       if [ ! "{NOMLIBDIR}" ] || [ "${NOMLIBDIR}" != "1" ];then
-        if [ "${MLIBDIR}" ];then
+        if [ "${MLIBDIR}" ] &&  [ "${USEMLIBDIR}" == "1" ];then
           STDOPTSX="${STDOPTSX} --libdir=${PREFIX}/${B_LIBDIRS}/${MLIBDIR}";
          else
           STDOPTSX="${STDOPTSX} --libdir=${PREFIX}/${B_LIBDIRS}";
@@ -1263,7 +1265,7 @@ build_project() {
     ARCHPREFIX="/usr";
   fi;
 
-  CFLAGS="${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=${ARCHPREFIX}/lib/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=/opt/xfce/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include -I=${ARCHPREFIX}/include/security";
+  CFLAGS="${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=${ARCHPREFIX}/lib/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=/opt/xfce/include -I=/opt/apr/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include -I=${ARCHPREFIX}/include/security";
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
@@ -1282,13 +1284,13 @@ build_project() {
   fi;
   export FORCE_UNSAFE_CONFIGURE=1
 
-  PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}${X11DIR}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/${X11DIR}/share/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/qt-5/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig";
+  PKG_CONFIG_PATH="${SYSROOT}/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/apache2/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/share/${B_LIBDIRS}/pkgconfig:${SYSROOT}${X11DIR}/${B_LIBDIRS}/pkgconfig:${SYSROOT}/${X11DIR}/share/pkgconfig:${SYSROOT}/opt/qt-4/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/qt-5/${B_LIBDIRS}/pkgconfig:${SYSROOT}/opt/xfce/${B_LIBDIRS}/pkgconfig:${SYSROOT}${ARCHPREFIX}/opt/apr/${B_LIBDIRS}";
   if [ "${ORIGARCH:0:3}" == "win" ] && [ "${USEMINGW}" == "0" ];then
     RLINK_PATH="${SYSROOT}/mingw/lib";
    else
-    RLINK_PATH="${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${X11DIR}/${B_LIBDIRS}:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/qt-5/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio";
+    RLINK_PATH="${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${X11DIR}/${B_LIBDIRS}:${SYSROOT}/opt/qt-4/${B_LIBDIRS}:${SYSROOT}/opt/qt-5/${B_LIBDIRS}:${SYSROOT}/opt/xfce/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}/pulseaudio:${SYSROOT}/opt/apr/${B_LIBDIRS}";
   fi;
-  BASE_LIBPATH="-L=${ARCHPREFIX}/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/qt-5/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=${X11DIR}/${B_LIBDIRS}"
+  BASE_LIBPATH="-L=${ARCHPREFIX}/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/opt/qt-4/${B_LIBDIRS} -L=/opt/qt-5/${B_LIBDIRS} -L=/opt/xfce/${B_LIBDIRS} -L=${X11DIR}/${B_LIBDIRS} -L=/opt/apr/${B_LIBDIRS}"
 
   if [ "${NEWARCH:0:3}" == "cyg" ];then
     BASE_LIBPATH="-L=${ARCHPREFIX}/${B_LIBDIRS}/w32api ${BASE_LIBPATH}";
@@ -1438,20 +1440,30 @@ build_project() {
   touch ${STATDIR}/${ORIGARCH}/done/${BUILDPROJECT}
   echo ${BUILDPROJECT} >> ${STATDIR}/${ORIGARCH}/built
 
+  if [ ! "${NOMLIBDIR}" ];then
+    NOMLIBDIR="0";
+  fi;
+
   if [ "${FIXUPLIB}" == "1" ];then
     for libdir in / /usr /usr/local ${PREFIX};do
       for libsuf in lib lib64 libx32 libx3264;do
         if [ "${libsuf}" == "${C_LIBDIRS}" ];then
           continue;
         fi;
-        if [ "${NOMLIBDIR}" ] && [ "${NOMLIBDIR}" == "1" ] && [ "${libsuf}" == "${B_LIBDIRS}" ];then
+        if [ "${NOMLIBDIR}" == "1" ] && [ "${libsuf}" == "${B_LIBDIRS}" ];then
           continue;
         fi;
         if [ -d ${DIST_ROOT}${libdir}/${libsuf} ];then
-          if [ ! -d ${DIST_ROOT}${libdir}/${C_LIBDIRS} ];then
+          if [ ! -d ${DIST_ROOT}${libdir}/${C_LIBDIRS} ] && [ "${NOMLIBDIR}" != "1" ];then
             mkdir -p ${DIST_ROOT}${libdir}/${C_LIBDIRS}
+           elif [ ! -d ${DIST_ROOT}${libdir}/${B_LIBDIRS} ];then
+            mkdir -p ${DIST_ROOT}${libdir}/${B_LIBDIRS}
           fi;
-          mv ${DIST_ROOT}${libdir}/${libsuf}/* ${DIST_ROOT}${libdir}/${C_LIBDIRS}/
+          if [ "${NOMLIBDIR}" != "1" ];then
+            mv ${DIST_ROOT}${libdir}/${libsuf}/* ${DIST_ROOT}${libdir}/${C_LIBDIRS}/
+           else
+            mv ${DIST_ROOT}${libdir}/${libsuf}/* ${DIST_ROOT}${libdir}/${B_LIBDIRS}/
+          fi;
           if [ "${libsuf}" != "${B_LIBDIRS}" ];then
             rm -rf ${DIST_ROOT}${libdir}/${libsuf}
           fi;
@@ -1955,7 +1967,7 @@ build_gcc_bootstrap() {
     GCCBOOTDEST=${PKGDESTDIR}/${TARCH}/${TARGPKG}
     PROGPRE="";
    else
-    GCCBOOTDES=${PKGDESTDIR}/${TARCH}/${1}/${TARGPKG}
+    GCCBOOTDEST=${PKGDESTDIR}/${TARCH}/${1}/${TARGPKG}
     PROGPRE="--program-prefix=${2}-";
   fi;
   USELIBDIR=${TLIBDIR}
