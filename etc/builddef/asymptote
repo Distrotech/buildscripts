@@ -1,0 +1,10 @@
+VERSION="20130529";
+VERSEP="-";
+PREFIX="/usr";
+STDOPTS="--prefix=/opt/texlive --datarootdir=/opt/texlive/texmf-dist --infodir=/opt/texlive/texmf-dist/doc/info --mandir=/opt/texlive/texmf-dist/doc/man";
+CONFOPT="--enable-texlive-build --enable-gc=system";
+ALIAS="texlive";
+CFGPTH="utils/asymptote";
+CFGBIN="asymptote/";
+EXTRALIBS="-ltirpc ";
+BUILDDIR="0";
