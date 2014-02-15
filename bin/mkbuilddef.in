@@ -30,4 +30,4 @@ if [ -d /usr/src/${PROJ}/${PROJ}${VERSEP}${VERSION} ] &&\
    [ ! -e /usr/src/${PROJ}/${PROJ}${VERSEP}${VERSION}/configure ];then
   echo "BUILDDIR=\"0\";";
 fi;
-) > ${DEFDIR)/${PROJ}
+) > ${DEFDIR}/${PROJ}
