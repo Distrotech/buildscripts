@@ -1,7 +1,7 @@
 VERSION="1.11.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-system-verto --enable-shared";
+CONFOPT="--with-system-verto --disable-shared --enable-static";
 CFGPTH="src";
 CFGBIN="src/";
 OPT_arm="krb5_cv_attr_constructor_destructor=yes,yes ac_cv_func_regcomp=yes ac_cv_printf_positional=yes";
@@ -22,3 +22,5 @@ STATICMOPT="LDFLAGS=-static";
 STATICINSTLIBS="1";
 DONTBUILD="cyg32 cyg64";
 RPMINTDEPS="0";
+ALIAS="krb5";
+GITREPO=${ALIAS};
