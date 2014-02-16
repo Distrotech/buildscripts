@@ -52,11 +52,6 @@ unset JAVA_HOME ANT_HOME M2_HOME QTDIR FOP_HOME FORREST_HOME
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/apache2/bin:/usr/X11R7/bin:/opt/xfce/bin
 MANPATH=/usr/share/man
 
-if [ -d /opt/texlive ];then
-  PATH=${PATH}:/opt/texlive/bin/x86_64-linux
-  MANPATH=${MANPATH}:/opt/texlive/texmf-dist/doc/man
-fi;
-
 if [ "${JAVA_VER}" ] && [ -d /usr/${HOST_LIBDIR}/jvm/jdk-${JAVA_VER} ];then
   export JAVA_HOME=/usr/${HOST_LIBDIR}/jvm/jdk-${JAVA_VER}
   PATH=${PATH}:${JAVA_HOME}/bin
@@ -77,6 +72,21 @@ if [ "${M2_VER}" ] && [ -d /usr/${HOST_LIBDIR}/jvm/apache-maven-${M2_VER} ];then
   PATH=${PATH}:${M2_HOME}/bin
 fi;
 
+if [ -d /opt/texlive ];then
+  export TEX=tex
+  PATH=${PATH}:/opt/texlive/bin/custom
+  if [ -d /opt/texlive/bin/x86_64-linux ];then
+    PATH=${PATH}:/opt/texlive/bin/x86_64-linux
+  fi;
+  MANPATH=${MANPATH}:/opt/texlive/texmf-dist/doc/man
+fi;
+
+for pkg in /opt/*;do
+  if [ "${pkg:0:3}" != "qt-" ] && [ -d ${pkg}/bin ];then
+    PATH=${PATH}:${pkg}/bin
+  fi;
+done
+
 if [ "${QT_VER}" ] && [ -d /opt/qt-${QT_VER} ];then
   export QTDIR=/opt/qt-${QT_VER}
   PATH=${PATH}:${QTDIR}/bin
@@ -85,14 +95,6 @@ fi;
 if [ -d /opt/fop ];then
   export FOP_HOME=/opt/fop
   PATH=${PATH}:${FOP_HOME}
-fi;
-
-if [ -d /opt/dtsbuild/bin ];then
-  PATH=${PATH}:/opt/dtsbuild/bin
-fi;
-
-if [ -d /opt/apache2/bin ];then
-  PATH=${PATH}:/opt/apache2/bin
 fi;
 
 export LD_LIBRARY_PATH=${LIB_PATH}
