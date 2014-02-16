@@ -14,4 +14,3 @@ SYSROOTFIXUP="0";
 DONTBUILD="arm arm64 mips mips64 powerpc powerpc64";
 AMVER="1.14";
 EXTRALIBS="-lpthread -lrt -ldl";
-GITBRANCH="master";
