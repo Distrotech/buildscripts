@@ -6,3 +6,4 @@ STATICMOPT="\"LDFLAGS=-static -L=/usr/${C_LIBDIRS} -L=/usr/${NLIBDIR}/${NMLIBDIR
 STATICBSTRAP="1";
 DONTBUILD="cyg32 cyg64";
 BUILDDIR="0";
+MAKEITARGETS="TEXMF=/opt/texlive/texmf-dist install-tex";
