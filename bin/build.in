@@ -39,13 +39,17 @@ ANT_VER="1.9.2";
 M2_VER="3.1.1";
 
 export ORIG_PATH=${PATH}
+export TEX=tex
 
 #Cleanup the enviroment
 unset JAVA_HOME ANT_HOME M2_HOME QTDIR
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${X11DIR}/bin:/opt/xfce/bin
 
 if [ -d /opt/texlive ];then
-  PATH=${PATH}:/opt/texlive/bin/${NARCH}-linux
+  PATH=${PATH}:/opt/texlive/bin/custom
+  if [ -d /opt/texlive/bin/${NARCH}-linux ];then
+    PATH=${PATH}:/opt/texlive/bin/${NARCH}-linux
+  fi;
 fi;
 
 XML_CATALOG_FILES='/etc/xml/catalog.xml /usr/share/docbook2X/dtd/catalog.xml /usr/share/docbook2X/xslt/catalog.xml'
