@@ -2,7 +2,7 @@ VERSION="20130529";
 VERSEP="-";
 PREFIX="/opt/texlive";
 STDOPTS="--prefix=${PREFIX} --datarootdir=${PREFIX}/texmf-dist --infodir=${PREFIX}/texmf-dist/doc/info --mandir=${PREFIX}/texmf-dist/doc/man
-         --bindir=${PREFIX}/bin/${barch}-linux";
+         --bindir=${PREFIX}/bin/custom";
 CONFOPT="--enable-texlive-build --enable-gc=system";
 ALIAS="texlive";
 CFGPTH="utils/asymptote";
