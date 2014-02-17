@@ -371,6 +371,11 @@ check_create_arch() {
   #Create symlink to / for  sysroot of native arch
   if [ "${1}" == "${NARCH}" ] && [ ! -e ${ARCHROOT}/${1} ];then
     ln -sr / ${ARCHROOT}/${1}
+   elif [ ! -d ${ARCHROOT}/${1} ];then
+    mkdir -p ${ARCHROOT}/${1}
+    if [ -d ${ARCHROOT}/${1} ] && [-d ${HDIR} ];then
+      rsync -a ${HDIR}/ ${ARCHROOT}/${1}/
+    fi;
   fi;
 
   #Core utils barfs when bootstraping
@@ -986,28 +991,28 @@ autoconf_cross_build() {
     eval ${SRCDIR}/${PSOURCEDIR}/.build-info/make-config ${NARCH} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT} ${HOST} ${2}
    else
     if [ "${ADDCC}" ] && [ "${ADDCC}" == "0" ];then
-      /usr/bin/make ${MAKE_J} HOSTCC="${BUILD}-gcc" HOSTLD="${BUILD}-gcc" \
-        HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} && \
-        /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install
+      eval /usr/bin/make ${MAKE_J} HOSTCC=\"${BUILD}-gcc\" HOSTLD=\"${BUILD}-gcc\" \
+        HOSTCC_LDFLAGS=\"-L=/${NLIBDIR} -L=/usr/${NLIBDIR}\" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} && \
+        eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install
       RES=$?
       if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
-        /usr/bin/make HOSTCC="${BUILD}-gcc" HOSTLD="${BUILD}-gcc" HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" \
+        eval /usr/bin/make HOSTCC=\"${BUILD}-gcc\" HOSTLD=\"${BUILD}-gcc\" HOSTCC_LDFLAGS=\"-L=/${NLIBDIR} -L=/usr/${NLIBDIR}\" \
           ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || make ${MAKE_J} || return 1
-        /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install 
+        eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install 
        elif [ ${RES} != 0 ];then
         return 1
       fi;
      else
-      /usr/bin/make ${MAKE_J} LD="${LD}" CC="${CC}" CXX="${CXX}" HOSTCC="${BUILD}-gcc" \
-        HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" ${MAKEOPTS} ${ARCHMOPT} \
+      eval /usr/bin/make ${MAKE_J} LD=\"${LD}\" CC=\"${CC}\" CXX=\"${CXX}\" HOSTCC=\"${BUILD}-gcc\" \
+        HOSTCC_LDFLAGS=\"-L=/${NLIBDIR} -L=/usr/${NLIBDIR}\" ${MAKEOPTS} ${ARCHMOPT} \
         ${MAKEALL} ${MAKETARGETS} && \
-      /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install
+      eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install
       RES=$?
       if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
-        /usr/bin/make LD="${LD}" CC="${CC}" CXX="${CXX}" HOSTCC="${BUILD}-gcc" \
-          HOSTCC_LDFLAGS="-L=/${NLIBDIR} -L=/usr/${NLIBDIR}" ${MAKEOPTS} ${ARCHMOPT} \
+        eval /usr/bin/make LD=\"${LD}\" CC=\"${CC}\" CXX=\"${CXX}\" HOSTCC=\"${BUILD}-gcc\" \
+          HOSTCC_LDFLAGS=\"-L=/${NLIBDIR} -L=/usr/${NLIBDIR}\" ${MAKEOPTS} ${ARCHMOPT} \
           ${MAKEALL} ${MAKETARGETS} || make ${MAKE_J} || return 1
-        /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install
+        eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install
        elif [ ${RES} != 0 ];then
         return 1
       fi;
@@ -2291,16 +2296,6 @@ build_static_tool() {
     cp ${ARCHROOT}/${1}/usr/bin/libtool ./
   fi;
 
-  #Texinfo hack Add po to the list too
-  if [ "${4}" == "texinfo" ];then
-    sed -i -e "s/\(all:\).*/\1/" doc/Makefile
-    for gnulib in gnulib/lib/ tools/gnulib/lib/ po;do
-      if [ -d ${gnulib} ];then
-        make ${MAKE_J} -C ${gnulib} || make -C ${gnulib} || return 1
-      fi;
-    done;
-  fi;
-
   if [ ! "${SYSROOTFIXUP}" ];then
     SYSROOTFIXUP="1";
   fi;
@@ -2362,7 +2357,7 @@ static_toolbuild() {
 
   export C_LIBDIRS=${TLIBDIR}
 
-  STATICPKG="bash coreutils nano less texinfo pkg-config util-linux git dialog";
+  STATICPKG="bash coreutils nano less pkg-config util-linux git dialog";
 #  if [ "${BOOTSTRAP}" == "0" ];then
 #    STATICPKG="${STATICPKG} bison flex sed gawk make grep gzip tar xz diffutils libtool gperf m4 cpio";
 #  fi;

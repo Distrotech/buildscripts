@@ -2,8 +2,15 @@ VERSION="5.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-STATICMOPT="\"LDFLAGS=-static -L=/usr/${C_LIBDIRS} -L=/usr/${NLIBDIR}/${NMLIBDIR}\"";
+if [ "${BUILDPROJECT}" == "texinfo-static" ];then
+  MAKEOPTS="\"LDFLAGS=-static -L=/usr/${C_LIBDIRS} -L=/usr/${NLIBDIR}/${NMLIBDIR}\"";
+  CHROOTBUILD="1";
+  ALIAS="texinfo";
+ else
+  RPMOBSOLETE="texinfo-static";
+fi;
 STATICBSTRAP="1";
 DONTBUILD="cyg32 cyg64";
 BUILDDIR="0";
 MAKEITARGETS="TEXMF=/opt/texlive/texmf-dist install-tex";
+AMVER="1.14";
