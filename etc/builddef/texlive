@@ -10,7 +10,7 @@ STDOPTS="--prefix=${PREFIX} --includedir=/usr/include --libdir=/usr/${C_LIBDIRS}
   --bindir=${PREFIX}/bin/custom --x-libraries=${ARCHROOT}/${barch}/${X11DIR}/includ --x-libraries=${ARCHROOT}/${barch}/${X11DIR}/${B_LIBDIRS}";
 case ${BUILDPROJECT} in
   texlive-boot)
-    if [ "${BUILD}" == "${HOST}" ] || [ -x ${ARCHROOT}/${barch}/usr/bin/clisp ];then
+    if [ "${BUILD}" == "${HOST}" ] && [ -x ${ARCHROOT}/${barch}/usr/bin/clisp ];then
       DONTBUILD="${barch}";
     fi;;
   texlive)
