@@ -6,6 +6,7 @@ if [ "${BUILDPROJECT}" == "texinfo-static" ];then
   MAKEOPTS="\"LDFLAGS=-static -L=/usr/${C_LIBDIRS} -L=/usr/${NLIBDIR}/${NMLIBDIR}\"";
   CHROOTBUILD="1";
   ALIAS="texinfo";
+  NOINST="1";
  else
   RPMOBSOLETE="texinfo-static";
 fi;

@@ -1560,22 +1560,24 @@ build_project() {
   #Build Distributibils
   tar_package ${DIST_ROOT} ${PKGDISTDIR}/${ORIGARCH} ${PKG} > /dev/null 2>&1
 
-  if [ "${BOOTSTRAP}" == "0" ] && [ "${ORIGARCH}" == "${NARCH}" ];then
-    if [ -d ${DIST_ROOT} ];then
-      ${RSYNC} -avP ${DIST_ROOT}/ /
+  if [ ! "${NOINST}" ];then
+    if [ "${BOOTSTRAP}" == "0" ] && [ "${ORIGARCH}" == "${NARCH}" ];then
+      if [ -d ${DIST_ROOT} ];then
+        ${RSYNC} -avP ${DIST_ROOT}/ /
+      fi;
+     elif [ "${BOOTSTRAP}" == "1" ] && [ "${GCCDEPENDS}" ];then
+      rsync -avP ${DIST_ROOT}/ ${BASEROOT}/${ORIGARCH}/
     fi;
-   elif [ "${BOOTSTRAP}" == "1" ] && [ "${GCCDEPENDS}" ];then
-    rsync -avP ${DIST_ROOT}/ ${BASEROOT}/${ORIGARCH}/
-  fi;
 
-  if [ -d ${ARCHROOT}/${ORIGARCH} ] && [ ! "${COREBUILD}" ];then
-    ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${ORIGARCH}/
-   elif [ -d ${ARCHROOT}/${ORIGARCH} ] && [ "${ORIGARCH:0:3}" == "win" ];then
-    ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${ORIGARCH}/
-   elif [ -d ${ARCHROOT}/${ORIGARCH} ] && [ "${ORIGARCH:0:3}" == "cyg" ];then
-    ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${ORIGARCH}/
-   elif [ -d ${ARCHROOT}/${ORIGARCH} ] && [ "${COREBUILD}" ];then
-    ${RSYNC} -avP --exclude=bin ${DIST_ROOT}/ ${ARCHROOT}/${ORIGARCH}/
+    if [ -d ${ARCHROOT}/${ORIGARCH} ] && [ ! "${COREBUILD}" ];then
+      ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${ORIGARCH}/
+     elif [ -d ${ARCHROOT}/${ORIGARCH} ] && [ "${ORIGARCH:0:3}" == "win" ];then
+      ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${ORIGARCH}/
+     elif [ -d ${ARCHROOT}/${ORIGARCH} ] && [ "${ORIGARCH:0:3}" == "cyg" ];then
+      ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${ORIGARCH}/
+     elif [ -d ${ARCHROOT}/${ORIGARCH} ] && [ "${COREBUILD}" ];then
+      ${RSYNC} -avP --exclude=bin ${DIST_ROOT}/ ${ARCHROOT}/${ORIGARCH}/
+    fi;
   fi;
 
   if [ ! "${NODIET}" ];then
