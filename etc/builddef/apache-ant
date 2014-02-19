@@ -1,4 +1,4 @@
-VERSION="${ANT_VER}"
+VERSION="1.9.2";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
