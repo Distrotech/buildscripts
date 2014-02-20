@@ -2428,7 +2428,8 @@ setup_hybrid_boot() {
   ERROR=0;
 
   for pkg in glibc mpc mpfr gmp cloog isl readline ncurses zlib flex ncursesw glib popt \
-             gcc pcre selinux xz libsigsegv guile acl gc attr libffi libunistring libtool;do
+             gcc pcre selinux xz libsigsegv guile acl gc attr libffi libunistring libtool \
+             gettext libcroco libxml2;do
    (get_pkg_name ${pkg} ${1}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    if [ ! -d ${PDIR} ];then
@@ -2445,7 +2446,7 @@ setup_hybrid_boot() {
    fi;) || ERROR="${ERROR}${pkg} Libs Missing\n"
   done
 
-  for pkg in javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep;do
+  for pkg in javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep gettext;do
    (get_pkg_name ${pkg} ${1}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    if [ ! -d ${PDIR} ];then
