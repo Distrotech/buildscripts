@@ -10,7 +10,7 @@ FILT=FILTER_${1}
 FILTER=${!FILT}
 
 OPT_mips="--disable-loongson-mmi";
-OPT_arm="--disable-arm-iwmmxt --disable-arm-iwmmxt2";
+OPT_arm="--disable-arm-iwmmxt --disable-arm-iwmmxt2 --disable-int10-module";
 # --disable-arm-simd --disable-arm-neon";
 
 AOPT=OPT_${1}
@@ -84,7 +84,7 @@ if [ ! -d ${SYSROOT}/${PREFIX}/${B_LIBDIRS} ];then
   fi;
 fi;
 
-(for pkg in `./util/modular/build.sh -L |grep -vE "(^driver/xf86-video-newport)|(^driver/xf86-video-sis)|(^mesa)${FILTER}"`;do
+(for pkg in `./util/modular/build.sh -L |grep -vE "(^driver/xf86-video-newport)|(^driver/xf86-video-sis)|(^mesa)|(^app/xfs)|(^driver/xf86-video-vmware)${FILTER}"`;do
   echo ${pkg};
 done) > ${1}.tobuild
 
