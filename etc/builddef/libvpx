@@ -1,5 +1,4 @@
 VERSION="20140204";
-VERSION_arm="20140119";
 VERSION_x86_32="1.2.0";
 VERSEP="-";
 if [ "${barch:0:3}" == "win" ];then
