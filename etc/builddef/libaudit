@@ -5,3 +5,4 @@ CONFOPT="--without-python";
 AMVER="1.14";
 MAKE_J="-j2";
 DONTBUILD="cyg32 cyg64";
+OPT_arm64="--with-aarch64";
