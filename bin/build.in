@@ -163,7 +163,6 @@ arch_config() {
   case ${1} in
     win*)SETLIBDIR="lib";;
     x86_32)SETLIBDIR="libx32";;
-    arm64)SETLIBDIR="lib";;
     *64)SETLIBDIR="lib64";;
     *)SETLIBDIR="lib";;
   esac;
@@ -208,7 +207,8 @@ arch_config() {
   esac;
 
   case ${1} in
-    arm|arm64)AQCPU=arm;;
+    arm)AQCPU=arm;;
+    arm64)AQCPU=aarch64;;
     mips|mips64)AQCPU=mips;;
     powerpc)AQCPU=ppc;;
     powerpc64)AQCPU=ppc64;;
@@ -2189,12 +2189,12 @@ build_qemu_static() {
     C_LIBDIRS=${NLIBDIR}
   fi;
   run_configure ${C_LIBDIRS} .. --static --disable-system --disable-user --enable-linux-user --disable-werror \
-                --target-list=arm-linux-user,mips-linux-user,mips64-linux-user,ppc-linux-user,ppc64-linux-user \
-                --cc=${BUILD}-gcc || return 1
+                --target-list=arm-linux-user,mips-linux-user,mips64-linux-user,ppc-linux-user,ppc64-linux-user,aarch64-linux-user \
+                --cc=${BUILD}-gcc --extra-ldflags="-L=/usr/${C_LIBDIRS}" || return 1
   make ${MAKE_J} || make || return 1
 
   mkdir -p ${QEMU_DIR}/usr/bin
-  for arch in arm mips mips64 ppc ppc64;do
+  for arch in arm mips mips64 ppc ppc64 aarch64;do
     if [ "${arch}" != "${NARCH}" ];then
       uemu=${arch}-linux-user/qemu-${arch};
       cp ${uemu} ${QEMU_DIR}/usr/bin/qemu-${arch}-static
