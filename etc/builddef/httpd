@@ -21,3 +21,4 @@ MAKEOPTS="LIBTOOL=${ARCHROOT}/${barch}/opt/apr/build-1/libtool";
 GITBRANCH="master";
 DISTCONF="httpd/httpd.conf";
 SYSLAYOUT="1";
+CHROOTBUILD="1";
