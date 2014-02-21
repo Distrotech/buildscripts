@@ -6,4 +6,4 @@ BUILDDIR="0";
 ADDCFLAG="-fPIC";
 FIXUPLIB="1";
 MAKEOPTS="all-shared";
-DONTBUILD="cyg32 cyg64";
+DONTBUILD="cyg32 cyg64 arm64";
