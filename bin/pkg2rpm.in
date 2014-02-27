@@ -77,6 +77,7 @@ tar -tf ${6} |grep -vE "(/$|^usr\/share\/info\/dir$|^share\/info\/dir$|^var\/lib
 }
 
 pkg2rpm() {
+  BUILDPROJECT=${2}
   . ${DEFDIR}/${2}
 
   DONTBUILDPAT=${DONTBUILD// /|}
