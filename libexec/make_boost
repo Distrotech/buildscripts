@@ -3,7 +3,8 @@
 unset CFLAGS CXXFLAGS CC
 
 ARCHT="x86_64-linux-gnu x86_64-linux-gnux32 i686-linux-gnu \
-       powerpc-linux-gnu powerpc64-linux-gnu arm-linux-gnueabi";
+       powerpc-linux-gnu powerpc64-linux-gnu arm-linux-gnueabi \
+       aarch64-linux-gnu";
 
 for acpp in ${ARCHT};do
   touch /usr/bin/${acpp}-g++
