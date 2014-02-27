@@ -1,6 +1,6 @@
-VERSION="7.2d"
+VERSION="7.4.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-cplusplus";
 BUILDDIR="0";
-DONTBUILD="arm64";
+ALIAS="bdwgc";

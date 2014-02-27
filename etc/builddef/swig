@@ -2,6 +2,5 @@ VERSION="2.0.9"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-DONTBUILD="arm64";
 MAKEITARGETS="install-ccache";
 BUILDDIR="0";

@@ -1,17 +1,23 @@
 VERSION="2.24"
 VERSEP="-";
 PREFIX="/";
-CONFOPT="--enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 
-         --enable-vipw --enable-newgrp --enable-chfn-chsh --enable-write --enable-socket-activation
-         --with-selinux --without-udev --with-slang --enable-static-programs=mount";
+if [ "${BUILDPROJECT}" == "util-linux" ];then
+  CONFOPT="--enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 
+           --enable-vipw --enable-newgrp --enable-chfn-chsh --enable-write --enable-socket-activation
+           --with-selinux --without-udev --with-slang --enable-static-programs=mount";
+  RPMOBSOLETE="util-linux-static";
+ else
+  CONFOPT="--disable-shared --enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 
+           --enable-vipw --enable-newgrp --enable-chfn-chsh --enable-write --enable-socket-activation --disable-chfn-chsh
+           --without-selinux --without-udev --without-slang --disable-login --disable-su --disable-runuser --without-ncurses
+           --without-slang LDFLAGS=\"-static -L=/usr/${C_LIBDIRS}\"";
+  MAKEOPTS="LDFLAGS=\"-all-static -L=/usr/${C_LIBDIRS}\"";
+  NOINST="1";
+  ALIAS="util-linux";
+fi;
 ADDCFLAG="-std=gnu99 -fPIC";
 NOCCOPT="1";
 ADDWITHSYSROOT="1";
-STATICOPT="--disable-shared --enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 
-         --enable-vipw --enable-newgrp --enable-chfn-chsh --enable-write --enable-socket-activation --disable-chfn-chsh
-         --with-selinux --without-udev --without-slang --disable-login --disable-su --disable-runuser --without-ncurses
-         --without-slang LDFLAGS=\"-static -L=/usr/${C_LIBDIRS}\"";
-STATICMOPT="LDFLAGS=\"-all-static -L=/usr/${C_LIBDIRS}\"";
 AMVER="1.12";
 STATICBSTRAP="1";
 DONTBUILD="cyg32 cyg64";

@@ -11,3 +11,4 @@ OPT_arm64="--enable-introspection=no";
 CLEARFLAGS="1";
 EXTRALIBS="-lpthread -lrt";
 CHROOTBUILD="1";
+DONTBUILD="arm64";

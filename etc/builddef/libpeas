@@ -3,3 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-compile-warnings=no";
 CHROOTBUILD="1";
+if [ "${HASGIR}" == "no" ];then
+  DONTBUILD="${barch}";
+fi;

@@ -7,7 +7,6 @@ ADDCC="0";
 NOCCOPT="1";
 AMVER="1.13";
 CLEARFLAGS="1";
-OPT_arm64="--enable-introspection=no";
 OPT_cyg32="--enable-introspection=no";
 OPT_win32="--enable-introspection=no --enable-always-build-tests=no";
 OPT_win64="--enable-introspection=no --enable-always-build-tests=no";

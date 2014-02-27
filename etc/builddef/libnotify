@@ -1,7 +1,7 @@
 VERSION="0.7.6"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--enable-introspection=${HASGIR}";
 NOSVNROOT="1";
 BUILDDIR="0";
 CHROOTBUILD="1";

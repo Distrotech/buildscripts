@@ -1,7 +1,8 @@
 VERSION="1.24.4"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-ffi-include=${ARCHROOT}/${barch}/usr/${B_LIBDIRS}/libffi-3.0.13/include";
+CONFOPT="--with-ffi-include=${ARCHROOT}/${barch}/usr/${B_LIBDIRS}/libffi-3.0.13/include --enable-libffi";
 BUILDDIR="0";
 FIXUPLIB="1";
 CHROOTBUILD="1";
+DONTBUILD="arm64";

@@ -4,14 +4,14 @@ NOCCOPT="1";
 BUILDDIR="0";
 if [ "${barch:0:3}" == "win" ];then
   PREFIX="/mingw";
-  CONFOPT="--enable-shared --enable-static --enable-gpl --enable-libgsm --enable-libvpx --enable-libx264
+  CONFOPT="--enable-shared --enable-static --enable-gpl --enable-libgsm --enable-libx264 --enable-libvpx
            --enable-libvorbis --enable-libtheora --enable-libspeex --enable-openssl --enable-gnutls --enable-nonfree";
  else
   PREFIX="/usr";
   CONFOPT="--enable-nonfree --enable-shared --enable-vdpau --enable-bzlib --enable-libtheora
            --enable-gpl --enable-libfreetype --enable-libmp3lame --enable-libdc1394 --enable-libcelt
            --enable-libschroedinger --enable-libspeex --enable-libaacplus --enable-libfaac
-           --enable-libvorbis --enable-zlib --enable-libvpx --enable-vaapi --enable-gpl --enable-version3
+           --enable-libvorbis --enable-zlib --enable-vaapi --enable-gpl --enable-version3
            --enable-libxvid --enable-libopencore-amrnb --enable-libopencore-amrwb 
            --enable-libvo-aacenc --enable-libvo-amrwbenc --enable-libnut --enable-libx264 --enable-libgsm 
            --enable-version3 --enable-librtmp --enable-libopenjpeg
@@ -27,31 +27,31 @@ OPT_win64="--enable-cross-compile --sysroot=${ARCHROOT}/${barch} --arch=x86_64 -
           --host-cc=/usr/bin/gcc";
 OPT_i686="--enable-cross-compile --sysroot=${ARCHROOT}/i686 --arch=i686 --target-os=linux --cross-prefix=i686-linux-gnu- 
           --cpu=i686 --extra-cflags=-m32 --extra-ldflags=-m32 --host-cc=/usr/bin/gcc
-          --enable-libopencv --enable-frei0r --enable-libv4l2";
+          --enable-libopencv --enable-frei0r --enable-libv4l2 --enable-libvpx";
 OPT_arm="--enable-cross-compile --sysroot=${ARCHROOT}/arm --arch=arm --target-os=linux --cross-prefix=arm-linux-gnueabi-
          --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/arm/usr/lib:${ARCHROOT}/arm/lib:${ARCHROOT}/arm/${X11DIR}/lib
-         --host-cc=/usr/bin/gcc --enable-libv4l2 --disable-asm";
+         --host-cc=/usr/bin/gcc --enable-libv4l2 --disable-asm --enable-libvpx";
 OPT_x86_32="--enable-cross-compile --sysroot=${ARCHROOT}/x86_32 --arch=x86_64 --target-os=linux 
           --cross-prefix=x86_64-linux-gnux32- --extra-cflags=-mx32 --extra-ldflags=-mx32
-          --host-cc=/usr/bin/gcc --disable-asm
+          --host-cc=/usr/bin/gcc --disable-asm --enable-libvpx
           --enable-libopencv --enable-frei0r --enable-libv4l2";
-OPT_x86_64="--sysroot=${ARCHROOT}/x86_64 --enable-libopencv --enable-frei0r --enable-libv4l2";
+OPT_x86_64="--sysroot=${ARCHROOT}/x86_64 --enable-libopencv --enable-frei0r --enable-libv4l2 --enable-libvpx";
 OPT_mips="--enable-cross-compile --sysroot=${ARCHROOT}/mips --arch=mips --target-os=linux --cross-prefix=mips-linux-gnu-
          --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}mips/usr/lib:${ARCHROOT}/mips/lib:${ARCHROOT}/mips/${X11DIR}/lib
-         --host-cc=/usr/bin/gcc --enable-libv4l2";
+         --host-cc=/usr/bin/gcc --enable-libv4l2 --enable-libvpx";
 OPT_mips64="--enable-cross-compile --sysroot=${ARCHROOT}/mips64 --arch=mips64 --target-os=linux --cross-prefix=mips64-linux-gnuabi64-
          --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/mips64/usr/lib64:${ARCHROOT}/mips64/lib64:${ARCHROOT}/mips64/${X11DIR}/lib644
          --host-cc=/usr/bin/gcc --disable-mips32r2 --disable-mipsdspr1 --disable-mipsdspr2 --extra-cxxflags=-fpermissive
-         --enable-libv4l2";
+         --enable-libv4l2 --enable-libvpx";
 OPT_powerpc="--enable-cross-compile --sysroot=${ARCHROOT}/powerpc --arch=powerpc --target-os=linux --cross-prefix=powerpc-linux-gnu-
          --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/powerpc/usr/lib:${ARCHROOT}/powerpc/lib:${ARCHROOT}/powerpc/${X11DIR}/lib
-         --host-cc=/usr/bin/gcc --enable-libv4l2";
+         --host-cc=/usr/bin/gcc --enable-libv4l2 --enable-libvpx";
 OPT_powerpc64="--enable-cross-compile --sysroot=${ARCHROOT}/powerpc64 --arch=powerpc --target-os=linux --cross-prefix=powerpc64-linux-gnu-
          --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/powerpc64/usr/lib64:${ARCHROOT}/powerpc64/lib64:${ARCHROOT}/powerpc64/${X11DIR}/lib64
-         --host-cc=/usr/bin/gcc --enable-libv4l2";
+         --host-cc=/usr/bin/gcc --enable-libv4l2 --enable-libvpx";
 OPT_arm64="--enable-cross-compile --sysroot=${ARCHROOT}/arm64 --arch=arm64 --target-os=linux --cross-prefix=aarch64-linux-gnu-
          --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/arm/usr/lib:${ARCHROOT}/arm/lib:${ARCHROOT}/arm/${X11DIR}/lib
-         --host-cc=/usr/bin/gcc --disable-asm";
+         --host-cc=/usr/bin/gcc --disable-asm --enable-libvpx";
 ADDCFLAG="-fPIC -I=/usr/include/openjpeg-1.5";
 XADDLDFLAG="-L../libavutil -lavutil";
 NOTCONF="--enable-libilbc";

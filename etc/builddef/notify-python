@@ -5,3 +5,6 @@ CONFOPT="";
 CONFOPT="PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
 ADDCFLAG="-I=/usr/include/python2.7";
 GITBRANCH="master";
+if [ "${HASGIR}" == "no" ];then
+  DONTBUILD="${barch}";
+fi;

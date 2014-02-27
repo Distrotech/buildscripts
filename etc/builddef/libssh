@@ -2,6 +2,8 @@ VERSION="0.5.5";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="-DWITH_GCRYPT:BOOL=ON -DGCRYPT_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libgcrypt.so 
-         -DZLIB_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libz.so";
+         -DZLIB_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libz.so 
+         -DGCRYPT_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include
+         -DZLIB_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include";
 FIXUPLIB="1";
 EXTRALIBS="-lpthread -lrt -ldl";

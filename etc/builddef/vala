@@ -4,3 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 CHROOTBUILD="1";
 RPMOBSOLETE="vala-bootstrap";
+if [ "${HASGIR}" == "no" ];then
+  DONTBUILD="${barch}";
+fi;

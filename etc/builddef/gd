@@ -7,7 +7,6 @@ OPT_cyg32="--without-vpx";
 OPT_cyg64="--without-vpx";
 OPT_win32="--without-vpx";
 OPT_win64="--without-vpx";
-OPT_arm64="--without-vpx";
 USEMINGW="1";
 EXTRALIBS="-lz -llzma";
 NOCCOPT="1";

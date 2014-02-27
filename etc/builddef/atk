@@ -4,7 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 CONFOPT="--enable-introspection=yes";
 CLEARFLAGS="1";
-OPT_arm64="--enable-introspection=no";
 OPT_win32="--enable-introspection=no --disable-glibtest";
 OPT_win64="--enable-introspection=no --disable-glibtest";
 OPT_cyg32="--enable-introspection=no --disable-glibtest";

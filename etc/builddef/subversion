@@ -1,7 +1,13 @@
 VERSION="1.7.7"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-swig --with-ssl --enable-javahl --with-jdk=/usr/${B_LIBDIRS}/jvm/gcj-jdk";
+CONFOPT="--with-swig --with-ssl";
+MAKEITARGETS="install swig-pl swig-py install-swig-pl install-swig-py";
+if [ -d /usr/${B_LIBDIRS}/jvm/gcj-jdk ];then
+  MAKETARGETS="javahl";
+  MAKEITARGETS="${MAKEITARGETS} install-javahl";
+  CONFOPT="${CONFOPT} --enable-javahl --with-jdk=/usr/${B_LIBDIRS}/jvm/gcj-jdk";
+fi;
 OPTX_arm="--with-apxs=${ARCHROOT}/arm/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/arm/usr --with-apr-util=${ARCHROOT}/arm/usr
          --with-gssapi=${ARCHROOT}/arm/usr --with-swig=${ARCHROOT}/arm/usr --with-neon=${ARCHROOT}/arm/usr";
 OPTX_arm64="--with-apxs=${ARCHROOT}/arm64/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/arm64/usr --with-apr-util=${ARCHROOT}/arm64/usr
@@ -16,8 +22,6 @@ ADDCFLAG="-I=/opt/apache/include";
 STATICOPT="--disable-shared --without-berkeley-db --enable-all-static --without-apxs LDFLAGS=-static"
 STATICMOPT="LDFLAGS=-all-static";
 GITBRANCH="master";
-MAKETARGETS="javahl";
-MAKEITARGETS="install swig-pl swig-py install-swig-pl install-swig-py install-javahl";
 BUILDDIR="0";
 CHROOTBUILD="1";
 LDISCC="0";

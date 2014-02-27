@@ -25,3 +25,4 @@ ADDCFLAG="-O2 -I=${PREFIX}/include/fribidi -I=${PREFIX}/include/freetype2";
 ADDLDFLAG="-L=${PREFIX}/${B_LIBDIRS}";
 ADDFILTER="config.mak";
 CHROOTBUILD="1";
+DONTBUILD="arm64";

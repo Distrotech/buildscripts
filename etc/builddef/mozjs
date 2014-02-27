@@ -10,3 +10,4 @@ OPT_x86_64="--target=x86_64-linux-gnu";
 OPT_i686="--target=i686-linux-gnu";
 GITBRANCH="master";
 CHROOTBUILD="1";
+DONTBUILD="arm64";

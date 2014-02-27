@@ -1,7 +1,10 @@
-VERSION="3.10.6"
+VERSION="3.10.6";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-gtk2-dependency --enable-broadway-backend --enable-x11-backend";
 GITREPO="gtk";
 AMVER="1.14";
 CHROOTBUILD="1";
+OPT_cyg32="--disable-x11-backend --disable-cups --disable-wayland-backend --enable-win32-backend --disable-broadway-backend WINDRES=${HOST}-windres --disable-introspection";
+USEMINGW="1";
+ADDCFLAG="-I${ARCHROOT}/${barch}/usr/lib/glib-2.0/include";

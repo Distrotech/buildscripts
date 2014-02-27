@@ -3,7 +3,8 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="-DQT_QMAKE_EXECUTABLE:PATH=/opt/qt-4/bin/qmake BUILD_TESTING:BOOL=OFF -DSTACK_DIRECTION=1
         -DBUILD_QtDialog:BOOL=OFF -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libncurses.so
-        -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libncurses.so";
+        -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libncurses.so -DBUILD_TESTING:BOOL=OFF
+        -DCURSES_INCLUDE_PATH:FILEPATH=${ARCHROOT}/${barch}/usr/include/ncurses";
 CONFOPTX="-DCMAKE_CROSSCOMPILING=TRUE";
 NOCCOPT="1";
 ADDPATH="${SRCDIR}/cmake/cmake-2.8.9/build-${barch}/bin";

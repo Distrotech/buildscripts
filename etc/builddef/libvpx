@@ -1,4 +1,4 @@
-VERSION="20140204";
+VERSION="20140226";
 VERSION_x86_32="1.2.0";
 VERSEP="-";
 if [ "${barch:0:3}" == "win" ];then
@@ -9,7 +9,7 @@ fi;
 CONFOPT="--enable-vp8 --enable-pic --enable-shared --enable-static --disable-unit-tests";
 STDOPTS="--prefix=${PREFIX}";
 OPT_arm="--target=armv7-linux-gcc --extra-cflags=-mhard-float";
-OPT_arm64="--target=aarch64-linux-gcc";
+OPT_arm64="--target=generic-gnu";
 OPT_mips="--target=mips32-linux-gcc";
 OPT_mips64="--target=mips32-linux-gcc";
 OPT_powerpc="--target=ppc32-linux-gcc";
@@ -25,4 +25,4 @@ NOCCOPT="1";
 ADDCC="0";
 LDISCC="1";
 CLEARFLAGS="1";
-DONTBUILD="cyg32 cyg64 arm64";
+DONTBUILD="cyg32 cyg64";

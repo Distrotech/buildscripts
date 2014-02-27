@@ -14,3 +14,4 @@ CHROOTBUILD="1";
 SYSROOTFIXUP="1";
 CLEARFLAGS="1";
 OPT_cyg32="--enable-introspection=no";
+OPT_arm64="--enable-introspection=${HASGIR}";

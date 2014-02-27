@@ -6,4 +6,5 @@ CONFOPT="--disable-vv --disable-nm --disable-meanwhile --with-tclconfig=${ARCHRO
 ADDLDFLAG="-L=/usr/lib/perl5/5.18.1/${HOST}-thread-multi/CORE";
 CHROOTBUILD="1";
 OPT_arm="--disable-mono";
+OPT_arm64="--disable-mono";
 OPT_x86_32="--disable-mono";

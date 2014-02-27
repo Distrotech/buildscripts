@@ -6,3 +6,4 @@ SYSROOTFIXUP="1";
 STATICOPT="LDFLAGS=\"-static -L=/usr/${C_LIBDIRS}\" --enable-all LIBS=-ldl";
 STATICBSTRAP="1";
 CHROOTBUILD="1";
+GITCLEAN="0";

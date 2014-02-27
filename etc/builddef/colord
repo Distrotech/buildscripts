@@ -13,3 +13,4 @@ OPT_x86_32="--enable-introspection=no";
 OPT_i686="--enable-introspection=no";
 ADDCC="0";
 ADDCFLAG="-I=/usr/include/glib-2.0 -I/usr/include/gio-unix-2.0 -I=/include/gudev-1.0 -I=/usr/include/polkit-1";
+DONTBUILD="arm64";

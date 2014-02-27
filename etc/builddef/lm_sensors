@@ -5,4 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 GITBRANCH="master";
 FIXUPLIB="1";
-DONTBUILD="powerpc";
+DONTBUILD="powerpc arm64";

@@ -2,4 +2,4 @@ VERSION="2.5.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-DONTBUILD="x86_32";
+DONTBUILD="x86_32 arm64";

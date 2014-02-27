@@ -11,7 +11,6 @@ ADDCC="0";
 ADDCFLAG="-I=${PREFIX}/include/freetype2 -I=${PREFIX}/include/cairo -I=${PREFIX}/include -I=${X11DIR}/include/pixman-1";
 NONULLCONF="1";
 CLEARFLAGS="1";
-OPT_arm64="--enable-introspection=no";
 OPT_cyg32="--enable-introspection=no";
 OPT_win32="--enable-introspection=no";
 OPT_win64="--enable-introspection=no";

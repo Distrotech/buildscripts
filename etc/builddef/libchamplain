@@ -3,3 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-vala";
 CHROOTBUILD="1";
+if [ "${HASGIR}" == "no" ];then
+  DONTBUILD="${barch}";
+fi;

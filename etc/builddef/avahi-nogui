@@ -3,7 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-distro=none --disable-qt3 --disable-gtk3 --disable-mono --with-avahi-priv-access-group=avahi 
          --with-autoipd-group=avahi --with-autoipd-user=avahi --disable-python --disable-qt4 --disable-gtk";
-OPT_arm64="--enable-introspection=no";
 CLEARFLAGS="1";
 ALIAS="avahi";
 DISTCONF="avahi/avahi-daemon.conf avahi/avahi-autoipd.action";

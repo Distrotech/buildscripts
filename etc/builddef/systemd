@@ -1,7 +1,6 @@
 VERSION="204"
 VERSEP="-";
 PREFIX="/";
-OPT_arm64="--enable-introspection=no --without-python";
 ADDWITHSYSROOT="1";
 ADDCC="0";
 NOCCOPT="1";

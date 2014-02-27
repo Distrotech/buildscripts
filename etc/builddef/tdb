@@ -10,4 +10,6 @@ GITBRANCH="tdb-1.2.12";
 GITREPO="samba";
 CFGPTH="lib/tdb";
 CFGBIN="tdb/"
-CHROOTBUILD="1";
+if [ "${barch}" != "arm64" ];then
+  CHROOTBUILD="1";
+fi;

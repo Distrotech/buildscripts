@@ -5,10 +5,11 @@ CONFOPT="--datadir=/usr/share/postgresql --enable-depend --with-perl --with-pyth
          --with-ldap --with-libxml --with-libxslt --with-zlib --with-readline --enable-thread-safety 
          --with-system-tzdata=/usr/share/zoneinfo ac_cv_func_getpeereid=no ac_cv_func_strlcpy=no 
          ac_cv_have_func_strlcat=no";
+OPT_arm="--disable-thread-safety --disable-spinlocks";
+OPT_arm64="--disable-thread-safety --disable-spinlocks";
 NOCCOPT="1";
 EXTRALIBS="-shared-libgcc -lz -llber -lsasl2 -lrt -llzma -lpthread -lkrb5 -lkrb5support -lk5crypto -lcom_err -lresolv -ldl -lltdl -lutil -lldap_r";
 BUILDDIR="0";
 ADDCFLAG="-fPIC -I=/usr/include/python2.7 -I=/usr/lib/perl5/5.16.2/${HOST}-thread-multi/CORE";
 ADDLDFLAG="-L=/usr/lib/perl5/5.16.2/${HOST}-thread-multi/CORE";
-OPT_arm64="--disable-spinlocks --without-perl --without-python";
 CHROOTBUILD="1";

@@ -7,3 +7,6 @@ BUILDDIR="0";
 CLEARFLAGS="1";
 AMVER="1.14";
 CHROOTBUILD="1";
+if [ "${HASGIR}" == "no" ];then
+  DONTBUILD="${barch}";
+fi;

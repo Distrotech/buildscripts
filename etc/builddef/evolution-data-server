@@ -1,6 +1,11 @@
 VERSION="3.10.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--disable-uoa --with-openldap --with-krb5 --enable-vala-bindings --without-phonenumber";
+CONFOPT="--disable-uoa --with-openldap --with-krb5 --without-phonenumber";
 CHROOTBUILD="1";
 OPT_x86_32="--disable-goa";
+if [ "${HASGIR}" == "no" ];then
+  CONFOPT="${CONFOPT} --disable-goa";
+ else
+  CONFOPT="${CONFOPT} --enable-vala-bindings";
+fi;

@@ -1,7 +1,7 @@
 VERSION="6.25"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-liblua=included --with-libpcap=/usr";
+CONFOPT="--with-liblua=included --with-libpcap=included";
 BUILDDIR="0";
 OPT_arm="--with-openssl=${ARCHROOT}/arm/usr";
 EXTRALIBS="-lusb-1.0 -lpthread -lrt";

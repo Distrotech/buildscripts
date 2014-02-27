@@ -1,4 +1,5 @@
 VERSION="1.38.0"
+VERSION_arm64="1.39.90";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
@@ -10,5 +11,6 @@ MAKEOPTS="V=1";
 NOCCOPT="1";
 EXTRALIBS="-lglib-2.0 -lgmodule-2.0 -lgobject-2.0 -lgthread-2.0 -lgio-2.0 -lpthread -lrt -lresolv -ldl";
 CONFOPT="PYTHON=${ARCHROOT}/${barch}/usr/bin/python2.7";
-DONTBUILD="arm64 cyg32 cyg64";
+DONTBUILD="cyg32 cyg64";
 CHROOTBUILD="1";
+SYSROOTFIXUP="0";
