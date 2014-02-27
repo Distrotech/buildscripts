@@ -24,5 +24,13 @@ CONFOPT="-DXINERAMA_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/${X11DIR}/${B_LIBDIRS}
          -DPCSC_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libpcsclite.so
          -DAVCODEC_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libavcodec.so
          -DAVUTIL_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libavutil.so
-         -DALSA_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libasound.so";
+         -DALSA_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libasound.so
+         -DOPENSSL_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include
+         -DZLIB_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include
+         -DPULSEAUDIO_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include
+         -DPCSC_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include/PCSC
+         -DCUPS_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include
+         -DALSA_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include
+         -DAVCODEC_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include
+         -DAVUTIL_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include";
 FIXUPLIB="1";
