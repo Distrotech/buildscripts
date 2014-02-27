@@ -30,6 +30,7 @@ case ${NARCH} in
       NARCH=powerpc;;
   ppc64|powerpc64)QT_VER="4";
       NARCH=powerpc64;;
+  arm64|aarch64)NARCH=arm64;;
   arm*)NARCH=arm;
       JAVA_VER="1.7.0_25";;
 esac;
@@ -165,6 +166,12 @@ arch_config() {
     x86_32)SETLIBDIR="libx32";;
     *64)SETLIBDIR="lib64";;
     *)SETLIBDIR="lib";;
+  esac;
+
+  #Set If itrospection is required
+  case ${1} in
+    aarch64|arm64)AHASGIR="no";;
+    *)AHASGIR="yes";;
   esac;
 
   #Determine kernel arch
@@ -345,7 +352,8 @@ check_create_arch() {
   B_LIBDIRS=${SETLIBDIR}
   MLIBDIR=${AMLIBDIR}
   QCPU=${AQCPU}
-  unset TUPPLE SETLIBDIR LINARCH AQCPU
+  HASGIR=${AHASGIR}
+  unset TUPPLE SETLIBDIR LINARCH AQCPU AHASGIR
 
   if [ "${MLIBDIR}" ];then
     C_LIBDIRS="${B_LIBDIRS}/${MLIBDIR}"
@@ -353,7 +361,7 @@ check_create_arch() {
     C_LIBDIRS=${B_LIBDIRS}
   fi;
 
-  export B_LIBDIRS HOST KARCH QCPU QT_SPEC MLIBDIR
+  export B_LIBDIRS HOST KARCH QCPU QT_SPEC MLIBDIR HASGIR
 
   if [ ! -d ${ARCHROOT} ];then
     mkdir -p ${ARCHROOT}
@@ -424,7 +432,7 @@ check_create_arch() {
        add_distrotech_build ${ARCHROOT}/${1})
     fi;
     if [ ! -e ${ARCHROOT}/${1}${ARCHROOT}/${1} ];then
-      ln -s .. ${ARCHROOT}/${1}${ARCHROOT}/${1}
+      ln -sr ${ARCHROOT}/${1} ${ARCHROOT}/${1}${ARCHROOT}/${1}
     fi;
     mnt_archroot ${1}
    elif [ "${1}" == "${NARCH}" ] && [ ! -e ${ARCHROOT}/${NARCH} ];then
@@ -1131,7 +1139,7 @@ build_project() {
     echo "${PROJECT}"
     (rsync -aR ${SRCDIR}/${PSOURCEDIR}/ ${ARCHROOT}/${NEWARCH}/
      (cd ${ARCHROOT}/${NEWARCH}/${SRCDIR}/${PSOURCEDIR}/
-      if [ -d .git ] && [ "${GITCLEAN}" == "1" ];then
+      if [ -x /usr/bin/git ] && [ -d .git ] && [ "${GITCLEAN}" == "1" ];then
         git reset --hard
         git clean -x -f -d
      fi;)
@@ -1487,13 +1495,14 @@ build_project() {
   fi;
 
   #Move perllocal.pod to directory
-  (get_pkg_name perl ${ORIGARCH}
+  (ORIGPROJ=${BUILDPROJECT}
+   get_pkg_name perl ${ORIGARCH}
    PERLDIR=${DIST_ROOT}/usr/lib/perl5/${VERSION}/${HOST}-thread-multi
    if [ -e ${PERLDIR}/perllocal.pod ];then
      if [ ! -d ${PERLDIR}/perllocal.pod.d ];then
        mkdir ${PERLDIR}/perllocal.pod.d
      fi;
-     mv ${PERLDIR}/perllocal.pod  ${PERLDIR}/perllocal.pod.d/${BUILDPROJECT}.pod
+     mv ${PERLDIR}/perllocal.pod  ${PERLDIR}/perllocal.pod.d/${ORIGPROJ}.pod
    fi;)
 
   #Remove conflicting man pages
@@ -2363,7 +2372,7 @@ static_toolbuild() {
 
   export C_LIBDIRS=${TLIBDIR}
 
-  STATICPKG="bash coreutils nano less pkg-config util-linux git dialog";
+  STATICPKG="bash coreutils nano less pkg-config git dialog";
 #  if [ "${BOOTSTRAP}" == "0" ];then
 #    STATICPKG="${STATICPKG} bison flex sed gawk make grep gzip tar xz diffutils libtool gperf m4 cpio";
 #  fi;
@@ -2630,9 +2639,16 @@ bootstrap_arch_root() {
     BOOTCLEAN=distclean
     build_packages ${arch} dtsbuild libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat xz libxml2 freetype \
       fontconfig jpeg tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac libsigsegv ncurses ncursesw \
-      onig slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude libtirpc flex \
+      onig slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude glib util-linux-static || return 1
+
+    if [ ! -e ${STATDIR}/${arch}/done/util-linux ];then
+       (get_pkg_name util-linux-static
+       rsync -avP ${PKGDESTDIR}/${arch}/${PNAME}/ ${ARCHROOT}/${arch}/)
+    fi;
+
+    build_packages ${arch} Python talloc tevent libevent libverto krb5 libtirpc flex selinux \
       Linux-PAM readline popt dialog util-linux bash coreutils bison sed texinfo libunistring libatomic_ops gc \
-      glib pkg-config gzip tar rsync grep xz diffutils patch gperf m4 cpio findutils nano less \
+      glib pkg-config gzip tar rsync grep xz diffutils patch gperf m4 cpio findutils less \
       libxslt gdbm gawk iana-etc tzdata binutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 \
       automake-1.13 automake-1.14 file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl \
       which groff || return 1
@@ -2646,10 +2662,11 @@ bootstrap_arch_root() {
       fi;
     fi;
 
-    build_packages ${arch} perl Python c-ares curl git unzip zip linux_logo guile make ||return 1
+    build_packages ${arch} perl Python c-ares curl git unzip zip linux_logo gc guile make ||return 1
 
     #Pacakges used in native bootstrap
-    build_packages ${arch} cmake dbus gengetopt libcroco gettext gtk-doc help2man libcap libcap-ng libcroco nasm OpenSP intltool openjade xmlto yasm || return 1) || return 1;
+    build_packages ${arch} cmake dbus gengetopt libcroco gettext gtk-doc help2man libcap libcap-ng libcroco \
+      nasm OpenSP intltool openjade xmlto yasm nano || return 1) || return 1;
   done;
 }
 
@@ -2711,9 +2728,6 @@ build_dependancies() {
   if [ ! -d /usr/lib/python2.7 ];then
     build_packages ${1} expat libxml2 libxslt || return 1
   fi;
-
-  #Perl modules
-  build_packages ${1} perl-modules || return 1
 
   if [ "${1}" == "${NARCH}" ];then
     /sbin/ldconfig >/dev/null 2>&1
@@ -2780,6 +2794,9 @@ build_dependancies() {
     (unset CLEANOPT;build_project Xorg ${1}) || return 1
   fi;
 
+  #Perl modules
+  build_packages ${1} tcl8 tk8 perl-modules || return 1
+
   build_packages ${1} gtk+ freeglut pcsc-lite wayland libxkbcommon at-spi2-core at-spi2-atk || return 1
 
   #we need gdk-pixbuf/librsvg built with gtk3 to build gtk33 bootstrap it [dont build demos/tests/examples on 1st pass]
@@ -2816,7 +2833,7 @@ build_dependancies() {
   fi;
 
   build_packages ${1} cacerts-lfs apr apr-iconv sqlite-autoconf keyutils neon rhino junit antlr4 apache-ant \
-    ecj tcl8 tk8 db unixODBC cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion \
+    ecj db unixODBC cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion \
     libva gmerlin jasper libraw1394 orc libogg libvorbis libkate gnome-mime-data gnome-vfs \
     libvisual gstreamer gstreamer-1 v4l-utils flac audiofile esound libsndfile json-c fftw \
     libsamplerate speex pulseaudio SDL SDL2 libdc1394 libtheora gst-plugins-base OpenCV frei0r \
