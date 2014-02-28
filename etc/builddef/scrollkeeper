@@ -5,5 +5,5 @@ CONFOPT="";
 BUILDDIR="0";
 AMVER="1.11";
 AUTORECONF="1";
-DONTBUILD="arm64 cyg32 cyg64";
+DONTBUILD="cyg32 cyg64";
 GITBRANCH="master"

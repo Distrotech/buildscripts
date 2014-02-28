@@ -6,5 +6,5 @@ OPT_x86_32="CFG_FAULT=fault-linux-i386.h";
 OPT_x86_64="CFG_FAULT=fault-linux-i386.h";
 OPT_i686="CFG_FAULT=fault-linux-i386.h";
 AMVER="1.12";
-DONTBUILD="arm64 cyg32 cyg64";
+DONTBUILD="cyg32 cyg64";
 NOCROSS="1";

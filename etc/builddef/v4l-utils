@@ -4,6 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 FIXUPLIB="1";
-XDONTBUILD="arm64";
-XEXTRALIBS="-lpthread -lrt -ldl";
 AMVER="1.14";

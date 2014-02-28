@@ -4,4 +4,3 @@ PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-std=gnu99";
 AMVER="1.13";
-DONTBUILD="arm64";
