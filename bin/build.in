@@ -170,7 +170,7 @@ arch_config() {
 
   #Set If itrospection is required
   case ${1} in
-    aarch64|arm64)AHASGIR="no";;
+    aarch64|arm64)AHASGIR="yes";;
     *)AHASGIR="yes";;
   esac;
 
