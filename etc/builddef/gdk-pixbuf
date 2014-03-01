@@ -14,3 +14,4 @@ EXTRALIBS="-ldl";
 CHROOTBUILD="1";
 ADDCFLAG="-I=/usr/lib/glib-2.0/include";
 USEMINGW="1";
+ADDWITHSYSROOT="1";

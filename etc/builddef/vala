@@ -7,3 +7,4 @@ RPMOBSOLETE="vala-bootstrap";
 if [ "${HASGIR}" == "no" ];then
   DONTBUILD="${barch}";
 fi;
+ADDWITHSYSROOT="1";

@@ -9,3 +9,4 @@ DISTCONF="avahi/avahi-daemon.conf avahi/avahi-autoipd.action";
 GITREPO="avahi";
 CHROOTBUILD="1";
 DONTBUILD="cyg32 cyg64";
+ADDWITHSYSROOT="1";
