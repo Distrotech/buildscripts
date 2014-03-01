@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 USEMINGW="1";
+CHROOTBUILD="1";

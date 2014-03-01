@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="--enable-cplusplus";
 BUILDDIR="0";
 ALIAS="bdwgc";
+ADDWITHSYSROOT="1";

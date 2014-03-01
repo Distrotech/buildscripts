@@ -16,3 +16,4 @@ ADDCFLAG="-I=/usr/include/glib-2.0 -I/usr/include/gio-unix-2.0 -I=/include/gudev
 if [ "${HASGIR}" == "no" ];then
   DONTBUILD="${barch}";
 fi;
+CHROOTBUILD="1";
