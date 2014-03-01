@@ -81,7 +81,7 @@ LANG_win64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 LANG_cyg32="--enable-languages=c,c++,fortran,lto,objc,obj-c++,go";
 LANG_cyg64="--enable-languages=c,c++,fortran,lto,objc,obj-c++,go";
 ADDBUILDSYSROOT="1";
-ADDLDFLAG="-L${ARCHROOT}/${barch}/usr/${B_LIBDIRS} -L${ARCHROOT}/${barch}/usr/${B_LIBDIRS}/${MLIBDIR} -L/usr/${HOST}/${B_LIBDIRS} -lstdc++";
+ADDLDFLAG="-L/usr/${HOST}/${B_LIBDIRS} -L${ARCHROOT}/${barch}/usr/${C_LIBDIRS}";
 COREBUILD="1";
 NOMLIBDIR="1";
 MLIBDIRLN="libasan.so libatomic.so libgcc_s.so libgcj_bc.so libgcj.so libgcj-tools.so libgfortran.so
