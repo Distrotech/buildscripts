@@ -1,11 +1,11 @@
-VERSION="2.2.3"
+VERSION="2.3.90"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-introspection --enable-accelerated-compositing --enable-jit --enable-web-audio --disable-static";
-OPT_x86_32="--disable-jit";
+CONFOPT="--enable-introspection --enable-accelerated-compositing --enable-web-audio --disable-static";
+XOPT_x86_32="--disable-jit";
 AMVER="1.14";
-DONTBUILD="arm64 mips mips64 powerpc powerpc64 x86_32";
-TARBALLURL="http://webkitgtk.org/releases/webkitgtk-2.2.3.tar.xz";
+DONTBUILD="mips mips64 powerpc powerpc64";
+TARBALLURL="http://www.webkitgtk.org/releases/webkitgtk-${VERSION}.tar.xz";
 CLEARFLAGS="1";
 NOCCOPT="1";
 LDISCC="0";
