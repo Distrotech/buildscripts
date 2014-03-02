@@ -586,6 +586,7 @@ PACKAGE_URL=''
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+PATCHDIR
 ARCHROOT
 BUILDDIR
 SRCDIR
@@ -2444,6 +2445,9 @@ fi
 
 fi
 
+if test x$datarootdir = x'${prefix}/share' ; then :
+  datarootdir=${prefix}/share
+fi
 if test x$bindir = x'${exec_prefix}/bin' ; then :
   bindir=${exec_prefix}/bin
 fi
@@ -2488,8 +2492,10 @@ fi
 if test x$sysconfdir = x'${prefix}/etc'; then :
   sysconfdir=${prefix}/etc
 fi
+PATCHDIR=${datarootdir}/patches
 
 ac_config_files="$ac_config_files Makefile bin/build bin/mkbuilddef bin/pkg2rpm bin/umount-arch etc/yum_repo.conf"
+
 
 
 
@@ -3694,4 +3700,5 @@ printf "%-40s: %s\n" "yumdir" "${SRVDIRYUM}"
 printf "%-40s: %s\n" "srcdir" "${SRCDIR}"
 printf "%-40s: %s\n" "builddir" "${BUILDDIR}"
 printf "%-40s: %s\n" "sysrootdir" "${ARCHROOT}"
+printf "%-40s: %s\n" "patchdir" "${PATCHDIR}"
 printf "%-40s: %s\n" "repodir" "${YUMREPOCONFDIR}"

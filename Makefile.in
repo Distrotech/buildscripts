@@ -189,6 +189,7 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
+PATCHDIR = @PATCHDIR@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
@@ -684,9 +685,10 @@ distclean-local:
 	-rm -rf autom4te.cache
 
 install-data-local:
-	$(INSTALL) -d $(DESTDIR)$(sysconfdir) $(DESTDIR)$(localstatedir) $(DESTDIR)$(YUMREPOCONFDIR) $(DESTDIR)$(SRCDIR)
+	$(INSTALL) -d $(DESTDIR)$(sysconfdir) $(DESTDIR)$(localstatedir) $(DESTDIR)$(YUMREPOCONFDIR) $(DESTDIR)$(SRCDIR) $(DESTDIR)$(PATCHDIR)
 	$(INSTALL) etc/yum_repo.conf $(DESTDIR)$(YUMREPOCONFDIR)/$(PACKAGE_NAME).repo
 	cp -Ppr etc/{builddef,waf_cross,skel,cmake_cross} $(DESTDIR)$(sysconfdir)
+	cp -Ppr patches/* $(DESTDIR)$(PATCHDIR)/
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
