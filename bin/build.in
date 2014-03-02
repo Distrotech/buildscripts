@@ -68,6 +68,7 @@ SKELDIR=${DTSETCDIR}/skel
 PKGBUILDDIR=@BUILDDIR@
 DTSSRVDIR=@SRVDIR@
 PKGDISTDIR=@SRVDIRTAR@
+PATCHDIR=@PATCHDIR@
 TOOLPKG=${PKGDISTDIR}/core
 PKGDESTDIR=${PKGBUILDDIR}/staging
 BASEROOT=${PKGBUILDDIR}/bootstrap
@@ -553,6 +554,10 @@ tarball_load_pkg() {
   if [ ! -d ${3} ] || [ ! -e ${TARBALL} ];then
     wget -c ${1} || return 1
     tar -C ${3} --strip-components=1 -xf ${TARBALL} ||return 1
+  fi;
+  if [ -e ${PATCHDIR}/${3}.patch ] && [ ! -e ${3}/.distrotech-patch ];then
+    cd ${3}
+    patch -p1 -i ${PATCHDIR}/${3}.patch && touch .distrotech-patch || return 1
   fi;
 }
 
@@ -1446,17 +1451,6 @@ build_project() {
     return 1
   fi;
 
-  if [ ! -d ${STATDIR}/${ORIGARCH}/done ];then
-    mkdir -p ${STATDIR}/${ORIGARCH}/done
-  fi;
-
-  if [ -e ${STATDIR}/${ORIGARCH}/fail/${BUILDPROJECT} ];then
-    rm ${STATDIR}/${ORIGARCH}/fail/${BUILDPROJECT}
-  fi;
-  touch ${STATDIR}/${ORIGARCH}/change
-  touch ${STATDIR}/${ORIGARCH}/done/${BUILDPROJECT}
-  echo ${BUILDPROJECT} >> ${STATDIR}/${ORIGARCH}/built
-
   if [ ! "${NOMLIBDIR}" ];then
     NOMLIBDIR="0";
   fi;
@@ -1568,6 +1562,17 @@ build_project() {
 
   #Build Distributibils
   tar_package ${DIST_ROOT} ${PKGDISTDIR}/${ORIGARCH} ${PKG} > /dev/null 2>&1
+
+  if [ ! -d ${STATDIR}/${ORIGARCH}/done ];then
+    mkdir -p ${STATDIR}/${ORIGARCH}/done
+  fi;
+
+  if [ -e ${STATDIR}/${ORIGARCH}/fail/${BUILDPROJECT} ];then
+    rm ${STATDIR}/${ORIGARCH}/fail/${BUILDPROJECT}
+  fi;
+  touch ${STATDIR}/${ORIGARCH}/change
+  md5sum -b ${PKGDISTDIR}/${ORIGARCH}/${PKG}/* > ${STATDIR}/${ORIGARCH}/done/${BUILDPROJECT}
+  echo ${BUILDPROJECT} >> ${STATDIR}/${ORIGARCH}/built
 
   if [ ! "${NOINST}" ];then
     if [ "${BOOTSTRAP}" == "0" ] && [ "${ORIGARCH}" == "${NARCH}" ];then
@@ -2226,7 +2231,8 @@ build_packages() {
   shift
 
   for pkg in $@;do
-    if [ ! -e ${STATDIR}/${DARCH}/done/${pkg} ] || [ ${DEFDIR}/${pkg} -nt ${STATDIR}/${DARCH}/done/${pkg} ];then
+    if [ ! -e ${STATDIR}/${DARCH}/done/${pkg} ] || [ ${DEFDIR}/${pkg} -nt ${STATDIR}/${DARCH}/done/${pkg} ] || \
+       !  md5sum -c ${STATDIR}/${DARCH}/done/${pkg} >/dev/null 2>&1;then
       #If we fail on 1st pass rebuild with no clean opt's
       if ! (CLEANOPT=${BOOTCLEAN};build_project ${pkg} ${DARCH});then
         (unset CLEANOPT;build_project ${pkg} ${DARCH}) || return 1
@@ -2638,7 +2644,7 @@ bootstrap_arch_root() {
     #GCC needs system zlib glibc can use selinux/gd Add packages for a build enviroment
     BOOTCLEAN=distclean
     build_packages ${arch} dtsbuild libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat xz libxml2 freetype \
-      fontconfig jpeg tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac libsigsegv ncurses ncursesw \
+      fontconfig jpeg jbigkit tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac libsigsegv ncurses ncursesw \
       onig slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude glib util-linux-static || return 1
 
     if [ ! -e ${STATDIR}/${arch}/done/util-linux ];then
@@ -2750,7 +2756,7 @@ build_dependancies() {
   fi;
 
   build_packages ${1} util-linux nano rsync grep less gzip tar pkg-config cpio iana-etc xmlto xmltoman giflib freetype \
-    fontconfig fonttools lcms2 jpeg libpng tiff libmng OpenSP c-ares curl asciidoc git || return 1
+    fontconfig fonttools lcms2 jpeg libpng jbigkit tiff libmng OpenSP c-ares curl asciidoc git || return 1
 
   #This will fail due to Mesa so dont bail only do it on first pass use build_project directly
   if [ ! -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then
@@ -2966,20 +2972,6 @@ sync_ml_libs() {
   fi;
 }
 
-build_ml_packages() {
-  DARCH=${1}
-  shift
-
-  for pkg in $@;do
-    if [ ! -e ${STATDIR}/${DARCH}/done/${pkg} ];then
-      #If we fail on 1st pass rebuild with no clean opt's
-      if ! (CLEANOPT=distclean;build_project ${pkg} ${DARCH};sync_ml_libs ${DARCH});then
-        (unset CLEANOPT;build_project ${pkg} ${DARCH};sync_ml_libs ${DARCH}) || return 1
-      fi;
-    fi;
-  done;
-}
-
 bootstrap_native() {
   #Check arch build dir exists Setup linux headers and env vars
   check_create_arch ${NARCH}
@@ -3123,7 +3115,7 @@ windows_build_toolchain() {
 #ecj with sysroot ??
   build_packages ${1} evil zlib regex libtool gmp mpfr mpc isl cloog gcc binutils libunistring icu \
     make libiconv xz openssl libxml2 libxslt gettext libffi pcre glib libcroco c-ares curl cyrus-sasl \
-    unixODBC openldap libidn libpng tiff jpeg freetype expat fontconfig libtasn1 p11-kit nettle \
+    unixODBC openldap libidn libpng jbigkit tiff jpeg freetype expat fontconfig libtasn1 p11-kit nettle \
     libgpg-error libgcrypt gnutls libvpx gd lcms2 pixman cairo poppler graphite2 harfbuzz pango atk \
     gdk-pixbuf gtk+ SDL wxWidgets dtsapplib sqlite-autoconf dtsguiapp leafpad libsoup libosip2 \
     exosip libsrtp oRTP spandsp libogg libvorbis opencore-amr vo-amrwbenc opus speex libilbc-webrtc \
@@ -3218,7 +3210,8 @@ failpkg() {
 loop_on_dir() {
   configstatdir ${1}
   for pkg in `ls ${DEFDIR}`;do
-    if [ -e ${STATDIR}/${1}/done/${pkg} ] && [ ${STATDIR}/${1}/done/${pkg} -nt ${DEFDIR}/${pkg} ];then
+    if [ -e ${STATDIR}/${1}/done/${pkg} ] && [ ${STATDIR}/${1}/done/${pkg} -nt ${DEFDIR}/${pkg} ] || \
+       ! md5sum -c ${STATDIR}/${1}/done/${pkg} >/dev/null 2>&1;then
       continue;
     fi;
     (if check_package ${pkg};then
