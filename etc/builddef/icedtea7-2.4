@@ -16,6 +16,7 @@ case ${NARCH} in
   x86_32|x86_64|i686)
     case ${barch} in
       x86_64|i686)CHROOTBUILD="1";;
+      x86_32)CHROOTBUILD="0";;
       *)DONTBUILD="${barch}";;
     esac;;
   *)DONTBUILD="${barch}";;
