@@ -22,9 +22,6 @@ if [ "${4}" ] || [ ! -e Makefile ];then
     make confclean ${4}
   fi;
   ./init-repository
-  if [ "${1}" == "x86_32" ];then
-    git submodule deinit -f qtscript qtdeclarative
-  fi;
   ./configure ${CONFOPT} -xplatform ${QT_SPEC} -platform ${QT_HOSTSPEC} || exit 1
 fi;
 
