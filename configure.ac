@@ -33,6 +33,7 @@ AS_IF([test "x$prefix" = "x/opt"], [
   AS_IF([test x$libexecdir = x'${exec_prefix}/libexec' ], [libexecdir=${exec_prefix}/libexec/${PACKAGE_NAME}])
 ])
 
+AS_IF([test x$datarootdir = x'${prefix}/share' ], [datarootdir=${prefix}/share])
 AS_IF([test x$bindir = x'${exec_prefix}/bin' ], [bindir=${exec_prefix}/bin])
 
 
@@ -46,6 +47,7 @@ AC_ARG_WITH([yum_repo_conf_dir], AS_HELP_STRING([--with-yum-repo-conf-dir], [yum
 AS_IF([test "x$with_yum_repo_conf_dir" = "x"], [YUMREPOCONFDIR=/etc/yum/repos.d], [YUMREPOCONFDIR=$with_yum_repo_conf_dir])
 
 AS_IF([test x$sysconfdir = x'${prefix}/etc'], [sysconfdir=${prefix}/etc])
+PATCHDIR=${datarootdir}/patches
 
 AC_CONFIG_FILES([
   Makefile
@@ -62,6 +64,7 @@ AC_SUBST(SRVDIR)
 AC_SUBST(SRCDIR)
 AC_SUBST(BUILDDIR)
 AC_SUBST(ARCHROOT)
+AC_SUBST(PATCHDIR)
 
 AC_OUTPUT
 
@@ -75,4 +78,5 @@ printf "%-40s: %s\n" "yumdir" "${SRVDIRYUM}"
 printf "%-40s: %s\n" "srcdir" "${SRCDIR}"
 printf "%-40s: %s\n" "builddir" "${BUILDDIR}"
 printf "%-40s: %s\n" "sysrootdir" "${ARCHROOT}"
+printf "%-40s: %s\n" "patchdir" "${PATCHDIR}"
 printf "%-40s: %s\n" "repodir" "${YUMREPOCONFDIR}"
