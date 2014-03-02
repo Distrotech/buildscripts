@@ -2,4 +2,4 @@ VERSION="3.10.3"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-krb5 --with-openldap --enable-contact-maps";
-DONTBUILD="x86_32 arm64";
+DONTBUILD="arm64";
