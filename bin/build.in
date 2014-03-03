@@ -2928,7 +2928,7 @@ build_dependancies() {
   build_packages ${1} setuptools net-snmp-perl net-snmp-python || return 1
 
   #Other Packages
-  build_packages ${1} memtest86 liberation-fonts dejavu-fonts unifoundry psutils php-src  isoquery syslinux|| return 1
+  build_packages ${1} memtest86 liberation-fonts dejavu-fonts unifoundry psutils isoquery syslinux|| return 1
 
   #DirectFB
   build_packages ${1} flux DirectFB SDL_net SDL_image smpeg SDL_mixer SDL2_net SDL2_image smpeg2 SDL2_mixer || return 1
@@ -3197,7 +3197,7 @@ configstatdir() {
     mkdir ${STATDIR}/${1}
   fi;
   for stat in done fail output;do
-    if [ ! -d ${STATDIR}/${1}/${stat} ];then 
+    if [ ! -d ${STATDIR}/${1}/${stat} ];then
       mkdir ${STATDIR}/${1}/${stat}
     fi;
   done
@@ -3210,8 +3210,8 @@ failpkg() {
 loop_on_dir() {
   configstatdir ${1}
   for pkg in `ls ${DEFDIR}`;do
-    if [ -e ${STATDIR}/${1}/done/${pkg} ] && [ ${STATDIR}/${1}/done/${pkg} -nt ${DEFDIR}/${pkg} ] || \
-       ! md5sum -c ${STATDIR}/${1}/done/${pkg} >/dev/null 2>&1;then
+    if [ -e ${STATDIR}/${1}/done/${pkg} ] && [ ${STATDIR}/${1}/done/${pkg} -nt ${DEFDIR}/${pkg} ] && \
+       md5sum -c ${STATDIR}/${1}/done/${pkg} >/dev/null 2>&1;then
       continue;
     fi;
     (if check_package ${pkg};then
