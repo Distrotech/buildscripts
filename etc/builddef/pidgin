@@ -3,7 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-vv --disable-nm --disable-meanwhile --with-tclconfig=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}
          --with-tkconfig=${ARCHROOT}/${barch}/usr/${C_LIBDIRS} --enable-cyrus-sasl --enable-mono";
-ADDLDFLAG="-L=/usr/lib/perl5/5.18.1/${HOST}-thread-multi/CORE";
+ADDLDFLAG="-L=/usr/lib/perl5/5.18.2/${HOST}-thread-multi/CORE";
 CHROOTBUILD="1";
 OPT_arm="--disable-mono";
 OPT_arm64="--disable-mono";
