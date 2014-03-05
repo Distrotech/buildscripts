@@ -1410,9 +1410,10 @@ build_project() {
   if [ "${QTMAKE}" ] && [ "${QTMAKE}" == "1" ];then
     (${QTDIR}/bin/qmake -r && make ${MAKE_J} && make INSTALL_ROOT=${DIST_ROOT}/${PREFIX} install) || return 1
    elif [ -x ${DTSLEXEC}/make_${PROJECT} ];then
-    export CC="${CC} ${CC_SYSROOT}"
-    export CXX="${CXX} ${CC_SYSROOT}"
-    export CONFOPT="${CONFOPT} ${ARCHOPT} ${ARCHXOPT}";
+    CC="${CC} ${CC_SYSROOT}"
+    CXX="${CXX} ${CC_SYSROOT}"
+    CONFOPT="${CONFOPT} ${ARCHOPT} ${ARCHXOPT}";
+    export VERSION CC CXX CONFOPT
     ${DTSLEXEC}/make_${PROJECT} ${ORIGARCH} ${HOST} ${DIST_ROOT} ${CLEANOPT} || return 1
    elif [ -e ${TOPDIR}${CFGBIN}configure ] && [ "${PROJECT}" != "cmake" ];then
     if [ ! -x ${TOPDIR}${CFGBIN}configure ];then

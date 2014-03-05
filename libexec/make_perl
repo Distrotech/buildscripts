@@ -32,3 +32,6 @@ if [ ! -e cpan/Pod-Parser/blib/script/pod2usage ];then
 fi;
 
 make DESTDIR=${3} install
+
+(cd ${3}/usr/lib/perl5/${VERSION}/Test
+rm  Builder.pm Builder/Module.pm Builder/Tester.pm Builder/Tester/Color.pm More.pm Simple.pm Tutorial.pod)

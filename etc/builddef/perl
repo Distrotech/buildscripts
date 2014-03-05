@@ -14,3 +14,7 @@ DONTBUILD="cyg32 cyg64";
 CHROOTBUILD="1";
 RPMEPOCH="1";
 RPMPROVIDES="perl(getopts.pl) perl(-F) perl(-f)";
+MANREMOVE="man3/Digest::MD5.3 man3/List::Util.3 man3/List::Util::XS.3 man3/Scalar::Util.3 \
+           man3/Test::Builder.3 man3/Test::Builder::Module.3 man3/Test::Builder::Tester.3 \
+           man3/Test::Builder::Tester::Color.3 man3/Test::More.3 man3/Test::Simple.3 \
+           man3/Test::Tutorial.3 man3/Text::Soundex.3";
