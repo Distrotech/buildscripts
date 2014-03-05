@@ -14,7 +14,7 @@ CONFOPT="--enable-static=no --with-config-file-path=/etc/php --with-openssl=shar
          --with-unixODBC=${ARCHROOT}/${barch}/usr --enable-sockets=shared --enable-pcntl=shared --with-dom=shared --with-iconv=shared 
          --enable-zip --enable-intl --enable-mbregex --with-imap=shared,${ARCHROOT}/${barch}/usr --with-apxs2=${ARCHROOT}/${barch}/opt/apache2/bin/apxs";
 CLEARFLAGS="1";
-ADDCFLAG="-fPIC -I=/usr/include/sasl";
+ADDCFLAG="-fPIC -I=/usr/include/sasl -I=/opt/mysql/include";
 ADDLDFLAG="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/usr/${C_LIBDIRS}";
 OPT_x86_64="--with-libdir=lib64";
 OPT_x86_32="--with-libdir=libx32 --disable-phar";
