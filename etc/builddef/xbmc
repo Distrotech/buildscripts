@@ -2,10 +2,9 @@ VERSION="12.3"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-external-ffmpeg --enable-external-libraries --disable-rsxs PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
-ADDCFLAG="-I=/usr/include/python2.7";
+ADDCFLAG="-I=/usr/include/python2.7 -I=/opt/mysql/include";
 BUILDDIR="0";
-EXTRALIBS="-lpthread";
-AMVER="1.11";
+AMVER="1.14";
 NOCCOPT="1";
-BUILDDIR="0";
-NOSVNROOT="1";
+ADDPATH="/opt/mysql/bin";
+NOCROSS="1";
