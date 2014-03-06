@@ -5,3 +5,4 @@ CONFOPT="";
 CLEARFLAGS="1";
 CHROOTBUILD="1";
 RPMINTDEPS="0";
+ADDCFLAG="-I=/opt/Xorg/include";
