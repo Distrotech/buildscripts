@@ -4,4 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 OPT_arm="-DSTACK_DIRECTION=1";
 OPT_x86_64="-DSTACK_DIRECTION=1";
-DONTBUILD="arm arm64 mips mips64 powerpc powerpc64 i686 x86_32 x86_64";
+DONTBUILD="${barch}";
