@@ -1,0 +1,42 @@
+#!/bin/bash
+
+if [ ! "${1}" ];then
+  echo needs arch
+  exit
+ else
+  ARCH=${1}
+fi;
+
+PKG_LIST="bash coreutils util-linux Python perl perl-modules yum rpm LVM2 e2fsprogs openssh dialog \
+          gawk sed grep which net-tools iproute2  procps psmisc inetutils xz gzip bzip2 tar less \
+          openldap curl nano file screen libxml2 libxslt findutils lynx joe apg avahi bc hdparm htop \
+          rp-pppoe rsync iptables ipv6calc kbd lsof macmask modemtest module-init-tools squashfs \
+          sysfsutils  dosfstools ethtool nmap nss-mdns ntfs-3g nfs-utils ntp usbutils uudeview \
+          unzip openvpn zip p7zip parted pciutils vlan wget gptfdisk ppp kmod dovecot bind \
+          systemd samba net-snmp ncurses ncursesw iana-etc iana-etc-conf tzdata mc glibc-conf \
+          avahi-conf e2fsprogs-conf Xorg-conf glibc";
+
+RPM_PKG_LIST="";
+for pkg in ${PKG_LIST};do
+ RPM_PKG_LIST+=" ${pkg}.${ARCH}"
+ if [ ! -e /var/opt/dtsbuild/build/status/${ARCH}/done/${pkg} ];then
+   echo ${pkg}
+ fi
+done;
+
+TMPDIR=$( mktemp -d -p /root dtsinstall.XXXXXXXXXXX)
+
+yum -y --installroot=${TMPDIR} --exclude="*.x86_64" install${RPM_PKG_LIST}
+
+for dir in root proc sys dev tmp;do
+  mkdir ${TMPDIR}/${dir}
+done
+
+chroot ${TMPDIR} /sbin/ldconfig
+
+rm install.squashfs
+mksquashfs ${TMPDIR}/* install.squashfs -comp xz
+
+if [ "${TMPDIR}" ] && [ -d ${TMPDIR} ];then
+  rm -rf ${TMPDIR}
+fi;
