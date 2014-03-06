@@ -2949,14 +2949,16 @@ build_dependancies() {
   #RPM/Yum
   build_packages ${1} elfutils libdwarf rpm pysqlite yum-metadata-parser urlgrabber yum deltarpm createrepo || return 1
 
-  #Time to build a static gcc bootstrap distributable
-  (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
+  if [ "${1}" != "arm64" ];then
+    #Time to build a static gcc bootstrap distributable
+    (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
 
-  #Static binutils distributable
-  (build_bootstrap_binutils ${1} ${2}) || return 1
+    #Static binutils distributable
+    (build_bootstrap_binutils ${1} ${2}) || return 1
 
-  #Shared GCC C/C++/ADA distributable
-  (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
+    #Shared GCC C/C++/ADA distributable
+    (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
+  fi;
 
   #Build tools needed for compiling
   static_toolbuild ${1} ${2}
