@@ -3,4 +3,3 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-introspection=yes";
 CHROOTBUILD="1";
-DONTBUILD="arm64";
