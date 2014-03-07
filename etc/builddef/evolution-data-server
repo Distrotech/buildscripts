@@ -9,3 +9,4 @@ if [ "${HASGIR}" == "no" ];then
  else
   CONFOPT="${CONFOPT} --enable-vala-bindings";
 fi;
+ADDWITHSYSROOT="1";
