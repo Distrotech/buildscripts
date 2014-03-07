@@ -3,8 +3,9 @@ VERSEP="-";
 if [ "${barch:0:3}" != "win" ];then
   PREFIX="/usr";
   CONFOPT="--enable-crypt --enable-lmpasswd --enable-modules --enable-rlookups --enable-slp --enable-backends=mod
-         --enable-overlays=mod --enable-rewrite --enable-slapi --disable-ndb --disable-perl --enable-spasswd
-         --with-cyrus-sasl --with-yielding_select ac_cv_func_memcmp_working=yes";
+         --enable-overlays=mod --enable-rewrite --enable-slapi --disable-ndb --enable-perl --enable-spasswd
+         --with-cyrus-sasl";
+  CHROOTBUILD="1";
  else
   PREFIX="/mingw";
   CONFOPT="--with-yielding_select=yes --disable-bdb --disable-hdb --disable-mdb --disable-overlays
