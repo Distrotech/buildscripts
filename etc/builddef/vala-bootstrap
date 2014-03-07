@@ -4,6 +4,9 @@ PREFIX="/usr";
 CONFOPT="";
 CHROOTBUILD="1";
 ALIAS="vala";
-if [ "${HASGIR}" == "no" ] || [ -x ${ARCHROOT}/${barch}/usr/bin/valac ];then
+if [ "${BUILDPROJECT}" == "vala-bootstrap" ];then
+  NOINST="1";
+fi;
+if [ "${HASGIR}" == "no" ];then
   DONTBUILD="${barch}";
 fi;

@@ -2669,7 +2669,7 @@ bootstrap_arch_root() {
       fi;
     fi;
 
-    build_packages ${arch} perl Python c-ares curl git unzip zip linux_logo gc guile make ||return 1
+    build_packages ${arch} libtool-chroot perl Python c-ares curl git unzip zip linux_logo gc guile make ||return 1
 
     #Pacakges used in native bootstrap
     build_packages ${arch} cmake dbus gengetopt libcroco gettext gtk-doc help2man libcap libcap-ng libcroco \
@@ -2775,11 +2775,13 @@ build_dependancies() {
 
   build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango || return 1
 
-  if [ ! -x ${ARCHROOT}/${1}/usr/bin/valac ];then
-    build_packages ${1} vala-bootstrap || return 1
+  build_packages ${1} vala-bootstrap || return 1
+  if [ ! -e ${STATDIR}/${arch}/done/vala ];then
+     (get_pkg_name vala-bootstrap
+     rsync -avP ${PKGDESTDIR}/${arch}/${PNAME}/ ${ARCHROOT}/${arch}/)
   fi;
 
-  build_packages ${1} libdrm intltool llvm talloc tevent libevent libverto krb5-static krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
+  build_packages ${1} vala libdrm intltool llvm talloc tevent libevent libverto krb5-static krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
     module-init-tools Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh LVM2 cryptsetup systemd || return 1
 
   if [ "${NARCH}" == "${1}" ];then

@@ -10,3 +10,10 @@ STATICOPT="--disable-shared";
 STATICMOPT="LDFLAGS=-static";
 AMVER="1.13";
 MLIBDIRLN="libltdl.so";
+if [ "${BUILDPROJECT}" == "libtool-chroot" ];then
+  CHROOTBUILD="1";
+  ALIAS="libtool";
+  RPMOBSOLETE="libtool";
+ elif [ -e "${STATDIR}/${barch}/done/libtool" ];then
+  DONTBUILD="${barch}";
+fi
