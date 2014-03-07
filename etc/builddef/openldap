@@ -6,6 +6,7 @@ if [ "${barch:0:3}" != "win" ];then
          --enable-overlays=mod --enable-rewrite --enable-slapi --disable-ndb --enable-perl --enable-spasswd
          --with-cyrus-sasl";
   CHROOTBUILD="1";
+  ADDLDFLAG="-L=/usr/lib/perl5/5.18.2/${HOST}-thread-multi/CORE";
  else
   PREFIX="/mingw";
   CONFOPT="--with-yielding_select=yes --disable-bdb --disable-hdb --disable-mdb --disable-overlays
