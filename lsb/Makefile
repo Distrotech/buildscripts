@@ -20,7 +20,7 @@ lsb_release.1.gz: lsb_release
 	@gzip -9f lsb_release.1
 
 install: all
-	install -d ${mandir}/man1/lsb_release.1.gz ${prefix}/bin/lsb_release ${DESTDIR}/etc
+	install -d ${mandir}/man1 ${prefix}/bin ${DESTDIR}/etc
 	install -D -m 644 lsb_release.1.gz ${mandir}/man1/lsb_release.1.gz
 	install -D -m 755 lsb_release ${prefix}/bin/lsb_release
 	install -D -m 644 lsb-release ${DESTDIR}/etc
