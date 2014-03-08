@@ -1,9 +1,10 @@
-VERSION="0.5.5";
+VERSION="0.6.3";
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="-DWITH_GCRYPT:BOOL=ON -DGCRYPT_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libgcrypt.so 
-         -DZLIB_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libz.so 
-         -DGCRYPT_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include
-         -DZLIB_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include";
-FIXUPLIB="1";
-EXTRALIBS="-lpthread -lrt -ldl";
+CONFOPT="-DWITH_GCRYPYT:BOOL=OFF -DZLIB_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libz.so
+         -DOPENSSL_SSL_LIBRARIES:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libssl.so
+         -DOPENSSL_CRYPTO_LIBRARIES:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libcrypto.so";
+case ${barch} in
+  arm64)CONFOPT="${CONFOPT} -DZLIB_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include
+                -DOPENSSL_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include";;
+esac;
