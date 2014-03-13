@@ -162,10 +162,9 @@ pkg2rpm() {
     fi;
 
     rpmname=${2}${xpkg}
-
-    RPMIVER=$(rpm -qi --root=${RPMROOT} ${rpmname}.${1} |awk '$1 == "Version" {print $3}')
+    RPMIVER=$(rpm -qi --root=${RPMROOT} ${rpmname} |awk '$1 == "Version" {print $3}')
     if [ "${RPMIVER}" ] && [ "${RPMIVER}" == "${RVERSION}" ];then
-      release=$(rpm -qi --root=${RPMROOT} ${rpmname}.${1} |awk '$1 == "Release" {print $3}')
+      release=$(rpm -qi --root=${RPMROOT} ${rpmname} |awk '$1 == "Release" {print $3}')
      else
       release=0
     fi
@@ -187,11 +186,10 @@ pkg2rpm() {
     fi;
 
     if [ ! "${RPMIVER}" ] && [ -e ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
-      rpm -ivh --force --nodeps --root=${RPMROOT} ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
+      rpm -ivh --force --nodeps --justdb --ignorearch --root=${RPMROOT} ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
      elif [ ${release} != ${orig_release} ] && [ -e ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
-      rpm -Uvh --force --nodeps --root=${RPMROOT} ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
+      rpm -Uvh --force --nodeps --justdb --ignorearch --root=${RPMROOT} ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
     fi;
-
     unset SRPMPROVIDES RPM_OBSOLETE
   done;
 }
@@ -227,8 +225,12 @@ pkg_rpm_arch() {
     createrepo ${RPMDIR}
   fi;
 
+  if [ "${NARCH}" != "${1}" ];then
+    FILTER="*.${NARCH}"
+  fi;
+
   yum --installroot=${RPMROOT} clean all
-  yum --installroot=${RPMROOT} --skip-broken --assumeyes update
+  yum --installroot=${RPMROOT} --exclude="${FILTER}" --skip-broken --assumeyes update
 }
 
 if [ "${1}" ];then
