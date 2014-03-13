@@ -46,3 +46,6 @@ CONFOPT="-DWITH_TELEPATHY:BOOL=OFF -DWITH_APPINDICATOR=OFF
          -DAVAHI_INCLUDE_DIR:PATH=${ARCHROOT}/${barch}/usr/include/
          -DXKBFILE_INCLUDE_DIR:PATH=${ARCHROOT}/${barch}/opt/Xorg/include/xcb
          -DGCRYPT_INCLUDE_DIR:PATH=${ARCHROOT}/${barch}/usr/include";
+case ${barch} in
+  x86_64|x86_32|i[3-6]86)CHROOTBUILD="1";;
+esac;
