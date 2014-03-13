@@ -5,3 +5,4 @@ CONFOPT="";
 CFGPTH="yodl";
 CFGBIN="yodl/";
 BUILDDIR="0";
+CHROOTBUILD="1";
