@@ -1,0 +1,12 @@
+ecking uname sysname type: "Linux"
+Checking uname machine type: "x86_64"
+Checking uname release type: "3.4.12-arm-dts"
+Checking uname version type: "#1 SMP PREEMPT Sun Oct 21 05:12:11 SAST 2012"
+Checking simple C program: OK
+Checking uname sysname type: UNKNOWN
+rpath library support: UNKNOWN
+-Wl,--version-script support: UNKNOWN
+Checking getconf LFS_CFLAGS: UNKNOWN
+Checking for large file support without additional flags: UNKNOWN
+Checking for -D_FILE_OFFSET_BITS=64: UNKNOWN
+Checking for -D_LARGE_FILES: UNKNOWN

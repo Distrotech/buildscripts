@@ -35,11 +35,13 @@ Checking for HAVE_SECURE_MKSTEMP: OK
 rpath library support: OK
 -Wl,--version-script support: OK
 Checking for HAVE_IFACE_GETIFADDRS: OK
-Checking for HAVE_IFACE_IFCONF: UNKNOWN
-Checking for HAVE_IFACE_IFREQ: UNKNOWN
-Checking for HAVE_INCOHERENT_MMAP: NO
 Checking getconf LFS_CFLAGS: "`getconf LFS_CFLAGS`"
 Checking for large file support without additional flags: NO
 Checking for working strptime: OK
 Checking for HAVE_SHARED_MMAP: OK
 Checking for HAVE_MREMAP: OK
+Checking for HAVE_INCOHERENT_MMAP: NO
+Checking value of NSIG: "65"
+Checking value of _NSIG: "65"
+Checking value of SIGRTMAX: "64"
+Checking value of SIGRTMIN: "34"
