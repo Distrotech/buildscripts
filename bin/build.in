@@ -218,7 +218,7 @@ arch_config() {
     arm)AQCPU=arm;;
     arm64)AQCPU=aarch64;;
     mips|mips64)AQCPU=mips;;
-    powerpc)AQCPU=ppc;;
+    powerpc)AQCPU=ppc64abi32;;
     powerpc64)AQCPU=ppc64;;
   esac;
 }
@@ -382,7 +382,7 @@ check_create_arch() {
     ln -sr / ${ARCHROOT}/${1}
    elif [ ! -d ${ARCHROOT}/${1} ];then
     mkdir -p ${ARCHROOT}/${1}
-    if [ -d ${ARCHROOT}/${1} ] && [-d ${HDIR} ];then
+    if [ -d ${ARCHROOT}/${1} ] && [ -d ${HDIR} ];then
       rsync -a ${HDIR}/ ${ARCHROOT}/${1}/
     fi;
   fi;
@@ -1155,7 +1155,7 @@ build_project() {
            i[3-6]86|x86_64)SETARCH="setarch ${NEWARCH}";;
          esac;;
      esac;
-     ${SETARCH} /usr/bin/env -i - TERM=${TERM} NARCH=${NEWARCH} CLEANOPT=${BOOTCLEAN} RUNBASHRC=1 chroot ${ARCHROOT}/${NEWARCH} ${SCRIPTDIR}/build ${NEWARCH} + ${BUILDPROJECT})
+     ${SETARCH} /usr/bin/env -i - SHELL=${SHELL} TERM=${TERM} NARCH=${NEWARCH} CLEANOPT=${BOOTCLEAN} RUNBASHRC=1 chroot ${ARCHROOT}/${NEWARCH} ${SCRIPTDIR}/build ${NEWARCH} + ${BUILDPROJECT})
     if [ -e ${STATDIR}/${ORIGARCH}/fail/${PROJECT} ];then
       return 1
      else
@@ -1338,8 +1338,10 @@ build_project() {
     LD="${HOST}-ld"
   fi;
   export CC CXX PKG_CONFIG_PATH RLINK_PATH MLIBDIRLN ARCHPREFIX
-  if [ "${BOOTSTRAP}" == "0" ];then
-    export LD_LIBRARY_PATH="${RLINK_PATH}"
+  if [ "${BOOTSTRAP}" == "0" ] && [ "${ORIGARCH}" != "powerpc64" ];then
+    export LD_LIBRARY_PATH="${RLINK_PATH}";
+   else
+    unset LD_LIBRARY_PATH;
   fi;
 
   #XXX /build AKA ARCHROOT
@@ -2445,8 +2447,8 @@ setup_hybrid_boot() {
 
   for pkg in glibc mpc mpfr gmp cloog isl readline ncurses zlib flex ncursesw glib popt \
              gcc pcre selinux xz libsigsegv guile acl gc attr libffi libunistring libtool \
-             gettext libcroco libxml2;do
-   (get_pkg_name ${pkg} ${1}
+             gettext libcroco libxml2 libxslt libatomic_ops libgcrypt libgpg-error;do
+   (get_pkg_name ${pkg} ${NARCH}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    if [ ! -d ${PDIR} ];then
      return 1
@@ -2462,8 +2464,8 @@ setup_hybrid_boot() {
    fi;) || ERROR="${ERROR}${pkg} Libs Missing\n"
   done
 
-  for pkg in javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep gettext;do
-   (get_pkg_name ${pkg} ${1}
+  for pkg in javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep gettext libxslt glib;do
+   (get_pkg_name ${pkg} ${NARCH}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    if [ ! -d ${PDIR} ];then
      return 1
@@ -2564,7 +2566,7 @@ setup_hybrid_boot() {
   chroot ${ARCHROOT}/${1} /sbin/ldconfig
   ${ARCHROOT}/${1}/sbin/ldconfig -r ${ARCHROOT}/${1}
   if [ -e /usr/bin/qemu-${QCPU}-static ];then
-    cp /usr/bin/qemu-${QCPU}-static ${ARCHROOT}/${1}/usr/bin
+    cp /usr/bin/qemu-${QCPU} ${ARCHROOT}/${1}/usr/bin
   fi;
   if [ "${ERROR}" == "0" ];then
     touch ${ARCHROOT}/${1}/usr/${NLIBDIR}/${NMLIBDIR}/.distro_done
@@ -2669,7 +2671,7 @@ bootstrap_arch_root() {
       fi;
     fi;
 
-    build_packages ${arch} libtool-chroot perl Python c-ares curl git unzip zip linux_logo gc guile make ||return 1
+    build_packages ${arch} perl Python help2man libtool-chroot c-ares curl git unzip zip linux_logo gc guile make ||return 1
 
     #Pacakges used in native bootstrap
     build_packages ${arch} cmake dbus gengetopt libcroco gettext gtk-doc help2man libcap libcap-ng libcroco \
@@ -2728,7 +2730,7 @@ build_dependancies() {
   #Base dependancies
   build_packages ${1} groff gdbm perl gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv \
     m4 diffutils attr acl pcre libaudit selinux file gengetopt libidn libtasn1 p11-kit nettle gnutls \
-    libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap bison flex gawk coreutils readline bash \
+    libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap bison flex gawk readline bash coreutils \
     xz expat openssl wget iana-etc || return 1
 
   #Dont build libxml2 if there is a python in / may not be one in /build/.../
@@ -2770,15 +2772,16 @@ build_dependancies() {
 
   if [ "${1}" != "${NARCH}" ];then
     build_packages ${1} gobject-introspection libdaemon avahi-nogui talloc tevent libevent libverto krb5-static krb5 cups ghostscript \
-      gs-fonts ijs libspectre cairo poppler atk gdk-pixbuf libvdpau mozjs polkit libmicrohttpd LVM2 cryptsetup systemd libgusb colord || return 1
+      gs-fonts ijs libspectre cairo poppler atk gdk-pixbuf libvdpau setuptools mozjs mozjs-17 polkit libmicrohttpd LVM2 cryptsetup systemd libgusb \
+      bash-completion colord || return 1
   fi;
 
   build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango || return 1
 
   build_packages ${1} vala-bootstrap || return 1
-  if [ ! -e ${STATDIR}/${arch}/done/vala ];then
+  if [ ! -e ${STATDIR}/${1}/done/vala ];then
      (get_pkg_name vala-bootstrap
-     rsync -avP ${PKGDESTDIR}/${arch}/${PNAME}/ ${ARCHROOT}/${arch}/)
+     rsync -avP ${PKGDESTDIR}/${1}/${PNAME}/ ${ARCHROOT}/${1}/)
   fi;
 
   build_packages ${1} vala libdrm intltool llvm talloc tevent libevent libverto krb5-static krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
@@ -2826,8 +2829,8 @@ build_dependancies() {
   fi;
 
   build_packages ${1} glamor Xorg poppler poppler-data qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
-    txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib docutils dbus-python mozjs polkit GConf libbonobo libatomic_ops gc guile autogen \
-    libmad Xaw3d gv rtmpdump polkit-gnome yodl swig M2Crypto wireless-regdb crda || return 1
+    txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib docutils dbus-python mozjs mozjs-17 polkit GConf libbonobo \
+    libatomic_ops gc guile autogen libmad Xaw3d gv rtmpdump polkit-gnome yodl swig M2Crypto wireless-regdb crda || return 1
 
   #Build openjdk on native
   if [ "${NARCH}" == "${1}" ];then
@@ -2863,7 +2866,7 @@ build_dependancies() {
     xorriso apg archivemount bc bindfs bsd-finger cdde dcron dmraid ecryptfs-utils ed fbset fdutils fetchmail \
     foomatic-filters globe hdparm hfsutils joe logcheck logrotate mailutils libpipeline po4a man-db man-pages mdadm mrouted \
     mcelog mt-st p7zip phoon pimd procmail quagga quota-tools radvd rp-pppoe screen sdparm setserial sharutils \
-    usb-modeswitch usb-modeswitch-data xterm Pyrex bzr cdrdao bash-completion libgusb colord cvs dash dcd dmake faad2 frox \
+    usb-modeswitch usb-modeswitch-data xterm Pyrex bzr cdrdao libgusb colord cvs dash dcd dmake faad2 frox \
     gaa gdb gpm igmpproxy iksemel imap portablexdr ippool ipv6calc kbd keepalived lksctp-tools libid3tag madplay man2html \
     mercurial mrtg nmap openl2tp freeradius-server freeradius-client memcached libmemcached lksctp-tools libmicrohttpd \
     opensips openvpn pine psqlodbc rpcbind sendmail sox sqliteodbc stund hostapd wpa_supplicant libnetfilter_cthelper \
@@ -2928,7 +2931,7 @@ build_dependancies() {
     gnuchess ctl CTL openexr_ctl openexr_viewers xmlcopyeditor dia || return 1
 
   #Perl/Python Bits
-  build_packages ${1} setuptools net-snmp-perl net-snmp-python || return 1
+  build_packages ${1} net-snmp-perl net-snmp-python || return 1
 
   #Other Packages
   build_packages ${1} memtest86 liberation-fonts dejavu-fonts unifoundry psutils isoquery syslinux|| return 1
