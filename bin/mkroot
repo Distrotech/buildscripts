@@ -1,5 +1,7 @@
 #!/bin/bash
 
+NARCH=${NARCH:=$(uname -m)}
+
 if [ ! "${1}" ];then
   echo needs arch
   exit
@@ -13,12 +15,21 @@ PKG_LIST="bash coreutils util-linux Python perl perl-modules yum rpm LVM2 e2fspr
           rp-pppoe rsync iptables ipv6calc kbd lsof macmask modemtest module-init-tools squashfs \
           sysfsutils  dosfstools ethtool nmap nss-mdns ntfs-3g nfs-utils ntp usbutils uudeview \
           unzip openvpn zip p7zip parted pciutils vlan wget gptfdisk ppp kmod dovecot bind \
-          systemd samba net-snmp ncurses ncursesw iana-etc iana-etc-conf tzdata mc glibc-conf \
-          avahi-conf e2fsprogs-conf Xorg-conf glibc";
+          systemd samba net-snmp ncurses ncursesw iana-etc tzdata mc glibc bindfs fuse ecryptfs-utils \
+          nss_ldap pam_ldap cyrus-sasl libtool-chroot";
+
+case ${ARCH} in
+  i[3-6]86|x86_32|x86_64)MARCH=".${ARCH}";;
+  *)MARCH=".${ARCH}";;
+esac;
+
 
 RPM_PKG_LIST="";
 for pkg in ${PKG_LIST};do
- RPM_PKG_LIST+=" ${pkg}.${ARCH}"
+ RPM_PKG_LIST+=" ${pkg}${MARCH}"
+ if [ "`ls /srv/opt/dtsbuild/tar/${ARCH}/${pkg}*/${pkg}*-conf.tar.xz 2>/dev/null`" ];then
+   RPM_PKG_LIST+=" ${pkg}-conf${MARCH}"
+ fi;
  if [ ! -e /var/opt/dtsbuild/build/status/${ARCH}/done/${pkg} ];then
    echo ${pkg}
  fi
@@ -26,7 +37,20 @@ done;
 
 TMPDIR=$( mktemp -d -p /root dtsinstall.XXXXXXXXXXX)
 
-yum -y --installroot=${TMPDIR} --exclude="*.x86_64" install${RPM_PKG_LIST}
+case ${NARCH} in
+  x86_32|x86_64|i[3-6]86)
+    case ${ARCH} in
+      x86_64)yum -y --installroot=${TMPDIR} --exclude="*.x86_32" --exclude="*.i686" install${RPM_PKG_LIST};;
+      x86_32)yum -y --installroot=${TMPDIR} --exclude="*.x86_64" --exclude="*.i686" install${RPM_PKG_LIST};;
+      i[3-6]86)yum -y --installroot=${TMPDIR} --exclude="*.x86_64" --exclude="*.x86_32" install${RPM_PKG_LIST};;
+      *)yum -y --installroot=${TMPDIR} --exclude="*.x86_64" --exclude="*.x86_32" --exclude="*.i686" install${RPM_PKG_LIST};;
+    esac;;
+  *)if [ "${NARCH}" == "${ARCH}" ];then
+      yum -y --installroot=${TMPDIR} install${RPM_PKG_LIST};
+     else
+      yum -y --installroot=${TMPDIR} --exclude="*.${NARCH}" install${RPM_PKG_LIST};
+    fi;;
+esac;
 
 for dir in root proc sys dev tmp;do
   mkdir ${TMPDIR}/${dir}
@@ -34,8 +58,10 @@ done
 
 chroot ${TMPDIR} /sbin/ldconfig
 
-rm install.squashfs
-mksquashfs ${TMPDIR}/* install.squashfs -comp xz
+if [ -e install-${ARCH}.squashfs ];then
+  rm install-${ARCH}.squashfs
+fi;
+mksquashfs ${TMPDIR}/* install-${ARCH}.squashfs -comp xz
 
 if [ "${TMPDIR}" ] && [ -d ${TMPDIR} ];then
   rm -rf ${TMPDIR}
