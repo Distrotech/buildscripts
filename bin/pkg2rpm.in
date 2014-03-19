@@ -236,7 +236,7 @@ pkg_rpm_arch() {
         x86_64)yum --installroot=${RPMROOT} --exclude="${FILTER}" --exclude="*.i686" --exclude="*.x86_32" --skip-broken --assumeyes update;;
         x86_32)yum --installroot=${RPMROOT} --exclude="${FILTER}" --exclude="*.i686" --exclude="*.x86_64" --skip-broken --assumeyes update;;
         i[3-6]86)yum --installroot=${RPMROOT} --exclude="${FILTER}" --exclude="*.x86_64" --exclude="*.x86_32" --skip-broken --assumeyes update;;
-        *)yum --installroot=${RPMROOT} --exclude="${FILTER}" --skip-broken --assumeyes update;;
+        *)yum --installroot=${RPMROOT} --exclude="*.x86_64" --exclude="*.x86_32" --exclude="*.i686" --skip-broken --assumeyes update;;
       esac;;
       *)yum --installroot=${RPMROOT} --exclude="${FILTER}" --skip-broken --assumeyes update;;
   esac;
