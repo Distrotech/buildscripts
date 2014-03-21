@@ -2508,11 +2508,13 @@ setup_hybrid_boot() {
 
     for jtool in gappletviewer gjar gjarsigner gij gjdoc gjavah gkeytool \
                  gnative2ascii gorbd grmic grmid grmiregistry gserialver gtnameserv;do
+      if [ -e ${TMPDIR}/usr/bin/${HOST}-${jtool} ];then
+        rm ${TMPDIR}/usr/bin/${HOST}-${jtool}
+      fi;
       if [ -e ${TMPDIR}/usr/bin/${jtool} ];then
-        if [ -e ${TMPDIR}/usr/bin/${HOST}-${jtool} ];then
-          rm ${TMPDIR}/usr/bin/${HOST}-${jtool}
-        fi;
         ln -s ${jtool} ${TMPDIR}/usr/bin/${HOST}-${jtool}
+       elif [ -e ${TMPDIR}/usr/bin/${BUILD}-${jtool} ];then
+        ln -s ${BUILD}-${jtool} ${TMPDIR}/usr/bin/${HOST}-${jtool}
       fi;
     done
    else
@@ -2546,11 +2548,12 @@ setup_hybrid_boot() {
   ls /usr/bin/${HOST}-*  |cut -d- -f4- |awk -v HOST=${HOST} '{printf "rm usr/bin/%s;ln -s %s-%s usr/bin/%s\n",$1,HOST,$1,$1}' |sh >/dev/null 2>&1
 
   #JDK bits
-  if [ ! -d /usr/${B_LIBDIRS}/jvm ];then
-    mkdir -p /usr/${B_LIBDIRS}/jvm
+  if [ ! -d ${TMPDIR}/usr/${B_LIBDIRS}/jvm ];then
+    mkdir -p ${TMPDIR}/usr/${B_LIBDIRS}/jvm
   fi;
-  rsync -a /usr/${NLIBDIR}/jvm/gcj-jdk-${1}/ /usr/${B_LIBDIRS}/jvm/gcj-jdk/
-#rsync -avP /usr/lib64/jvm/gcj-jdk-arm/ /build/arm/usr/lib/jvm/gcj-jdk/
+  rsync -a /usr/${NLIBDIR}/jvm/gcj-jdk-${1}/ ${TMPDIR}/usr/${B_LIBDIRS}/jvm/gcj-jdk/
+  ln -sr ${TMPDIR}/usr/bin/ecj ${TMPDIR}/usr/${B_LIBDIRS}/jvm/gcj-jdk/bin/javac
+  ln -sr ${TMPDIR}/usr/bin/${HOST}-gcc ${TMPDIR}/usr/bin/cc
 
   for ldtool in $(ls /usr/${HOST}/bin);do
     rm -f usr/bin/${HOST}-$ldtool usr/bin/${ldtool} >/dev/null 2>&1
@@ -2559,7 +2562,6 @@ setup_hybrid_boot() {
   done)
 
   rsync -a ${TMPDIR}/ ${ARCHROOT}/${1}/
-
   if [ "${TMPDIR}" ] && [ -d "${TMPDIR}" ];then
     rm -rf ${TMPDIR}
   fi;
@@ -2830,7 +2832,7 @@ build_dependancies() {
 
   build_packages ${1} glamor Xorg poppler poppler-data qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
     txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib docutils dbus-python mozjs mozjs-17 polkit GConf libbonobo \
-    libatomic_ops gc guile autogen libmad Xaw3d gv rtmpdump polkit-gnome yodl swig M2Crypto wireless-regdb crda || return 1
+    libatomic_ops gc guile autogen libmad Xaw3d gv rtmpdump polkit-gnome icmake yodl swig M2Crypto wireless-regdb crda || return 1
 
   #Build openjdk on native
   if [ "${NARCH}" == "${1}" ];then
@@ -2845,7 +2847,7 @@ build_dependancies() {
   fi;
 
   build_packages ${1} cacerts-lfs apr apr-iconv sqlite-autoconf keyutils neon rhino junit antlr4 apache-ant \
-    ecj db unixODBC cyrus-sasl openslp openldap mysql postgresql apr-util httpd subversion \
+    ecj db unixODBC cyrus-sasl openslp mysql openldap postgresql apr-util httpd subversion \
     libva gmerlin jasper libraw1394 orc libogg libvorbis libkate gnome-mime-data gnome-vfs \
     libvisual gstreamer gstreamer-1 v4l-utils flac audiofile esound libsndfile json-c fftw \
     libsamplerate speex pulseaudio SDL SDL2 libdc1394 libtheora gst-plugins-base OpenCV frei0r \
