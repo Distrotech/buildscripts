@@ -4,9 +4,15 @@ PREFIX="/usr";
 CONFOPT="--with-libltdl-prefix=${ARCHROOT}/${barch}/usr/${C_LIBDIRS} --with-libgmp-prefix=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}
          --with-libunistring-prefix=${ARCHROOT}/${barch}/usr/${C_LIBDIRS} --with-libreadline-prefix=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}";
 ADDWITHSYSROOT="1";
-DONTBUILD="mips mips64 powerpc powerpc64 cyg32 cyg64";
+DONTBUILD="cyg32 cyg64";
 AMVER="1.14";
 NONULLCONF="1";
-CHROOTBUILD="1";
+case ${NARCH} in
+  x86_64|x86_32|i[3-6]86)
+    case ${barch} in
+      x86_64|x86_32|i[3-6]86)CHROOTBUILD="1";;
+      arm|arm64)CHROOTBUILD="1";;
+    esac;;
+esac;
 RPMPROVIDES="/guile";
 ADDWITHSYSROOT="1";
