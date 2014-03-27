@@ -3,6 +3,7 @@
 FILTER_arm="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
 FILTER_arm64="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)|(data/cursors)|(font/)";
 FILTER_mips="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
+FILTER_mips64="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
 FILTER_powerpc="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
 FILTER_powerpc64="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
 FILTER_cyg32="|(lib/libpciaccess)|(app/sessreg)";
@@ -111,7 +112,8 @@ CONFFLAGS="--host=${2} --build=${BUILD} --with-sysroot --libdir=${PREFIX}/${B_LI
            xorg_cv_malloc0_returns_null=yes --sysconfdir=/etc --localstatedir=/var"
 
 if [ "${NARCH}" != "${1}" ];then
-  CONFFLAGS="${CONFFLAGS} MKFONTDIR=${PREFIX}/bin/mkfontdir MKFONTSCALE=${PREFIX}/bin/mkfontscale UCS2ANY=${PREFIX}/bin/ucs2any BDFTOPCF=${PREFIX}/bin/bdftopcf";
+  CONFFLAGS="${CONFFLAGS} MKFONTDIR=${PREFIX}/bin/mkfontdir MKFONTSCALE=${PREFIX}/bin/mkfontscale UCS2ANY=${PREFIX}/bin/ucs2any 
+             BDFTOPCF=${PREFIX}/bin/bdftopcf XCURSORGEN=${PREFIX}/bin/xcursorgen";
 fi;
 export CONFFLAGS
 
