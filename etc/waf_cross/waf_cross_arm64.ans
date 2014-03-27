@@ -41,3 +41,7 @@ Checking for working strptime: OK
 Checking for HAVE_SHARED_MMAP: OK
 Checking for HAVE_MREMAP: OK
 Checking for HAVE_INCOHERENT_MMAP: NO
+Checking value of NSIG: "65"
+Checking value of _NSIG: "65"
+Checking value of SIGRTMAX: "64"
+Checking value of SIGRTMIN: "34"
