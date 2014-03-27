@@ -1,7 +1,10 @@
 VERSION="2.19";
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-add-ons --enable-multi-arch --enable-static-nss";
+case ${barch} in
+  mips*)CONFOPT="--enable-add-ons --enable-static-nss";;
+  *)CONFOPT="--enable-add-ons --enable-multi-arch --enable-static-nss";;
+esac;
 OPTX_i686="--with-headers=${ARCHROOT}/i686/usr/include";
 OPTX_x86_64="--with-headers=${ARCHROOT}/x86_64/usr/include";
 OPTX_x86_32="--with-headers=${ARCHROOT}/x86_32/usr/include";
