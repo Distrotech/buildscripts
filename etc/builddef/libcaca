@@ -2,4 +2,4 @@ VERSION="0.99.beta18"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-csharp --disable-doc";
-ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/pango-1.0";
+ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/pango-1.0 -I../../caca";
