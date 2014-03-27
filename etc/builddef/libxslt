@@ -18,3 +18,4 @@ if [ "${barch:0:3}" == "win" ] || [ "${barch:0:3}" == "cyg" ];then
   ADDCFLAG="-I=/mingw/include/libxml2"
 fi;
 USEMINGW="1";
+COREBUILD="1";
