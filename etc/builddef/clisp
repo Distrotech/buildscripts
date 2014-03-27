@@ -11,5 +11,6 @@ CHROOTBUILD="1";
 GITBRANCH="master";
 if [ -e /proc/sys/fs/binfmt_misc/${barch} ];then
   DONTBUILD="${barch}";
+ else
+  DONTBUILD="powerpc64";
 fi
-
