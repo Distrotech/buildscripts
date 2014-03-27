@@ -16,3 +16,4 @@
 /config.*
 /etc/yum_repo.conf
 /lsb/lsb-release
+/lsb/lsb_release.1.gz
