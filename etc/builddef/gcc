@@ -63,7 +63,7 @@ CROSSOPT_powerpc64="--disable-multilib --disable-libsanitizer";
 CROSSOPT_arm="${ARM7OPTS} --with-mode=arm";
 CROSSOPT_arm64="--disable-multilib --disable-libatomic";
 CROSSOPT_mips="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
-CROSSOPT_mips64="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=64";
+CROSSOPT_mips64="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=64 --disable-multilib";
 CROSSOPT_win32="--disable-multilib";
 CROSSOPT_cyg32="--disable-multilib --enable-version-specific-runtime-libs";
 CROSSOPT_cyg64="--enable-version-specific-runtime-libs";
