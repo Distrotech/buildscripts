@@ -3,21 +3,13 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-swig --with-ssl";
 MAKEITARGETS="install swig-pl swig-py install-swig-pl install-swig-py";
-if [ -d /usr/${B_LIBDIRS}/jvm/gcj-jdk ];then
+if [ -x /usr/${B_LIBDIRS}/jvm/gcj-jdk/bin/javac ];then
   MAKETARGETS="javahl";
   MAKEITARGETS="${MAKEITARGETS} install-javahl";
   CONFOPT="${CONFOPT} --enable-javahl --with-jdk=/usr/${B_LIBDIRS}/jvm/gcj-jdk";
 fi;
-OPTX_arm="--with-apxs=${ARCHROOT}/arm/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/arm/usr --with-apr-util=${ARCHROOT}/arm/usr
-         --with-gssapi=${ARCHROOT}/arm/usr --with-swig=${ARCHROOT}/arm/usr --with-neon=${ARCHROOT}/arm/usr";
-OPTX_arm64="--with-apxs=${ARCHROOT}/arm64/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/arm64/usr --with-apr-util=${ARCHROOT}/arm64/usr
-         --with-gssapi=${ARCHROOT}/arm64/usr --with-swig=${ARCHROOT}/arm64/usr --with-neon=${ARCHROOT}/arm64/usr";
-OPTX_i686="--with-apxs=${ARCHROOT}/i686/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/i686/usr --with-apr-util=${ARCHROOT}/i686/usr
-          --with-gssapi=${ARCHROOT}/i686/usr --with-swig=${ARCHROOT}/i686/usr --with-neon=${ARCHROOT}/i686/usr";
-OPTX_x86_32="--with-apxs=${ARCHROOT}/x86_32/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/x86_32/usr --with-apr-util=${ARCHROOT}/x86_32/usr
-          --with-gssapi=${ARCHROOT}/x86_32/usr --with-swig=${ARCHROOT}/x86_32/usr --with-neon=${ARCHROOT}/x86_32/usr";
-OPTX_x86_64="--with-apxs=${ARCHROOT}/x86_64/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/x86_64/usr --with-apr-util=${ARCHROOT}/x86_64/usr
-          --with-gssapi=${ARCHROOT}/x86_64/usr --with-swig=${ARCHROOT}/x86_64/usr/bin/swig --with-neon=${ARCHROOT}/x86_64/usr";
+CONFOPTX"--with-apxs=${ARCHROOT}/${barch}/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/${barch}/usr --with-apr-util=${ARCHROOT}/${barch}/usr
+         --with-gssapi=${ARCHROOT}/${barch}/usr --with-swig=${ARCHROOT}/${barch}/usr --with-neon=${ARCHROOT}/${barch}/usr";
 ADDCFLAG="-I=/opt/apache/include";
 STATICOPT="--disable-shared --without-berkeley-db --enable-all-static --without-apxs LDFLAGS=-static"
 STATICMOPT="LDFLAGS=-all-static";
