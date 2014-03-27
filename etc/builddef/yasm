@@ -3,5 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 FIXUPLIB="1";
-DONTBUILD="arm64 arm powerpc powerpc64 cyg32 cyg64";
+DONTBUILD="arm64 arm powerpc powerpc64 cyg32 cyg64 mips mips64";
 GITBRANCH="master";
