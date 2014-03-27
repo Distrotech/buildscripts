@@ -10,3 +10,4 @@ if [ "${HASGIR}" == "no" ];then
   CONFOPT="${CONFOPT} --enable-vala-bindings";
 fi;
 ADDWITHSYSROOT="1";
+ADDCFLAG="-I=/usr/include/libsoup-2.4 -I=/usr/include/nspr";
