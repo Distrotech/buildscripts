@@ -4,6 +4,8 @@ if [ "${barch:0:3}" != "win" ] && [ "${barch:0:3}" != "cyg" ];then
   EXTRALIBS="-lxcb -lXau -lXdmcp -ldl -lm -lpthread -lrt";
   NOCROSS="1";
   CHROOTBUILD="1";
+  NOCCOPT="1";
+  NOCROSS="1";
   PREFIX="/usr";
  else
   USEMINGW="1";
@@ -33,6 +35,4 @@ ADDLDFLAG="-L=${PREFIX}/${B_LIBDIRS} -L=${X11DIR}/${B_LIBDIRS}";
 GITREPO="gtk";
 CLEARFLAGS="1";
 ADDWITHSYSROOT="1";
-CHROOTBUILD="1";
 SYSROOTFIXUP="1";
-
