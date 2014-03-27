@@ -5,6 +5,10 @@ CONFOPT="--disable-vv --disable-nm --disable-meanwhile --with-tclconfig=${ARCHRO
          --with-tkconfig=${ARCHROOT}/${barch}/usr/${C_LIBDIRS} --enable-cyrus-sasl --enable-mono";
 ADDLDFLAG="-L=/usr/lib/perl5/5.18.2/${HOST}-thread-multi/CORE";
 CHROOTBUILD="1";
-OPT_arm="--disable-mono";
 OPT_arm64="--disable-mono";
+OPT_arm="--disable-mono";
 OPT_x86_32="--disable-mono";
+OPT_powerpc="--disable-mono";
+OPT_powerpc64="--disable-mono";
+OPT_mips="--disable-mono";
+OPT_mips64="--disable-mono";
