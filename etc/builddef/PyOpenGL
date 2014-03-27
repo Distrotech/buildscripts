@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 GITBRANCH="release-3.0.1";
+CHROOTBUILD="1";
