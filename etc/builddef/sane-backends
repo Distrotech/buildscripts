@@ -3,5 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-DONTBUILD="powerpc";
+DONTBUILD="powerpc mips mips64";
 CHROOTBUILD="1";
