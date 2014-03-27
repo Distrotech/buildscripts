@@ -20,6 +20,6 @@ CONFOPTX="-DCMAKE_CROSSCOMPILING=True";
 FIXUPLIB="1";
 ADDFILTER="Makefile.config";
 SYSROOTFIXUP="1";
-DONTBUILD="mips mips64 powerpc powerpc64";
+DONTBUILD="powerpc powerpc64 mips64";
 NODIET="1";
 FIXUPLIB="1"
