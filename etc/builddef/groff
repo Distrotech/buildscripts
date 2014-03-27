@@ -1,7 +1,10 @@
-VERSION="1.21"
+VERSION="1.22.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 ADDPATH="${SRCDIR}/groff/groff${VERSEP}${VERSION}/src/roff/groff/";
 DONTBUILD="cyg32 cyg64";
+if [ "${barch}" != "${NARCH}" ];then
+  MAKEOPTS="TROFFBIN=troff GROFFBIN=groff GROFF_BIN_PATH=/usr/bin";
+fi;
