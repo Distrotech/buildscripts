@@ -5,3 +5,6 @@ CONFOPT="";
 OPT_arm="--without-openexr";
 OPT_arm64="--without-openexr";
 OPT_powerpc="--without-openexr";
+OPT_powerpc64="--without-openexr";
+OPT_mips="--without-openexr";
+OPT_mips64="--without-openexr";
