@@ -1,10 +1,9 @@
-VERSION="1.0.1e"
+VERSION="1.0.1f"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 FIXUPLIB="1";
-ADDCFLAG="-fPIC";
 MLIBDIRLN="libcrypto.so libssl.so"
 USEMINGW="1";
 MANREMOVE="man3/threads.3 man3/err.3 man3/rand.3";
