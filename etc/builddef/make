@@ -2,7 +2,6 @@ VERSION="4.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-OPT_powerpc="--without-guile";
 OPT_win32="--without-guile";
 OPT_win64="--without-guile";
 OPT_cyg32="--without-guile";
