@@ -1,7 +1,8 @@
 VERSION="8.21"
+#VERSION_powerpc64="8.22"
 VERSEP="-";
 PREFIX="/";
-CONFOPT="FORCE_UNSAFE_CONFIGURE=1 --disable-gcc-warning ac_cv_func___fpending=yes";
+CONFOPT="FORCE_UNSAFE_CONFIGURE=1 --disable-gcc-warning ac_cv_func___fpending=yes --disable-gcc-warnings";
 ADDCFLAG="-std=c99 -I./lib";
 OPT_i686="--enable-no-install-program=arch,hostname,kill,uptime";
 OPT_x86_32="--enable-no-install-program=arch,hostname,factor,kill,uptime";
@@ -11,7 +12,7 @@ OPT_mips64="--enable-no-install-program=arch,hostname,kill,uptime";
 OPT_arm="--enable-no-install-program=arch,hostname,kill,uptime";
 OPT_arm64="--enable-no-install-program=arch,hostname,factor,kill,uptime";
 OPT_powerpc="--enable-no-install-program=arch,hostname,factor,kill,uptime";
-OPT_powerpc64="--enable-no-install-program=arch,hostname,kill,uptime";
+OPT_powerpc64="--enable-no-install-program=arch,hostname,kill,uptime ac_cv_header_sys_socket_h=yes ac_cv_type_socklen_t=yes";
 OPT_cyg32="--enable-no-install-program=arch,hostname,kill,uptime,find-mount-point,df,du,stat,hostid,chroot,who,pinky,users,nice,stty,uptime,base64,chown,chcon,cat,chgrp,cksum,basename,chmod,comm,cp,csplit,cut,date,dd,copy";
 MAKEOPTS="NARCH=${NARCH} WERROR_CFLAGS=";
 ADDCC="0";
