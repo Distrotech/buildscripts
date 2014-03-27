@@ -1,32 +1,18 @@
 VERSION="1.4.6"
 VERSEP="-";
 PREFIX="/opt/apr";
-CONFOPT="";
-SYSROOTFIXUP="1";
-OPT_arm="ac_cv_file__dev_zero=yes ac_cv_func_setpgrp_void=yes apr_cv_process_shared_works=yes
-         apr_cv_mutex_robust_shared=yes apr_cv_tcp_nodelay_with_cork=yes ac_cv_sizeof_struct_iovec=8
-         ac_cv_struct_rlimit=yes";
-OPT_powerpc="ac_cv_file__dev_zero=yes ac_cv_func_setpgrp_void=yes apr_cv_process_shared_works=yes
-         apr_cv_mutex_robust_shared=yes apr_cv_tcp_nodelay_with_cork=yes ac_cv_sizeof_struct_iovec=8
-         ac_cv_struct_rlimit=yes";
-OPT_mips="ac_cv_file__dev_zero=yes ac_cv_func_setpgrp_void=yes apr_cv_process_shared_works=yes
-         apr_cv_mutex_robust_shared=yes apr_cv_tcp_nodelay_with_cork=yes ac_cv_sizeof_struct_iovec=8
-         ac_cv_struct_rlimit=yes";
-XOPT_i686="ac_cv_file__dev_zero=yes ac_cv_func_setpgrp_void=yes apr_cv_process_shared_works=yes
-         apr_cv_mutex_robust_shared=yes apr_cv_tcp_nodelay_with_cork=yes ac_cv_sizeof_struct_iovec=8
-         ac_cv_struct_rlimit=yes";
-XOPT_x86_32="ac_cv_file__dev_zero=yes ac_cv_func_setpgrp_void=yes apr_cv_process_shared_works=yes
-         apr_cv_mutex_robust_shared=yes apr_cv_tcp_nodelay_with_cork=yes ac_cv_sizeof_struct_iovec=16
-         ac_cv_struct_rlimit=yes";
-OPT_mips64="ac_cv_file__dev_zero=yes ac_cv_func_setpgrp_void=yes apr_cv_process_shared_works=yes
-         apr_cv_mutex_robust_shared=yes apr_cv_tcp_nodelay_with_cork=yes ac_cv_sizeof_struct_iovec=16
-         ac_cv_struct_rlimit=yes";
-OPT_powerpc64="ac_cv_file__dev_zero=yes ac_cv_func_setpgrp_void=yes apr_cv_process_shared_works=yes
-         apr_cv_mutex_robust_shared=yes apr_cv_tcp_nodelay_with_cork=yes ac_cv_sizeof_struct_iovec=16
-         ac_cv_struct_rlimit=yes";
-OPT_arm64="ac_cv_file__dev_zero=yes ac_cv_func_setpgrp_void=yes apr_cv_process_shared_works=yes
-         apr_cv_mutex_robust_shared=yes apr_cv_tcp_nodelay_with_cork=yes ac_cv_sizeof_struct_iovec=16
-         ac_cv_struct_rlimit=yes";
+CONFOPT="ac_cv_file__dev_zero=yes ac_cv_func_setpgrp_void=yes apr_cv_process_shared_works=yes
+         apr_cv_mutex_robust_shared=yes apr_cv_tcp_nodelay_with_cork=yes ac_cv_struct_rlimit=yes";
+OPT_arm="ac_cv_sizeof_struct_iovec=8";
+OPT_powerpc="ac_cv_sizeof_struct_iovec=8";
+OPT_mips="ac_cv_sizeof_struct_iovec=8";
+OPT_i686="ac_cv_sizeof_struct_iovec=8";
+OPT_x86_32="ac_cv_sizeof_struct_iovec=16";
+OPT_x86_64="ac_cv_sizeof_struct_iovec=16";
+OPT_mips64="ac_cv_sizeof_struct_iovec=16";
+OPT_powerpc64="ac_cv_sizeof_struct_iovec=16";
+OPT_arm64="ac_cv_sizeof_struct_iovec=16";
 NOCROSS="1";
 CLEARFLAGS="1";
 GITBRANCH="master";
+CHROOTBUILD="1";
