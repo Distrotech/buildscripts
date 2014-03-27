@@ -1,5 +1,4 @@
-VERSION="1.38.0"
-VERSION_arm64="1.39.90";
+VERSION="1.39.90"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
