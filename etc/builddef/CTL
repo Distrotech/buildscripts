@@ -4,5 +4,5 @@ PREFIX="/usr";
 CONFOPT="";
 CFGPTH="CTL";
 CFGBIN="CTL/";
-DONTBUILD="arm powerpc powerpc64";
+DONTBUILD="arm powerpc powerpc64 mips mips64";
 RPMOBSOLETE="ctl";
