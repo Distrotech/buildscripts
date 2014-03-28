@@ -217,7 +217,8 @@ arch_config() {
   case ${1} in
     arm)AQCPU=arm;;
     arm64)AQCPU=aarch64;;
-    mips|mips64)AQCPU=mips;;
+    mips)AQCPU=mips;;
+    mips64)AQCPU=mips64;;
     powerpc)AQCPU=ppc64abi32;;
     powerpc64)AQCPU=ppc64;;
   esac;
@@ -1338,7 +1339,7 @@ build_project() {
     LD="${HOST}-ld"
   fi;
   export CC CXX PKG_CONFIG_PATH RLINK_PATH MLIBDIRLN ARCHPREFIX
-  if [ "${BOOTSTRAP}" == "0" ] && [ "${ORIGARCH}" != "powerpc64" ];then
+  if [ "${BOOTSTRAP}" == "0" ] && [ "${ORIGARCH}" != "powerpc64" ] && [ "${ORIGARCH}" != "mips64" ] && [ "${ORIGARCH}" != "${NARCH}" ];then
     export LD_LIBRARY_PATH="${RLINK_PATH}";
    else
     unset LD_LIBRARY_PATH;
@@ -1749,12 +1750,19 @@ build_glibc() {
       if [ ! -d ${ARCHROOT}/powerpc64 ];then
         mkdir -p ${ARCHROOT}/powerpc64
       fi
-      if [ ! -d ${BASEROOT}/powerpc64 ];then
-        mkdir -p ${BASEROOT}/powerpc64
-      fi
       rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${ARCHROOT}/powerpc64/
       rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${BASEROOT}/powerpc64/
-  ;;
+    ;;
+    mips)
+      if [ ! -d ${ARCHROOT}/mips64 ];then
+        mkdir -p ${ARCHROOT}/mips64
+      fi
+      if [ ! -d ${BASEROOT}/mips64 ];then
+        mkdir -p ${BASEROOT}/mips64
+      fi
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-o32_hard.h ${ARCHROOT}/mips64/
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-o32_hard.h ${BASEROOT}/mips64/
+    ;;
   esac;
 
   #Arch include dir
@@ -2447,7 +2455,7 @@ setup_hybrid_boot() {
 
   for pkg in glibc mpc mpfr gmp cloog isl readline ncurses zlib flex ncursesw glib popt \
              gcc pcre selinux xz libsigsegv guile acl gc attr libffi libunistring libtool \
-             gettext libcroco libxml2 libxslt libatomic_ops libgcrypt libgpg-error;do
+             gettext libcroco libxml2 libxslt libatomic_ops libgcrypt libgpg-error openssl;do
    (get_pkg_name ${pkg} ${NARCH}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    if [ ! -d ${PDIR} ];then
@@ -2464,7 +2472,7 @@ setup_hybrid_boot() {
    fi;) || ERROR="${ERROR}${pkg} Libs Missing\n"
   done
 
-  for pkg in javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep gettext libxslt glib;do
+  for pkg in javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep gettext libxslt glib openssl;do
    (get_pkg_name ${pkg} ${NARCH}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    if [ ! -d ${PDIR} ];then
@@ -2476,6 +2484,21 @@ setup_hybrid_boot() {
     else
      return 0
    fi) || ERROR="${ERROR}${pkg} Executable Missing\n"
+  done
+
+  for pkg in ruby perl;do
+   (get_pkg_name ${pkg} ${NARCH}
+   PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
+   if [ ! -d ${PDIR} ] || [ -x ${ARCHROOT}/${1}/usr/bin/${pkg} ];then
+     return 1
+   fi;
+   cd ${PDIR}
+   if [ -e ${PNAME}.tar.xz ];then
+     tar -C ${TMPDIR} -xf ${PNAME}.tar.xz
+   fi
+   if [ -e ${PNAME}-lib.tar.xz ];then
+     tar -C ${TMPDIR} -xf ${PNAME}-lib.tar.xz
+   fi)
   done
 
   for pkg in gcc binutils;do
@@ -2676,7 +2699,7 @@ bootstrap_arch_root() {
     build_packages ${arch} perl Python help2man libtool-chroot c-ares curl git unzip zip linux_logo gc guile make ||return 1
 
     #Pacakges used in native bootstrap
-    build_packages ${arch} cmake dbus gengetopt libcroco gettext gtk-doc help2man libcap libcap-ng libcroco \
+    build_packages ${arch} cmake dbus gengetopt libcroco gettext gtk-doc libcap libcap-ng \
       nasm OpenSP intltool openjade xmlto yasm nano || return 1) || return 1;
   done;
 }
@@ -2721,6 +2744,18 @@ build_glibc_march() {
            (build_glibc powerpc powerpc-linux-gnu) || return 1
            if [ "${1}" == "${NARCH}" ];then
              (setup_ldconf powerpc powerpc64)
+           fi;
+    ;;
+    mips64)(bootstrap_arch_lib mips mips64) || return 1;
+           (bootstrap_arch_root ${NARCH}) || return 1
+           (bootstrap_arch_root mips mips64) || return 1;
+           if [ -d ${ARCHROOT}/${1} ] && [ -e ${STATDIR}/mips/done/glibc ] && \
+              [ ! -e ${ARCHROOT}/${1}/usr/lib/libc.so ];then
+             rm ${STATDIR}/mips/done/glibc
+           fi;
+           (build_glibc mips mips-linux-gnu) || return 1
+           if [ "${1}" == "${NARCH}" ];then
+             (setup_ldconf mips mips64)
            fi;
     ;;
     *)(bootstrap_arch_lib ${1}) || return 1;
@@ -2893,9 +2928,14 @@ build_dependancies() {
   #Epiphany/Yelp
   build_packages ${1} gcr yelp libwnck-3 epiphany || return 1
 
+  #Mono if bootstrap good
+  if [ -x /usr/bin/gmcs ];then
+    build_packages ${1} mono || return 1
+  fi;
+
   #Desktop (Gnome / apps)
-  build_packages ${1} libgnome libart libgnomecanvas libbonoboui libgnomeui glade libnotify \
-    gtkspell-2 vte gnome-keyring gnome-desktop libwnck libopenraw libxkbfile libxklavier xpdf \
+  build_packages ${1} libgnome libart libgnomecanvas libbonoboui gnome-keyring libgnomeui glade libnotify \
+    gtkspell-2 vte gnome-desktop libwnck libopenraw libxkbfile libxklavier xpdf \
     libpeas eog aterm file-roller libgsf wv abiword libgnomecanvas leafpad ffmpegthumbnailer \
     gtk-engines libunique pidgin || return 1
 
@@ -2917,11 +2957,6 @@ build_dependancies() {
     libgdata libgweather libpst libical gtkhtml gtkimageview googletest protobuf re2 libphonenumber \
     libphonenumber-java evolution-data-server clutter clutter-gtk libchamplain highlight bogofilter evolution || return 1
 
-  #Mono if bootstrap good
-  if [ -x /usr/bin/gmcs ];then
-    build_packages ${1} mono || return 1
-  fi;
-
   #Distrotech apps
 #missing taploop repositroy
   build_packages ${1} easter dtsapplib dtscon macmask clamctrl modemtest pubkey2ssh simpletun stun-c \
@@ -2929,8 +2964,8 @@ build_dependancies() {
 
   #Other GUI apps
   build_packages ${1} FreeRDP vte3 Remmina pycups system-config-printer sip PyQt-x11 \
-    python-notify notify-python reportlab hplip mm-common libsigcxx2 libtorrent rtorrent djview4 \
-    gnuchess ctl CTL openexr_ctl openexr_viewers xmlcopyeditor dia || return 1
+    python-notify notify-python reportlab hplip mm-common libsigcxx2 cppunit libtorrent \
+    rtorrent djview4 gnuchess ctl CTL openexr_ctl openexr_viewers xmlcopyeditor dia || return 1
 
   #Perl/Python Bits
   build_packages ${1} net-snmp-perl net-snmp-python || return 1
@@ -2954,9 +2989,9 @@ build_dependancies() {
   build_packages ${1} grub-fonts grub || return 1
 
   #RPM/Yum
-  build_packages ${1} elfutils libdwarf rpm pysqlite yum-metadata-parser urlgrabber yum deltarpm createrepo || return 1
+  build_packages ${1} elfutils libdwarf rpm pysqlite yum-metadata-parser pycurl urlgrabber yum deltarpm createrepo || return 1
 
-  if [ "${1}" != "arm64" ];then
+  if [ "${1}" == "${NARCH}" ];then
     #Time to build a static gcc bootstrap distributable
     (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
 
@@ -2965,10 +3000,10 @@ build_dependancies() {
 
     #Shared GCC C/C++/ADA distributable
     (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
-  fi;
 
-  #Build tools needed for compiling
-  static_toolbuild ${1} ${2}
+    #Build tools needed for compiling
+    static_toolbuild ${1} ${2}
+  fi;
 }
 
 sync_ml_libs() {
