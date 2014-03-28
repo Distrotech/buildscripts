@@ -2,8 +2,8 @@ VERSION="20130529";
 VERSEP="-";
 PREFIX="/opt/texlive";
 STDOPTS="--prefix=${PREFIX} --datarootdir=${PREFIX}/texmf-dist --infodir=${PREFIX}/texmf-dist/doc/info --mandir=${PREFIX}/texmf-dist/doc/man
-         --bindir=${PREFIX}/bin/custom";
-CONFOPT="--enable-texlive-build --enable-gc=system";
+         --bindir=${PREFIX}/bin/custom --host=${HOST}";
+CONFOPT="--enable-texlive-build --enable-gc=system ac_cv_file_gc_7_2d_tar_gz=yes";
 ALIAS="texlive";
 CFGPTH="utils/asymptote";
 CFGBIN="asymptote/";
