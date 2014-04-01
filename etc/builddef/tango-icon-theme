@@ -3,4 +3,3 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 GITBRANCH="master";
-CHROOTBUILD="1";
