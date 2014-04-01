@@ -1,7 +1,7 @@
 VERSION="2.3.3.4"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="-DBUILD_CONTRIBS_LIB:BOOL=ON -DZLIB_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/include";
-XFLA="-DBOOST_PATH=${SRCDIR}/boost/boost_1_52_0";
-XCFLAGS="-I/${SRCDIR}/boost/boost_1_52_0/boost -L${SRCDIR}/boost/boost_1_52_0/libs";
+CONFOPT="-DBUILD_CONTRIBS_LIB:BOOL=ON -DZLIB_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/include
+         -DBoost_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include";
 FIXUPLIB="1";
+DONTBUILD="mips64";
