@@ -10,8 +10,11 @@ GITREPO="samba";
 GITBRANCH="talloc-2.1.0";
 CFGPTH="lib/talloc/";
 CFGBIN="talloc/";
-if [ "${barch}" != "arm64" ];then
-  CHROOTBUILD="1";
-fi
 FIXUPLIB="1";
 DONTBUILD="cyg32 cyg64";
+case ${NARCH} in
+  x86_32|x86_64|i[3-6]86)
+    case ${barch} in
+      x86_32|x86_64|i[3-6]86)CHROOTBUILD="1";;
+    esac;;
+esac;

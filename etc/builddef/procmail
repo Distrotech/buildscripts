@@ -7,3 +7,8 @@ MAKEOPTS="LOCKINGTEST=/tmp";
 CLEARFLAGS="1";
 MAKEITARGETS="install-suid";
 GITBRANCH="master";
+if [ "${barch}" != "${NARCH}" ];then
+  case ${barch} in
+    powerpc64|mips64)DONTBUILD="${barch}";
+  esac;
+fi;

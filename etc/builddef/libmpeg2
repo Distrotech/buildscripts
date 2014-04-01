@@ -3,4 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 GITBRANCH="master";
-DONTBUILD="powerpc";
+case ${barch} in
+  powerpc)DONTBUILD="${barch}";;
+esac;

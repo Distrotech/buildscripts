@@ -5,3 +5,6 @@ CONFOPT="";
 BUILDDIR="0";
 GITBRANCH="master";
 DONTBUILD="cyg32 cyg64";
+case ${barch} in
+  powerpc*|mips*)CHROOTBUILD=1;;
+esac;

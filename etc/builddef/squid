@@ -15,3 +15,6 @@ OPT_i686="squid_cv_broken_heimdal_krb5_h=no";
 OPT_x86_32="squid_cv_broken_heimdal_krb5_h=no";
 MAKEOPTS="HOSTCXX=g++";
 DISTCONF="squid/squid.conf";
+case ${barch} in
+  powerpc64|mips64)CHROOTBUILD="1";;
+esac;

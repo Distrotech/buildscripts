@@ -44,3 +44,6 @@ OPT_arm64="ac_cv_alignof_CORBA_octet=1 ac_cv_alignof_CORBA_boolean=1 ac_cv_align
          --with-idl-compiler=${SRCDIR}/ORBit2/ORBit2-${VERSION}/build-x86_64/src/idl-compiler/orbit-idl-2";
 ADDCFLAG="-I=/usr/include/libIDL-2.0";
 NOCCOPT="1";
+case ${barch} in
+  powerpc*|mips64)CHROOTBUILD="1";;
+esac;

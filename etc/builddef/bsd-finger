@@ -6,3 +6,6 @@ STDOPTS="--prefix=/usr";
 BUILDDIR="0";
 NOMAKEFLAGS="1";
 GITBRANCH="master";
+case ${barch} in
+  powerpc*|mips*)CHROOTBUILD="1";;
+esac

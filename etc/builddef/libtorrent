@@ -7,3 +7,6 @@ NOCCOPT="1";
 ADDCC="0";
 EXTRALIBS="-L=/usr/lib";
 NOSVNROOT="1";
+case ${barch} in
+  powerpc*)CHROOTBUILD="1";;
+esac;

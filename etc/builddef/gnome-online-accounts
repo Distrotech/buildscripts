@@ -5,3 +5,6 @@ CONFOPT="";
 GITMODULES="1";
 CLEARFLAGS="1";
 CHROOTBUILD="1";
+case ${barch} in
+  powerpc*)CHROOTBUILD="1";;
+esac;

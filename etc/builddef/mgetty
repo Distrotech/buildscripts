@@ -5,4 +5,7 @@ CONFOPT="";
 BUILDDIR="0";
 NOMAKEFLAGS="1";
 GITBRANCH="master";
-DONTBUILD="arm64";
+DONTBUILD="arm64 mips64";
+case ${barch} in
+  powerpc*|mips*)CHROOTBUILD="1";;
+esac;

@@ -5,3 +5,6 @@ CONFOPT="--without-doxygen";
 GITBRANCH="distrotech-gmerlin"
 CFGPTH="gavl";
 CFGBIN="gavl/";
+case ${barch} in
+  powerpc*|mips64)CHROOTBUILD="1";;
+esac;

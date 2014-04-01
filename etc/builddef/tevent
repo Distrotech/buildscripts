@@ -11,7 +11,13 @@ GITBRANCH="tevent-0.9.19";
 GITREPO="samba";
 CFGPTH="lib/tevent";
 CFGBIN="tevent/"
-if [ "${barch}" != "arm64" ];then 
-  CHROOTBUILD="1";
-fi
+case ${NARCH} in
+  x86_32|x86_64|i[3-6]86)
+    case ${barch} in
+      x86_32|x86_64|i[3-6]86)CHROOTBUILD="1";;
+    esac;;
+esac;
+#if [ "${barch}" != "arm64" ];then 
+#  CHROOTBUILD="1";
+#fi
 DONTBUILD="cyg32 cyg64";

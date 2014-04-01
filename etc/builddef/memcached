@@ -2,3 +2,6 @@ VERSION="1.4.15"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+case ${barch} in
+  powerpc64|mips64)CHROOTBUILD="1";;
+esac;

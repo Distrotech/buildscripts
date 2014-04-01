@@ -2,3 +2,6 @@ VERSION="1.6"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+case ${barch} in
+  powerpc*)CHROOTBUILD="1";;
+esac;

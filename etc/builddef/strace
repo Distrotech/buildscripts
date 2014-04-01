@@ -3,4 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-DONTBUILD="powerpc";
+case ${barch} in
+  powerpc*)CHROOTBUILD="1";;
+esac;

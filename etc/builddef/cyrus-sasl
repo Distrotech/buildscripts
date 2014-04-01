@@ -24,3 +24,6 @@ AMVER="1.13";
 BUILDDIR="0";
 MLIBDIRLN="libsasl2.so";
 USEMINGW="1";
+case ${barch} in
+  powerpc*|mips64)CHROOTBUILD="1";;
+esac;

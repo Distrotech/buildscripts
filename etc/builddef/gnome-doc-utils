@@ -2,4 +2,7 @@ VERSION="0.20.10"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-CHROOTBUILD="1";
+case ${barch} in
+  powerpc*|mips*)unset CHROOTBUILD;;
+  *)CHROOTBUILD="1";;
+esac;

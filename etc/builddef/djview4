@@ -14,3 +14,6 @@ OPT_powerpc64="QMAKESPEC=linux-ppc-g++-64";
 NOCROSS="1";
 NOCCOPT="1";
 DONTBUILD="arm64";
+case ${barch} in
+  powerpc*|mips*)CHROOTBUILD="1";;
+esac;

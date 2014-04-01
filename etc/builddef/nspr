@@ -8,3 +8,6 @@ OPT_arm64="--enable-64bit";
 OPT_powerpc64="--enable-64bit";
 DONTBUILD="cyg32 cyg64";
 NOCCOPT="1";
+case ${barch} in
+  powerpc*|mips*)CHROOTBUILD=1;;
+esac;

@@ -8,3 +8,6 @@ GITBRANCH="master";
 if [ "${HASGIR}" == "no" ];then
   DONTBUILD="${barch}";
 fi;
+case ${barch} in
+  powerpc*)CHROOTBUILD="1";;
+esac;

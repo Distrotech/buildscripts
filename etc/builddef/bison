@@ -8,3 +8,6 @@ STATICMOPT="LDFLAGS=-static";
 AMVER="1.14";
 BUILDDIR="0";
 OPT_cyg32="ac_cv_have_decl___fpending=yes";
+case ${barch} in
+  x86_32|mips*|powerpc*|arm*)CHROOTBUILD="1";;
+esac;

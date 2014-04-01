@@ -7,3 +7,6 @@ CFGPTH="libvisual-plugins";
 CFGBIN="libvisual-plugins/";
 AMVER="1.14";
 ALIAS="libvisual";
+case ${barch} in
+  mips64|powerpc64)CHROOTBUILD="1";;
+esac;

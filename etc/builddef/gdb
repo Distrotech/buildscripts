@@ -5,3 +5,6 @@ CONFOPT="--disable-werror";
 SYSROOTFIXUP="0";
 CLEARFLAGS="1";
 NOSYSROOTLT="1";
+case ${barch} in
+  powerpc*)CHROOTBUILD="1";;
+esac;
