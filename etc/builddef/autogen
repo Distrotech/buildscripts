@@ -4,6 +4,7 @@ PREFIX="/usr";
 CONFOPT="libopts_cv_with_libregex=yes";
 ADDCFLAG="-I=/usr/include/guile/2.0";
 OPT_mips="--target=mips-linux-gnu";
-DONTBUILD="mips mips64 powerpc powerpc64";
+OPT_powerpc="--target=powerpc-linux-gnu --with-libguile=/usr";
+DONTBUILD="powerpc mips";
 AMVER="1.14";
 CHROOTBUILD="1";

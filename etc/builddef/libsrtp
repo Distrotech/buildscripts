@@ -10,3 +10,4 @@ if [ "${barch:0:3}" == "win" ];then
 fi;
 CLEARFLAGS="1";
 NOCCOPT="1";
+DONTBUILD="mips mips64";

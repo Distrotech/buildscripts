@@ -3,4 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 GITBRANCH="master";
-DONTBUILD="arm64";
+DONTBUILD="arm64 mips";
