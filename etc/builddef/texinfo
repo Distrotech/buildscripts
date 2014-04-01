@@ -15,3 +15,6 @@ DONTBUILD="cyg32 cyg64";
 BUILDDIR="0";
 MAKEITARGETS="TEXMF=/opt/texlive/texmf-dist install-tex";
 AMVER="1.14";
+if [ "${barch}" == "powerpc64" ] && [ "${barch}" != "${NARCH}" ];then
+  MAKEOPTS="${MAKEOPTS} HELP2MAN=true";
+fi;
