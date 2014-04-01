@@ -1341,6 +1341,8 @@ build_project() {
   export CC CXX PKG_CONFIG_PATH RLINK_PATH MLIBDIRLN ARCHPREFIX
   if [ "${BOOTSTRAP}" == "0" ] && [ "${ORIGARCH}" != "powerpc64" ] && [ "${ORIGARCH}" != "mips64" ] && [ "${ORIGARCH}" != "${NARCH}" ];then
     export LD_LIBRARY_PATH="${RLINK_PATH}";
+  elif [ "${ORIGARCH}" == "${NARCH}" ];then
+    export LD_LIBRARY_PATH="${RLINK_PATH}";
    else
     unset LD_LIBRARY_PATH;
   fi;
@@ -2455,7 +2457,8 @@ setup_hybrid_boot() {
 
   for pkg in glibc mpc mpfr gmp cloog isl readline ncurses zlib flex ncursesw glib popt \
              gcc pcre selinux xz libsigsegv guile acl gc attr libffi libunistring libtool \
-             gettext libcroco libxml2 libxslt libatomic_ops libgcrypt libgpg-error openssl;do
+             gettext libcroco libxml2 libxslt libatomic_ops libgcrypt libgpg-error openssl \
+             DirectFB;do
    (get_pkg_name ${pkg} ${NARCH}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    if [ ! -d ${PDIR} ];then
@@ -2472,7 +2475,8 @@ setup_hybrid_boot() {
    fi;) || ERROR="${ERROR}${pkg} Libs Missing\n"
   done
 
-  for pkg in javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep gettext libxslt glib openssl;do
+  for pkg in javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep gettext \
+             libxslt glib openssl flux;do
    (get_pkg_name ${pkg} ${NARCH}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    if [ ! -d ${PDIR} ];then
@@ -2844,7 +2848,7 @@ build_dependancies() {
   fi;
 
   #Perl modules
-  build_packages ${1} tcl8 tk8 perl-modules || return 1
+  build_packages ${1} tcl8 tk8 unixODBC perl-modules || return 1
 
   build_packages ${1} gtk+ freeglut pcsc-lite wayland libxkbcommon at-spi2-core at-spi2-atk || return 1
 
@@ -2911,7 +2915,7 @@ build_dependancies() {
 
   build_packages ${1} gnustep-make gnustep-base SOPE acpid bind clamav coova-chilli dhcp dovecot freetds hylafax mcrypt mm  \
     nss-mdns nss_ldap pam_ldap proftpd radius samba sipsak squid squidGuard tnef webalizer wine libdvdcss libdvdread \
-    libdvdnav MPlayer clucene-core libzip mdds boost libixion liborcus iso-codes ffcall || return 1
+    libdvdnav MPlayer boost clucene-core libzip mdds libixion liborcus iso-codes ffcall || return 1
 
   #Gnoem (Base)
   build_packages ${1} shared-mime-info gnome-common itstool gsettings-desktop-schemas gnome-desktop-3 \
