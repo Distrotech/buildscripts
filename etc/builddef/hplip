@@ -3,6 +3,9 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
 OPT_powerpc="--disable-scan-build";
+OPT_powerpc64="--disable-scan-build";
+OPT_mips="--disable-scan-build";
+OPT_mips64="--disable-scan-build";
 BUILDDIR="0";
 NOSVNROOT="1";
 ADDCFLAG="-I=/usr/include/python2.7";
@@ -10,3 +13,6 @@ GITBRANCH="master";
 AMVER="1.13";
 AUTORECONF="1";
 DISTCONF="sane.d/dll.conf";
+case ${barch} in
+  powerpc*)CHROOTBUILD="1";;
+esac;
