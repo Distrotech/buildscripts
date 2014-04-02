@@ -8,7 +8,7 @@ if [ -x /usr/${B_LIBDIRS}/jvm/gcj-jdk/bin/javac ];then
   MAKEITARGETS="${MAKEITARGETS} install-javahl";
   CONFOPT="${CONFOPT} --enable-javahl --with-jdk=/usr/${B_LIBDIRS}/jvm/gcj-jdk";
 fi;
-CONFOPTX"--with-apxs=${ARCHROOT}/${barch}/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/${barch}/usr --with-apr-util=${ARCHROOT}/${barch}/usr
+CONFOPTX="--with-apxs=${ARCHROOT}/${barch}/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/${barch}/usr --with-apr-util=${ARCHROOT}/${barch}/usr
          --with-gssapi=${ARCHROOT}/${barch}/usr --with-swig=${ARCHROOT}/${barch}/usr --with-neon=${ARCHROOT}/${barch}/usr";
 ADDCFLAG="-I=/opt/apache/include";
 STATICOPT="--disable-shared --without-berkeley-db --enable-all-static --without-apxs LDFLAGS=-static"
