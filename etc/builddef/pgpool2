@@ -1,7 +1,7 @@
 VERSION="3.3.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--with-openssl --with-pam";
 BUILDDIR="0";
 CHROOTBUILD="1";
 SYSCONFPRE="pgpool";
