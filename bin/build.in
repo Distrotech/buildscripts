@@ -44,7 +44,12 @@ export TEX=tex
 
 #Cleanup the enviroment
 unset JAVA_HOME ANT_HOME M2_HOME QTDIR
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${X11DIR}/bin:/opt/xfce/bin
+if [ -e /proc/sys/fs/binfmt_misc/${NARCH} ];then
+  export GCC_EXEC_PREFIX=/usr/libexec/gcc-hybrid/
+  PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin/hybrid:/usr/bin:/sbin:/bin/hybrid:/bin:${X11DIR}/bin:/opt/xfce/bin:${GCC_EXEC_PREFIX}
+ else
+  PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${X11DIR}/bin:/opt/xfce/bin
+fi;
 
 if [ -d /opt/texlive ];then
   PATH=${PATH}:/opt/texlive/bin/custom
@@ -280,6 +285,10 @@ mnt_archroot() {
 
   if [ ! -d ${ARCHROOT}/${1}/proc/1 ];then
     mount -t proc proc_${1} ${ARCHROOT}/${1}/proc
+  fi;
+
+  if [ ! -e ${ARCHROOT}/${1}/proc/sys/fs/binfmt_misc/status ];then
+    mount -t binfmt_misc proc_binfmt_${1} ${ARCHROOT}/${1}/proc/sys/fs/binfmt_misc
   fi;
 
   if [ ! -d ${ARCHROOT}/${1}/dev/pts ];then
@@ -841,8 +850,8 @@ cmake_cross_build() {
     eval cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES=\"${EXTRALIBS}\" \
           -DCMAKE_C_FLAGS=\"${CFLAGS}\" -DCMAKE_CXX_FLAGS=\"${CXXFLAGS}\" -DCMAKE_C_LINK_FLAGS=\"${LDFLAGS}\" \
           -DCMAKE_FIND_ROOT_PATH=\"${SYSROOT}/\" -DCMAKE_INSTALL_RPATH:PATH=\"${RLINK_PATH}\" ${CONFOPT} \
-          ${ARCHXOPT} ${ARCHOPT} -DCMAKE_C_COMPILER=/usr/bin/${HOST}-gcc -DCMAKE_C_COMPILER_ENV_VAR=\"${CC_SYSROOT}\" \
-          -DCMAKE_CXX_COMPILER=/usr/bin/${HOST}-g++ -DCMAKE_CXX_COMPILER_ENV_VAR=\"${CC_SYSROOT}\" \
+          ${ARCHXOPT} ${ARCHOPT} -DCMAKE_C_COMPILER=${HOST}-gcc -DCMAKE_C_COMPILER_ENV_VAR=\"${CC_SYSROOT}\" \
+          -DCMAKE_CXX_COMPILER=${HOST}-g++ -DCMAKE_CXX_COMPILER_ENV_VAR=\"${CC_SYSROOT}\" \
           -DGNU_HOST=${3} -DCMAKE_TOOLCHAIN_FILE=${DTSETCDIR}/cmake_cross/cmake_${2}.cross ${1}${CFGBIN}
   fi;
   cmake ${CONFOPT} ${ARCHXOPT} ${ARCHOPT} -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} ${1}${CFGBIN}
@@ -1156,7 +1165,16 @@ build_project() {
            i[3-6]86|x86_64)SETARCH="setarch ${NEWARCH}";;
          esac;;
      esac;
-     ${SETARCH} /usr/bin/env -i - SHELL=${SHELL} TERM=${TERM} NARCH=${NEWARCH} CLEANOPT=${BOOTCLEAN} RUNBASHRC=1 chroot ${ARCHROOT}/${NEWARCH} ${SCRIPTDIR}/build ${NEWARCH} + ${BUILDPROJECT})
+     if [ -d ${ARCHROOT}/${NEWARCH}/usr/bin/hybrid ];then
+       if [ ! -e ${ARCHROOT}/${NEWARCH}/opt/dtsbuild/bin/hbuild ] || [ ${ARCHROOT}/${NEWARCH}/opt/dtsbuild/bin/build -nt ${ARCHROOT}/${NEWARCH}/opt/dtsbuild/bin/hbuild ];then
+         sed -e 's/\(^#!\/bin\/\)bash$/\1\/hybrid\/bash/' ${ARCHROOT}/${NEWARCH}/opt/dtsbuild/bin/build > ${ARCHROOT}/${NEWARCH}/opt/dtsbuild/bin/hbuild
+         chmod 750 ${ARCHROOT}/${NEWARCH}/opt/dtsbuild/bin/hbuild
+       fi;
+       BUILDSCR=hbuild;
+      else
+       BUILDSCR=build;
+     fi;
+     ${SETARCH} /usr/bin/env -i - SHELL=${SHELL} TERM=${TERM} NARCH=${NEWARCH} CLEANOPT=${BOOTCLEAN} RUNBASHRC=1 chroot ${ARCHROOT}/${NEWARCH} ${SCRIPTDIR}/${BUILDSCR} ${NEWARCH} + ${BUILDPROJECT})
     if [ -e ${STATDIR}/${ORIGARCH}/fail/${PROJECT} ];then
       return 1
      else
@@ -1330,14 +1348,27 @@ build_project() {
   export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH} ${BASE_LIBPATH} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=/opt/xfce/include";
 
   if [ "${BOOTSTRAP}" == "0" ];then
-    CC="/usr/bin/${HOST}-gcc";
-    CXX="/usr/bin/${HOST}-g++"
-    LD="/usr/bin/${HOST}-ld"
+    if [ "${ORIGARCH}" == "${NARCH}" ];then
+      if [ ! -d /usr/bin/hybrid ] || [ ! -e /proc/sys/fs/binfmt_misc/${ORIGARCH} ];then
+        CC="/usr/bin/${HOST}-gcc";
+        CXX="/usr/bin/${HOST}-g++"
+        LD="/usr/bin/${HOST}-ld"
+       else
+        CC="/usr/bin/hybrid/${HOST}-gcc";
+        CXX="/usr/bin/hybrid/${HOST}-g++"
+        LD="/usr/bin/hybrid/${HOST}-ld"
+      fi;
+     else
+       CC="/usr/bin/hybrid/${HOST}-gcc";
+       CXX="/usr/bin/hybrid/${HOST}-g++"
+       LD="/usr/bin/hybrid/${HOST}-ld"
+    fi;
    else
     CC="${HOST}-gcc";
     CXX="${HOST}-g++"
     LD="${HOST}-ld"
   fi;
+
   export CC CXX PKG_CONFIG_PATH RLINK_PATH MLIBDIRLN ARCHPREFIX
   if [ "${BOOTSTRAP}" == "0" ] && [ "${ORIGARCH}" != "powerpc64" ] && [ "${ORIGARCH}" != "mips64" ] && [ "${ORIGARCH}" != "${NARCH}" ];then
     export LD_LIBRARY_PATH="${RLINK_PATH}";
@@ -1589,7 +1620,8 @@ build_project() {
       rsync -avP ${DIST_ROOT}/ ${BASEROOT}/${ORIGARCH}/
     fi;
 
-    if [ -d ${ARCHROOT}/${ORIGARCH} ] && [ ! "${COREBUILD}" ];then
+    if [ -d ${ARCHROOT}/${ORIGARCH} ];then
+# && [ ! "${COREBUILD}" ];then
       ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${ORIGARCH}/
      elif [ -d ${ARCHROOT}/${ORIGARCH} ] && [ "${ORIGARCH:0:3}" == "win" ];then
       ${RSYNC} -avP ${DIST_ROOT}/ ${ARCHROOT}/${ORIGARCH}/
@@ -2582,10 +2614,25 @@ setup_hybrid_boot() {
   ln -sr ${TMPDIR}/usr/bin/ecj ${TMPDIR}/usr/${B_LIBDIRS}/jvm/gcj-jdk/bin/javac
   ln -sr ${TMPDIR}/usr/bin/${HOST}-gcc ${TMPDIR}/usr/bin/cc
 
-  for ldtool in $(ls /usr/${HOST}/bin);do
-    rm -f usr/bin/${HOST}-$ldtool usr/bin/${ldtool} >/dev/null 2>&1
-    ln -s -r usr/${HOST}/bin/${ldtool} usr/bin/${HOST}-$ldtool
-    ln -s -r usr/${HOST}/bin/${ldtool} usr/bin/${ldtool}
+  for pth in ${TMPDIR} ${TMPDIR}/usr ${TMPDIR}/usr/${HOST};do
+    if [ -e ${pth}/bin ];then
+      mkdir -p ${pth}/bin/hybrid
+      mv ${pth}/bin/* ${pth}/bin/hybrid/
+    fi;
+  done
+
+  GCCVER=$(${HOST}-gcc --version |head -1 |sed -e "s/.* (GCC) \(.*\)/\1/")
+  if [ -d ${TMPDIR}/usr/libexec/gcc/${HOST}/${GCCVER} ];then
+    mv  ${TMPDIR}/usr/libexec/gcc/${HOST}/${GCCVER} ${TMPDIR}/usr/libexec/gcc-hybrid/
+    mkdir -p ${TMPDIR}/usr/libexec/gcc-hybrid/${HOST}
+    ln -sr ${TMPDIR}/usr/libexec/gcc-hybrid/ ${TMPDIR}/usr/libexec/gcc-hybrid/${HOST}/${GCCVER}
+    rm -rf ${TMPDIR}/usr/libexec/gcc
+  fi;
+
+  for ldtool in $(ls /usr/${HOST}/bin/hybrid);do
+    rm -f ${TMPDIR}/usr/bin/hybrid/${HOST}-$ldtool ${TMPDIR}/usr/bin/hybrid/${ldtool} >/dev/null 2>&1
+    ln -s -r ${TMPDIR}/usr/${HOST}/bin/hybrid/${ldtool} ${TMPDIR}/usr/bin/hybrid/${HOST}-$ldtool
+    ln -s -r ${TMPDIR}/usr/${HOST}/bin/hybrid/${ldtool} ${TMPDIR}/usr/bin/hybrid/${ldtool}
   done)
 
   rsync -a ${TMPDIR}/ ${ARCHROOT}/${1}/
@@ -2597,6 +2644,7 @@ setup_hybrid_boot() {
   if [ -e /usr/bin/qemu-${QCPU}-static ];then
     cp /usr/bin/qemu-${QCPU} ${ARCHROOT}/${1}/usr/bin
   fi;
+
   if [ "${ERROR}" == "0" ];then
     touch ${ARCHROOT}/${1}/usr/${NLIBDIR}/${NMLIBDIR}/.distro_done
    else
