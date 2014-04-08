@@ -1,0 +1,9 @@
+VERSION="3.3.3"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+SYSCONFPRE="pgpool";
+ALIAS="pgpool2";
+CFGPTH="sql/pgpool-recovery";
+CHROOTBUILD="1";
