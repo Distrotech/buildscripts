@@ -1,4 +1,5 @@
-VERSION="1.0.1g"
+SUBVER="y";
+VERSION="0.9.8${SUBVER}"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
@@ -7,7 +8,8 @@ FIXUPLIB="1";
 MLIBDIRLN="libcrypto.so libssl.so"
 USEMINGW="1";
 MANREMOVE="man3/threads.3 man3/err.3 man3/rand.3";
-case ${barch} in
-	mips)ADDCFLAG="-fPIC";;
-esac;
-RPMOBSOLETE="openssl-0.9.8";
+if [ "${barch}" != "i686" ];then
+  DONTBUILD="${barch}";
+fi;
+ALIAS="openssl";
+NOINST="1";
