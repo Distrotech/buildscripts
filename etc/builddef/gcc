@@ -94,4 +94,6 @@ MLIBDIRLN="libasan.so libatomic.so libgcc_s.so libgcj_bc.so libgcj.so libgcj-too
            libquadmath.la libssp_nonshared.la libsupc++.la libtsan.la";
 CLEARFLAGS="1";
 NOSYSROOTLT="1";
-RPMINTDEPS="0";
+RPMPROVIDES_libs="libgcc_s.so.1()(${ARCH_BITS}bit) libgcc_s.so.1(GCC_3.0)(${ARCH_BITS}bit) libgcc_s.so.1(GCC_3.3)(${ARCH_BITS}bit)
+	libgcc_s.so.1(GCC_3.3.1)(${ARCH_BITS}bit) libgcc_s.so.1(GCC_3.4)(${ARCH_BITS}bit) libgcc_s.so.1(GCC_4.2.0)(${ARCH_BITS}bit)
+	libgcc_s.so.1(GCC_4.3.0)(${ARCH_BITS}bit) libgcc_s.so.1(GCC_4.5.0)(${ARCH_BITS}bit) libgcc_s.so.1(GCC_4.0.0)(${ARCH_BITS}bit)"

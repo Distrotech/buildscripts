@@ -7,4 +7,4 @@ MAKEOPTS="HOSTCC=gcc";
 NOMAKEFLAGS="1";
 FIXUPLIB="1";
 GITBRANCH="master";
-RPMINTDEPS="0";
+RPMPROVIDES_libs="libpico.so()(${ARCH_BITS}bit)";

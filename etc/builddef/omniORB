@@ -8,4 +8,4 @@ BUILDDIR="0";
 CFGPTH="omniORB";
 CFGBIN="omniORB/";
 CHROOTBUILD="1";
-RPMINTDEPS="0";
+RPMPROVIDES_libs="libomniORB4.so.1()(${ARCH_BITS}bit) libomnithread.so.3()(${ARCH_BITS}bit)";

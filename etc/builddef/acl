@@ -8,4 +8,4 @@ ADDCFLAG="-fPIC";
 FIXUPLIB="1";
 ADDWITHSYSROOT="1";
 DONTBUILD="cyg32 cyg64";
-RPMINTDEPS="0";
+RPMPROVIDES_libs="libacl.so.1()(${ARCH_BITS}bit) libacl.so.1(ACL_1.0)(${ARCH_BITS}bit)";

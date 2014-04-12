@@ -3,4 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-RPMINTDEPS="0";
+RPMPROVIDES_libs="libdjvulibre.so.21()(${ARCH_BITS}bit)";

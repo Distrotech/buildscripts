@@ -9,5 +9,5 @@ LDISCC="1";
 MAKEALL="optshared";
 NODIET="1";
 GITBRANCH="master";
-RPMINTDEPS="0";
 CHROOTBUILD="1";
+RPMPROVIDES_libs="libpt.so.2.10.1()(${ARCH_BITS}bit)";

@@ -5,4 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 FIXUPLIB="1";
 DONTBUILD="cyg32 cyg64";
-RPMINTDEPS="0";
+RPMPROVIDES="libcap.so()(${ARCH_BITS}bit)";

@@ -8,4 +8,4 @@ FIXUPLIB="1";
 ADDCFLAGS="-fPIC";
 ADDCC="1";
 GITBRANCH="master";
-RPMINTDEPS="0";
+RPMPROVIDES_libs="libnut.so()(${ARCH_BITS}bit)";

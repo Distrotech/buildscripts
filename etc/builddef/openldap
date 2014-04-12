@@ -20,4 +20,4 @@ if [ "${barch:0:3}" != "win" ] && [ "${barch:0:3}" != "cyg" ];then
   EXTRALIBS="-ldl -lltdl -lutil";
 fi;
 MLIBDIRLN="libldap.so liblber.so";
-RPMINTDEPS="0";
+RPMPROVIDES_libs="liblber-2.4.so.2()(${ARCH_BITS}bit) libldap-2.4.so.2()(${ARCH_BITS}bit) libldap_r-2.4.so.2()(${ARCH_BITS}bit)";

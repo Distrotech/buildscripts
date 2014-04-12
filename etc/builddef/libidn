@@ -7,3 +7,4 @@ AMVER="1.14";
 MLIBDIRLN="libidn.so";
 AUTORECONF="1";
 OPT_x86_32="--disable-csharp";
+RPMPROVIDES_libs="mono(mscorlib)";
