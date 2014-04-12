@@ -78,6 +78,10 @@ tar -tf ${6} |grep -vE "(/$|^usr\/share\/info\/dir$|^share\/info\/dir$|^var\/lib
 
 pkg2rpm() {
   BUILDPROJECT=${2}
+  case ${1} in
+    *64)ARCH_BITS=64;;
+    *)ARCH_BITS=32;;
+  esac;
   . ${DEFDIR}/${2}
 
   DONTBUILDPAT=${DONTBUILD// /|}
@@ -114,9 +118,6 @@ pkg2rpm() {
     tfile=$(basename ${pfile})
     if [ "${tfile}" == "${PNAME}.tar.xz" ];then
       xpkg="";
-      if [ "${RPMPROVIDES}" ];then
-        SRPMPROVIDES="Provides: ${RPMPROVIDES}";
-      fi;
      else
       xfile=${tfile#${PNAME}}
       xpkg=${xfile%.tar.xz}
@@ -142,6 +143,27 @@ pkg2rpm() {
 
     if [ ! "${RPMEPOCH}" ];then
       RPMEPOCH=0;
+    fi;
+
+      if [ "${RPMPROVIDES}" ];then
+        SRPMPROVIDES="Provides: ${RPMPROVIDES}";
+      fi;
+
+    if [ "${RPMPROVIDES}" ];then
+      SRPMPROVIDES="Provides: ${RPMPROVIDES}";
+     else
+      if [ "${xpkg}" ];then
+        RPM_SUB_PROVIDES=RPMPROVIDES_${xpkg:1}
+       else
+        RPM_SUB_PROVIDES=RPMPROVIDES_base
+      fi;
+      if [ "${!RPM_SUB_PROVIDES}" ];then
+        SRPMPROVIDES="Provides:";
+	for rpm_sub_pro in ${!RPM_SUB_PROVIDES};do
+          SRPMPROVIDES="${SRPMPROVIDES} ${rpm_sub_pro}";
+        done;
+      fi;
+      eval ${RPM_SUB_PROVIDES}=""
     fi;
 
     if [ "${RPMOBSOLETE}" ];then
