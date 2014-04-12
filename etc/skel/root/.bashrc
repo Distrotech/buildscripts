@@ -31,15 +31,6 @@ if [ ! -e /etc/localtime ];then
   export TZ=${TZ:=Africa/Johannesburg}
 fi;
 
-NARCH=${NARCH:=$( uname -m )}
-case ${NARCH} in
-  ppc|powerpc)NARCH=powerpc;;
-  ppc64|powerpc64)NARCH=powerpc64;;
-  arm64|aarch64)NARCH=arm64;;
-  arm*)NARCH=arm;;
-esac;
-export NARCH
-
 LIB_PATH="/${HOST_LIBDIR}";
 if [ "${HOST_MLIBDIR}" ];then
    HOSTLIBDIR="${HOST_LIBDIR}/${HOST_MLIBDIR}"
@@ -58,12 +49,7 @@ for libpth in /usr /usr/X11R7 /opt/qt-5 /opt/qt-4 /opt/xfce;do
 done;
 
 unset JAVA_HOME ANT_HOME M2_HOME QTDIR FOP_HOME FORREST_HOME
-if [ -e /proc/sys/fs/binfmt_misc/${NARCH} ];then
-  PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin/hybrid:/usr/bin:/sbin:/bin/hybrid:/bin:/opt/apache2/bin:/opt/Xorg/bin:/opt/xfce/bin
-  export GCC_EXEC_PREFIX=/usr/libexec/gcc-hybrid/
- else
-  PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/apache2/bin:/opt/Xorg/bin:/opt/xfce/bin
-fi;
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/apache2/bin:/usr/X11R7/bin:/opt/xfce/bin
 MANPATH=/usr/share/man
 
 if [ "${JAVA_VER}" ] && [ -d /usr/${HOST_LIBDIR}/jvm/jdk-${JAVA_VER} ];then
@@ -89,7 +75,7 @@ fi;
 if [ -d /opt/texlive ];then
   export TEX=tex
   PATH=${PATH}:/opt/texlive/bin/custom
-  if [ -d /opt/texlive/bin/${HOST}-linux ];then
+  if [ -d /opt/texlive/bin/x86_64-linux ];then
     PATH=${PATH}:/opt/texlive/bin/x86_64-linux
   fi;
   MANPATH=${MANPATH}:/opt/texlive/texmf-dist/doc/man
