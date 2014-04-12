@@ -5,5 +5,4 @@ CONFOPT="--with-x";
 BUILDDIR="0";
 ADDLDFLAG="-L../src/elfobjs";
 ADDCFLAG="-I../../src/";
-RPMINTDEPS="0";
 RPMPROVIDES_libs="libslang.so.2()(${ARCH_BITS}bit) libslang.so.2(SLANG2)(${ARCH_BITS}bit) libslang.so.2(SLANG2.1.0)(${ARCH_BITS}bit)";
