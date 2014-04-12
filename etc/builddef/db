@@ -15,3 +15,4 @@ ADDCC="0";
 GITBRANCH="master";
 DONTBUILD="cyg32 cyg64";
 ADDCFLAG="-I${JAVA_HOME}/include";
+MAKEOPTS="LIBTOOL=\"./libtool --tag=CC\"";
