@@ -8,7 +8,7 @@ CONFOPT="--enable-modules=all --enable-mods-shared=all --enable-ssl --enable-lda
          --enable-so --enable-proxy --enable-dav --enable-http  --enable-info  --enable-suexec --enable-cgi --enable-cgid 
          --enable-rewrite --enable-dbd --with-suexec-userdir=public_html --with-suexec-docroot=/var/spool/apache/htdocs
          --with-suexec-logfile=/var/log/suexec_log --with-pcre  --disable-v4-mapped --with-pcre=${ARCHROOT}/${barch}/usr
-         --with-apr-util=${ARCHROOT}/${barch}/opt/apr --with-apr=${ARCHROOT}/${barch}/opt/apr";
+         --with-apr-util=${ARCHROOT}/${barch}/opt/apr --with-apr=${ARCHROOT}/${barch}/opt/apr LTFLAGS=\"--tag=CC\"";
 EXTRALIBS="-ldl";
 OPT_i686="ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
 OPT_arm="ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
@@ -17,7 +17,6 @@ OPT_mips="ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
 OPT_mips64="ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
 OPT_powerpc="ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
 OPT_powerpc64="ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
-MAKEOPTS="LIBTOOL=${ARCHROOT}/${barch}/opt/apr/build-1/libtool";
 GITBRANCH="master";
 DISTCONF="httpd/httpd.conf";
 SYSLAYOUT="1";
