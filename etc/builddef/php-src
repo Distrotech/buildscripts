@@ -20,4 +20,5 @@ OPT_x86_64="--with-libdir=lib64";
 OPT_x86_32="--with-libdir=libx32 --disable-phar";
 OPT_i686="--with-libdir=lib";
 OPT_arm64="--with-libdir=lib64";
+OPT_mips64="--with-libdir=lib64";
 CHROOTBUILD="1";
