@@ -1,0 +1,8 @@
+VERSION="10.12.4"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-dahdi --with-spandsp --with-ssl --with-openr2 --with-ss7 --without-h323 --with-sqlite3";
+ADDLDFLAG="-L=/opt/mysql/${B_LIBDIRS}";
+ADDCFLAG="-I=/opt/mysql/include";
+BUILDDIR="0";
+#MAKEITARGETS="samples";

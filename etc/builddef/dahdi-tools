@@ -1,0 +1,5 @@
+VERSION="2.9.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";

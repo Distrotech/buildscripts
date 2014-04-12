@@ -1,0 +1,7 @@
+VERSION="1.1"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--with-itu";
+BUILDDIR="0";
+MAKEOPTS="moddir=/usr/${C_LIBDIRS}/asterisk/modules-10"
+CLEARFLAGS="1";
