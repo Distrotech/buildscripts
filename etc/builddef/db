@@ -1,4 +1,4 @@
-VERSION="5.3.21"
+VERSION="6.0.30"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-compat185 --enable-shared=yes --enable-dbm --enable-cxx --enable-tcl --enable-java
