@@ -2,7 +2,7 @@ VERSION="1.9.2";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-syslogd --with-pam --with-gnu-ld --disable-ifconfig --disable-logger --enable-ncurses ac_cv_lib_termcap_tgetent=no
-         ac_cv_header_termcap_h=no --disable-tftpd --disable-tftp --disable-hostname";
+         ac_cv_header_termcap_h=no --disable-tftpd --disable-tftp --disable-hostname --disable-dnsdomainname";
 ADDCC="0";
 OPT_arm="--with-ncurses-include-dir=${ARCHROOT}/arm/usr/include";
 OPT_arm64="--with-ncurses-include-dir=${ARCHROOT}/arm64/usr/include";
