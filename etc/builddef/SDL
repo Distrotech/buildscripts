@@ -4,3 +4,5 @@ PREFIX="/usr";
 CONFOPT="--disable-video-svga --enable-video-x11 --enable-x11-shared --enable-video-directfb";
 OPT_win32="--disable-directx";
 OPT_win64="--disable-directx";
+SYSROOTFIXUP="0";
+ADDWITHSYSROOT="1";
