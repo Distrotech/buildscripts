@@ -9,7 +9,7 @@ NOCROSS="1";
 ADDCFLAG="-I=/usr/${C_LIBDIRS}/glib-2.0/include";
 RPMPROVIDES="mono(Microsoft.Build.Utilities.v3.5) mono(Mono.CompilerServices.SymbolWriter) mono(System.ComponentModel.DataAnnotations) \
  mono(System.Configuration.Install) mono(System.IdentityModel.Selectors) mono(System.Reactive.Interfaces) mono(System.Runtime.Serialization) \
- mono(System.Runtime.Serialization.Formatters.Soap) mono(System.Web.WebPages.Deployment)";
+ mono(System.Runtime.Serialization.Formatters.Soap) mono(System.Web.WebPages.Deployment) mono(Microsoft.Build.Utilities.v12.0)";
 case ${barch} in
   i686|x86_64)CHROOTBUILD="1";;
   powerpc*|mips*)DONTBUILD="${barch}";;

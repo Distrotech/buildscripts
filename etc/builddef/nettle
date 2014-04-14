@@ -4,4 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 USEMINGW="1";
-RPMPROVIDES_libs="libhogweed.so.2()(${ARCH_BITS}bit) libnettle.so.4()(${ARCH_BITS}bit)";
+RPMPROVIDES_libs="libhogweed.so.2()${ARCH_BITS} libnettle.so.4()${ARCH_BITS}";

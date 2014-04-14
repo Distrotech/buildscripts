@@ -5,4 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 FIXUPLIB="1";
 ADDCFLAG="-fPIC -O2 -Wall -DLUA_COMPAT_ALL";
-RPMPROVIDES_libs="liblua.so()(${ARCH_BITS}bit)";
+RPMPROVIDES_libs="liblua.so()${ARCH_BITS}";

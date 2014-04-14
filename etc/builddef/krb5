@@ -7,13 +7,13 @@ if [ "${BUILDPROJECT}" == "krb5" ];then
   RPMOBSOLETE_doc="krb5-static";
   RPMOBSOLETE_dbg="krb5-static";
   RPMOBSOLETE_dev="krb5-static";
-  RPMPROVIDES_libs="libgssapi_krb5.so.2()(${ARCH_BITS}bit) libgssapi_krb5.so.2(gssapi_krb5_2_MIT)(${ARCH_BITS}bit)
-	libk5crypto.so.3()(${ARCH_BITS}bit) libkrb5.so.3()(${ARCH_BITS}bit) libkrb5.so.3(krb5_3_MIT)(${ARCH_BITS}bit)
-	libcom_err.so.3()(${ARCH_BITS}bit) libcom_err.so.3(com_err_3_MIT)(${ARCH_BITS}bit) libkrb5support.so.0()(${ARCH_BITS}bit)
-	libgssrpc.so.4()(${ARCH_BITS}bit) libgssrpc.so.4(gssrpc_4_MIT)(${ARCH_BITS}bit) libk5crypto.so.3(k5crypto_3_MIT)(${ARCH_BITS}bit)
-	libkadm5clnt_mit.so.9()(${ARCH_BITS}bit) libkadm5clnt_mit.so.9(kadm5clnt_mit_9_MIT)(${ARCH_BITS}bit) libkadm5srv_mit.so.9()(${ARCH_BITS}bit)
-	libkadm5srv_mit.so.9(kadm5srv_mit_9_MIT)(${ARCH_BITS}bit) libkdb5.so.7()(${ARCH_BITS}bit) libkdb5.so.7(kdb5_7_MIT)(${ARCH_BITS}bit)
-	libkrb5support.so.0(krb5support_0_MIT)(${ARCH_BITS}bit)";
+  RPMPROVIDES_libs="libgssapi_krb5.so.2()${ARCH_BITS} libgssapi_krb5.so.2(gssapi_krb5_2_MIT)${ARCH_BITS}
+	libk5crypto.so.3()${ARCH_BITS} libkrb5.so.3()${ARCH_BITS} libkrb5.so.3(krb5_3_MIT)${ARCH_BITS}
+	libcom_err.so.3()${ARCH_BITS} libcom_err.so.3(com_err_3_MIT)${ARCH_BITS} libkrb5support.so.0()${ARCH_BITS}
+	libgssrpc.so.4()${ARCH_BITS} libgssrpc.so.4(gssrpc_4_MIT)${ARCH_BITS} libk5crypto.so.3(k5crypto_3_MIT)${ARCH_BITS}
+	libkadm5clnt_mit.so.9()${ARCH_BITS} libkadm5clnt_mit.so.9(kadm5clnt_mit_9_MIT)${ARCH_BITS} libkadm5srv_mit.so.9()${ARCH_BITS}
+	libkadm5srv_mit.so.9(kadm5srv_mit_9_MIT)${ARCH_BITS} libkdb5.so.7()${ARCH_BITS} libkdb5.so.7(kdb5_7_MIT)${ARCH_BITS}
+	libkrb5support.so.0(krb5support_0_MIT)${ARCH_BITS}";
  else
   CONFOPT="--disable-shared --enable-static --with-system-verto --without-tcl";
   MAKEOPTS="LDFLAGS=-static";

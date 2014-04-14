@@ -11,4 +11,4 @@ MAKE_J="-j1";
 GITBRANCH="master";
 MOPT_win32="-f Makefile.win";
 MOPT_win64="-f Makefile.win";
-RPMPROVIDES_libs="libgsm.so()(${ARCH_BITS}bit)";
+RPMPROVIDES_libs="libgsm.so()${ARCH_BITS}";

@@ -5,4 +5,4 @@ CONFOPT="";
 GITBRANCH="master";
 BUILDDIR="0";
 CHROOTBUILD="1";
-RPMPROVIDES_libs="libt1.so.5()(${ARCH_BITS}bit) libt1x.so.5()(${ARCH_BITS}bit)";
+RPMPROVIDES_libs="libt1.so.5()${ARCH_BITS} libt1x.so.5()${ARCH_BITS}";

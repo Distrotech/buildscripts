@@ -7,5 +7,5 @@ MAKEITARGETS="install-dev install-lib";
 ADDCFLAG="-fPIC";
 FIXUPLIB="1";
 DONTBUILD="cyg32 cyg64";
-RPMPROVIDES_libs="libattr.so.1()(${ARCH_BITS}bit) libattr.so.1(ATTR_1.0)(${ARCH_BITS}bit)
-	libattr.so.1(ATTR_1.1)(${ARCH_BITS}bit) libattr.so.1(ATTR_1.2)(${ARCH_BITS}bit)";
+RPMPROVIDES_libs="libattr.so.1()${ARCH_BITS} libattr.so.1(ATTR_1.0)${ARCH_BITS}
+	libattr.so.1(ATTR_1.1)${ARCH_BITS} libattr.so.1(ATTR_1.2)${ARCH_BITS}";

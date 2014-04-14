@@ -6,4 +6,4 @@ BUILDDIR="0";
 MAKE_J="";
 NOMAKEFLAGS="1";
 FIXUPLIB="1";
-RPMPROVIDES_libs="libmISDN.so()(${ARCH_BITS}bit) libisdnnet-1.so()(${ARCH_BITS}bit) libsuppserv-1.so()(${ARCH_BITS}bit)";
+RPMPROVIDES_libs="libmISDN.so()${ARCH_BITS} libisdnnet-1.so()${ARCH_BITS} libsuppserv-1.so()${ARCH_BITS}";

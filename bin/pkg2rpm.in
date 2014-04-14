@@ -78,9 +78,10 @@ tar -tf ${6} |grep -vE "(/$|^usr\/share\/info\/dir$|^share\/info\/dir$|^var\/lib
 
 pkg2rpm() {
   BUILDPROJECT=${2}
+  barch=${1}
   case ${1} in
-    *64)ARCH_BITS=64;;
-    *)ARCH_BITS=32;;
+    *64)ARCH_BITS="(64bit)";;
+    *)ARCH_BITS="";;
   esac;
   . ${DEFDIR}/${2}
 

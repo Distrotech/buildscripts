@@ -8,4 +8,4 @@ ADDLDFLAG="-I${SRCDIR}/glew/glew${VERSEP}${VERSION}/lib";
 LDISCC="1";
 MAKEOPTS="LIBDIR=/usr/${C_LIBDIRS}";
 CHROOTBUILD="1";
-RPMPROVIDES_libs="libGLEW.so.1.9()(${ARCH_BITS}bit)";
+RPMPROVIDES_libs="libGLEW.so.1.9()${ARCH_BITS}";
