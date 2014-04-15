@@ -1,7 +1,7 @@
 VERSION="1.2.4"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="-DFREETYPE_LIBRARY:PATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libfreetype.so";
 OPT_x86_64="-DLIB_SUFFIX=64";
 OPT_mips64="-DLIB_SUFFIX=64";
 OPT_powerpc64="-DLIB_SUFFIX=64";
