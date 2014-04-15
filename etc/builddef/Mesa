@@ -18,3 +18,6 @@ AMVER="1.14";
 AUTORECONF="1";
 MLIBDIRLN="libGL.so libEGL.so";
 ADDWITHSYSROOT="1";
+case ${barch} in
+	mips*)CHROOTBUILD="1";;
+esac;

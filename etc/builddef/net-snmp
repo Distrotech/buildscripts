@@ -4,3 +4,6 @@ PREFIX="/usr";
 CONFOPT="--with-mib-modules=mibII/mta_sendmail --without-perl-modules --enable-ipv6 --with-defaults ac_cv_type_ssize_t=yes --enable-shared";
 BUILDDIR="0";
 LDISCC="1";
+SYSROOTFIXUP="0";
+ADDWITHSYSROOT="1";
+ADDCFLAG="-fPIC";

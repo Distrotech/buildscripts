@@ -15,3 +15,4 @@ OPT_x86_64="ac_cv_file__build_x86_64_usr_include_freetype2=yes ac_cv_file__usr_i
 ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/pango-1.0";
 NONULLCONF="1";
 CHROOTBUILD="1";
+SYSROOTFIXUP="0";

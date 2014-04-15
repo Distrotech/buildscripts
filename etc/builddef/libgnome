@@ -4,3 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-I=/usr/include/libbonobo-2.0 -I=/usr/include/gconf/2/ -I=/usr/include/gnome-vfs-2.0
           -I=/usr/include/bonobo-activation-2.0 -I=/usr/include/orbit-2.0";
+SYSROOTFIXUP="0";
+ADDWITHSYSROOT="1";
+CHROOTBUILD="1";

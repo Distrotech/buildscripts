@@ -4,3 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 AMVER="1.9";
 GITBRANCH="master";
+case ${barch} in
+	mips64)CHROOTBUILD="1";;
+esac;
