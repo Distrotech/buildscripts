@@ -18,6 +18,7 @@ NARCH=${NARCH:=$( uname -m )}
 DISTRONAME="Distro Solutions"
 
 DEF_JAVA_VER="1.7.0_51";
+LINUX_VER="3.14.1";
 DEF_QT_VER="5";
 export X11DIR="/opt/Xorg";
 PYVER=2;
@@ -34,7 +35,7 @@ case ${NARCH} in
   arm*)NARCH=arm;
       JAVA_VER="1.7.0_25";;
 esac;
-export NARCH
+export NARCH LINUX_VER
 
 ANT_VER="1.9.2";
 M2_VER="3.1.1";
@@ -45,7 +46,8 @@ export TEX=tex
 #Cleanup the enviroment
 unset JAVA_HOME ANT_HOME M2_HOME QTDIR
 if [ -e /proc/sys/fs/binfmt_misc/${NARCH} ];then
-  export GCC_EXEC_PREFIX=/usr/libexec/gcc-hybrid/
+  export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
+  export GIT_EXEC_PATH=/var/hybrid/git-core
   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin/hybrid:/usr/bin:/sbin:/bin/hybrid:/bin:${X11DIR}/bin:/opt/xfce/bin:${GCC_EXEC_PREFIX}
  else
   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${X11DIR}/bin:/opt/xfce/bin
@@ -1171,6 +1173,8 @@ build_project() {
          chmod 750 ${ARCHROOT}/${NEWARCH}/opt/dtsbuild/bin/hbuild
        fi;
        BUILDSCR=hbuild;
+       rm ${ARCHROOT}/${NEWARCH}/etc/ld.so.cache
+#       ${ARCHROOT}/${NEWARCH}/sbin/ldconfig -r ${ARCHROOT}/${NEWARCH}
       else
        BUILDSCR=build;
      fi;
@@ -1702,9 +1706,9 @@ build_glibc() {
   #building without gcc do so without SSP
   if [ ! -x /usr/bin/${2}-g++ ] && [ "${BOOTSTRAP}" == "0" ];then
     #dont build we are stuck on rerun ??
-    if [ "${1}" == "${NARCH}" ] && [ -e /${USELIBDIR}/libc.so.6 ];then
+    if [ "${1}" == "${NARCH}" ] && [ -e /${NLIBDIR}/libc.so.6 ];then
       return 0;
-     elif [ "${1}" != "${NARCH}" ] && [ -e ${ARCHROOT}/${USELIBDIR}/libc.so.6 ];then
+     elif [ "${1}" != "${NARCH}" ] && [ -e ${ARCHROOT}/${NLIBDIR}/libc.so.6 ];then
       return 0;
     fi;
     build_project glibc ${1} libc_cv_ssp=no
@@ -2027,7 +2031,7 @@ build_gcc_bootstrap() {
 
     export CFLAGS CXXFLAGS
     CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${TLIBDIR}/jvm/gcj-jdk-${1} --enable-cxx-flags=-I=/usr/include
-             CFLAGS=-I=/usr/include ${LANGOPT} ${SYSROOT} --with-ecj-jar=/usr/share/java/ecj-3.5.2.jar --enable-java-home --without-x"
+             CFLAGS=-I=/usr/include ${LANGOPT} ${SYSROOT} --with-ecj-jar=/usr/share/java/ecj-4.3.2.jar --enable-java-home --without-x"
     SDIROPT=-cross
   fi;
   TARGPKG=${GCC}${SDIROPT}
@@ -2508,7 +2512,7 @@ setup_hybrid_boot() {
   done
 
   for pkg in javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep gettext \
-             libxslt glib openssl flux;do
+             libxslt glib openssl flux ncursesw git;do
    (get_pkg_name ${pkg} ${NARCH}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    if [ ! -d ${PDIR} ];then
@@ -2614,7 +2618,7 @@ setup_hybrid_boot() {
   ln -sr ${TMPDIR}/usr/bin/ecj ${TMPDIR}/usr/${B_LIBDIRS}/jvm/gcj-jdk/bin/javac
   ln -sr ${TMPDIR}/usr/bin/${HOST}-gcc ${TMPDIR}/usr/bin/cc
 
-  for pth in ${TMPDIR} ${TMPDIR}/usr ${TMPDIR}/usr/${HOST};do
+  for pth in ${TMPDIR} ${TMPDIR}/usr;do
     if [ -e ${pth}/bin ];then
       mkdir -p ${pth}/bin/hybrid
       mv ${pth}/bin/* ${pth}/bin/hybrid/
@@ -2623,16 +2627,20 @@ setup_hybrid_boot() {
 
   GCCVER=$(${HOST}-gcc --version |head -1 |sed -e "s/.* (GCC) \(.*\)/\1/")
   if [ -d ${TMPDIR}/usr/libexec/gcc/${HOST}/${GCCVER} ];then
-    mv  ${TMPDIR}/usr/libexec/gcc/${HOST}/${GCCVER} ${TMPDIR}/usr/libexec/gcc-hybrid/
-    mkdir -p ${TMPDIR}/usr/libexec/gcc-hybrid/${HOST}
-    ln -sr ${TMPDIR}/usr/libexec/gcc-hybrid/ ${TMPDIR}/usr/libexec/gcc-hybrid/${HOST}/${GCCVER}
-    rm -rf ${TMPDIR}/usr/libexec/gcc
+    if [ ! -d ${TMPDIR}/var/hybrid/libexec ];then
+      mkdir -p ${TMPDIR}/var/hybrid/libexec
+    fi;
+    mv ${TMPDIR}/usr/libexec/gcc ${TMPDIR}/var/hybrid/libexec/
+    rsync -a ${TMPDIR}/usr/${NLIBDIR}/${NMLIBDIR}/gcc/${HOST} ${TMPDIR}/var/hybrid/libexec/gcc/
+    mv ${TMPDIR}/usr/${HOST} ${TMPDIR}/var/hybrid/
+    rm -rf ${TMPDIR}/usr/${NLIBDIR}/${NMLIBDIR}/gcc/${HOST}
+    mv ${TMPDIR}/usr/libexec/git-core ${TMPDIR}/var/hybrid/
   fi;
 
-  for ldtool in $(ls /usr/${HOST}/bin/hybrid);do
+  for ldtool in $(ls ${TMPDIR}/var/hybrid/${HOST}/bin);do
     rm -f ${TMPDIR}/usr/bin/hybrid/${HOST}-$ldtool ${TMPDIR}/usr/bin/hybrid/${ldtool} >/dev/null 2>&1
-    ln -s -r ${TMPDIR}/usr/${HOST}/bin/hybrid/${ldtool} ${TMPDIR}/usr/bin/hybrid/${HOST}-$ldtool
-    ln -s -r ${TMPDIR}/usr/${HOST}/bin/hybrid/${ldtool} ${TMPDIR}/usr/bin/hybrid/${ldtool}
+    ln -s -r ${TMPDIR}/var/hybrid/${HOST}/bin/${ldtool} ${TMPDIR}/usr/bin/hybrid/${HOST}-$ldtool
+    ln -s -r ${TMPDIR}/var/hybrid/${HOST}/bin/${ldtool} ${TMPDIR}/usr/bin/hybrid/${ldtool}
   done)
 
   rsync -a ${TMPDIR}/ ${ARCHROOT}/${1}/
@@ -2671,7 +2679,7 @@ bootstrap_arch_lib() {
     fi;
 
     #build glibc and dependandcies for arch
-    if [ ! -e ${ARCHROOT}/${arch}/${SETLIBDIR}/libc.so.6 ];then
+    if [ ! -e ${ARCHROOT}/${arch}/usr/include/stdlib.h ];then
       (build_glibc ${arch} ${TUPPLE}) || return 1
     fi;
   done;
@@ -2802,7 +2810,7 @@ build_glibc_march() {
            (bootstrap_arch_root ${NARCH}) || return 1
            (bootstrap_arch_root mips mips64) || return 1;
            if [ -d ${ARCHROOT}/${1} ] && [ -e ${STATDIR}/mips/done/glibc ] && \
-              [ ! -e ${ARCHROOT}/${1}/usr/lib/libc.so ];then
+              [ ! -e ${ARCHROOT}/${1}/lib/libc.so.6 ];then
              rm ${STATDIR}/mips/done/glibc
            fi;
            (build_glibc mips mips-linux-gnu) || return 1
@@ -2934,7 +2942,7 @@ build_dependancies() {
   fi;
 
   build_packages ${1} cacerts-lfs apr apr-iconv sqlite-autoconf keyutils neon rhino junit antlr4 apache-ant \
-    ecj db unixODBC cyrus-sasl openslp mysql openldap postgresql apr-util httpd subversion \
+    ecj antlr2 gjdoc db unixODBC cyrus-sasl openslp mysql openldap postgresql apr-util httpd subversion \
     libva gmerlin jasper libraw1394 orc libogg libvorbis libkate gnome-mime-data gnome-vfs \
     libvisual gstreamer gstreamer-1 v4l-utils flac audiofile esound libsndfile json-c fftw \
     libsamplerate speex pulseaudio SDL SDL2 libdc1394 libtheora gst-plugins-base OpenCV frei0r \
@@ -3233,7 +3241,7 @@ bootstrap_toolchain() {
   #bin tools in build dir
   if [ -d ${ARCHROOT}/${1} ];then
     for bintool in `ls ${ARCHROOT}/${1}/usr/${HOST}/bin/`;do
-      if [ ! -e ${ARCHROOT}/${1}/usr/bin/${HOST}-${bintool} ];then
+      if [ ! -e ${ARCHROOT}/${1}/usr/bin/${HOST}-${bintool} ] && [ ! -d ${ARCHROOT}/${1}/usr/${HOST}/bin/${bintool} ];then
         ln -s /usr/${HOST}/bin/${bintool} ${ARCHROOT}/${1}/usr/bin/${HOST}-${bintool}
       fi;
     done;
@@ -3529,7 +3537,7 @@ build_bootstrap() {
 
   echo "Linux Headers"
   if [ ! -d ${SRCDIR}/linux/usr/include/linux ];then
-    (git_load_pkg linux -3 master linux &&
+    (git_load_pkg linux -3 distrotech-linux-${LINUX_VER} linux &&
      cd ${SRCDIR}/linux/linux-3 &&
      make INSTALL_HDR_PATH=${SRCDIR}/linux/usr headers_install_all) || return 1
   fi;
@@ -3681,7 +3689,7 @@ fi;
 #Pull in the linux source and create headers dir
 if [ ! -d ${SRCDIR}/linux/usr/include/linux ] && [ ! "${RUNBASHRC}" ];then
   echo "Linux Headers"
-  (git_load_pkg linux -3 master linux &&
+  (git_load_pkg linux -3 distrotech-linux-${LINUX_VER} linux &&
   cd ${SRCDIR}/linux/linux-3 &&
   make INSTALL_HDR_PATH=${SRCDIR}/linux/usr headers_install_all) || exit 1
 fi;
