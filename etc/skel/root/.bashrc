@@ -1,7 +1,18 @@
 #!/bin/bash
 
-if [ -x /usr/bin/clear ];then
-  clear
+NARCH=${NARCH:=$( uname -m )}
+case ${NARCH} in
+  ppc|powerpc)NARCH=powerpc;;
+  ppc64|powerpc64)NARCH=powerpc64;;
+  arm64|aarch64)NARCH=arm64;;
+  arm*)NARCH=arm;;
+esac;
+export NARCH
+
+if [ -e /proc/sys/fs/binfmt_misc/${NARCH} ] && [ -x /usr/bin/hybrid/clear ];then
+  /usr/bin/hybrid/clear
+ elif [ -x /usr/bin/clear ];then
+  /usr/bin/clear
  else
   printf "\033c"
 fi;
@@ -12,6 +23,9 @@ fi;
 
 if [ ! -d /dev/pts ];then
   mount -t devtmpfs ${HOST_ARCH}_dev /dev
+  if [ "$?" == "0" ] && [ ! -d /dev/pts ];then
+    mkdir /def/pts
+  fi;
 fi
 
 if [ -d /dev/pts ] && [ ! -e /dev/pts/ptmx ];then
@@ -49,7 +63,13 @@ for libpth in /usr /usr/X11R7 /opt/qt-5 /opt/qt-4 /opt/xfce;do
 done;
 
 unset JAVA_HOME ANT_HOME M2_HOME QTDIR FOP_HOME FORREST_HOME
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/apache2/bin:/usr/X11R7/bin:/opt/xfce/bin
+if [ -e /proc/sys/fs/binfmt_misc/${NARCH} ];then
+  PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin/hybrid:/usr/bin:/sbin:/bin/hybrid:/bin:/opt/apache2/bin:/opt/Xorg/bin:/opt/xfce/bin
+  export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
+  export GIT_EXEC_PATH=/var/hybrid/git-core
+ else
+  PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/apache2/bin:/opt/Xorg/bin:/opt/xfce/bin
+fi;
 MANPATH=/usr/share/man
 
 if [ "${JAVA_VER}" ] && [ -d /usr/${HOST_LIBDIR}/jvm/jdk-${JAVA_VER} ];then
@@ -75,7 +95,7 @@ fi;
 if [ -d /opt/texlive ];then
   export TEX=tex
   PATH=${PATH}:/opt/texlive/bin/custom
-  if [ -d /opt/texlive/bin/x86_64-linux ];then
+  if [ -d /opt/texlive/bin/${HOST}-linux ];then
     PATH=${PATH}:/opt/texlive/bin/x86_64-linux
   fi;
   MANPATH=${MANPATH}:/opt/texlive/texmf-dist/doc/man
