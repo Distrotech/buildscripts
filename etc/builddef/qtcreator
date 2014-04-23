@@ -4,6 +4,6 @@ PREFIX="/opt/qt-5";
 CONFOPT="";
 BUILDDIR="0";
 QTMAKE="1";
-DONTBUILD="powerpc powerpc64";
+DONTBUILD="powerpc powerpc64 mips mips64";
 GITMODULES="1";
 CHROOTBUILD="1";
