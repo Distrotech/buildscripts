@@ -2,3 +2,6 @@ VERSION="0.90"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+case ${barch} in
+        mips*)CHROOTBUILD="1";;
+esac;

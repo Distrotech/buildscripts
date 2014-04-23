@@ -13,3 +13,5 @@ OPT_powerpc="ac_cv_func_malloc_0_nonnull=yes";
 OPT_powerpc64="ac_cv_func_malloc_0_nonnull=yes";
 GITBRANCH="master";
 CHROOTBUILD="1";
+SYSROOTFIXUP="0";
+CLEARFLAGS="1";

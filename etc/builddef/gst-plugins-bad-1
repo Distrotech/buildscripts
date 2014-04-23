@@ -8,3 +8,6 @@ LDISCC="1";
 CLEARFLAGS="1";
 ALIAS="gst-plugins-bad";
 ADDRPTHLINK="1";
+case ${barch} in
+        mips*)CHROOTBUILD="1";;
+esac;

@@ -6,3 +6,6 @@ ADDCFLAG="-I=/usr/include/orc-0.4";
 BUILDDIR="0";
 AMVER="1.11";
 AUTORECONF="1";
+case ${barch} in
+        mips*)CHROOTBUILD="1";;
+esac;

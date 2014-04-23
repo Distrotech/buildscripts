@@ -4,3 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 CFGPTH="cppunit";
 CFGBIN="cppunit/";
+case ${barch} in
+        mips*)CHROOTBUILD="1";;
+esac;

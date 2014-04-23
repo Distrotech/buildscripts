@@ -5,3 +5,6 @@ CONFOPT="";
 ALIAS="smpeg";
 RPMOBSOLETE_base="smpeg";
 RPMOBSOLETE_dbg="smpeg";
+case ${barch} in
+        mips*)CHROOTBUILD="1";;
+esac;

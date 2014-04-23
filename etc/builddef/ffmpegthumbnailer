@@ -3,3 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 EXTRALIBS="-lpthread";
+case ${barch} in
+        mips*)CHROOTBUILD="1";;
+esac;

@@ -16,3 +16,6 @@ fi;
 ADDWITHSYSROOT="1";
 NOCCOPT="1";
 NODIET="1";
+case ${barch} in
+        mips*)CHROOTBUILD="1";;
+esac;

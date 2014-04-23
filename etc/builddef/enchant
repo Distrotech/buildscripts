@@ -3,3 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 GITBRANCH="master";
+case ${barch} in
+        mips*)CHROOTBUILD="1";;
+esac;

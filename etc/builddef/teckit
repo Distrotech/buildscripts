@@ -3,3 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 NOCCOPT="1";
+case ${barch} in
+        mips*)CHROOTBUILD="1";;
+esac;

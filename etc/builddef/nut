@@ -5,3 +5,6 @@ CONFOPT="--with-all --with-cgi --without-avahi --without-powerman --without-ipmi
          --with-gd-libs=-lgd ac_cv_search_gdImagePng=-lgd";
 ADDCFLAG="-I=/usr/include/neon";
 EXTRALIBS="-lgd -lpng";
+case ${barch} in
+        mips*)CHROOTBUILD="1";;
+esac;

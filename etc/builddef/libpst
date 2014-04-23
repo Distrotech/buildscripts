@@ -4,5 +4,5 @@ PREFIX="/usr";
 CONFOPT="--enable-libpst-shared PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
 GITBRANCH="master";
 case ${barch} in
-  powerpc*)CHROOTBUILD="1";;
+  mips*|powerpc*)CHROOTBUILD="1";;
 esac;

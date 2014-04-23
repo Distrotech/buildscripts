@@ -4,3 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-std=gnu99";
 EXTRALIBS="-lm";
+case ${barch} in
+        mips*)CHROOTBUILD="1";;
+esac;

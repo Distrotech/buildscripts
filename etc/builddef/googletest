@@ -3,3 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
+case ${barch} in
+        mips*)CHROOTBUILD="1";;
+esac;

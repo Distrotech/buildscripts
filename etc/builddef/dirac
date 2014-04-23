@@ -14,3 +14,6 @@ BUILDDIR="0";
 AUTORECONF="1";
 AMVER="1.13";
 RPMOBSOLETE="schroedinger";
+case ${barch} in
+        mips*)CHROOTBUILD="1";;
+esac;

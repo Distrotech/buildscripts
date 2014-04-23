@@ -1,4 +1,4 @@
-VERSION="3.2.8.1"
+VERSION="3.3.0"
 VERSEP="-";
 CONFOPT="--disable-rpath --with-libnettle-prefix=${ARCHROOT}/${barch}/${PREFIX} --enable-local-libopts";
 if [ "${barch:0:3}" == "win" ];then
@@ -17,3 +17,6 @@ ADDWITHSYSROOT="1";
 ADDCFLAG="-I=/${PREFIX}/include/p11-kit-1 -I=/${PREFIX}/include/guile/2.0 -I=${PREFIX}/include/evil-1";
 BUILDDIR="0";
 AMVER="1.14";
+case ${barch} in
+	mips*)CHROOTBUILD="1";;
+esac;
