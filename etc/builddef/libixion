@@ -5,4 +5,6 @@ CONFOPT="";
 BUILDDIR="0";
 EXTRALIBS="-lboost_system";
 AMVER="1.11";
-DONTBUILD="mips64";
+case ${barch} in
+  mips*)CHROOTBUILD="1";;
+esac;

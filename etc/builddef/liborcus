@@ -3,4 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-boost-libdir=${ARCHROOT}/${barch}/${B_LIBDIRS} --with-boost-system=boost_system";
 EXTRALIBS="-lpthread -lrt -ldl";
-DONTBUILD="mips64";
+case ${barch} in
+  mips*)CHROOTBUILD="1";;
+esac;
