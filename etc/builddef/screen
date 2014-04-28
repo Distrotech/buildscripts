@@ -1,9 +1,10 @@
-VERSION="20130513"
+VERSION="4.2.1"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-pty-mode=630 --with-pty-group=15 --enable-colors256 --enable-rxvt_osc --enable-pam --enable-locale
+CONFOPT="--with-pty-mode=630 --with-pty-group=15 --enable-colors256 --enable-rxvt_osc --enable-pam --enable-use-locale
          --with-sys-screenrc=/etc/screenrc";
 BUILDDIR="0";
 CFGPTH="src";
 CFGBIN="src/";
 CHROOTBUILD="1";
+RPMEPOCH="1";
