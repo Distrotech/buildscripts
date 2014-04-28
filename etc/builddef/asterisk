@@ -5,4 +5,5 @@ CONFOPT="--with-dahdi --with-spandsp --with-ssl --with-openr2 --with-ss7 --witho
 ADDLDFLAG="-L=/opt/mysql/${B_LIBDIRS}";
 ADDCFLAG="-I=/opt/mysql/include";
 BUILDDIR="0";
-#MAKEITARGETS="samples";
+MAKEITARGETS="samples";
+EXTRALIBS="-lpthread -lrt";
