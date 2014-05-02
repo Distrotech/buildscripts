@@ -5,16 +5,16 @@ CWD=$( pwd )
 if [ "${4}" ];then
   /usr/bin/make ${4}
 fi;
+#define(\`confCCOPTS', \`--sysroot=/var/opt/dtsbuild/sysroot/${1}')dnl
 
 (/usr/bin/cat <<EOF
 APPENDDEF(\`confMAPDEF', \`-DLDAPMAP')
 APPENDDEF(\`confENVDEF', \`-DLDAP_VERSION_MAX=3 -DSASL -DSTARTTLS -D_FFR_SASL_OPTS -DNETINET6')dnl
-APPENDDEF(\`confINCDIRS', \`-I/usr/include/sasl')dnl
+APPENDDEF(\`confINCDIRS', \`-I=/usr/include -I=/usr/include/sasl')dnl
 APPENDDEF(\`confLIBDIRS', \`-L=/usr/${B_LIBDIRS}/sasl2')dnl
 APPENDDEF(\`confLIBS', \`-L=/usr/${B_LIBDIRS} -lldap -lsasl2 -lcrypt -lssl -lcrypto -llber -lpthread -lrt -lltdl -lutil')dnl
 PREPENDDEF(\`confLIBSEARCH',\`resolv')dnl
 define(\`confCC', \`/usr/bin/${HOST}-gcc')dnl
-define(\`confCCOPTS', \`--sysroot=/build/${1}')dnl
 define(\`confMKDIR', \`mkdir')dnl
 define(\`confMANROOT', \`/usr/share/man/man')dnl
 define(\`confCCLINK', \`/usr/bin/${HOST}-gcc')dnl
