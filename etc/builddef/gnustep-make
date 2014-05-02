@@ -1,6 +1,6 @@
 VERSION="2.6.4";
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="SHELLPROG=/bin/bash";
 CHROOTBUILD="1";
 ADDCFLAG="-I=/opt/mysql/include";
