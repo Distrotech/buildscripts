@@ -7,3 +7,4 @@ LDISCC="1";
 SYSROOTFIXUP="0";
 ADDWITHSYSROOT="1";
 ADDCFLAG="-fPIC";
+RPMPROVIDES_libs="libnetsnmp.so.30()${ARCH_BITS} libnetsnmpagent.so.30()${ARCH_BITS} libnetsnmpmibs.so.30()${ARCH_BITS}";
