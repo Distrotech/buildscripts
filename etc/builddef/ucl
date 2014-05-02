@@ -1,9 +1,13 @@
 VERSION="1.03"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--enable-shared";
 GITBRANCH="master";
 DONTBUILD="x86_32";
-SYSROOTFIXUP="0";
 CLEARFLAGS="1";
 CHROOTBUILD="1";
+ADDCCOPT="0";
+case ${barch} in
+  x86_32|x86_64|i686)SYSROOTFIXUP="1";;
+  *)SYSROOTFIXUP="0";;
+esac;
