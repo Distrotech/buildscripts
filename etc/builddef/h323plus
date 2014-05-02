@@ -11,4 +11,4 @@ MAKEALL="optshared";
 GITBRANCH="master";
 NODIET="1";
 CHROOTBUILD="1";
-RPMPROVIDES="libh323_linux_${barch}_.so.1.24.0()${ARCH_BITS}";
+RPMPROVIDES_libs="libh323_linux_${barch}_.so.1.24.0()${ARCH_BITS}";
