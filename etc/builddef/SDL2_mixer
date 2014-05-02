@@ -4,6 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 ALIAS="SDL_mixer";
 SYSROOTFIXUP="0";
-case ${barch} in
-        mips*)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";
