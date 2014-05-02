@@ -2,7 +2,7 @@ VERSION="3.3.5"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-pthreads --enable-icmp --enable-useragent-log --enable-referer-log --enable-htcp --enable-linux-netfilter --disable-ident-lookups 
-         --enable-basic-auth-helpers=NCSA,PAM --enable-ssl --enable-snmp --enable-underscores --disable-hostname-checks 
+         --enable-auth-basic=NCSA,PAM --enable-ssl --enable-snmp --enable-underscores --disable-hostname-checks 
          --datadir=/usr/share/squid --enable-external-acl-helpers=unix_group --localstatedir=/var --with-logdir=/var/log";
 SYSCONFPRE="squid";
 OPT_arm="squid_cv_broken_heimdal_krb5_h=no";
@@ -13,7 +13,7 @@ OPT_powerpc="squid_cv_broken_heimdal_krb5_h=no";
 OPT_powerpc64="squid_cv_broken_heimdal_krb5_h=no";
 OPT_i686="squid_cv_broken_heimdal_krb5_h=no";
 OPT_x86_32="squid_cv_broken_heimdal_krb5_h=no";
-MAKEOPTS="HOSTCXX=g++";
+MAKEOPTS="HOSTCXX=g++ BASIC_AUTH_HELPERS=\"PAM NCSA\"";
 DISTCONF="squid/squid.conf";
 case ${barch} in
   powerpc64|mips64)CHROOTBUILD="1";;
