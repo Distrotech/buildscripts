@@ -98,3 +98,4 @@ RPMPROVIDES_libs="libgcc_s.so.1()${ARCH_BITS} libgcc_s.so.1(GCC_3.0)${ARCH_BITS}
 	libgcc_s.so.1(GCC_3.3.1)${ARCH_BITS} libgcc_s.so.1(GCC_3.4)${ARCH_BITS} libgcc_s.so.1(GCC_4.2.0)${ARCH_BITS}
 	libgcc_s.so.1(GCC_4.3.0)${ARCH_BITS} libgcc_s.so.1(GCC_4.5.0)${ARCH_BITS} libgcc_s.so.1(GCC_4.0.0)${ARCH_BITS}
 	libgcc_s.so.1(GCC_4.7.0)${ARCH_BITS}"
+RPMOBSOLETE="gjdoc";
