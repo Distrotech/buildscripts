@@ -1,0 +1,8 @@
+VERSION="14.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+GITBRANCH="master"
+BUILDDIR="0";
+NOINST="1";
+RPMPROVIDES="/bin/ash";
