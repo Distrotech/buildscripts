@@ -1,15 +1,15 @@
 VERSION="1.7.7"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-swig --with-ssl";
+CONFOPT="--with-swig --with-ssl --with-apxs=${ARCHROOT}/${barch}/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/${barch}/opt/apr
+         --with-apr-util=${ARCHROOT}/${barch}/opt/apr --with-gssapi=${ARCHROOT}/${barch}/usr --with-swig=${ARCHROOT}/${barch}/usr
+         --with-neon=${ARCHROOT}/${barch}/usr --enable-dav";
 MAKEITARGETS="install swig-pl swig-py install-swig-pl install-swig-py";
 if [ -x /usr/${B_LIBDIRS}/jvm/gcj-jdk/bin/javac ];then
   MAKETARGETS="javahl";
   MAKEITARGETS="${MAKEITARGETS} install-javahl";
   CONFOPT="${CONFOPT} --enable-javahl --with-jdk=/usr/${B_LIBDIRS}/jvm/gcj-jdk";
 fi;
-CONFOPTX="--with-apxs=${ARCHROOT}/${barch}/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/${barch}/usr --with-apr-util=${ARCHROOT}/${barch}/usr
-         --with-gssapi=${ARCHROOT}/${barch}/usr --with-swig=${ARCHROOT}/${barch}/usr --with-neon=${ARCHROOT}/${barch}/usr";
 ADDCFLAG="-I=/opt/apache/include";
 STATICOPT="--disable-shared --without-berkeley-db --enable-all-static --without-apxs LDFLAGS=-static"
 STATICMOPT="LDFLAGS=-all-static";
