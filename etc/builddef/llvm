@@ -1,4 +1,4 @@
-VERSION="34"
+VERSION="34.1"
 VERSEP="-";
 PREFIX="/usr";
 case ${barch} in
