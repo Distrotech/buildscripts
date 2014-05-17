@@ -17,3 +17,7 @@
 /etc/yum_repo.conf
 /lsb/lsb-release
 /lsb/lsb_release.1.gz
+/kernconfig/*.old
+/bin/mkkern
+/libexec/make_qt-5
+/libexec/make_sip

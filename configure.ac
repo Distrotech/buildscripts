@@ -71,8 +71,11 @@ AC_CONFIG_FILES([
   bin/mkbuilddef
   bin/pkg2rpm
   bin/umount-arch
+  bin/mkkern
   etc/yum_repo.conf
-  lsb/lsb-release])
+  lsb/lsb-release
+  libexec/make_sip
+  libexec/make_qt-5])
 
 AC_SUBST(YUMREPOCONFDIR)
 AC_SUBST(SRVDIRTAR)
