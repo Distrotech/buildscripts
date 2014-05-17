@@ -1,10 +1,12 @@
-VERSION="52.1"
+VERSION="53.1"
 VERSEP="-";
 PREFIX="/usr";
 if [ "${barch}" == "${NARCH}" ];then
-  CONFOPT="";
+  CONFOPT="--disable-strict";
  else
-  CONFOPT="--with-cross-build=${SRCDIR}/icu/icu-52.1/build-${NARCH}";
+  CONFOPT="--with-cross-build=${SRCDIR}/icu/icu-${VERSION}/build-${NARCH} --disable-strict";
 fi;
 CFGBIN="source/";
 NODIET="1";
+NOCCOPT="1";
+CLEARFLAGS="1";
