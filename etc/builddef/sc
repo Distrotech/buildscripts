@@ -1,0 +1,7 @@
+VERSION="7.13"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+GITBRANCH="master";
+BUILDDIR="0";
+NOMAKEFLAGS="1";

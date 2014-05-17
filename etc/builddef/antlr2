@@ -1,0 +1,10 @@
+VERSION="2.7.7"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+MAKEALL="-C antlr";
+MAKEITARGETS="${MAKEALL}";
+BUILDDIR="0";
+GITBRANCH="master";
+MAKE_J="";
+ADDCC="0";
