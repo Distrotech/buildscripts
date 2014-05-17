@@ -1,10 +1,11 @@
 VERSION="5.18.1"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="libopts_cv_with_libregex=yes";
+CONFOPT="libopts_cv_with_libregex=yes --with-libguile-libs=\"-L=/usr/${C_LIBDIRS} -lguile-2.0\"
+         --with-libguile-cflags=\"-I=/usr/include/guile/2.0\" --with-guile-ver=2.0.9 POSIX_SHELL=/bin/bash GREP=/usr/bin/grep";
 ADDCFLAG="-I=/usr/include/guile/2.0";
-OPT_mips="--target=mips-linux-gnu";
-OPT_powerpc="--target=powerpc-linux-gnu --with-libguile=/usr";
-DONTBUILD="powerpc mips";
 AMVER="1.14";
 CHROOTBUILD="1";
+case ${barch} in
+  powerpc)DONTBUILD="powerpc";;
+esac;
