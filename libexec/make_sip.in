@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export PYTHONHOME=@ARCHROOT@/${1}/usr
+@ARCHROOT@/${1}/usr/bin/python2.7 configure.py
+
+make ${MAKE_J}
+make DESTDIR=${3} install

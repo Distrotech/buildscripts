@@ -1,7 +1,7 @@
 #!/bin/bash
 
-export PYTHONHOME=/build/${1}/usr
-/build/${1}/usr/bin/python2.7 configure.py
+export PYTHONHOME=/var/opt/dtsbuild/sysroot/${1}/usr
+/var/opt/dtsbuild/sysroot/${1}/usr/bin/python2.7 configure.py
 
 make ${MAKE_J}
 make DESTDIR=${3} install

@@ -5,7 +5,6 @@ CWD=$( pwd )
 if [ "${4}" ];then
   /usr/bin/make ${4}
 fi;
-#define(\`confCCOPTS', \`--sysroot=/var/opt/dtsbuild/sysroot/${1}')dnl
 
 (/usr/bin/cat <<EOF
 APPENDDEF(\`confMAPDEF', \`-DLDAPMAP')

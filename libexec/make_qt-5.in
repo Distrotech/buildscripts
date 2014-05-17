@@ -2,10 +2,10 @@
 
 unset CFLAGS LDFLAGS CC CXX CPPFLAGS CXXFLAGS LD
 
-if [ "${1}" == "${NARCH}" ] && [ ! -d /var/opt/dtsbuild/sysroot/${1} ];then
+if [ "${1}" == "${NARCH}" ] && [ ! -d @ARCHROOT@/${1} ];then
   mkdir -p /opt/qt-${QT_VER}/${B_LIBDIRS}
  else
-  mkdir -p /var/opt/dtsbuild/sysroot/${1}/opt/qt-${QT_VER}/${B_LIBDIRS}
+  mkdir -p @ARCHROOT@/${1}/opt/qt-${QT_VER}/${B_LIBDIRS}
 fi;
 
 #Possible rebuild
