@@ -25,6 +25,7 @@ esac;
 
 
 RPM_PKG_LIST="";
+#while read line;do echo $line;done < pkglist/root.pkglist
 for pkg in ${PKG_LIST};do
  RPM_PKG_LIST+=" ${pkg}${MARCH}"
  if [ "`ls /srv/opt/dtsbuild/tar/${ARCH}/${pkg}*/${pkg}*-conf.tar.xz 2>/dev/null`" ];then
@@ -43,7 +44,7 @@ case ${NARCH} in
       x86_64)yum -y --installroot=${TMPDIR} --exclude="*.x86_32" --exclude="*.i686" install${RPM_PKG_LIST};;
       x86_32)yum -y --installroot=${TMPDIR} --exclude="*.x86_64" --exclude="*.i686" install${RPM_PKG_LIST};;
       i[3-6]86)yum -y --installroot=${TMPDIR} --exclude="*.x86_64" --exclude="*.x86_32" install${RPM_PKG_LIST};;
-      *)yum -y --installroot=${TMPDIR} --exclude="*.x86_64" --exclude="*.x86_32" --exclude="*.i686" install${RPM_PKG_LIST};;
+      *)echo yum -y --installroot=${TMPDIR} --exclude="*.x86_64" --exclude="*.x86_32" --exclude="*.i686" install${RPM_PKG_LIST};;
     esac;;
   *)if [ "${NARCH}" == "${ARCH}" ];then
       yum -y --installroot=${TMPDIR} install${RPM_PKG_LIST};
@@ -51,7 +52,7 @@ case ${NARCH} in
       yum -y --installroot=${TMPDIR} --exclude="*.${NARCH}" install${RPM_PKG_LIST};
     fi;;
 esac;
-
+exit
 for dir in root proc sys dev tmp;do
   mkdir ${TMPDIR}/${dir}
 done
