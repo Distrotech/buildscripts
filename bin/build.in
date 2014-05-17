@@ -18,7 +18,8 @@ NARCH=${NARCH:=$( uname -m )}
 DISTRONAME="Distro Solutions"
 
 DEF_JAVA_VER="1.7.0_51";
-LINUX_VER="3.14.1";
+LINUX_VER="3.14.4";
+DAHDI_VER="2.9.1.1";
 DEF_QT_VER="5";
 export X11DIR="/opt/Xorg";
 PYVER=2;
@@ -44,6 +45,7 @@ export ORIG_PATH=${PATH}
 export TEX=tex
 
 #Cleanup the enviroment
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 unset JAVA_HOME ANT_HOME M2_HOME QTDIR
 if [ -e /proc/sys/fs/binfmt_misc/${NARCH} ];then
   export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
@@ -81,6 +83,8 @@ PKGDESTDIR=${PKGBUILDDIR}/staging
 BASEROOT=${PKGBUILDDIR}/bootstrap
 STATDIR=${PKGBUILDDIR}/status
 GITURL=${GITURL}
+
+KERN_HEADERS=${PKGDESTDIR}/${NARCH}/linux-headers-${LINUX_VER}
 
 GITUPDATE=1;
 DIETBUILD=1;
@@ -456,34 +460,36 @@ check_create_arch() {
 #    rsync -aR /usr/${HOST}/${B_LIBDIRS} ${ARCHROOT}/${1}/
 #  fi;
 
-  if [ -d ${SRCDIR}/linux/usr/include/linux ];then
+  if [ -d ${KERN_HEADERS} ];then
     if [ ! -d ${HDIR}/usr/include ] || [ ! -f ${TOOLPKG}/${1}/kernel-headers.tar.xz ] || \
-       [ ${SRCDIR}/linux/usr/include/linux -nt ${HDIR}/usr/include/linux ];then
-
+       [ ${KERN_HEADERS}/usr/include/linux -nt ${HDIR}/usr/include/linux ];then
       rsync -a --include=asm-${KARCH} --include=asm-generic --exclude=.install --exclude=..install.cmd \
                 --exclude=.check --exclude=..check.cmd \
-                --exclude=asm* ${SRCDIR}/linux/usr/include/ ${HDIR}/usr/include/
-      if [ -e ${HDIR}/usr/include/asm ] && [ ! -h ${HDIR}/usr/include/asm ];then
+                --exclude=asm* ${KERN_HEADERS} ${HDIR}/usr/include/
+      touch ${HDIR}/usr/include/linux
+      if [ -e ${HDIR}/usr/include/asm ];then
         rm -rf ${HDIR}/usr/include/asm
       fi;
       if [ ! -e ${HDIR}/usr/include/asm ];then
-        ln -s asm-${KARCH} ${HDIR}/usr/include/asm
+        ln -sr ${HDIR}/usr/include/asm-${KARCH} ${HDIR}/usr/include/asm
       fi;
       if [ -d ${ARCHROOT}/${1} ] && [ ! -h ${ARCHROOT}/${1} ];then
         if [ ! -d ${ARCHROOT}/${1}/usr/include ];then
           mkdir -p ${ARCHROOT}/${1}/usr/include
         fi;
-        rsync -a ${HDIR}/usr/include/ ${ARCHROOT}/${1}/usr/include/ >/dev/null
+        if [ -e ${ARCHROOT}/${1}/usr/include/asm ];then
+          rm -rf ${ARCHROOT}/${1}/usr/include/asm
+        fi;
+        rsync -ap ${HDIR}/usr/include/ ${ARCHROOT}/${1}/usr/include/ >/dev/null
       fi;
 
-      (cd ${SRCDIR}/linux
-       if [ ! -d ${TOOLPKG}/${1}/ ];then
-         mkdir -p ${TOOLPKG}/${1}
-       fi;
+      (cd ${KERN_HEADERS}
+      if [ ! -d ${TOOLPKG}/${1}/ ];then
+        mkdir -p ${TOOLPKG}/${1}
+      fi;
       find . ! -regex '.*\.install$' -and ! -regex '.*\.\.install.cmd$'  -and ! -regex '.*\.check$' -and ! -regex \
-             '.*\.check.cmd$' -and ! -regex '\.\/usr\/include\/asm-.*' -and -regex '\.\/usr\/include\/.*' -or -regex \
-             "\.\/usr\/include\/asm-${KARCH}\/.*\.h" -or -regex "\.\/usr\/include\/asm-generic\/.*\.h" |\
-        cpio -o -H tar |xz -9 > ${TOOLPKG}/${1}/kernel-headers.tar.xz)
+             '.*\.check.cmd$' -and -regex '\.\/usr\/include\/.*' |\
+      cpio -o -H tar |xz -9 > ${TOOLPKG}/${1}/kernel-headers.tar.xz)
     fi;
   fi;
 
@@ -2030,7 +2036,7 @@ build_gcc_bootstrap() {
     fi;
 
     export CFLAGS CXXFLAGS
-    CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${TLIBDIR}/jvm/gcj-jdk-${1} --enable-cxx-flags=-I=/usr/include
+    CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${TLIBDIR}/jvm/gcj-jdk-${1} --enable-cxx-flags=-I=/usr/include LIBS=-lstdc++
              CFLAGS=-I=/usr/include ${LANGOPT} ${SYSROOT} --with-ecj-jar=/usr/share/java/ecj-4.3.2.jar --enable-java-home --without-x"
     SDIROPT=-cross
   fi;
@@ -2130,11 +2136,11 @@ build_gcc_bootstrap() {
   run_configure ${USELIBDIR} .. ${PROGPRE} --build=${BUILD} --host=${THOST} --target=${2} --with-build-sysroot=${BUILDDIR} \
                 ${CONFOPT} ${!MARCH} ${GCCOPTS} || return 1
 
-  if [ "${MLIBDIR}" ];then
-    rsync -a ${BUILDDIR}/usr/${B_LIBDIRS}/${MLIBDIR}/crt*.o gcc/
-   else
-    rsync -a ${BUILDDIR}/usr/${B_LIBDIRS}/crt*.o gcc/
-  fi;
+#  if [ "${MLIBDIR}" ];then
+#    rsync -a ${BUILDDIR}/usr/${B_LIBDIRS}/${MLIBDIR}/crt*.o gcc/
+#   else
+#    rsync -a ${BUILDDIR}/usr/${B_LIBDIRS}/crt*.o gcc/
+#  fi;
 
   if [ ! -d ${2}/libstdc++-v3 ];then
     mkdir -p ${2}/libstdc++-v3
@@ -2444,6 +2450,17 @@ fixup_glibc_link() {
   ln -s -r ${1}/${2}/${3}.${4} ${1}/usr/${2}/${3}
 }
 
+
+java_hybrid_setup() {
+  if [ -x ${1}/usr/bin/hybrid/${3} ] && [ -h ${1}/usr/${4}/jvm/gcj-jdk/bin/${2} ];then
+    basejdkfile=$(readlink -f ${1}/usr/${4}/jvm/gcj-jdk/bin/${2})
+    if [ "${basejdkfile}" != "${1}/usr/bin/hybrid/${3}" ];then
+      rm ${1}/usr/${4}/jvm/gcj-jdk/bin/${2}
+      ln -sr ${1}/usr/bin/hybrid/${3} ${1}/usr/${4}/jvm/gcj-jdk/bin/${2}
+    fi;
+  fi;
+}
+
 setup_hybrid_boot() {
   if [ "${1}" == "${2}" ] || [ "${1:0:3}" == "cyg" ];then
     return 0;
@@ -2512,7 +2529,7 @@ setup_hybrid_boot() {
   done
 
   for pkg in javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep gettext \
-             libxslt glib openssl flux ncursesw git;do
+             libxslt glib openssl flux ncursesw git doxygen;do
    (get_pkg_name ${pkg} ${NARCH}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    if [ ! -d ${PDIR} ];then
@@ -2520,7 +2537,7 @@ setup_hybrid_boot() {
    fi;
    cd ${PDIR}
    if [ -e ${PNAME}.tar.xz ];then
-     tar -C ${TMPDIR} -xf ${PNAME}.tar.xz usr/bin bin 2>/dev/null || true
+     tar -C ${TMPDIR} -xf ${PNAME}.tar.xz usr/bin bin usr/libexec 2>/dev/null || true
     else
      return 0
    fi) || ERROR="${ERROR}${pkg} Executable Missing\n"
@@ -2568,18 +2585,6 @@ setup_hybrid_boot() {
     tar -C ${TMPDIR} -xf ${PNAME}.tar.xz usr/bin/gappletviewer usr/bin/gjar usr/bin/gjarsigner usr/bin/gij usr/bin/gjdoc usr/bin/gjavah \
                                          usr/bin/gkeytool usr/bin/gnative2ascii usr/bin/gorbd usr/bin/grmic usr/bin/grmid usr/bin/grmiregistry \
                                          usr/bin/gserialver usr/bin/gtnameserv 2>/dev/null || true
-
-    for jtool in gappletviewer gjar gjarsigner gij gjdoc gjavah gkeytool \
-                 gnative2ascii gorbd grmic grmid grmiregistry gserialver gtnameserv;do
-      if [ -e ${TMPDIR}/usr/bin/${HOST}-${jtool} ];then
-        rm ${TMPDIR}/usr/bin/${HOST}-${jtool}
-      fi;
-      if [ -e ${TMPDIR}/usr/bin/${jtool} ];then
-        ln -s ${jtool} ${TMPDIR}/usr/bin/${HOST}-${jtool}
-       elif [ -e ${TMPDIR}/usr/bin/${BUILD}-${jtool} ];then
-        ln -s ${BUILD}-${jtool} ${TMPDIR}/usr/bin/${HOST}-${jtool}
-      fi;
-    done
    else
      return 1
   fi;) || ERROR="${ERROR}Classpath Missing\n";
@@ -2609,14 +2614,19 @@ setup_hybrid_boot() {
 
   (cd ${TMPDIR}
   ls /usr/bin/${HOST}-*  |cut -d- -f4- |awk -v HOST=${HOST} '{printf "rm usr/bin/%s;ln -s %s-%s usr/bin/%s\n",$1,HOST,$1,$1}' |sh >/dev/null 2>&1
-
-  #JDK bits
-  if [ ! -d ${TMPDIR}/usr/${B_LIBDIRS}/jvm ];then
-    mkdir -p ${TMPDIR}/usr/${B_LIBDIRS}/jvm
-  fi;
-  rsync -a /usr/${NLIBDIR}/jvm/gcj-jdk-${1}/ ${TMPDIR}/usr/${B_LIBDIRS}/jvm/gcj-jdk/
-  ln -sr ${TMPDIR}/usr/bin/ecj ${TMPDIR}/usr/${B_LIBDIRS}/jvm/gcj-jdk/bin/javac
   ln -sr ${TMPDIR}/usr/bin/${HOST}-gcc ${TMPDIR}/usr/bin/cc
+
+  GCCVER=$(${HOST}-gcc --version |head -1 |sed -e "s/.* (GCC) \(.*\)/\1/")
+  if [ -d ${TMPDIR}/usr/libexec/gcc ];then
+    if [ ! -d ${TMPDIR}/var/hybrid/libexec ];then
+      mkdir -p ${TMPDIR}/var/hybrid/libexec
+    fi;
+    mv ${TMPDIR}/usr/libexec/gcc ${TMPDIR}/var/hybrid/libexec/
+    rsync -a ${TMPDIR}/usr/${NLIBDIR}/${NMLIBDIR}/gcc/${HOST} ${TMPDIR}/var/hybrid/libexec/gcc/
+    rm -rf ${TMPDIR}/usr/${NLIBDIR}/${NMLIBDIR}/gcc/${HOST}
+    mv ${TMPDIR}/usr/${HOST} ${TMPDIR}/var/hybrid/
+    mv ${TMPDIR}/usr/libexec/git-core ${TMPDIR}/var/hybrid/
+  fi;)
 
   for pth in ${TMPDIR} ${TMPDIR}/usr;do
     if [ -e ${pth}/bin ];then
@@ -2625,33 +2635,35 @@ setup_hybrid_boot() {
     fi;
   done
 
-  GCCVER=$(${HOST}-gcc --version |head -1 |sed -e "s/.* (GCC) \(.*\)/\1/")
-  if [ -d ${TMPDIR}/usr/libexec/gcc/${HOST}/${GCCVER} ];then
-    if [ ! -d ${TMPDIR}/var/hybrid/libexec ];then
-      mkdir -p ${TMPDIR}/var/hybrid/libexec
-    fi;
-    mv ${TMPDIR}/usr/libexec/gcc ${TMPDIR}/var/hybrid/libexec/
-    rsync -a ${TMPDIR}/usr/${NLIBDIR}/${NMLIBDIR}/gcc/${HOST} ${TMPDIR}/var/hybrid/libexec/gcc/
-    mv ${TMPDIR}/usr/${HOST} ${TMPDIR}/var/hybrid/
-    rm -rf ${TMPDIR}/usr/${NLIBDIR}/${NMLIBDIR}/gcc/${HOST}
-    mv ${TMPDIR}/usr/libexec/git-core ${TMPDIR}/var/hybrid/
+  if [ -e /usr/bin/qemu-${QCPU} ];then
+    cp /usr/bin/qemu-${QCPU} ${TMPDIR}/usr/bin
   fi;
 
-  for ldtool in $(ls ${TMPDIR}/var/hybrid/${HOST}/bin);do
-    rm -f ${TMPDIR}/usr/bin/hybrid/${HOST}-$ldtool ${TMPDIR}/usr/bin/hybrid/${ldtool} >/dev/null 2>&1
-    ln -s -r ${TMPDIR}/var/hybrid/${HOST}/bin/${ldtool} ${TMPDIR}/usr/bin/hybrid/${HOST}-$ldtool
-    ln -s -r ${TMPDIR}/var/hybrid/${HOST}/bin/${ldtool} ${TMPDIR}/usr/bin/hybrid/${ldtool}
-  done)
+  rm -rf ${TMPDIR}/usr/{share,libexec} ${TMPDIR}/usr/${B_LIBDIRS}/jvm*
+
+  #JDK bits
+  if [ ! -d ${TMPDIR}/usr/${B_LIBDIRS}/jvm/bin ];then
+    mkdir -p ${TMPDIR}/usr/${B_LIBDIRS}/jvm/bin
+  fi;
+
+  for jdkbin in "appletviewer gappletviewer" "jar gjar" "jarsigner gjarsigner" \
+                "java gij" "javac ecj" "javadoc gjdoc" "javah gjavah" \
+                "keytool gkeytool" "native2ascii gnative2ascii" "orbd gorbd" \
+                "rmic grmic" "rmid grmid" "rmiregistry grmiregistry" \
+                "serialver gserialver" "tnameserv gtnameserv";do
+    java_hybrid_setup ${TMPDIR} ${jdkbin} ${B_LIBDIRS}
+  done;
 
   rsync -a ${TMPDIR}/ ${ARCHROOT}/${1}/
   if [ "${TMPDIR}" ] && [ -d "${TMPDIR}" ];then
+    if [ ! -d ${PKGDISTDIR}/core/${2}/${1} ];then
+      mkdir -p ${PKGDISTDIR}/core/${2}/${1}
+    fi;
+    (cd ${TMPDIR};tar -cJf ${PKGDISTDIR}/core/${2}/${1}/hybrid-build.tar.xz *)
     rm -rf ${TMPDIR}
   fi;
   chroot ${ARCHROOT}/${1} /sbin/ldconfig
   ${ARCHROOT}/${1}/sbin/ldconfig -r ${ARCHROOT}/${1}
-  if [ -e /usr/bin/qemu-${QCPU}-static ];then
-    cp /usr/bin/qemu-${QCPU} ${ARCHROOT}/${1}/usr/bin
-  fi;
 
   if [ "${ERROR}" == "0" ];then
     touch ${ARCHROOT}/${1}/usr/${NLIBDIR}/${NMLIBDIR}/.distro_done
@@ -3527,6 +3539,50 @@ build_toolchain_dir() {
   ln -f -r -s ${BUILDROOTDIR} ${BUILDROOTDIR}${ARCHROOT}/${DARCH}
 }
 
+build_linux_headers() {
+  if [ ! -d ${SRCDIR}/kernel ];then
+    mkdir ${SRCDIR}/kernel
+  fi;
+  if [ ! -d ${SRCDIR}/linux/linux-${LINUX_VER} ] || [ ! -d ${1}/usr/include/linux ];then
+    echo "Linux Headers"
+    (git_load_pkg linux -${LINUX_VER} distrotech-linux-${LINUX_VER} linux || exit 1
+    if [ -e ${SRCDIR}/kernel/linux ];then
+      rm ${SRCDIR}/kernel/linux
+    fi;
+    ln -s ${SRCDIR}/linux/linux-${LINUX_VER} ${SRCDIR}/kernel/linux
+    cd ${SRCDIR}/linux/linux-${LINUX_VER}
+    git checkout -b distrotech-linux
+    if [ "${1}" ] && [ ! -d ${1} ];then
+      mkdir -p ${1}
+      make INSTALL_HDR_PATH=${1}/usr headers_install_all
+    fi) || return 1
+  fi;
+  if [ ! -d ${SRCDIR}/dahdi-linux/dahdi-linux-${DAHDI_VER} ] || [ ! -d ${1}/usr/include/dahdi ];then
+    echo "Dahdi driver headers"
+    (git_load_pkg dahdi-linux -${DAHDI_VER} distrotech-dahdi-linux-${DAHDI_VER} dahdi-linux || exit 1
+    if [ -e ${SRCDIR}/kernel/dahdi ];then
+      rm ${SRCDIR}/kernel/dahdi
+    fi;
+    ln -s ${SRCDIR}/dahdi-linux/dahdi-linux-${DAHDI_VER} ${SRCDIR}/kernel/dahdi
+    cd ${SRCDIR}/dahdi-linux/dahdi-linux-${DAHDI_VER}
+    make DESTDIR=${1} install-include
+    touch ${1}/usr/include/linux
+    ) || return 1
+  fi;
+  if [ ! -d ${SRCDIR}/mISDN/mISDN-master ] || [ ! -d ${1}/usr/include/mISDN ];then
+    echo "mISDN driver headers"
+    (git_load_pkg mISDN -master master mISDN || exit 1
+    if [ -e ${SRCDIR}/kernel/mISDN ];then
+      rm ${SRCDIR}/kernel/mISDN
+    fi;
+    ln -s ${SRCDIR}/mISDN/mISDN-master ${SRCDIR}/kernel/mISDN
+    cd ${SRCDIR}/mISDN/mISDN-master
+    make INSTALL_PREFIX=${1} misdn-headers
+    touch ${1}/usr/include/linux
+    ) || return 1
+  fi;
+}
+
 build_bootstrap() {
   #GCC tools symlinks
   for gcct in nm gnatlink gnatmake gnatbind gnatls strip gcc g++ objcopy ar ranlib ld;do
@@ -3535,12 +3591,6 @@ build_bootstrap() {
     fi;
   done;
 
-  echo "Linux Headers"
-  if [ ! -d ${SRCDIR}/linux/usr/include/linux ];then
-    (git_load_pkg linux -3 distrotech-linux-${LINUX_VER} linux &&
-     cd ${SRCDIR}/linux/linux-3 &&
-     make INSTALL_HDR_PATH=${SRCDIR}/linux/usr headers_install_all) || return 1
-  fi;
   check_create_arch ${1}
 
   echo "GLIBC"
@@ -3656,6 +3706,11 @@ if [ ! -d ${PKGDISTDIR} ];then
   mkdir -p ${PKGDISTDIR}
 fi;
 
+#Pull in the linux source and create headers dir
+if [ ! "${RUNBASHRC}" ];then
+  build_linux_headers ${KERN_HEADERS} || exit 1
+fi;
+
 if [ "${BOOTSTRAP}" ] && [ "${BOOTSTRAP}" == "1" ];then
   dialog_config ${NARCH}
 
@@ -3684,14 +3739,6 @@ if [ "${BOOTSTRAP}" ] && [ "${BOOTSTRAP}" == "1" ];then
   build_toolchain_dir ${NARCH} ${BASEROOT}/${NARCH}-buildroot
 
   exit 0;
-fi;
-
-#Pull in the linux source and create headers dir
-if [ ! -d ${SRCDIR}/linux/usr/include/linux ] && [ ! "${RUNBASHRC}" ];then
-  echo "Linux Headers"
-  (git_load_pkg linux -3 distrotech-linux-${LINUX_VER} linux &&
-  cd ${SRCDIR}/linux/linux-3 &&
-  make INSTALL_HDR_PATH=${SRCDIR}/linux/usr headers_install_all) || exit 1
 fi;
 
 for barch in ${ARCHLIST};do
