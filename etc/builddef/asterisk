@@ -6,4 +6,3 @@ ADDLDFLAG="-L=/opt/mysql/${B_LIBDIRS}";
 ADDCFLAG="-I=/opt/mysql/include";
 BUILDDIR="0";
 MAKEITARGETS="samples";
-EXTRALIBS="-lpthread -lrt";
