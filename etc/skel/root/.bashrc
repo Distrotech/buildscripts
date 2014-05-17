@@ -24,7 +24,7 @@ fi;
 if [ ! -d /dev/pts ];then
   mount -t devtmpfs ${HOST_ARCH}_dev /dev
   if [ "$?" == "0" ] && [ ! -d /dev/pts ];then
-    mkdir /def/pts
+    mkdir /dev/pts
   fi;
 fi
 
@@ -131,6 +131,7 @@ export LESS="-Mr"
 unset LESSCLOSE
 
 eval `dircolors -b`
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 if [ -x /usr/bin/linux_logo ];then
   linux_logo -F "Distrotech #O ${DISTROVER} #V\n#U\n#L"
