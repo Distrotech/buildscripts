@@ -2,6 +2,10 @@ VERSION="0.99.beta18"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-csharp --disable-doc";
+OPT_mips="--disable-java";
+OPT_powerpc="--disable-java";
+OPT_powerpc64="--disable-java";
+OPT_mips64="--disable-java";
 ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/pango-1.0 -I../../caca";
 SYSROOTFIXUP="0";
 ADDWITHSYSROOT="0";
