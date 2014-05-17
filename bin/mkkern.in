@@ -1,0 +1,209 @@
+#!/bin/bash
+
+SRCDIR=@SRCDIR@
+ARCHROOT=@ARCHROOT@
+DTSSRVDIR=@SRVDIR@
+PKGBUILDDIR=@BUILDDIR@
+PKGDISTDIR=@SRVDIRTAR@
+PKGDESTDIR=${PKGBUILDDIR}/staging
+LINDIR=${SRCDIR}/kernel/linux
+RPMDIR=${DTSSRVDIR}/yum
+
+NARCH=${NARCH:=$( uname -m )}
+case ${NARCH} in
+  ppc|powerpc)NARCH=powerpc;;
+  ppc64|powerpc64)NARCH=powerpc64;;
+  arm*)NARCH=arm;;
+  aarch64)NARCH=arm64;;
+esac;
+
+KCONFIG=/root/buildscripts/kernconfig/mips64-cavium-octeon
+
+CONF_FILE=$(basename ${KCONFIG})
+DARCH=$(echo ${CONF_FILE} |cut -d- -f1)
+KFLAVOR=$(echo ${CONF_FILE} |cut -d- -f2-)
+
+case ${DARCH} in
+  x86_*|i[3-6]86)KARCH="x86";;
+  arm64)KARCH=arm64;;
+  *64)KARCH=${DARCH::-2};;
+  *)KARCH=${DARCH};
+esac;
+
+MAKE_J=-j20
+KERNELT=vmlinux.64
+
+rpmname=linux-${KFLAVOR}
+
+if [ ! -d ${LINDIR} ];then
+  exit 1;
+fi;
+
+cd ${LINDIR}
+VERSION=$(make kernelversion)
+DESTDIR=${PKGDESTDIR}/${DARCH}/${rpmname}-${VERSION}
+
+PKGURL=http://github.com/Distrotech
+RPMBROOT=/root/rpmbuild
+
+if [ "${DARCH}" == "${NARCH}" ];then
+  RPMROOT="/";
+ else
+  RPMROOT="${ARCHROOT}/${DARCH}";
+fi;
+
+PNAME=${rpmname}-${VERSION}
+
+RPMIVER=$(rpm -qi --root=${RPMROOT} ${rpmname} |awk '$1 == "Version" {print $3}')
+if [ "${RPMIVER}" ] && [ "${RPMIVER}" == "${VERSION}" ];then
+  release=$(rpm -qi --root=${RPMROOT} ${rpmname} |awk '$1 == "Release" {print $3}')
+ else
+  release=0
+fi
+orig_release=${release}
+let release++
+
+if [ ! -d ${RPMDIR}/${DARCH}/${rpmname}/${PNAME} ];then
+  mkdir -p ${RPMDIR}/${DARCH}}/${rpmname}/${PNAME}
+fi;
+
+make distclean mrproper && \
+make ARCH=${KARCH} KCONFIG_CONFIG=${KCONFIG} ${MAKE_J} all firmware modules ${KERNELT} && cp ${KCONFIG} .config &&  rm -rf ${DESTDIR} && \
+make ARCH=${KARCH} KCONFIG_CONFIG=${KCONFIG} INSTALL_MOD_PATH=${DESTDIR} INSTALL_PATH=${DESTDIR}/boot INSTALL_HDR_PATH=${DESTDIR}/usr headers_install install modules_install firmware_install
+
+eval `grep CONFIG_LOCALVERSION ${KCONFIG}`
+VSUF="${VERSION}${CONFIG_LOCALVERSION}";
+
+if [ -d ${SRCDIR}/kernel/dahdi ];then
+  cd ${SRCDIR}/kernel/dahdi
+
+  mkdir -p ${DESTDIR}/etc/udev/rules.d/
+  make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} clean
+  make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} ${MAKE_J} all
+  make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} DESTDIR=${DESTDIR} install
+  make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} clean
+fi;
+
+if [ -d ${SRCDIR}/kernel/mISDN ];then
+  cd ${SRCDIR}/kernel/mISDN
+  make ARCH=${KARCH} LINUX_SOURCE=${LINDIR} LINUX=${LINDIR} KVERS=${VSUF} INSTALL_PREFIX=${DESTDIR} misdn-headers clean all misdn-headers install
+fi;
+
+cd ..
+(cat <<EOF
+Name: ${rpmname}
+Epoch: 0
+Version: ${VERSION}
+Release: ${release}
+Summary: Linux ${VERSION}-${KFLAVOR} installed files
+Group: Distrotech Linux ${VERSION} ${KFLAVOR}
+License: Refer to sourcecode
+BuildRoot: ${DESTDIR}
+URL: ${PKGURL}/linux
+AutoReqProv: 1
+
+%define _arch ${DARCH}
+%global __strip /bin/true
+
+%description
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files
+
+%install
+find %{buildroot} -empty -type d -delete
+
+%package modules
+Group: Distrotech Linux ${VERSION} ${KFLAVOR}
+Summary: Linux ${VERSION}-${KFLAVOR} installed files (modules)
+
+%package firmware
+Group: Distrotech Linux ${VERSION} ${KFLAVOR}
+Summary: Linux ${VERSION}-${KFLAVOR} installed files (firmware)
+
+%package dahdi
+Group: Distrotech Linux ${VERSION} ${KFLAVOR}
+Summary: Linux ${VERSION}-${KFLAVOR} installed files (dahdi)
+
+%package dev
+Group: Distrotech Linux ${VERSION} ${KFLAVOR}
+Summary: Linux ${VERSION}-${KFLAVOR} installed files (dev)
+
+%description modules
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files (modules)
+
+%description firmware
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files (firmware)
+
+%description dahdi
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files (dahdi)
+
+%description dev
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files (dev)
+
+%files
+/boot
+
+%files modules
+/lib/modules
+
+%files firmware
+/lib/firmware
+
+%files dev
+/usr/include
+
+%files dahdi
+/usr/lib
+/usr/share
+
+EOF
+) > kern.spec
+
+if [ ! -d ${DESTDIR} ];then
+  exit 1;
+fi;
+
+for rpmdir in BUILDROOT/${rpmname}-${VERSION}-${release}.${DARCH} RPMS;do
+  if [ ! -d ${RPMBROOT}/${rpmdir} ];then
+    mkdir -p ${RPMBROOT}/${rpmdir}
+  fi;
+done;
+
+rsync -a ${DESTDIR}/ ${RPMBROOT}/BUILDROOT/${rpmname}-${VERSION}-${release}.${DARCH}/
+rpmbuild -bb kern.spec --target=${DARCH}
+rm kern.spec
+
+TARBALL=${PKGDISTDIR}/${DARCH}/${PNAME}
+if [ ! -d ${TARBALL} ];then
+  mkdir -p ${TARBALL}
+fi;
+
+(cd ${DESTDIR}
+tar -cJf ${TARBALL}/${PNAME}.tar.xz boot/
+tar -cJf ${TARBALL}/${PNAME}-modules.tar.xz lib/modules
+tar -cJf ${TARBALL}/${PNAME}-firmware.tar.xz lib/firmware
+tar -cJf ${TARBALL}/${PNAME}-dev.tar.xz usr/include
+tar -cJf ${TARBALL}/${PNAME}-dahdi.tar.xz usr/lib usr/share)
+
+RPM_PATH=${RPMBROOT}/RPMS/${DARCH}/
+YUM_PATH=${RPMDIR}/${DARCH}/${rpmname}/${PNAME}
+if [ ! -d ${YUM_PATH} ];then
+  mkdir -p ${YUM_PATH}
+fi;
+for rfile in "" "modules" "firmware" "dahdi" "dev";do
+  RPM_FILE=${rpmname}
+  if [ "${rfile}" ];then
+    RPM_FILE=${RPM_FILE}-${rfile}
+  fi;
+  RPM_FILE=${RPM_FILE}-${VERSION}-${release}.${DARCH}.rpm
+
+  YUM_FILE=${YUM_PATH}/${RPM_FILE}
+  if [ -e ${RPM_PATH}/${RPM_FILE} ];then
+    mv ${RPM_PATH}/${RPM_FILE} ${YUM_FILE}
+  fi;
+
+  if [ ! "${RPMIVER}" ] && [ -e ${YUM_FILE} ];then
+    rpm -ivh --force --nodeps --ignorearch --root=${RPMROOT} ${YUM_FILE}
+   elif [ ${release} != ${orig_release} ] && [ -e ${YUM_FILE} ];then
+    rpm -Uvh --force --nodeps --ignorearch --root=${RPMROOT} ${YUM_FILE}
+  fi;
+done;
