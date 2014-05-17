@@ -2,3 +2,4 @@ VERSION="3.16"
 VERSEP="-";
 PREFIX="/";
 CONFOPT="--enable-zlib --enable-zlib-dynamic --enable-static-utils";
+RPMOBSOLETE="module-init-tools-static";
