@@ -1,0 +1,16 @@
+avahi-nogui
+gnome-themes
+krb5-static
+libwnck
+lprng
+module-init-tools
+module-init-tools-static
+openssl-0.9.8
+schroedinger
+smpeg
+texinfo-static
+texlive-boot
+usbhid-dump
+util-linux-static
+vala-bootstrap
+xpdf
