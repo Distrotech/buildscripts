@@ -1,6 +1,11 @@
 VERSION="2.0.7"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="ac_cv_header_signal_h=yes ac_cv_stacksetup_sigaltstack=\"guessed:(skaddr),(sksize)\" ac_cv_stacksetup_sigstack=\"guessed:(skaddr),(sksize)\"";
 GITBRANCH="master";
 SYSROOTFIXUP="0";
+NOCCOPT="1";
+CLEARFLAGS="1";
+#case ${barch} in
+#  powerpc)CHROOTBUILD="1";;
+#esac;
