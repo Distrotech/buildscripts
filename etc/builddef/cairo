@@ -2,13 +2,12 @@ VERSION="1.12.16"
 VERSEP="-";
 if [ "${barch:0:3}" != "win" ];then
   PREFIX="/usr";
-  CHROOTBUILD="1";
   PIXMANDIR="/Xorg";
  else
   PREFIX="/mingw";
   PIXMANDIR="";
 fi;
-CONFOPT="--disable-full-testing";
+CONFOPT="--disable-full-testing --enable-shared";
 BUILDDIR=0;
 ADDCFLAG="-I=${PREFIX}${PIXMANDIR}/include/pixman-1 -I=${PREFIX}/include/freetype2 -I=${PREFIX}/include/poppler/glib \
           -I=${PREFIX}/include/librsvg-2.0 -I=${PREFIX}/include/gdk-pixbuf-2.0";
@@ -23,3 +22,4 @@ if [ "${barch:0:3}" == "win" ];then
   CLEARFLAGS="1";
 fi;
 ADDWITHSYSROOT="1";
+ADDCFLAG="-ffat-lto-objects";
