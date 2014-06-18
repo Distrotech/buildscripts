@@ -1,10 +1,11 @@
 VERSION="5.7.2"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-mib-modules=mibII/mta_sendmail --without-perl-modules --enable-ipv6 --with-defaults ac_cv_type_ssize_t=yes --enable-shared";
+CONFOPT="--with-mib-modules=mibII/mta_sendmail --enable-ipv6 --with-defaults
+         ac_cv_type_ssize_t=yes --enable-shared --disable-static --without-perl-modules --disable-embedded-perl";
 BUILDDIR="0";
-LDISCC="1";
 SYSROOTFIXUP="0";
 ADDWITHSYSROOT="1";
+NOCCOPT="1";
 ADDCFLAG="-fPIC";
-RPMPROVIDES_libs="libnetsnmp.so.30()${ARCH_BITS} libnetsnmpagent.so.30()${ARCH_BITS} libnetsnmpmibs.so.30()${ARCH_BITS}";
+DIETBUILD="0";
