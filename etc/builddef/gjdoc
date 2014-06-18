@@ -5,6 +5,7 @@ CONFOPT="--with-antlr-jar=/usr/share/java/antlr-2.7.7.jar";
 BUILDDIR="0";
 GITBRANCH="master";
 CLEARFLAGS="1";
-NOCCOPT="1";
 SYSROOTFIXUP="0";
 NOINST="1";
+DONTBUILD="${barch}";
+CHROOTBUILD="1";
