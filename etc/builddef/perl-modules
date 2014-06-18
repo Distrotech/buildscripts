@@ -5,7 +5,7 @@ CONFOPT="";
 BUILDDIR="0";
 MAKEOPTS="ARCH=${barch}";
 CHROOTBUILD="1";
-DONTBUILD="cyg32 cyg64 powerpc powerpc64";
+DONTBUILD="cyg32 cyg64";
 RPMPROVIDES="perl(AnyEvent::BDB) perl(BDB) perl(Cocoa::EventLoop) perl(Event::Lib) perl(FLTK) perl(Glib) perl(HTTP::GHTTP) \
 	perl(IO::AIO) perl(Irssi) perl(JSON::backportPP) perl(Mac::Files) perl(Qt) perl(Qt::isa) perl(Qt::slots) perl(Tk) \
 	perl(Unicode::LineBreak::Constants) perl(VMS::Stdio) perl(Win32) perl(Win32::IPHelper) perl(Win32::ODBC) \
