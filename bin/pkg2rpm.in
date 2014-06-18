@@ -34,7 +34,6 @@ Release: ${3}
 Summary: ${4} installed files
 Group: Distrotech ${1}
 License: Refer to sourcecode
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-$(whoami)-%(%{__id_u} -n)
 URL: ${PKGURL}/${5}
 AutoReqProv: ${AUTODEP}
 ${SRPMPROVIDES}
@@ -42,28 +41,10 @@ ${RPM_OBSOLETE}
 
 %define _arch ${1}
 %global _use_internal_dependency_generator ${RPMINTDEPS}
+%global __strip /bin/true
 
 %description
 ${4} installed files
-
-%install
-rm -rf %{buildroot}
-mkdir -p %{buildroot}
-tar -C %{buildroot} -xf ${6}
-find %{buildroot} -empty -type d -delete
-if [ ! -d %{buildroot}/var/spool/pkg ];then
-  mkdir -p %{buildroot}/var/spool/pkg/
-fi;
-touch %{buildroot}/var/spool/pkg/${4}-${7}-${3}.${1}
-if [ -e %{buildroot}/usr/share/info/dir ] || [ -e %{buildroot}/share/info/dir ];then
-  rm -f %{buildroot}/usr/share/info/dir %{buildroot}/share/info/dir
-fi;
-if [ -d %{buildroot}/var/lib/scrollkeeper ];then
-  rm -rf %{buildroot}/var/lib/scrollkeeper
-fi;
-
-%clean
-rm -rf %{buildroot}
 
 %post
 if [ -d /usr/share/omf ] && [ -x /usr/bin/scrollkeeper-update ];then
@@ -71,9 +52,8 @@ if [ -d /usr/share/omf ] && [ -x /usr/bin/scrollkeeper-update ];then
 fi;
 
 %files
-/var/spool/pkg/${4}-${7}-${3}.${1}
 EOF
-tar -tf ${6} |grep -vE "(/$|^usr\/share\/info\/dir$|^share\/info\/dir$|^var\/lib\/scrollkeeper)" |awk '{printf "/%s*\n",$1}'
+find . |awk '{printf "if [ ! -d '"'"'%s'"'"' ] || [ -h '"'"'%s'"'"' ];then echo '"'"'%s'"'"';fi\n",$1,$1,$1}' |sh |cut -c2-
 }
 
 pkg2rpm() {
@@ -163,6 +143,9 @@ pkg2rpm() {
 	for rpm_sub_pro in ${!RPM_SUB_PROVIDES};do
           SRPMPROVIDES="${SRPMPROVIDES} ${rpm_sub_pro}";
         done;
+        if [ ! "${ARCH_BITS}" ];then
+          SRPMPROVIDES=$(echo ${SRPMPROVIDES} |sed -e "s/()//g")
+        fi;
       fi;
       eval ${RPM_SUB_PROVIDES}=""
     fi;
@@ -201,10 +184,41 @@ pkg2rpm() {
         rm ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
       fi;
       RPM_FILE=${rpmname}-${RVERSION}-${release}.${1}.rpm;
-      mkrpmspec ${1} ${VERSION} ${release} ${rpmname} ${git} ${pfile} ${RVERSION} > ${TMPDIR}/${rpmname}.spec
-      rpmbuild -bb ${TMPDIR}/${rpmname}.spec --target=${1}
-      if [ -e ${RPMBROOT}/RPMS/${1}/${RPM_FILE} ];then
-        mv ${RPMBROOT}/RPMS/${1}/${RPM_FILE} ${RPMDIR}/${1}/${2}/${PNAME}/
+
+      RPMSPECDIR=${RPMBROOT}/SPECS/
+      if [ ! -d ${RPMSPECDIR} ];then
+        mkdir -p ${RPMSPECDIR}
+      fi;
+      RPMSPECFILE=${RPMSPECDIR}/${rpmname}-${RVERSION}-${release}.${1}
+
+      RPMROOTDIR=${RPMBROOT}/BUILDROOT/${rpmname}-${RVERSION}-${release}.${1}
+     if [ -d ${RPMROOTDIR} ];then
+        rm -rf ${RPMROOTDIR}
+      fi;
+      mkdir -p ${RPMROOTDIR}
+
+      tar -C ${RPMROOTDIR} -xf ${pfile}
+      find ${RPMROOTDIR} -empty -type d -delete
+      if [ -e ${RPMROOTDIR}/usr/share/info/dir ] || [ -e ${RPMROOTDIR}/share/info/dir ];then
+        rm -f ${RPMROOTDIR}/usr/share/info/dir ${RPMROOTDIR}/share/info/dir
+      fi;
+      if [ -d ${RPMROOTDIR}/var/lib/scrollkeeper ];then
+        rm -rf ${RPMROOTDIR}/var/lib/scrollkeeper
+      fi;
+
+      if [ -d ${RPMROOTDIR} ] && [ "`ls -A ${RPMROOTDIR}`" ];then
+        (cd ${RPMROOTDIR}
+        mkrpmspec ${1} ${VERSION} ${release} ${rpmname} ${git} ${pfile} ${RVERSION} > ${RPMSPECFILE})
+        rpmbuild -bb --target=${1} --buildroot ${RPMROOTDIR} ${RPMSPECFILE}
+        if [ -e ${RPMSPECFILE} ];then
+          rm ${RPMSPECFILE}
+        fi
+        if [ -e ${RPMBROOT}/RPMS/${1}/${RPM_FILE} ];then
+          mv ${RPMBROOT}/RPMS/${1}/${RPM_FILE} ${RPMDIR}/${1}/${2}/${PNAME}/
+        fi;
+      fi;
+      if [ -d ${RPMROOTDIR} ];then
+        rm -rf ${RPMROOTDIR}
       fi;
     fi;
 
@@ -230,9 +244,7 @@ pkg_rpm_arch() {
       rsync -a /etc/yum/repos.d/ ${RPMROOT}etc/yum/repos.d/
     fi;
   fi;
-  TMPDIR=$( mktemp -d -p /tmp rpmspec_${1}.XXXXXXXXXXX)
-
-  export TMPDIR RPMROOT
+  export RPMROOT
 
   for pkg in `ls ${DEFDIR}`;do
     if [ ! -e ${STATDIR}/${1}/done/${pkg} ];then
@@ -240,7 +252,6 @@ pkg_rpm_arch() {
     fi;
     (pkg2rpm ${1} ${pkg})
   done;
-  rm -rf ${TMPDIR}
 
   if [ -d ${RPMDIR}/repodata ];then
     createrepo --update ${RPMDIR}
