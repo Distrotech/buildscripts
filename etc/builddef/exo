@@ -7,5 +7,5 @@ ADDCFLAG="-I=/opt/xfce/include/xfce4 -I=/usr/include/cairo -I=/usr/include/pango
 NOMLIBDIR="1";
 SYSLAYOUT="1";
 case ${barch} in
-  powerpc*)CHROOTBUILD=1;;
+  powerpc*|mips64)CHROOTBUILD=1;;
 esac;

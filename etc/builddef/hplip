@@ -14,5 +14,5 @@ AMVER="1.13";
 AUTORECONF="1";
 DISTCONF="sane.d/dll.conf";
 case ${barch} in
-  powerpc*)CHROOTBUILD="1";;
+  powerpc*|mips64)CHROOTBUILD="1";;
 esac;

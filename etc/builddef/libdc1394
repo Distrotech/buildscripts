@@ -1,7 +1,7 @@
 VERSION="2.2.1"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--disable-examples";
 BUILDDIR="0";
 ADDCFLAG="-I=/usr/include/libusb-1.0";
 CFGPTH="libdc1394";

@@ -7,4 +7,5 @@ EXTRALIBS="-L=/usr/${C_LIBDIRS}";
 FIXUPLIB="1";
 case ${barch} in
   powerpc*)DONTBUILD="${barch}";;
+  mips64)CHROOTBUILD="1";;
 esac;
