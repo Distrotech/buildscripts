@@ -8,6 +8,9 @@ MAKEITARGETS="install swig-pl swig-py install-swig-pl install-swig-py";
 if [ -x /usr/${B_LIBDIRS}/jvm/gcj-jdk/bin/javac ];then
   MAKETARGETS="javahl";
   MAKEITARGETS="${MAKEITARGETS} install-javahl";
+  if [ ! "${JAVA_HOME}" ];then
+    JAVA_HOME=/usr/${B_LIBDIRS}/jvm/gcj-jdk
+  fi;
   CONFOPT="${CONFOPT} --enable-javahl --with-jdk=/usr/${B_LIBDIRS}/jvm/gcj-jdk";
 fi;
 ADDCFLAG="-I=/opt/apache/include";
