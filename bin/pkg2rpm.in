@@ -144,7 +144,9 @@ pkg2rpm() {
           SRPMPROVIDES="${SRPMPROVIDES} ${rpm_sub_pro}";
         done;
         if [ ! "${ARCH_BITS}" ];then
-          SRPMPROVIDES=$(echo ${SRPMPROVIDES} |sed -e "s/()//g")
+          if [ "${2}" != "gcc" ] && [ ! "${xpkg}" ];then
+            SRPMPROVIDES=$(echo ${SRPMPROVIDES} |sed -e "s/()//g")
+          fi;
         fi;
       fi;
       eval ${RPM_SUB_PROVIDES}=""
