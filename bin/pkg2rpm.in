@@ -53,7 +53,7 @@ fi;
 
 %files
 EOF
-find . |awk '{printf "if [ ! -d '"'"'%s'"'"' ] || [ -h '"'"'%s'"'"' ];then echo '"'"'%s'"'"';fi\n",$1,$1,$1}' |sh |cut -c2-
+find . |awk '{printf "if [ ! -d '"'"'%s'"'"' ] || [ -h '"'"'%s'"'"' ];then echo '"'"'%s'"'"';fi\n",$0,$0,$0}' |sh |cut -c2- |awk '{printf "\"%s\"\n",$0}'
 }
 
 pkg2rpm() {
@@ -198,6 +198,9 @@ pkg2rpm() {
       mkdir -p ${RPMROOTDIR}
 
       tar -C ${RPMROOTDIR} -xf ${pfile}
+      if [ $? != 0 ];then
+        echo -- ${pfile}
+      fi;
       find ${RPMROOTDIR} -empty -type d -delete
       if [ -e ${RPMROOTDIR}/usr/share/info/dir ] || [ -e ${RPMROOTDIR}/share/info/dir ];then
         rm -f ${RPMROOTDIR}/usr/share/info/dir ${RPMROOTDIR}/share/info/dir
