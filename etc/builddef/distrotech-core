@@ -5,4 +5,4 @@ CONFOPT="";
 GITBRANCH="master"
 BUILDDIR="0";
 NOINST="1";
-RPMPROVIDES="/bin/ash";
+RPMPROVIDES="/bin/ash perl(user) perl(group)";
