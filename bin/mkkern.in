@@ -69,7 +69,7 @@ fi;
 
 make distclean mrproper && \
 make ARCH=${KARCH} KCONFIG_CONFIG=${KCONFIG} ${MAKE_J} all firmware modules ${KERNELT} && cp ${KCONFIG} .config &&  rm -rf ${DESTDIR} && \
-make ARCH=${KARCH} KCONFIG_CONFIG=${KCONFIG} INSTALL_MOD_PATH=${DESTDIR} INSTALL_PATH=${DESTDIR}/boot INSTALL_HDR_PATH=${DESTDIR}/usr headers_install install modules_install firmware_install
+make ARCH=${KARCH} KCONFIG_CONFIG=${KCONFIG} INSTALL_MOD_PATH=${DESTDIR} INSTALL_PATH=${DESTDIR}/boot INSTALL_HDR_PATH=${DESTDIR}/usr headers_install install modules_install firmware_install || exit 1
 
 eval `grep CONFIG_LOCALVERSION ${KCONFIG}`
 VSUF="${VERSION}${CONFIG_LOCALVERSION}";
