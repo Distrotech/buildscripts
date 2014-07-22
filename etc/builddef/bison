@@ -9,5 +9,5 @@ AMVER="1.14";
 BUILDDIR="0";
 OPT_cyg32="ac_cv_have_decl___fpending=yes";
 case ${barch} in
-  mips64|powerpc*)CHROOTBUILD="1";;
+  mips|mips64|powerpc64)CHROOTBUILD="1";;
 esac;

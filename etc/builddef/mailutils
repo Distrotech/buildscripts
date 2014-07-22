@@ -7,6 +7,9 @@ case ${barch} in
   *)CONFOPT="${CONFOPT} --with-guile";;
 esac;
 EXTRALIBS="-lncursesw";
-CHROOTBUILD="1";
+case ${barch} in
+  arm)CHROOTBUILD="0";;
+  *)CHROOTBUILD="1";;
+esac
 ADDCFLAG="-I=/opt/radius/include";
 ADDLDFLAG="-L=/opt/radius/${B_LIBDIRS}";

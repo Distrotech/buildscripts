@@ -9,4 +9,6 @@ OPT_mips64="--disable-java";
 ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/pango-1.0 -I../../caca";
 SYSROOTFIXUP="0";
 ADDWITHSYSROOT="0";
-CHROOTBUILD="1";
+case ${barch} in
+  mips*|powerpc*|arm*|i686|x86_32|x86_64)CHROOTBUILD="1";;
+esac;
