@@ -13,6 +13,7 @@ audiofile
 autofs
 bash-completion
 bcg729
+bogofilter
 bsd-finger
 busybox
 cacerts-lfs
@@ -67,6 +68,7 @@ fftw
 figlet
 figlet-fonts
 fltk
+fonttools
 foomatic-filters
 fortune-mod
 freeradius-client
@@ -74,9 +76,12 @@ freeradius-server
 frei0r
 fribidi
 frox
+geoclue-2
+geoip-api-c
 ghostscript
 giflib
 glew
+glib-networking
 globe
 gmerlin
 gnuchess
@@ -120,13 +125,13 @@ isoquery
 iw
 jasper
 jbigkit
+json-glib
 keepalived
 kelbt
 lame
 lesspipe
 libaacplus
 libao
-libarchive
 libass
 libassuan
 libavc1394
@@ -192,7 +197,6 @@ madplay
 MailScanner
 mailutils
 man-db
-man-pages
 mcelog
 mcrypt
 mdadm
@@ -225,7 +229,6 @@ nut
 omniORB
 onig
 openal
-opencore
 opencore-amr
 OpenCV
 openjade
@@ -239,6 +242,7 @@ opus
 oRTP
 paps
 pcsc-lite
+PDFlib-Lite
 pgpool2
 pgpool2-recovery
 phoon

@@ -80,6 +80,7 @@ kmod
 krb5
 lcms2
 less
+libarchive
 libatomic_ops
 libaudit
 libcap

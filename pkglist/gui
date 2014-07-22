@@ -1,6 +1,7 @@
 abiword
 aisleriot
 aspell
+asymptote
 aterm
 babl
 bluefish
@@ -71,7 +72,6 @@ hunspell
 icon-naming-utils
 ilmbase
 ImageMagick
-json-glib
 leafpad
 lesstif
 libaccounts-glib
