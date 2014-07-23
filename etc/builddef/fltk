@@ -9,4 +9,3 @@ MAKE_J="-j2";
 case ${barch} in
   mips64)CHROOTBUILD="1";;
 esac;
-DONTBUILD="powerpc";
