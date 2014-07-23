@@ -2,7 +2,7 @@ VERSION="3.0.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-zeroconf --with-pic --enable-fhs --with-cnid-cdb-backend --with-pam
-         --with-shadow --with-kerberos --with-ldap --with-bdb=${ARCHROOT}/${barch}/usr/";
+         --with-shadow --with-kerberos --with-ldap --with-bdb=${ARCHROOT}/${barch}/usr/ ac_cv_path_NETA_LDCONFIG=no";
 FIXUPLIB="1";
 NOCROSS="1";
 CHROOTBUILD="1";
