@@ -98,7 +98,8 @@ RPMPROVIDES_libs="libgcc_s.so.1()${ARCH_BITS} libgcc_s.so.1(GCC_3.0)${ARCH_BITS}
 	libgcc_s.so.1(GCC_3.3.1)${ARCH_BITS} libgcc_s.so.1(GCC_3.4)${ARCH_BITS} libgcc_s.so.1(GCC_4.2.0)${ARCH_BITS}
 	libgcc_s.so.1(GCC_4.3.0)${ARCH_BITS} libgcc_s.so.1(GCC_4.5.0)${ARCH_BITS} libgcc_s.so.1(GCC_4.0.0)${ARCH_BITS}
 	libgcc_s.so.1(GCC_4.7.0)${ARCH_BITS} libgcc_s.so.1(GCC_4.8.0)${ARCH_BITS} libgcc_s.so.1(GLIBC_2.0)${ARCH_BITS}
-        libgcc_s.so.1(GCC_4.4.0)${ARCH_BITS} libgcc_s.so.1(GCC_3.5)${ARCH_BITS}"
+        libgcc_s.so.1(GCC_4.4.0)${ARCH_BITS} libgcc_s.so.1(GCC_3.5)${ARCH_BITS} libgcc_s.so.1(GCC_4.1.0)${ARCH_BITS}
+        libgcc_s.so.1(GCC_3.4.4)${ARCH_BITS}";
 RPMOBSOLETE="gjdoc";
 case ${barch} in
   x86_64)RPMPROVIDES_base="libgcc_s.so.1 libgcc_s.so.1(GCC_3.0) libgcc_s.so.1(GCC_3.3)
