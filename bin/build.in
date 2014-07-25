@@ -230,7 +230,7 @@ arch_config() {
     arm64)AQCPU=aarch64;;
     mips)AQCPU=mips;;
     mips64)AQCPU=mips64;;
-    powerpc)AQCPU=ppc64abi32;;
+    powerpc)AQCPU=ppc;;
     powerpc64)AQCPU=ppc64;;
   esac;
 }
@@ -1454,13 +1454,13 @@ build_project() {
 
   export LDFLAGS CPPFLAGS CXXFLAGS CFLAGS MAKE_J PREFIX
   if [ "${QTMAKE}" ] && [ "${QTMAKE}" == "1" ];then
-    (${QTDIR}/bin/qmake -r && make ${MAKE_J} && make INSTALL_ROOT=${DIST_ROOT}/${PREFIX} install) || return 1
-   elif [ -x ${DTSLEXEC}/make_${PROJECT} ];then
+    (${QTDIR}/bin/qmake -spec ${QT_SPEC} -r && make ${MAKE_J} && make INSTALL_ROOT=${DIST_ROOT}/${PREFIX} install) || return 1
+   elif [ -x ${DTSLEXEC}/make_${BUILDPROJECT} ];then
     CC="${CC} ${CC_SYSROOT}"
     CXX="${CXX} ${CC_SYSROOT}"
     CONFOPT="${CONFOPT} ${ARCHOPT} ${ARCHXOPT}";
     export VERSION CC CXX CONFOPT
-    ${DTSLEXEC}/make_${PROJECT} ${ORIGARCH} ${HOST} ${DIST_ROOT} ${CLEANOPT} || return 1
+    ${DTSLEXEC}/make_${BUILDPROJECT} ${ORIGARCH} ${HOST} ${DIST_ROOT} ${CLEANOPT} || return 1
    elif [ -e ${TOPDIR}${CFGBIN}configure ] && [ "${PROJECT}" != "cmake" ];then
     if [ ! -x ${TOPDIR}${CFGBIN}configure ];then
       chmod 755 ${TOPDIR}${CFGBIN}configure
