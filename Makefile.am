@@ -26,6 +26,8 @@ libexec_SCRIPTS	= \
 	libexec/make_PyQt-x11 \
 	libexec/make_qt-4 \
 	libexec/make_qt-5 \
+	libexec/make_qt-4-bin \
+	libexec/make_qt-5-bin \
 	libexec/make_sendmail \
 	libexec/make_sip \
 	libexec/make_syslinux \

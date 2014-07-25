@@ -75,7 +75,8 @@ AC_CONFIG_FILES([
   etc/yum_repo.conf
   lsb/lsb-release
   libexec/make_sip
-  libexec/make_qt-5])
+  libexec/make_qt-5
+  libexec/make_qt-5-bin])
 
 AC_SUBST(YUMREPOCONFDIR)
 AC_SUBST(SRVDIRTAR)
