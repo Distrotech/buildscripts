@@ -180,7 +180,7 @@ pkg2rpm() {
 
     RPM_FILE=${rpmname}-${RVERSION}-${release}.${1}.rpm;
     if [ ! -e ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ] || [ ${pfile} -nt ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
-      export AUTODEP RPMINTDEPS RPMPROVIDES RPMEPOCH RPM_OBSOLETE
+      export AUTODEP RPMINTDEPS RPMPROVIDES RPMEPOCH RPM_OBSOLETE RPMREMOVE
       let release++
       if [ -e ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
         rm ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
@@ -194,7 +194,7 @@ pkg2rpm() {
       RPMSPECFILE=${RPMSPECDIR}/${rpmname}-${RVERSION}-${release}.${1}
 
       RPMROOTDIR=${RPMBROOT}/BUILDROOT/${rpmname}-${RVERSION}-${release}.${1}
-     if [ -d ${RPMROOTDIR} ];then
+      if [ -d ${RPMROOTDIR} ];then
         rm -rf ${RPMROOTDIR}
       fi;
       mkdir -p ${RPMROOTDIR}
@@ -203,6 +203,15 @@ pkg2rpm() {
       if [ $? != 0 ];then
         echo -- ${pfile}
       fi;
+
+      if [ "${RPMREMOVE}" ];then
+        for rpm_todel in ${RPMREMOVE};do
+          if [ -e ${RPMROOTDIR}${rpm_todel} ];then
+            rm ${RPMROOTDIR}${rpm_todel}
+          fi;
+        done;
+      fi;
+
       find ${RPMROOTDIR} -empty -type d -delete
       if [ -e ${RPMROOTDIR}/usr/share/info/dir ] || [ -e ${RPMROOTDIR}/share/info/dir ];then
         rm -f ${RPMROOTDIR}/usr/share/info/dir ${RPMROOTDIR}/share/info/dir
