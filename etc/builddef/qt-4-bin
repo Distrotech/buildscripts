@@ -1,0 +1,24 @@
+VERSION="4.8.5"
+VERSEP="-";
+PREFIX="/opt/qt-4";
+CONFOPT="-opensource -openssl-linked -confirm-license -prefix ${PREFIX} -v -system-sqlite -libdir ${PREFIX}/${B_LIBDIRS}";
+OPT_arm="-arch arm -no-pch";
+OPT_arm64="-arch aarch64";
+OPT_powerpc="-arch powerpc";
+OPT_powerpc64="-arch powerpc";
+OPT_mips="-arch mips";
+OPT_mips64="-arch mips";
+QT_VER="4";
+NOCCOPT="1";
+BUILDDIR="0";
+case ${barch} in
+  x86_64|x86_32|i[3-6]86)
+    case ${NARCH} in
+      x86_64|x86_32|i[3-6]86)DONTBUILD="${barch}";;
+    esac;;
+esac;
+if [ "${barch}" == "${NARCH}" ];then
+  DONTBUILD="${NARCH}";
+fi;
+ALIAS="qt-4";
+NOINST="1";
