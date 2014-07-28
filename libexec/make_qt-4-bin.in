@@ -1,0 +1,43 @@
+#!/bin/bash
+
+unset CFLAGS LDFLAGS CC CXX CPPFLAGS CXXFLAGS LD
+
+if [ "${1}" == "${NARCH}" ] && [ ! -d @ARCHROOT@/${1} ];then
+  mkdir -p /opt/qt-${QT_VER}/${B_LIBDIRS}
+ else
+  mkdir -p @ARCHROOT@/${1}/opt/qt-${QT_VER}/${B_LIBDIRS}
+fi;
+
+#Possible rebuild
+if [ -e Makefile.build ];then
+  mv Makefile.build Makefile
+fi;
+
+#Initialise modules and configure
+if [ "${4}" ] || [ ! -e Makefile ];then
+  if [ -e .gitmodules ];then
+    git submodule foreach --recursive "git clean -dfx"
+    git submodule deinit -f .
+   else
+    make confclean ${4}
+  fi;
+  if [ -x ./init-repository ];then
+    ./init-repository
+  fi;
+  ./configure ${CONFOPT} -fast -xplatform ${QT_SPEC} -platform ${QT_SPEC} || exit 1
+fi;
+
+if [ -d src/tools ];then
+  (cd src/tools
+  make distclean
+  /opt/qt-4/bin/qmake -r -spec ${QT_SPEC}
+  make ${MAKE_J}
+  make INSTALL_ROOT=${3} install)
+  make ${MAKE_J} -C qmake
+  install -m 755 -p bin/qmake ${3}/${PREFIX}/bin/qmake
+  make ${MAKE_J} -C tools/linguist/lrelease
+  make ${MAKE_J} -C tools/linguist/lrelease INSTALL_ROOT=${3} install
+fi;
+
+#stop diet clean cleaning up
+mv Makefile Makefile.build

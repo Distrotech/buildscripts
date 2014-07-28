@@ -23,8 +23,10 @@ if [ "${4}" ] || [ ! -e Makefile ];then
   fi;
   if [ -x ./init-repository ];then
     ./init-repository
+    ./configure ${CONFOPT} -xplatform ${QT_SPEC} -platform ${QT_SPEC} || exit 1
+   else
+    ./configure ${CONFOPT} -xplatform ${QT_SPEC} -platform ${QT_HOSTSPEC} || exit 1
   fi;
-  ./configure ${CONFOPT} -xplatform ${QT_SPEC} -platform ${QT_HOSTSPEC} || exit 1
 fi;
 
 #make sure index is build with correct ranlib

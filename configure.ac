@@ -76,7 +76,7 @@ AC_CONFIG_FILES([
   lsb/lsb-release
   libexec/make_sip
   libexec/make_qt-5
-  libexec/make_qt-5-bin])
+  libexec/make_qt-4-bin])
 
 AC_SUBST(YUMREPOCONFDIR)
 AC_SUBST(SRVDIRTAR)
