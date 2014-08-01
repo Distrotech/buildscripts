@@ -15,6 +15,11 @@ libexec_SCRIPTS	= \
 	libexec/make_apache-ant \
 	libexec/make_boost \
 	libexec/make_docbook \
+	libexec/make_docbook-4.1.2 \
+	libexec/make_docbook-4.2 \
+	libexec/make_docbook-4.3 \
+	libexec/make_docbook-4.4 \
+	libexec/make_docbook-4.5 \
 	libexec/make_docbook-xsl \
 	libexec/make_gs-fonts \
 	libexec/make_iproute2 \

@@ -1,0 +1,1772 @@
+a52dec: bash glibc
+
+abiword: atk bash cairo enchant expat fontconfig freetype fribidi gcc gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz jpeg libcroco libffi libgsf libpng librsvg libxml2 pango selinux wv Xorg xz zlib
+
+acl: attr bash glibc
+
+acpid: bash glibc
+
+admin_console: bash
+
+aisleriot: atk bash cairo dbus dbus-glib expat fontconfig freetype gc GConf gdk-pixbuf glib glibc gmp graphite2 gtk3 guile harfbuzz libatomic_ops libcanberra libcroco libffi libogg libpng librsvg libtool libtool-chroot libunistring libvorbis libxml2 ORBit2 pango selinux tdb Xorg xz zlib
+
+alsa-lib: bash glibc Python
+
+alsa-oss: alsa-lib bash glibc
+
+alsa-plugins: alsa-lib bash dbus ffmpeg flac gdbm glibc json-c libcap libogg libsamplerate libsndfile libvorbis pulseaudio speex util-linux Xorg
+
+alsa-tools: alsa-lib atk bash cairo coreutils fltk fontconfig freetype gcc gdk-pixbuf glib glibc gtk+ pango Xorg
+
+alsa-utils: alsa-lib bash glibc libsamplerate ncursesw
+
+antlr4: bash
+
+apache-ant: bash perl Python
+
+apg: bash glibc
+
+apr: bash glibc util-linux
+
+apr-iconv: apr bash glibc util-linux
+
+apr-util: apr apr-iconv bash cyrus-sasl db expat freetds gdbm glibc libtool libtool-chroot openldap openssl postgresql sqlite-autoconf unixODBC util-linux
+
+archivemount: bash fuse glibc libarchive
+
+arptables: bash glibc perl
+
+asciidoc: bash coreutils
+
+aspell: bash gcc glibc ncurses perl
+
+asymptote: bash coreutils fftw freeglut gc gcc glibc glu libsigsegv libtirpc Mesa ncurses readline zlib
+
+aterm: bash glibc Xorg
+
+atk: bash glib glibc libffi
+
+at-spi2-atk: atk at-spi2-core bash dbus glib glibc libffi util-linux Xorg
+
+at-spi2-core: bash dbus glib glibc libffi selinux util-linux Xorg zlib
+
+attr: bash glibc
+
+audiofile: bash flac gcc glibc libogg
+
+autoconf: bash mod_perl perl
+
+autoconf-2.64: 
+
+autoconf-2.65: 
+
+autofs: bash cyrus-sasl e2fsprogs glibc krb5 libxml2 openldap zlib
+
+autogen: bash gc glibc gmp guile libatomic_ops libffi libtool libtool-chroot libunistring libxml2 perl pkg xz zlib
+
+automake-1.10: bash perl
+
+automake-1.11: bash mod_perl perl
+
+automake-1.12: bash coreutils mod_perl perl
+
+automake-1.13: bash coreutils mod_perl perl
+
+automake-1.14: bash coreutils mod_perl perl
+
+automake-1.9: bash perl
+
+avahi: atk avahi-nogui bash cairo dbus expat fontconfig freetype gcc gdbm gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libcap libdaemon libffi libpng pango Python qt-4 selinux Xorg zlib
+
+avahi-nogui: avahi bash dbus expat gcc gdbm glib glibc libcap libdaemon libffi
+
+babl: bash glibc
+
+bash: glibc ncurses readline
+
+bash-completion: bash pkg
+
+bc: bash flex glibc
+
+bcg729: alsa-lib bash dbus ffmpeg flac gcc gdbm glew glibc gsm jpeg json-c libcap libdrm libogg libsndfile libsrtp libtheora libvorbis libvpx mediastreamer2 Mesa opus oRTP pulseaudio spandsp speex tiff util-linux v4l-utils Xorg xz zlib
+
+bind: bash cyrus-sasl e2fsprogs glibc krb5 libcap libtool libtool-chroot openldap openssl Python
+
+bindfs: bash fuse glibc
+
+binutils: bash glibc zlib
+
+bison: bash glibc
+
+bluefish: atk bash cairo coreutils enchant expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 gucharmap harfbuzz libffi libpng libxml2 pango Python selinux Xorg xz zlib
+
+bogofilter: bash db glibc mrtg perl
+
+boost: bash gcc glibc zlib
+
+bsd-finger: bash glibc
+
+busybox: bash
+
+bzip2: bash glibc
+
+bzr: bash glibc Python
+
+cacerts-lfs: bash
+
+cairo: bash expat fontconfig freetype gcc glib glibc libffi libpng lzo Xorg zlib
+
+calamaris: bash perl
+
+c-ares: bash glibc
+
+cdde: bash glibc libxml2
+
+cdrdao: bash gcc glibc lame libao libmad libogg libvorbis
+
+cdrkit: bash file glibc libcap perl perl-modules zlib
+
+cdrtools: bash glibc
+
+celt: bash glibc libogg
+
+cifs-utils: bash glibc keyutils krb5 libcap-ng talloc
+
+clamav: bash gcc glibc libtool libtool-chroot ncurses zlib
+
+clamctrl: bash glibc
+
+clang: bash gcc glibc llvm ncurses Python zlib
+
+clisp: bash glibc libsigsegv ncurses readline
+
+cloog: bash glibc gmp isl
+
+clucene-core: bash gcc glibc zlib
+
+clutter: atk bash cairo cogl expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz json-glib libffi libpng pango selinux Xorg zlib
+
+clutter-gtk: atk bash cairo clutter cogl expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz json-glib libffi libpng pango selinux Xorg zlib
+
+cmake: bash gcc glibc libidn ncurses
+
+codeblocks: atk bash cairo expat fontconfig freetype gcc gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz hunspell libffi libpng pango selinux wxWidgets Xorg zlib
+
+cogl: bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 harfbuzz libffi libpng pango selinux Xorg zlib
+
+colord: bash glib glibc lcms2 libffi libgusb libusb pcre polkit selinux sqlite-autoconf systemd zlib
+
+conntrack-tools: bash glibc libmnl libnetfilter_conntrack libnetfilter_cthelper libnetfilter_cttimeout libnetfilter_queue libnfnetlink
+
+ConsoleKit: 
+
+coova-chilli: bash c-ares glibc libidn openssl Python rtmpdump zlib
+
+coreutils: acl attr bash glibc gmp libcap selinux
+
+cowsay: bash perl
+
+cpio: bash glibc
+
+cppunit: bash gcc glibc
+
+crda: bash glibc libgcrypt libnl
+
+createrepo: bash Python
+
+cryptsetup: bash glibc libgcrypt libgpg-error LVM2 popt util-linux
+
+ctl: 
+
+CTL: bash gcc glibc ilmbase
+
+cups: acl avahi avahi-nogui bash dbus e2fsprogs gcc glibc gnutls krb5 libgcrypt libgpg-error libusb Linux-PAM zlib
+
+cups-filters: avahi avahi-nogui bash c-ares cups curl cyrus-sasl dbus e2fsprogs expat fontconfig freetype gcc glib glibc gmp gnutls ijs jpeg krb5 lcms2 libgcrypt libgpg-error libidn libpng libtasn1 libtool libtool-chroot nettle openjpeg1 openldap openssl p11-kit pcre poppler qpdf rtmpdump tiff trousers xz zlib
+
+curl: bash c-ares cyrus-sasl glibc libidn libtool libtool-chroot openldap openssl rtmpdump zlib
+
+cvs: bash e2fsprogs glibc krb5 mrtg openssl perl tcsh
+
+cygwin: 
+
+cyrus-imapd: bash cyrus-sasl db e2fsprogs glibc krb5 libnl-1 net-snmp openssl pciutils pcre perl rpm zlib
+
+cyrus-sasl: bash db e2fsprogs glibc krb5 Linux-PAM openssl
+
+dahdi-tools: 
+
+dash: bash glibc
+
+db: bash gcc glibc
+
+dblatex: bash coreutils Python
+
+dbus: bash expat glibc libaudit libcap-ng libgcrypt libgpg-error pcre selinux systemd xz
+
+dbus-glib: bash dbus expat glib glibc libffi selinux zlib
+
+dbus-python: bash dbus dbus-glib glib glibc libffi Python selinux zlib
+
+dcd: bash glibc
+
+dcron: bash glibc
+
+dejavu-fonts: bash
+
+deltarpm: bash glibc perl perl-modules Python Python3 rpm xz
+
+desktop-file-utils: bash glib glibc
+
+dhcp: bash glibc gss krb5 openldap openssl
+
+dia: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libart libffi libpng libxml2 libxslt pango selinux Xorg xz zlib
+
+dialog: bash glibc ncursesw
+
+diffutils: bash glibc libsigsegv
+
+dirac: bash gcc glibc orc
+
+DirectFB: bash freetype gcc glibc gmp gnutls jasper jpeg libdrm libgcrypt libgpg-error libpng libtasn1 libvdpau LibVNCServer libwebp Mesa nettle openssl p11-kit tiff trousers Xorg xz zlib
+
+distrotech-core: 
+
+djview4: bash djvulibre gcc glibc qt-4 tiff Xorg
+
+djvulibre: bash gcc glibc jpeg tiff xz zlib
+
+dlfn-win32: 
+
+dmake: bash glibc
+
+dmraid: bash glibc LVM2
+
+docbook2X: bash glibc perl perl-modules
+
+docbook-4.1.2: bash
+
+docbook-4.2: bash
+
+docbook-4.3: bash
+
+docbook-4.4: bash
+
+docbook-4.5: bash
+
+docbook-xsl: bash coreutils perl
+
+docutils: bash Python
+
+dosfstools: bash glibc
+
+dovecot: bash e2fsprogs glibc gmp gnutls krb5 libaudit libcap libgcrypt libgpg-error libprelude libtasn1 libtirpc libtool libtool-chroot Linux-PAM mod_perl nettle openssl p11-kit perl perl-modules postgresql trousers zlib
+
+doxygen: bash gcc glibc qt-4
+
+dtc: bash glibc
+
+dtsapplib: bash c-ares curl cyrus-sasl glibc libidn libmnl libnetfilter_conntrack libnetfilter_queue libnfnetlink libtool libtool-chroot libxml2 libxslt openldap openssl rtmpdump util-linux xz zlib
+
+dtsbuild: bash
+
+dtscon: bash c-ares curl cyrus-sasl dtsapplib glibc libidn libmnl libnetfilter_conntrack libnetfilter_queue libnfnetlink libtool libtool-chroot libxml2 libxslt newt openldap openssl rtmpdump slang util-linux xz zlib
+
+dtsguiapp: bash c-ares curl cyrus-sasl dtsapplib gcc glibc libidn libmnl libnetfilter_conntrack libnetfilter_queue libnfnetlink libtool libtool-chroot libxml2 libxslt openldap openssl rtmpdump util-linux wxWidgets xz zlib
+
+e2fsprogs: bash glibc util-linux
+
+easter: bash glibc
+
+ebtables: bash glibc perl
+
+ecj: bash gcc glibc zlib
+
+ecryptfs-utils: bash glibc gmp gnutls keyutils libaudit libgcrypt libgpg-error libprelude libtasn1 libtool libtool-chroot Linux-PAM nettle nspr nss openssl p11-kit Python trousers zlib
+
+ed: bash glibc
+
+elfutils: bash glibc xz zlib
+
+emacs: alsa-lib atk bash cairo dbus fontconfig freetype gcc GConf gdk-pixbuf glib glibc gnutls gtk3 ImageMagick jpeg libpng librsvg libungif libxml2 ncurses pango perl selinux tiff Xorg zlib
+
+enchant: aspell bash gcc glib glibc hunspell
+
+eog: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc gnome-desktop-3 gobject-introspection graphite2 gtk3 harfbuzz jpeg lcms2 libcroco libexif libffi libpeas libpng librsvg libxkbfile libxml2 pango selinux Xorg xz zlib
+
+epiphany: atk avahi avahi-nogui bash cairo dbus dbus-glib enchant expat fontconfig freetype gcc gcr gdk-pixbuf geoclue glib glibc gnome-desktop-3 graphite2 gst-plugins-base-1 gstreamer-1 gtk3 harfbuzz icu jpeg libdrm libffi libgcrypt libgpg-error libnotify libpng libsecret libsoup libwebp libwnck-3 libxkbfile libxml2 libxslt Mesa nspr nss orc p11-kit pango selinux sqlite-autoconf startup-notification util-linux webkitgtk Xorg xz zlib
+
+esound: alsa-lib audiofile bash flac gcc glibc libogg
+
+ethtool: bash glibc
+
+evil: 
+
+evince: atk at-spi2-atk at-spi2-core bash cairo c-ares curl cyrus-sasl dbus djvulibre expat fontconfig freetype gcc gdk-pixbuf ghostscript glib glibc graphite2 gtk3 harfbuzz jpeg lcms2 libffi libgcrypt libgpg-error libidn libpng libsecret libspectre libtool libtool-chroot libxml2 openjpeg1 openldap openssl pango poppler rtmpdump selinux texlive texlive-boot tiff util-linux Xorg xz zlib
+
+evolution: atk at-spi2-atk at-spi2-core bash cairo c-ares clutter clutter-gtk cogl curl cyrus-sasl db dbus dbus-glib e2fsprogs enchant evolution-data-server expat fontconfig freetype gcc gcr gdk-pixbuf geoclue geocode-glib glib glibc gnome-desktop-3 gnome-online-accounts graphite2 gst-plugins-base-1 gstreamer-1 gtk3 gtkhtml harfbuzz icu jpeg json-glib krb5 libcanberra libchamplain libdrm libffi libgcrypt libgdata libgpg-error libgweather libical libidn libnotify liboauth libogg libpng libpst libsecret libsoup libtool libtool-chroot libvorbis libwebp libxkbfile libxml2 libxslt Mesa nspr nss openldap openssl orc p11-kit pango perl rtmpdump selinux sqlite-autoconf tdb util-linux webkitgtk Xorg xz zlib
+
+evolution-data-server: atk bash cairo c-ares curl cyrus-sasl db e2fsprogs expat fontconfig freetype gcr gdk-pixbuf glib glibc gnome-online-accounts graphite2 gtk3 harfbuzz json-glib krb5 libffi libgcrypt libgdata libgpg-error libgweather libical libidn liboauth libpng libsecret libsoup libtool libtool-chroot libxml2 nspr nss openldap openssl p11-kit pango rtmpdump selinux sqlite-autoconf Xorg xz zlib
+
+exif: bash glibc libexif popt
+
+exo: atk bash cairo coreutils expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libpng libxfce4ui libxfce4util pango perl perl-modules selinux util-linux Xorg zlib
+
+exosip: bash c-ares glibc libosip2 openssl
+
+expat: bash gcc glibc
+
+faac: bash gcc glibc
+
+faad2: bash glibc
+
+fastjar: bash glibc zlib
+
+fbset: bash glibc
+
+fdk-aac: bash glibc
+
+fdutils: bash glibc
+
+fetchmail: bash glibc Python
+
+ffcall: bash
+
+ffmpeg: alsa-lib bash celt dirac faac fdk-aac fontconfig freetype glibc gnutls gsm lame libaacplus libass libavc1394 libbluray libcaca libcdio-cdda libdc1394 libiec61883 libnut libraw1394 libtheora libva libvorbis libvpx modplug openal opencore-amr OpenCV openjpeg1 openssl opus pulseaudio rtmpdump schroedinger SDL speex twolame utvideo v4l-utils vo-aacenc vo-amrwbenc x264 xavs zlib
+
+ffmpegthumbnailer: bash ffmpeg gcc glibc jpeg libpng zlib
+
+fftw: bash glibc
+
+figlet: bash glibc
+
+figlet-fonts: bash
+
+file: bash glibc zlib
+
+file-roller: acl atk attr bash cairo expat file fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz json-glib libarchive libffi libnotify libpng libxml2 lzo nettle pango selinux Xorg xz zlib
+
+findutils: bash glibc selinux
+
+firefox: 
+
+flac: bash gcc glibc libogg
+
+flex: bash glibc
+
+fltk: bash fontconfig gcc glibc jpeg libpng Xorg zlib
+
+flux: bash DirectFB gcc glibc
+
+fontconfig: bash expat freetype glibc zlib
+
+fontforge: bash glibc Python util-linux Xorg
+
+fonttools: bash glibc Python
+
+foomatic-filters: bash dbus glibc perl
+
+fop: bash
+
+forrest: bash perl Python
+
+fortune-mod: bash glibc
+
+freeglut: bash glibc libdrm Mesa Xorg
+
+freeradius-client: bash glibc
+
+freeradius-server: bash cyrus-sasl e2fsprogs gdbm glibc gmp gnutls krb5 libaudit libgcrypt libgpg-error libiodbc libpcap libprelude libtasn1 libtool libtool-chroot Linux-PAM mod_perl ncurses nettle openldap openssl p11-kit perl perl-modules postgresql Python readline trousers unixODBC zlib
+
+FreeRDP: alsa-lib bash cups ffmpeg glibc libxkbfile openssl pcsc-lite pulseaudio Xorg zlib
+
+freetds: bash glibc libiodbc ncurses readline
+
+freetype: bash glibc zlib
+
+frei0r: bash cairo expat fontconfig freetype gcc glibc gmerlin libpng OpenCV Xorg zlib
+
+fribidi: bash glib glibc
+
+frox: bash glibc
+
+fuse: bash glibc
+
+gaa: bash glibc
+
+garcon: bash glib glibc libffi libxfce4util selinux zlib
+
+gawk: bash glibc gmp libsigsegv mpfr ncurses readline
+
+gc: bash gcc glibc libatomic_ops
+
+gcc: bash cloog coreutils glibc gmp isl mpc mpfr zlib
+
+GConf: atk bash cairo coreutils cyrus-sasl dbus dbus-glib expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz libffi libpng libtool libtool-chroot libxml2 openldap openssl ORBit2 pango polkit selinux Xorg xz zlib
+
+gcr: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz libffi libgcrypt libgpg-error libpng p11-kit pango selinux Xorg zlib
+
+gd: bash expat fontconfig freetype glibc jpeg libpng libvpx perl tiff Xorg xz zlib
+
+gdb: bash expat glibc ncurses xz zlib
+
+gdbm: bash glibc
+
+gdk-pixbuf: bash glib glibc jpeg libffi libpng selinux tiff xz zlib
+
+gegl: alsa-lib audiofile babl bash boost cairo dbus DirectFB esound expat ffmpeg flac fontconfig freetype gcc gdbm gdk-pixbuf glib glibc graphite2 harfbuzz ilmbase jasper jpeg json-c libcap libcroco libffi libogg libopenraw libpng librsvg libsndfile libvorbis libxml2 openexr pango pulseaudio SDL selinux util-linux Xorg xz zlib
+
+gengetopt: bash gcc glibc
+
+geoclue: bash dbus dbus-glib GConf glib glibc libffi libsoup libxml2 ORBit2 selinux sqlite-autoconf xz zlib
+
+geoclue-2: bash geoip-api-c glib glibc json-glib libffi libsoup libxml2 selinux sqlite-autoconf xz zlib
+
+geocode-glib: bash glib glibc json-glib libffi libsoup libxml2 selinux sqlite-autoconf xz zlib
+
+geoip-api-c: bash glibc
+
+gettext: acl attr bash gcc glib glibc libcroco libunistring libxml2 mono ncurses xz zlib
+
+ghostscript: bash cups e2fsprogs fontconfig gcc glibc gnutls krb5 libgcrypt libgpg-error libidn tiff Xorg zlib
+
+giflib: bash glibc
+
+gimp: alsa-lib atk babl bash cairo c-ares coreutils curl cyrus-sasl dbus dbus-glib expat fontconfig freetype gcc gdk-pixbuf gegl ghostscript glib glibc graphite2 gtk+ harfbuzz jasper jpeg lcms2 libcroco libexif libffi libidn libmng libpng librsvg libtool libtool-chroot libxml2 openjpeg1 openldap openssl pango pcre poppler rtmpdump selinux systemd tiff util-linux Xorg xz zlib
+
+git: bash curl expat glibc mod_perl openssl perl perl-modules Python subversion zlib
+
+gksu: 
+
+glade: atk avahi avahi-nogui bash cairo dbus dbus-glib expat fontconfig freetype gcc GConf gdk-pixbuf glib glibc gnome-keyring gnome-vfs graphite2 gtk+ harfbuzz libart libbonobo libbonoboui libcanberra libffi libgcrypt libgnome libgnomecanvas libgnomeui libgpg-error libogg libpng libtool libtool-chroot libvorbis libxml2 openssl ORBit2 pango popt Python selinux tdb util-linux Xorg xz zlib
+
+glamor: bash glibc libdrm Mesa Xorg
+
+glew: bash glibc Mesa Xorg
+
+glib: bash glibc libffi mod_perl perl Python selinux zlib
+
+glibc: bash gd libaudit libcap libpng pcre perl selinux zlib
+
+glib-networking: bash glib glibc gmp gnutls libffi libtasn1 nettle openssl p11-kit selinux trousers zlib
+
+globe: bash glibc
+
+glu: bash gcc glibc libdrm Mesa Xorg
+
+glw: bash glibc libdrm Mesa util-linux Xorg
+
+gmanedit2: atk bash cairo fontconfig freetype gdk-pixbuf glib glibc gtk+ pango zlib
+
+gmerlin: bash glibc
+
+gmp: bash gcc glibc
+
+gnome-calculator: atk bash cairo fontconfig freetype gdk-pixbuf glib glibc gtk3 libxml2 pango
+
+gnome-chess: atk bash cairo fontconfig freetype gdk-pixbuf glib glibc glu gtk3 librsvg Mesa pango Xorg
+
+gnome-common: bash
+
+gnome-desktop: atk bash cairo dbus dbus-glib expat fontconfig freetype GConf gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libpng ORBit2 pango Python selinux startup-notification Xorg zlib
+
+gnome-desktop-3: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz libffi libpng libxkbfile pango selinux Xorg zlib
+
+gnome-doc-utils: bash pkg Python
+
+gnome-icon-theme: bash pkg
+
+gnome-icon-theme-extras: bash
+
+gnome-icon-theme-symbolic: bash pkg
+
+gnome-keyring: bash dbus glib glibc libgcrypt libgpg-error
+
+gnome-klotski: atk bash cairo fontconfig freetype gdk-pixbuf glib glibc gtk3 librsvg pango
+
+gnome-mahjongg: atk bash cairo fontconfig freetype gdk-pixbuf glib glibc gtk3 librsvg pango
+
+gnome-mime-data: bash pkg
+
+gnome-mines: atk bash cairo fontconfig freetype gdk-pixbuf glib glibc gtk3 librsvg pango
+
+gnome-online-accounts: atk bash cairo dbus dbus-glib enchant expat fontconfig freetype gcc gdk-pixbuf geoclue glib glibc graphite2 gst-plugins-base-1 gstreamer-1 gtk3 harfbuzz icu jpeg json-glib libdrm libffi libgcrypt libgpg-error libpng librest libsecret libsoup libwebp libxml2 libxslt Mesa orc pango selinux sqlite-autoconf telepathy-glib util-linux webkitgtk Xorg xz zlib
+
+gnome-python-desktop: 
+
+gnome-sudoku: bash Python
+
+gnome-themes: bash
+
+gnome-themes-standard: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ gtk3 harfbuzz libcroco libffi libpng librsvg libxml2 pango selinux Xorg xz zlib
+
+gnome-vfs: acl attr avahi avahi-nogui bash dbus dbus-glib e2fsprogs gcc GConf glib glibc krb5 libffi libxml2 openssl ORBit2 samba selinux xz zlib
+
+gnuchess: bash gcc glibc ncurses readline
+
+gnugk: bash expat gcc glibc h323plus libssh lua openldap openssl ptlib SDL unixODBC
+
+gnupg: bash c-ares curl glibc libassuan libgcrypt libgpg-error libidn libksba libusb-compat ncurses openldap openssl pth readline rtmpdump zlib
+
+gnustep-base: avahi avahi-nogui bash gcc glibc gmp gnutls icu libffi libgcrypt libxml2 libxslt zlib
+
+gnustep-make: bash
+
+gnutls: bash gc gcc glibc gmp guile libatomic_ops libffi libidn libtasn1 libtool libtool-chroot libunistring nettle openssl p11-kit trousers zlib
+
+gobject-introspection: bash glib glibc libffi Python selinux zlib
+
+googletest: bash gcc glibc
+
+gperf: bash gcc glibc
+
+gpm: bash glibc ncurses
+
+gptfdisk: bash gcc glibc icu ncurses popt util-linux
+
+graphite2: bash glibc
+
+graphviz: atk bash cairo c-ares curl cyrus-sasl expat fontconfig freetype gcc gd gdk-pixbuf ghostscript glib glibc graphite2 gtk+ harfbuzz jpeg lcms2 libcroco libffi libidn libpng librsvg libtool libtool-chroot libvpx libxml2 lua openjpeg1 openldap openssl pango perl php poppler Python qt-4 rtmpdump selinux tiff util-linux Xorg xz zlib
+
+grep: bash glibc pcre
+
+groff: bash coreutils gcc glibc mod_perl perl sed Xorg
+
+grub: bash freetype fuse glibc LVM2 xz zlib
+
+grub-fonts: bash glibc perl
+
+gsettings-desktop-schemas: bash pkg
+
+gs-fonts: bash
+
+gsm: bash glibc
+
+gss: bash glibc
+
+gst-plugins-bad: alsa-lib audiofile bash cairo c-ares celt curl cyrus-sasl dbus dirac DirectFB e2fsprogs esound expat faac faad2 flac fontconfig freetype fribidi gcc gdbm gdk-pixbuf glib glibc graphite2 gsm gst-plugins-base gstreamer harfbuzz jasper jpeg json-c krb5 libass libcap libcroco libdc1394 libdvdnav libdvdread libffi libidn libkate libogg libpng libraw1394 librsvg libsndfile libtimidity libtool libtool-chroot libusb libvdpau libvorbis libvpx libxml2 neon openal openldap openssl opus orc pango pulseaudio rtmpdump schroedinger SDL selinux spandsp tiff vo-aacenc vo-amrwbenc Xorg xz zlib
+
+gst-plugins-bad-1: bash c-ares celt curl cyrus-sasl dirac e2fsprogs expat faac faad2 fontconfig freetype fribidi gcc glib glibc graphite2 gsm gst-plugins-base-1 gstreamer-1 harfbuzz jpeg krb5 libass libdvdnav libdvdread libffi libidn libtool libtool-chroot mpg123 neon openjpeg1 openldap openssl opus orc rtmpdump schroedinger selinux spandsp tiff vo-aacenc vo-amrwbenc wayland Xorg xz zlib
+
+gst-plugins-base: alsa-lib avahi avahi-nogui bash cairo dbus dbus-glib expat fontconfig freetype gcc GConf glib glibc gnome-vfs graphite2 gstreamer harfbuzz libffi libogg libpng libtheora libvorbis libxml2 openssl ORBit2 orc pango perl selinux util-linux Xorg xz zlib
+
+gst-plugins-base-1: alsa-lib bash cairo expat fontconfig freetype glib glibc graphite2 gstreamer-1 harfbuzz libffi libogg libpng libtheora libvorbis orc pango selinux util-linux Xorg xz zlib
+
+gst-plugins-good: alsa-lib audiofile bash cairo dbus dbus-glib esound expat flac fontconfig freeglut freetype gcc GConf gdbm gdk-pixbuf glib glibc glu gst-plugins-base gstreamer jpeg json-c libavc1394 libcaca libcap libdrm libffi libiec61883 libogg libpng libraw1394 libsndfile libsoup libvorbis libxml2 Mesa ncursesw ORBit2 orc pulseaudio selinux slang speex sqlite-autoconf util-linux Xorg xz zlib
+
+gst-plugins-good-1: bash cairo dbus expat flac fontconfig freeglut freetype gcc gdbm gdk-pixbuf glib glibc glu gst-plugins-base-1 gstreamer-1 jpeg json-c libavc1394 libcaca libcap libdrm libffi libiec61883 libogg libpng libraw1394 libsndfile libsoup libvorbis libvpx libxml2 Mesa ncursesw orc pcre pulseaudio selinux slang speex sqlite-autoconf systemd util-linux v4l-utils Xorg xz zlib
+
+gst-plugins-ugly: a52dec bash glib glibc gst-plugins-base gstreamer lame libdvdread libffi libmad libmpeg2 libxml2 opencore-amr orc twolame x264 xz zlib
+
+gst-plugins-ugly-1: a52dec bash glib glibc gst-plugins-base-1 gstreamer-1 lame libcdio libdvdread libffi libmad libmpeg2 opencore-amr orc selinux twolame x264 xz zlib
+
+gstreamer: bash glib glibc libffi libxml2 xz zlib
+
+gstreamer-1: bash glib glibc libffi selinux xz zlib
+
+gtk+: atk bash cairo coreutils cups e2fsprogs expat fontconfig freetype gdk-pixbuf glib glibc gmp gnutls graphite2 harfbuzz krb5 libffi libgcrypt libgpg-error libpng libtasn1 nettle openssl p11-kit pango selinux trousers Xorg zlib
+
+gtk3: atk at-spi2-atk at-spi2-core bash cairo colord cups dbus e2fsprogs expat fontconfig freetype gdk-pixbuf glib glibc gmp gnutls graphite2 harfbuzz krb5 lcms2 libffi libgcrypt libgpg-error libpng libtasn1 nettle openssl p11-kit pango selinux trousers util-linux Xorg zlib
+
+gtk-doc: bash perl pkg Python
+
+gtk-engines: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libpng pango selinux Xorg zlib
+
+gtkglext: atk bash cairo expat fontconfig freetype gcc gdk-pixbuf glib glibc glu graphite2 gtk+ harfbuzz libdrm libffi libpng Mesa pango selinux Xorg zlib
+
+gtkhtml: atk at-spi2-atk at-spi2-core bash cairo dbus enchant expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz libffi libpng pango selinux util-linux Xorg zlib
+
+gtkimageview: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libpng pango selinux Xorg zlib
+
+gtkspell: atk bash cairo enchant expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ gtk3 harfbuzz libffi libpng pango selinux Xorg zlib
+
+gtkspell-2: atk bash cairo enchant expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libpng pango selinux Xorg zlib
+
+gtk-xfce-engine: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ gtk3 harfbuzz libffi libpng pango selinux Xorg zlib
+
+gucharmap: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz libffi libpng pango selinux Xorg zlib
+
+guile: bash gc glibc gmp libatomic_ops libffi libtool libtool-chroot libunistring ncurses readline
+
+gv: bash glibc perl Xaw3d Xorg
+
+gzip: bash glibc
+
+h323plus: bash expat gcc glibc lua openldap openssl ptlib SDL speex unixODBC
+
+harfbuzz: bash cairo expat fontconfig freetype gcc glib glibc graphite2 icu libffi libpng Xorg zlib
+
+hdparm: bash glibc
+
+help2man: bash perl
+
+hfsutils: bash glibc
+
+hicolor-icon-theme: bash
+
+highlight: bash gcc glibc lua perl perl-modules
+
+hostapd: bash glibc libnl-1 openssl
+
+hplip: bash coreutils cups dbus gcc glibc jpeg libusb libusb-compat net-snmp openssl perl Python sane-backends tiff v4l-utils xz zlib
+
+htop: bash glibc ncurses
+
+httpd: apr apr-iconv apr-util bash db expat gdbm glibc openldap openssl pcre perl util-linux zlib
+
+hunspell: bash gcc glibc perl
+
+hylafax: bash gcc glibc Linux-PAM tiff zlib
+
+i2c-tools: bash glibc perl
+
+iana-etc: bash
+
+icedtea6-1.12: alsa-lib bash freetype gcc giflib glibc jpeg libpng Xorg zlib
+
+icedtea7-2.3: 
+
+icedtea7-2.4: alsa-lib atk bash cairo cups fontconfig freetype gcc gdk-pixbuf giflib glib glibc gtk+ jpeg krb5 lcms2 libpng pango Xorg zlib
+
+icmake: bash glibc
+
+icon-naming-utils: bash perl perl-modules pkg
+
+icu: bash gcc glibc
+
+igmpproxy: bash glibc
+
+ijs: bash glibc
+
+iksemel: bash glibc openssl Python
+
+ilmbase: bash gcc glibc
+
+ImageMagick: bash cairo djvulibre expat fftw fontconfig freetype gcc glib glibc graphite2 harfbuzz ilmbase jasper jpeg lcms2 libffi libpng libwebp libxml2 openexr pango tiff util-linux Xorg xz zlib
+
+imap: bash glibc openssl
+
+inetutils: bash glibc Linux-PAM ncurses readline
+
+intltool: bash perl
+
+ippool: bash glibc libtirpc ncurses portablexdr readline
+
+iproute2: bash db glibc iptables
+
+ipsec-tools: bash flex glibc gmp gnutls libaudit libgcrypt libgpg-error libprelude libtasn1 libtool libtool-chroot Linux-PAM nettle openssl p11-kit trousers zlib
+
+iptables: bash glibc libnfnetlink
+
+ipv6calc: bash glibc
+
+ipvsadm: bash glibc libnl-1 popt
+
+isl: bash glibc gmp
+
+iso-codes: bash pkg
+
+isoquery: bash Python
+
+itstool: bash Python
+
+iw: bash glibc libnl
+
+jasper: bash freeglut gcc glibc glu jpeg libdrm Mesa util-linux Xorg
+
+javac: bash gcc glibc zlib
+
+jbigkit: bash glibc
+
+jhylafax: bash
+
+joe: bash glibc ncurses
+
+jpeg: bash glibc
+
+jruby: bash coreutils
+
+json-c: bash glibc
+
+json-glib: bash glib glibc libffi selinux zlib
+
+junit: bash
+
+kbd: bash glibc Linux-PAM
+
+keepalived: bash glibc libnl-1 openssl popt
+
+kelbt: bash gcc glibc
+
+keyutils: bash glibc
+
+kmod: bash glibc xz zlib
+
+krb5: bash e2fsprogs glibc keyutils libverto openssl
+
+krb5-static: bash e2fsprogs glibc keyutils krb5 libverto
+
+lame: bash glibc ncurses
+
+lcms2: bash glibc jpeg tiff xz zlib
+
+ldb: 
+
+leafpad: atk bash cairo fontconfig freetype gdk-pixbuf glib glibc gtk+ pango
+
+less: bash glibc ncursesw
+
+lesspipe: bash coreutils mod_perl perl
+
+lesstif: 
+
+libaacplus: bash glibc
+
+libaccounts-glib: bash glib glibc libffi libxml2 selinux sqlite-autoconf xz zlib
+
+libao: alsa-lib audiofile bash dbus esound flac gcc gdbm glibc json-c libcap libogg libsndfile libvorbis pulseaudio util-linux Xorg
+
+libarchive: acl attr bash glibc libxml2 lzo nettle xz zlib
+
+libart: bash glibc
+
+libass: bash expat fontconfig freetype fribidi glib glibc graphite2 harfbuzz libffi zlib
+
+libassuan: bash glibc libgpg-error
+
+libatomic_ops: bash glibc
+
+libaudit: bash glibc libcap-ng
+
+libavc1394: bash glibc libraw1394
+
+libbluray: bash glibc libxml2 xz zlib
+
+libbonobo: bash glib glibc libffi libxml2 ORBit2 perl selinux xz zlib
+
+libbonoboui: atk avahi avahi-nogui bash cairo dbus dbus-glib expat fontconfig freetype gcc GConf gdk-pixbuf glib glibc gnome-vfs graphite2 gtk+ harfbuzz libart libbonobo libcanberra libffi libglade libgnome libgnomecanvas libogg libpng libtool libtool-chroot libvorbis libxml2 openssl ORBit2 pango popt selinux tdb util-linux Xorg xz zlib
+
+libcaca: bash freeglut gcc glibc glu libdrm Mesa ncursesw Python slang Xorg zlib
+
+libcanberra: alsa-lib atk bash cairo dbus expat flac fontconfig freetype gdbm gdk-pixbuf glib glibc graphite2 gstreamer-1 gtk+ gtk3 harfbuzz json-c libcap libffi libogg libpng libsndfile libtool libtool-chroot libvorbis pango pulseaudio selinux systemd tdb util-linux Xorg xz zlib
+
+libcap: bash glibc
+
+libcap-ng: bash glibc Python
+
+libcddb: bash glibc
+
+libcdio: bash gcc glibc libcddb ncurses
+
+libcdio-cdda: bash glibc libcdio
+
+libchamplain: atk bash cairo clutter clutter-gtk cogl expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz json-glib libffi libpng libsoup libxml2 pango selinux sqlite-autoconf Xorg xz zlib
+
+libcroco: bash glib glibc libxml2 xz zlib
+
+libdaemon: bash glibc
+
+libdc1394: bash glibc libraw1394 libusb
+
+libdrm: bash glibc Xorg
+
+libdvdcss: bash glibc
+
+libdvdnav: bash glibc libdvdread
+
+libdvdread: bash glibc
+
+libdwarf: bash elfutils gcc glibc
+
+libelf: 
+
+liberation-fonts: bash
+
+libevent: bash coreutils glibc openssl
+
+libexif: bash glibc
+
+libffi: bash gcc glibc pkg
+
+libgcrypt: bash glibc libgpg-error
+
+libgdata: bash c-ares curl cyrus-sasl gcr glib glibc gnome-online-accounts json-glib libffi libgcrypt libgpg-error libidn liboauth libsoup libtool libtool-chroot libxml2 openldap openssl p11-kit rtmpdump selinux sqlite-autoconf xz zlib
+
+libgksu: 
+
+libglade: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libpng libxml2 pango Python selinux Xorg xz zlib
+
+libgnome: avahi avahi-nogui bash dbus dbus-glib gcc GConf glib glibc gnome-vfs libbonobo libcanberra libffi libogg libtool libtool-chroot libvorbis libxml2 openssl ORBit2 popt selinux tdb xz zlib
+
+libgnomecanvas: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libart libffi libpng pango selinux Xorg zlib
+
+libgnome-keyring: 
+
+libgnomeui: atk avahi avahi-nogui bash cairo dbus dbus-glib expat fontconfig freetype gcc GConf gdk-pixbuf glib glibc gnome-keyring gnome-vfs graphite2 gtk+ harfbuzz libart libbonobo libbonoboui libcanberra libffi libgcrypt libglade libgnome libgnomecanvas libgpg-error libogg libpng libtool libtool-chroot libvorbis libxml2 openssl ORBit2 pango popt selinux tdb util-linux Xorg xz zlib
+
+libgpg-error: bash glibc
+
+libgsf: bash gdk-pixbuf glib glibc libffi libpng libxml2 selinux xz zlib
+
+libgtop: 
+
+libgusb: bash glib glibc libffi libusb pcre selinux systemd zlib
+
+libgweather: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz libffi libpng libsoup libxml2 pango selinux sqlite-autoconf Xorg xz zlib
+
+libical: bash glibc
+
+libiconv: 
+
+libid3tag: bash glibc zlib
+
+libIDL: bash glib glibc
+
+libidn: bash glibc mono
+
+libiec61883: bash glibc libraw1394
+
+libilbc: bash glibc
+
+libilbc-webrtc: bash glibc
+
+libiodbc: bash glibc
+
+libixion: bash boost gcc glibc
+
+libkate: bash coreutils glibc libogg libpng Python zlib
+
+libksba: bash glibc libgpg-error
+
+libmad: bash glibc
+
+libmcrypt: bash glibc
+
+libmemcached: bash cyrus-sasl gcc glibc
+
+libmicrohttpd: bash glibc gmp gnutls libgcrypt libgpg-error libtasn1 nettle openssl p11-kit trousers zlib
+
+libmng: bash glibc jpeg zlib
+
+libmnl: bash glibc
+
+libmpeg2: alsa-lib audiofile bash dbus DirectFB esound flac gcc gdbm glibc json-c libcap libogg libsndfile libvorbis pulseaudio SDL util-linux Xorg
+
+libnetfilter_acct: bash glibc libmnl
+
+libnetfilter_conntrack: bash glibc libmnl libnfnetlink
+
+libnetfilter_cthelper: bash glibc libmnl
+
+libnetfilter_cttimeout: bash glibc libmnl
+
+libnetfilter_log: bash glibc libnfnetlink
+
+libnetfilter_queue: bash glibc libmnl libnfnetlink
+
+libnfnetlink: bash glibc
+
+libnfsidmap: bash cyrus-sasl glibc libtool libtool-chroot openldap openssl
+
+libnl: bash glibc
+
+libnl-1: bash glibc
+
+libnotify: bash gdk-pixbuf glib glibc libffi libpng selinux zlib
+
+libnut: bash glibc
+
+liboauth: bash c-ares curl cyrus-sasl glibc libidn libtool libtool-chroot openldap openssl rtmpdump zlib
+
+libogg: bash glibc
+
+libopenraw: bash boost gcc gdk-pixbuf glib glibc jpeg libffi libpng selinux zlib
+
+liborcus: bash boost gcc glibc libixion zlib
+
+libosip2: bash glibc
+
+libpaper: 
+
+libpcap: bash dbus glibc libnl libusb
+
+libpeas: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc gobject-introspection graphite2 gtk3 harfbuzz libffi libpng pango Python Python3 selinux Xorg zlib
+
+libphonenumber: bash boost gcc glibc icu protobuf re2
+
+libphonenumber-java: bash
+
+libpipeline: bash glibc
+
+libpng: bash glibc zlib
+
+libprelude: bash glibc gmp gnutls libgcrypt libgpg-error libtasn1 libtool libtool-chroot nettle openssl p11-kit trousers zlib
+
+libpri: 
+
+libpst: bash boost expat fontconfig freetype gcc gd glib glibc jpeg libffi libgsf libpng libvpx libxml2 Python selinux tiff Xorg xz zlib
+
+libraw1394: bash glibc
+
+libreoffice: 
+
+librest: bash glib glibc libffi libsoup libxml2 selinux sqlite-autoconf xz zlib
+
+librsvg: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz libcroco libffi libpng libxml2 pango selinux Xorg xz zlib
+
+libsamplerate: bash flac gcc glibc libogg libsndfile libvorbis
+
+libsecret: bash glib glibc libffi libgcrypt libgpg-error selinux zlib
+
+libsigcxx2: bash gcc glibc
+
+libsigsegv: bash glibc
+
+libsndfile: alsa-lib bash flac gcc glibc libogg libvorbis sqlite-autoconf
+
+libsoup: bash glib glibc libffi libxml2 selinux sqlite-autoconf xz zlib
+
+libspectre: bash ghostscript glibc
+
+libsrtp: bash glibc
+
+libss7: 
+
+libssh: bash glibc openssl zlib
+
+libtasn1: bash glibc
+
+libtheora: bash glibc libogg
+
+libtimidity: bash glibc
+
+libtirpc: bash e2fsprogs glibc krb5
+
+libtool: bash glibc
+
+libtool-chroot: bash glibc
+
+libtorrent: bash gcc glibc openssl
+
+libungif: bash glibc util-linux Xorg
+
+libunique: atk bash cairo dbus dbus-glib expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libpng pango selinux Xorg zlib
+
+libunistring: bash glibc
+
+libusb: bash glibc
+
+libusb-compat: bash glibc libusb
+
+libva: bash gcc glibc libdrm libffi Mesa wayland Xorg
+
+libvdpau: bash gcc glibc Xorg
+
+libverto: bash glib glibc libevent talloc tevent
+
+libvisual: bash glibc
+
+libvisual-plugins: alsa-lib atk audiofile bash cairo esound expat flac fontconfig freetype gcc gdk-pixbuf glib glibc glu graphite2 gtk+ harfbuzz libdrm libffi libogg libpng libvisual Mesa pango selinux Xorg zlib
+
+LibVNCServer: bash glibc gmp gnutls jpeg libgcrypt libgpg-error libpng libtasn1 nettle openssl p11-kit trousers zlib
+
+libvorbis: bash glibc libogg
+
+libvpx: bash glibc
+
+libwebp: bash glibc jpeg libpng tiff xz zlib
+
+libwnck: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libpng pango selinux startup-notification Xorg zlib
+
+libwnck-3: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz libffi libpng pango selinux startup-notification Xorg zlib
+
+libxfce4ui: atk bash cairo dbus dbus-glib expat fontconfig freetype gdk-pixbuf glade glib glibc graphite2 gtk+ gtk3 harfbuzz libffi libpng libxfce4util libxml2 pango selinux startup-notification util-linux xfconf Xorg xz zlib
+
+libxfce4util: bash glib glibc
+
+libxfcegui4: 
+
+libxkbcommon: bash glibc
+
+libxkbfile: bash glibc Xorg
+
+libxklavier: bash glib glibc libffi libxkbfile libxml2 Xorg xz zlib
+
+libxml2: bash glibc Python xz zlib
+
+libXp: 
+
+libxslt: bash glibc libgcrypt libgpg-error libxml2 Python xz zlib
+
+libzip: bash glibc zlib
+
+linphone: alsa-lib atk bash cairo c-ares dbus exosip expat ffmpeg flac fontconfig freetype gcc gdbm gdk-pixbuf glew glib glibc graphite2 gsm gtk+ harfbuzz jpeg json-c libcap libdrm libffi libnotify libogg libosip2 libpng libsndfile libsoup libsrtp libtheora libvorbis libvpx libxml2 mediastreamer2 Mesa ncurses openssl opus oRTP pango pcre pulseaudio readline selinux spandsp speex sqlite-autoconf systemd tiff util-linux v4l-utils Xorg xz zlib
+
+linux_logo: bash glibc
+
+Linux-PAM: bash cyrus-sasl db e2fsprogs glibc gmp gnutls krb5 libaudit libgcrypt libgpg-error libprelude libtasn1 libtirpc libtool libtool-chroot nettle openldap openssl p11-kit pcre selinux trousers zlib
+
+lksctp-tools: bash glibc
+
+llvm: bash gcc glibc ncurses zlib
+
+lm_sensors: bash glibc perl
+
+logcheck: bash glibc
+
+logrotate: bash glibc popt
+
+lprng: bash glibc openssl
+
+lsof: bash glibc libtirpc selinux
+
+lua: bash glibc ncursesw readline
+
+LVM2: bash glibc ncurses pcre readline selinux
+
+lynx: bash glibc ncursesw openssl
+
+lzo: bash glibc
+
+M2Crypto: bash glibc openssl Python
+
+m4: bash glibc libsigsegv
+
+macmask: bash glibc
+
+madplay: alsa-lib audiofile bash esound flac gcc glibc libid3tag libmad libogg zlib
+
+MailScanner: bash perl perl-modules
+
+mailutils: bash cyrus-sasl db fribidi gc gdbm glib glibc gmp gnutls guile libatomic_ops libaudit libffi libgcrypt libgpg-error libprelude libtasn1 libtool libtool-chroot libunistring Linux-PAM ncurses ncursesw nettle openldap openssl p11-kit Python radius readline trousers zlib
+
+make: bash gc glibc guile
+
+man2html: bash perl
+
+man-db: bash gdbm glibc libpipeline zlib
+
+man-pages: bash
+
+maven: bash
+
+mc: bash glib glibc perl Python slang
+
+mcelog: bash glibc
+
+mcrypt: bash glibc libmcrypt mhash zlib
+
+mdadm: bash glibc
+
+mdds: bash pkg
+
+mediastreamer2: alsa-lib bash dbus ffmpeg flac gcc gdbm glew glibc gsm jpeg json-c libcap libdrm libogg libsndfile libsrtp libtheora libvorbis libvpx Mesa opus oRTP pulseaudio spandsp speex tiff util-linux v4l-utils Xorg xz zlib
+
+memcached: bash glibc libevent
+
+memtest86: bash
+
+mercurial: bash glibc Python
+
+Mesa: bash expat gcc glibc libdrm libvdpau llvm ncurses Xorg zlib
+
+mesa-demos: bash freeglut gcc glew glibc glu libdrm Mesa Xorg
+
+mgetty: bash glibc perl
+
+mhash: bash glibc
+
+mingw-w64-crt: 
+
+mingw-w64-gendef: bash glibc
+
+mingw-w64-genidl: bash glibc
+
+mingw-w64-genpeimg: bash glibc
+
+mingw-w64-headers: 
+
+mingw-w64-libmangle: 
+
+mingw-w64-pseh: 
+
+mingw-w64-widl: 
+
+mingw-w64-winpthreads: 
+
+mingw-w64-winstorecompat: 
+
+minicom: bash glibc ncurses
+
+mksh: bash glibc
+
+mktemp: 
+
+mm: bash
+
+mm-common: bash mod_perl perl pkg
+
+modemtest: bash glibc
+
+mod_perl: apr apr-util bash expat gdbm glibc openldap perl perl-modules
+
+modplug: bash gcc glibc
+
+mod_python: bash glibc Python
+
+module-init-tools: bash glibc zlib
+
+mono: bash coreutils gcc glibc zlib
+
+mozjs: bash gcc glibc zlib
+
+mozjs-17: bash gcc glibc zlib
+
+mpc: bash glibc gmp mpfr
+
+mpfr: bash glibc gmp
+
+mpg123: alsa-lib audiofile bash dbus DirectFB esound flac gcc gdbm glibc json-c libcap libogg libsndfile libtool libtool-chroot libvorbis openal pulseaudio SDL util-linux Xorg
+
+MPlayer: a52dec alsa-lib bash DirectFB esound faac faad2 ffmpeg fontconfig freetype fribidi glibc gsm jpeg lame libass libbluray libcaca libcdio libcdio-cdda libdvdnav libdvdread libmad libmng libnut libogg libpng libtheora libungif lzo Mesa mpg123 ncurses openal pulseaudio rtmpdump samba SDL speex twolame x264 Xorg zlib
+
+mrouted: bash glibc
+
+mrtg: bash gd glibc libpng net-snmp perl zlib
+
+msamr: alsa-lib bash dbus ffmpeg flac gcc gdbm glew glibc gsm jpeg json-c libcap libdrm libogg libsndfile libsrtp libtheora libvorbis libvpx mediastreamer2 Mesa opencore-amr opus oRTP pulseaudio spandsp speex tiff util-linux v4l-utils Xorg xz zlib
+
+msilbc: alsa-lib bash dbus ffmpeg flac gcc gdbm glew glibc gsm jpeg json-c libcap libdrm libilbc libilbc-webrtc libogg libsndfile libsrtp libtheora libvorbis libvpx mediastreamer2 Mesa opus oRTP pulseaudio spandsp speex tiff util-linux v4l-utils Xorg xz zlib
+
+mssilk: alsa-lib bash dbus ffmpeg flac gcc gdbm glew glibc gsm jpeg json-c libcap libdrm libogg libsndfile libsrtp libtheora libvorbis libvpx mediastreamer2 Mesa opus oRTP pulseaudio spandsp speex tiff util-linux v4l-utils Xorg xz zlib
+
+msx264: alsa-lib bash dbus ffmpeg flac gcc gdbm glew glibc gsm jpeg json-c libcap libdrm libogg libsndfile libsrtp libtheora libvorbis libvpx mediastreamer2 Mesa opus oRTP pulseaudio spandsp speex tiff util-linux v4l-utils x264 Xorg xz zlib
+
+mtdev: bash glibc
+
+mtools: bash glibc Xorg
+
+mt-st: bash glibc
+
+mysql: bash gcc glibc mod_perl ncurses perl perl-modules zlib
+
+mysql-cluster: 
+
+nano: bash file glibc ncursesw
+
+nasm: bash glibc
+
+ncurses: bash glibc
+
+ncursesw: bash glibc
+
+neon: bash e2fsprogs expat glibc krb5 openssl zlib
+
+netatalk: acl attr avahi avahi-nogui bash coreutils cyrus-sasl db dbus dbus-glib e2fsprogs gcc glib glibc gmp gnutls krb5 libaudit libffi libgcrypt libgpg-error libprelude libtasn1 libtirpc libtool libtool-chroot Linux-PAM nettle openldap openssl p11-kit perl selinux trousers zlib
+
+net-snmp: bash db elfutils glibc libnl-1 net-snmp-perl nss openssl pciutils perl perl-modules popt rpm xz zlib
+
+net-snmp-perl: bash glibc mod_perl net-snmp openssl perl
+
+net-snmp-python: bash glibc net-snmp openssl Python
+
+nettle: bash glibc gmp
+
+net-tools: bash glibc selinux
+
+newt: bash glibc popt Python slang tcl8
+
+nfacct: bash glibc libmnl libnetfilter_acct
+
+nfs4-acl-tools: attr bash glibc
+
+nfs-utils: bash coreutils e2fsprogs glibc keyutils krb5 libcap libevent libnfsidmap libtirpc LVM2 Python sqlite-autoconf util-linux
+
+nmap: apr bash coreutils gcc glibc libnl-1 libpcap libusb openssl pcre Python subversion
+
+noip: bash glibc
+
+notify-python: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libnotify libpng pango Python selinux Xorg zlib
+
+nspr: bash glibc perl
+
+nss: bash glibc nspr perl sqlite-autoconf zlib
+
+nss_ldap: bash cyrus-sasl e2fsprogs glibc krb5 libtool libtool-chroot openldap openssl
+
+nss-mdns: bash glibc
+
+ntfs-3g: bash glibc util-linux
+
+ntp: bash db elfutils glibc libcap libnl-1 net-snmp nss openssl pciutils perl popt rpm xz zlib
+
+nut: bash e2fsprogs expat fontconfig freetype gd glibc jpeg krb5 libpng libtool libtool-chroot libusb libusb-compat libvpx neon net-snmp openssl tiff Xorg xz zlib
+
+omniORB: bash coreutils gcc glibc Python
+
+onig: bash glibc
+
+openal: bash glibc
+
+opencore-amr: bash glibc
+
+OpenCV: bash gcc glib glibc gst-plugins-base gstreamer libdc1394 libxml2 tiff v4l-utils zlib
+
+openexr: bash gcc glibc ilmbase zlib
+
+openexr_ctl: bash CTL gcc glibc ilmbase openexr zlib
+
+openexr_viewers: bash CTL expat fltk fontconfig freetype gcc glibc glu ilmbase libdrm Mesa openexr openexr_ctl Xorg zlib
+
+openjade: bash gcc glibc OpenSP
+
+openjpeg: bash glibc tiff xz zlib
+
+openjpeg1: bash glibc tiff xz zlib
+
+openl2tp: bash flex glibc libtirpc ncursesw portablexdr readline
+
+openldap: bash cyrus-sasl db glibc icu libiodbc libtool libtool-chroot openslp openssl util-linux
+
+openr2: 
+
+opensips: bash c-ares curl db expat freeradius-client glibc json-c libidn libmemcached libmicrohttpd libnl-1 libxml2 lksctp-tools mysql ncurses net-snmp openldap openssl pciutils pcre perl perl-modules postgresql Python rpm rtmpdump unixODBC zlib
+
+openslp: bash glibc openssl
+
+OpenSP: bash gcc glibc
+
+openssh: bash glibc Linux-PAM openssl zlib
+
+openssl: bash glibc perl perl-modules
+
+openssl-0.9.8: 
+
+openvpn: bash glibc gmp gnutls libaudit libgcrypt libgpg-error libprelude libtasn1 libtool libtool-chroot Linux-PAM lzo nettle openssl p11-kit trousers zlib
+
+opus: bash glibc
+
+ORBit2: bash glib glibc libffi libIDL
+
+orc: bash glibc
+
+oRTP: bash glibc libsrtp
+
+p11-kit: bash glibc libtasn1
+
+p7zip: bash gcc glibc
+
+pam_ldap: bash cyrus-sasl glibc libtool libtool-chroot Linux-PAM openldap openssl
+
+pango: bash cairo expat fontconfig freetype glib glibc graphite2 harfbuzz libffi libpng Xorg zlib
+
+pangox-compat: bash glib glibc libffi pango Xorg
+
+paps: bash expat fontconfig freetype glib glibc graphite2 harfbuzz libffi pango zlib
+
+parted: bash glibc LVM2 ncurses readline util-linux
+
+patch: attr bash glibc
+
+pciutils: bash glibc zlib
+
+pcre: bash gcc glibc
+
+pcsc-lite: bash glibc pcre Python systemd
+
+PDFlib-Lite: bash glibc
+
+perl: bash gdbm glibc mod_perl mrtg perl-modules
+
+perl-modules: bash c-ares coreutils curl db expat gcc glibc krb5 libidn mod_perl mrtg ncurses openldap openssl perl rtmpdump unixODBC zlib
+
+pgpool2: bash glibc gmp gnutls libaudit libgcrypt libgpg-error libprelude libtasn1 libtool libtool-chroot Linux-PAM nettle openssl p11-kit postgresql trousers zlib
+
+pgpool2-recovery: bash glibc
+
+phoon: bash glibc
+
+php-src: bash cairo c-ares curl cyrus-sasl expat fontconfig freetype gcc gdbm glib glibc gmp gnutls graphite2 harfbuzz icu imap jpeg libaudit libffi libgcrypt libgpg-error libidn libmcrypt libpng libprelude libtasn1 libtool libtool-chroot libxml2 Linux-PAM mysql nettle openldap openssl p11-kit pango postgresql rrdtool rtmpdump sqlite-autoconf trousers unixODBC Xorg xz zlib
+
+pidgin: atk avahi avahi-nogui bash cairo coreutils cyrus-sasl dbus dbus-glib enchant expat fontconfig freetype gcc gdk-pixbuf glib glibc gmp gnutls graphite2 gst-plugins-base gstreamer gtk+ gtkspell-2 harfbuzz libffi libidn libpng libtasn1 libxml2 mod_perl ncursesw nettle nspr nss openssl p11-kit pango perl Python selinux tcl8 tk8 trousers util-linux Xorg xz zlib
+
+pimd: bash glibc
+
+pine: bash glibc imap ncurses openssl
+
+pixman: 
+
+pkg-config: bash glib glibc
+
+ply: bash Python
+
+po4a: bash coreutils mod_perl mrtg perl
+
+polkit: bash expat glib glibc libffi Linux-PAM mozjs mozjs-17 selinux zlib
+
+polkit-gnome: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz libffi libpng pango polkit selinux Xorg zlib
+
+poppler: atk bash cairo c-ares curl cyrus-sasl expat fontconfig freetype gcc gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz jpeg lcms2 libffi libidn libpng libtool libtool-chroot openjpeg1 openldap openssl pango rtmpdump selinux tiff Xorg xz zlib
+
+poppler-data: bash
+
+popt: bash glibc
+
+portablexdr: bash glibc
+
+postgresql: bash e2fsprogs gcc glibc krb5 libxml2 Linux-PAM ncurses openldap openssl Python readline zlib
+
+ppp: bash glibc libpcap libusb libusb-compat
+
+printproto: bash
+
+procinfo-ng: bash gcc glibc ncurses
+
+procmail: bash glibc
+
+procps: bash glibc ncursesw
+
+proftpd: bash coreutils glibc gmp gnutls libaudit libcap libgcrypt libgpg-error libprelude libtasn1 libtool libtool-chroot Linux-PAM ncurses nettle openssl p11-kit perl perl-modules trousers zlib
+
+protobuf: bash gcc glibc zlib
+
+psmisc: bash glibc ncurses
+
+psqlodbc: bash glibc libtool libtool-chroot openssl postgresql unixODBC
+
+psutils: bash glibc perl
+
+pth: bash glibc
+
+ptlib: alsa-lib bash expat gcc glibc lua openldap openssl pulseaudio SDL unixODBC v4l-utils
+
+pubkey2ssh: bash glibc openssl
+
+pulseaudio: alsa-lib bash dbus dbus-glib flac gcc GConf gdbm glib glibc json-c libcap libffi libogg libsamplerate libsndfile libtool libtool-chroot libvorbis openssl ORBit2 orc pcre selinux speex systemd util-linux Xorg zlib
+
+py2cairo: bash cairo expat fontconfig freetype glibc libpng Python Xorg zlib
+
+pycairo: bash cairo glibc Python3
+
+pycups: bash cups glibc Python
+
+pycurl: bash c-ares coreutils curl glibc libidn openldap openssl Python rtmpdump zlib
+
+pygobject: bash cairo coreutils expat fontconfig freetype glib glibc gobject-introspection libffi libpng Python selinux Xorg zlib
+
+pygobject3: bash cairo expat fontconfig freetype glib glibc gobject-introspection libffi libpng Python3 selinux Xorg zlib
+
+pygtk: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libglade libpng libxml2 pango Python selinux Xorg xz zlib
+
+PyOpenGL: bash Python
+
+PyQt-x11: bash gcc glibc Python qt-4
+
+Pyrex: bash Python
+
+pysqlite: bash glibc Python sqlite-autoconf
+
+Python: bash coreutils gdbm glibc ncursesw openssl zlib
+
+Python3: bash coreutils gdbm glibc ncursesw openssl readline xz zlib
+
+python-notify: bash glibc Python
+
+qemu: atk bash cairo curl dtc fontconfig freetype gcc gdk-pixbuf glib glibc gnutls gtk+ jpeg libcap libcap-ng libpng Mesa ncurses nspr nss pango SDL util-linux vte Xorg zlib
+
+qpdf: bash coreutils gcc glibc mod_perl pcre perl zlib
+
+qt-4: alsa-lib bash fontconfig freetds freetype gcc glib glibc gst-plugins-base gstreamer jpeg libmng libpng libxml2 Mesa openssl postgresql pulseaudio sqlite-autoconf tiff unixODBC Xorg zlib
+
+qt-5: atk bash cairo coreutils dbus dbus-glib fontconfig freetype gcc gdk-pixbuf geoclue glib glibc gst-plugins-bad gst-plugins-base gstreamer gtk+ libxkbcommon libxml2 Mesa mod_perl mtdev mysql openal openssl pango perl postgresql pulseaudio sqlite-autoconf systemd tiff Xorg zlib
+
+qtcreator: bash gcc glibc Mesa perl qt-5
+
+quagga: bash glibc libcap ncurses readline
+
+quota-tools: bash glibc libtirpc
+
+radius: bash glibc libtool libtool-chroot ncurses readline
+
+radvd: bash glibc libdaemon
+
+ragel: bash gcc glibc
+
+re2: bash gcc glibc
+
+readline: bash glibc
+
+regex: 
+
+Remmina: atk bash cairo FreeRDP gdk-pixbuf glib glibc gnome-keyring gtk3 libgcrypt libssh libxkbfile pango pkg vte3 Xorg zlib
+
+reportlab: bash freetype glibc Python
+
+rhino: bash
+
+rpcbind: bash e2fsprogs glibc krb5 libtirpc
+
+rpm: bash db elfutils file glibc nss perl perl-modules popt Python xz zlib
+
+rp-pppoe: bash glibc libevent
+
+rrdtool: bash cairo expat fontconfig freetype glib glibc graphite2 harfbuzz libffi libpng libxml2 mod_perl pango perl Xorg xz zlib
+
+rsync: acl bash glibc popt
+
+rtmpdump: bash glibc openssl zlib
+
+rtorrent: bash c-ares curl cyrus-sasl gcc glibc libidn libsigcxx2 libtool libtool-chroot libtorrent ncursesw openldap openssl rtmpdump zlib
+
+ruby: bash coreutils db gdbm glibc libffi ncurses ncursesw openssl readline tcl8 tk8 Xorg yaml zlib
+
+samba: acl attr avahi avahi-nogui bash cups e2fsprogs glibc krb5 libcap libtirpc Linux-PAM ncurses openldap perl popt readline talloc tdb tevent util-linux zlib
+
+sane-backends: bash cups glibc jpeg libusb libusb-compat net-snmp openssl systemd tiff v4l-utils xz zlib
+
+schroedinger: bash gcc glibc orc
+
+scons: bash coreutils
+
+screen: bash elfutils glibc Linux-PAM ncurses
+
+scrollkeeper: bash glibc libxml2 libxslt xz zlib
+
+SDL: alsa-lib audiofile bash dbus DirectFB esound flac gcc gdbm glibc json-c libcap libogg libsndfile libvorbis pulseaudio util-linux Xorg
+
+SDL2: alsa-lib audiofile bash dbus esound flac gcc gdbm glibc json-c libcap libogg libsndfile libvorbis pulseaudio util-linux Xorg
+
+SDL2_image: alsa-lib audiofile bash dbus esound flac gcc gdbm glibc jpeg json-c libcap libogg libpng libsndfile libvorbis pulseaudio SDL2 tiff util-linux Xorg xz zlib
+
+SDL2_mixer: alsa-lib audiofile bash dbus esound flac gcc gdbm glibc json-c libcap libogg libsndfile libvorbis modplug pulseaudio SDL2 smpeg2 Xorg
+
+SDL2_net: alsa-lib audiofile bash dbus esound flac gcc gdbm glibc json-c libcap libogg libsndfile libvorbis pulseaudio SDL2 Xorg
+
+SDL_image: alsa-lib audiofile bash dbus DirectFB esound flac gcc gdbm glibc json-c libcap libogg libsndfile libvorbis pulseaudio SDL Xorg
+
+SDL_mixer: alsa-lib audiofile bash dbus DirectFB esound flac gcc gdbm glibc json-c libcap libogg libsndfile libvorbis pulseaudio SDL smpeg Xorg
+
+SDL_net: alsa-lib audiofile bash dbus DirectFB esound flac gcc gdbm glibc json-c libcap libogg libsndfile libvorbis pulseaudio SDL Xorg
+
+sdparm: bash glibc
+
+sed: acl bash glibc selinux
+
+selinux: bash glibc libaudit pcre Python ustr
+
+sendmail: bash
+
+setools: 
+
+setserial: bash glibc
+
+setuptools: bash Python
+
+shadow: 
+
+shared-mime-info: bash glib glibc libxml2 pkg
+
+sharutils: bash glibc
+
+simpletun: bash glibc
+
+sip: bash gcc glibc Python
+
+sipsak: bash c-ares glibc openssl
+
+slang: bash coreutils glibc libpng onig pcre zlib
+
+smpeg: alsa-lib audiofile bash dbus DirectFB esound flac gcc gdbm glibc glu json-c libcap libdrm libogg libsndfile libvorbis Mesa pulseaudio SDL Xorg
+
+smpeg2: alsa-lib audiofile bash dbus esound flac gcc gdbm glibc json-c libcap libogg libsndfile libvorbis pulseaudio SDL2 Xorg
+
+SOPE: bash gcc glibc gnustep-base libxml2 openldap openssl postgresql zlib
+
+sox: alsa-lib bash dbus file flac gcc gdbm glibc gsm json-c lame libao libcap libid3tag libmad libogg libpng libsndfile libtool libtool-chroot libvorbis opencore-amr pulseaudio twolame util-linux Xorg zlib
+
+spandsp: bash glibc jpeg pkg tiff xz zlib
+
+speex: bash glibc libogg
+
+sqlite-autoconf: bash glibc ncurses readline
+
+sqliteodbc: bash glibc libtool libtool-chroot libxml2 sqlite-autoconf unixODBC xz zlib
+
+squashfs: bash glibc lzo xz zlib
+
+squid: bash cyrus-sasl e2fsprogs gcc glibc krb5 libcap libmnl libnetfilter_conntrack libnfnetlink libtool libtool-chroot mod_perl mrtg openldap openssl perl perl-modules
+
+squidGuard: bash db glibc
+
+sshfs: bash fuse glib glibc
+
+startup-notification: bash glibc Xorg
+
+strace: bash glibc perl
+
+stun-c: bash glibc
+
+stund: bash gcc glibc
+
+subversion: apr apr-iconv apr-util bash cyrus-sasl db e2fsprogs expat file gcc glibc krb5 mod_perl neon openssl perl perl-modules Python sqlite-autoconf util-linux zlib
+
+sudo: bash glibc zlib
+
+swig: bash gcc glibc pcre zlib
+
+sysfsutils: bash glibc
+
+sysklogd: bash glibc
+
+syslinux: bash glibc perl perl-modules util-linux
+
+system-config-printer: bash Python
+
+systemd: acl attr bash cryptsetup dbus glib glibc gmp gnutls kmod libaudit libcap libffi libgcrypt libgpg-error libmicrohttpd libprelude libtasn1 libtool libtool-chroot Linux-PAM nettle openssl p11-kit pcre Python selinux trousers util-linux xz zlib
+
+sysvinit: bash glibc
+
+t1lib: bash glibc util-linux Xorg
+
+t38modem: bash expat gcc glibc h323plus lua openldap openssl ptlib SDL unixODBC
+
+taglib: bash gcc glibc zlib
+
+talloc: attr bash glibc Python
+
+tango-icon-theme: bash
+
+taploop: 
+
+tar: bash glibc
+
+tcl8: bash glibc
+
+tcpdump: bash glibc libpcap libusb openssl
+
+tcsh: bash glibc ncurses
+
+tdb: attr bash glibc Python
+
+teckit: bash expat gcc glibc zlib
+
+telepathy-glib: bash dbus dbus-glib glib glibc libffi selinux zlib
+
+Terminal: atk bash gdk-pixbuf glib glibc gtk+ libxfce4ui libxfce4util pango vte Xorg
+
+tevent: attr bash glibc Python talloc
+
+texinfo: bash glibc ncurses perl perl-modules texinfo-static
+
+texinfo-static: bash perl perl-modules texinfo
+
+texlive: bash cairo coreutils expat fontconfig freetype gcc gd ghostscript glibc graphite2 harfbuzz icu jpeg libpng libvpx mod_perl mrtg perl perl-modules poppler Python t1lib teckit texlive-boot tiff util-linux Xorg xz zlib zziplib
+
+texlive-boot: bash cairo coreutils expat fontconfig freetype gcc gd ghostscript glibc graphite2 harfbuzz icu jpeg libpng libvpx mod_perl mrtg perl perl-modules poppler Python t1lib teckit texlive tiff util-linux Xorg xz zlib zziplib
+
+tftp-hpa: bash glibc
+
+Thunar: atk bash cairo dbus dbus-glib exo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libexif libffi libnotify libpng libxfce4ui libxfce4util pango pcre selinux startup-notification systemd util-linux xfce4-panel xfconf Xorg zlib
+
+thunar-volman: bash exo glib glibc gtk+ libnotify libxfce4ui libxfce4util pango systemd xfconf
+
+thunderbird: 
+
+tiff: bash freeglut gcc glibc glu jpeg libdrm Mesa Xorg xz zlib
+
+tigervnc: 
+
+TiMidity: bash glibc
+
+tinyxml: bash gcc glibc
+
+tk8: bash glibc tcl8 Xorg
+
+tnef: bash glibc
+
+tomcat: bash
+
+Transmission: atk bash cairo c-ares curl cyrus-sasl expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz libevent libffi libidn libpng libtool libtool-chroot openldap openssl pango rtmpdump selinux systemd Xorg zlib
+
+trousers: bash glibc openssl
+
+tumbler: bash boost cairo c-ares curl cyrus-sasl dbus dbus-glib expat ffmpeg ffmpegthumbnailer fontconfig freetype gcc gdk-pixbuf glib glibc gst-plugins-base-1 gstreamer-1 jpeg lcms2 libffi libgsf libidn libopenraw libpng libtool libtool-chroot libxml2 openjpeg1 openldap openssl poppler rtmpdump selinux tiff Xorg xz zlib
+
+twolame: bash flac gcc glibc libogg libsndfile libvorbis
+
+txt2man: bash
+
+tzdata: bash
+
+u-boot: 
+
+ucblogo: bash gcc glibc ncurses wxWidgets Xorg
+
+ucl: bash glibc
+
+udev: 
+
+uhd: 
+
+uhttpmock: bash glib glibc libffi libsoup libxml2 selinux sqlite-autoconf xz zlib
+
+ulogd: bash glibc libmnl libnetfilter_acct libnetfilter_conntrack libnetfilter_log libnfnetlink libpcap mysql postgresql sqlite-autoconf zlib
+
+unifoundry: bash glibc perl
+
+unixODBC: bash glibc libtool libtool-chroot ncurses readline
+
+unrar: bash gcc glibc
+
+unzip: bash glibc
+
+upx: bash gcc glibc ucl zlib
+
+urlgrabber: bash Python
+
+usbhid-dump: bash glibc libusb
+
+usb-modeswitch: bash glibc libusb-compat tcl8
+
+usb-modeswitch-data: bash
+
+usbutils: bash coreutils glibc libusb pkg zlib
+
+ustr: bash glibc
+
+util-linux: bash glibc gmp gnutls libaudit libcap-ng libgcrypt libgpg-error libprelude libtasn1 libtool libtool-chroot Linux-PAM ncursesw nettle openssl p11-kit pcre selinux slang tcsh trousers zlib
+
+util-linux-static: bash tcsh
+
+utvideo: bash gcc glibc
+
+uudeview: bash glibc tcl8 tk8
+
+v4l-utils: bash gcc glibc jpeg qt-4
+
+v86d: bash glibc
+
+vala: bash glib glibc libffi pkg
+
+vala-bootstrap: bash glib glibc libffi pkg
+
+viewvc: bash Python
+
+vim: acl bash coreutils gawk gdk-pixbuf glib glibc gtk+ ncursesw pango perl selinux tcsh Xorg
+
+vlan: bash glibc
+
+vlc: a52dec alsa-lib atk audiofile avahi avahi-nogui bash cairo dbus dbus-glib dirac DirectFB esound expat faad2 ffmpeg flac fontconfig freeglut FreeRDP freetype fribidi gcc GConf gdbm gdk-pixbuf glib glibc glu gmp gnome-vfs gnutls graphite2 gtk+ harfbuzz jpeg json-c libass libavc1394 libbluray libcaca libcap libcddb libcroco libdc1394 libdrm libdvdnav libdvdread libffi libgcrypt libgpg-error libidn libkate libmad libmpeg2 libnotify libogg libpng libraw1394 librsvg libsamplerate libsndfile libtasn1 libtheora libusb libva LibVNCServer libvorbis libxml2 lua Mesa modplug ncursesw nettle OpenCV openssl opus ORBit2 orc p11-kit pango pcre pulseaudio qt-4 schroedinger SDL SDL_image selinux slang speex systemd taglib trousers twolame util-linux x264 Xorg xz zlib
+
+vo-aacenc: bash glibc
+
+vo-amrwbenc: bash glibc
+
+vte: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libpng ncurses pango Python selinux Xorg zlib
+
+vte3: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk3 harfbuzz libffi libpng ncurses pango selinux Xorg zlib
+
+watchdog: bash glibc libtirpc
+
+wayland: bash expat glibc libffi pkg
+
+webalizer: bash db gd glibc libpng zlib
+
+webkitgtk: atk bash cairo dbus dbus-glib enchant fontconfig freetype gcc gdk-pixbuf geoclue glib glibc gst-plugins-base-1 gstreamer-1 gtk+ gtk3 harfbuzz icu jpeg libffi libpng libsecret libsoup libwebp libxml2 libxslt Mesa pango selinux sqlite-autoconf Xorg zlib
+
+wget: bash glibc libidn openssl pcre util-linux zlib
+
+which: bash glibc
+
+wine: alsa-lib bash gcc gettext glib glibc glu gst-plugins-base gstreamer lcms2 libxml2 Mesa mpg123 openal openldap perl Xorg zlib
+
+wireless-regdb: bash
+
+wireless_tools: bash glibc
+
+wpa_supplicant: bash glibc libnl-1 ncurses openssl readline
+
+wv: bash glib glibc libffi libgsf libpng libxml2 selinux xz zlib
+
+wxWidgets: atk bash cairo expat fontconfig freetype gcc gdk-pixbuf glib glibc glu gst-plugins-base gstreamer gtk+ jpeg libnotify libpng libxml2 Mesa pango tiff Xorg zlib
+
+x264: bash glibc
+
+xavs: bash glibc
+
+Xaw3d: bash glibc util-linux Xorg
+
+xbmc: alsa-lib avahi avahi-nogui bash dbus expat ffmpeg freetype fribidi gcc glew glib glibc glu jasper jpeg libcap libcdio libgcrypt libgpg-error libmicrohttpd libpng libsamplerate libssh libva lzo Mesa mysql openssl pcre Python samba SDL SDL_image sqlite-autoconf systemd taglib tiff tinyxml Xorg yajl zlib
+
+xerces-c: bash c-ares curl cyrus-sasl gcc glibc icu libidn libtool libtool-chroot openldap openssl rtmpdump zlib
+
+xfce4-appfinder: bash dbus dbus-glib garcon gdk-pixbuf glib glibc gtk+ libxfce4ui libxfce4util xfconf
+
+xfce4-dev-tools: bash glib glibc
+
+xfce4-dict: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libpng libxfce4ui libxfce4util pango selinux startup-notification util-linux xfce4-panel Xorg zlib
+
+xfce4-icon-theme: bash
+
+xfce4-mixer: atk bash cairo dbus dbus-glib expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gst-plugins-base gstreamer gtk+ harfbuzz libffi libpng libunique libxfce4ui libxfce4util libxml2 pango selinux startup-notification util-linux xfce4-panel xfconf Xorg xz zlib
+
+xfce4-notifyd: 
+
+xfce4-panel: atk bash cairo dbus dbus-glib exo expat fontconfig freetype garcon gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libpng libwnck libxfce4ui libxfce4util pango selinux startup-notification util-linux xfconf Xorg zlib
+
+xfce4-session: atk bash cairo dbus dbus-glib expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libpng libwnck libxfce4ui libxfce4util pango polkit selinux startup-notification util-linux xfconf Xorg zlib
+
+xfce4-settings: bash cairo dbus dbus-glib exo fontconfig garcon gdk-pixbuf glib glibc gtk+ libnotify libxfce4ui libxfce4util libxklavier pango xfconf Xorg
+
+xfce4-taskmanager: atk bash cairo expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libpng libwnck pango selinux startup-notification Xorg zlib
+
+xfconf: bash dbus dbus-glib glib glibc libffi libxfce4util selinux zlib
+
+xfdesktop: atk bash cairo dbus dbus-glib exo expat fontconfig freetype garcon gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libnotify libpng libwnck libxfce4ui libxfce4util pango selinux startup-notification Thunar util-linux xfconf Xorg zlib
+
+xfwm4: atk bash cairo dbus dbus-glib expat fontconfig freetype gdk-pixbuf glib glibc graphite2 gtk+ harfbuzz libffi libpng libwnck libxfce4ui libxfce4util pango selinux startup-notification util-linux xfconf Xorg zlib
+
+xfwm4-themes: bash
+
+xmlcopyeditor: bash c-ares curl cyrus-sasl enchant expat gcc glib glibc icu libidn libtool libtool-chroot libxml2 libxslt openldap openssl pcre rtmpdump wxWidgets xerces-c xz zlib
+
+xmlto: bash glibc
+
+xmltoman: bash perl perl-modules
+
+Xorg: bash coreutils expat fontconfig freetype glibc gmp gnutls libaudit libdrm libgcrypt libgpg-error libpng libprelude libtasn1 libtool libtool-chroot libxkbfile Linux-PAM Mesa mksh mtdev nettle openssl p11-kit pcre systemd trousers util-linux zlib
+
+xorriso: acl attr bash glibc ncurses readline tk8 zlib
+
+xpdf: bash gcc glibc
+
+xterm: bash fontconfig glibc ncurses Xorg
+
+xvidcore: bash
+
+xz: bash glibc
+
+yajl: bash glibc pkg
+
+yaml: bash glibc
+
+yasm: bash glibc
+
+yelp: atk bash cairo dbus dbus-glib enchant expat fontconfig freetype gcc gdk-pixbuf geoclue glib glibc graphite2 gst-plugins-base-1 gstreamer-1 gtk3 harfbuzz icu jpeg libdrm libffi libgcrypt libgpg-error libpng libsecret libsoup libwebp libxml2 libxslt Mesa orc pango selinux sqlite-autoconf util-linux webkitgtk Xorg xz zlib
+
+yelp-tools: bash
+
+yelp-xsl: bash pkg
+
+yodl: bash glibc
+
+yum: bash Python
+
+yum-metadata-parser: bash glib glibc libxml2 Python sqlite-autoconf
+
+zip: bash glibc
+
+zlib: bash glibc
+
+zziplib: bash glibc zlib
+
