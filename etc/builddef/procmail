@@ -9,6 +9,7 @@ MAKEITARGETS="install-suid";
 GITBRANCH="master";
 if [ "${barch}" != "${NARCH}" ];then
   case ${barch} in
-    powerpc64|mips64)DONTBUILD="${barch}";
+    powerpc64)DONTBUILD="${barch}";;
+    mips64)CHROOTBUILD="1";;
   esac;
 fi;
