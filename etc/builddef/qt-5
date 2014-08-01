@@ -5,9 +5,4 @@ CONFOPT="-opensource -openssl-linked -confirm-license -prefix ${PREFIX} -v -syst
 NOCCOPT="1";
 BUILDDIR="0";
 DONTBUILD="powerpc";
-case ${barch} in
-  x86_64|x86_32|i[3-6]86)
-    case ${NARCH} in
-      x86_64|x86_32|i[3-6]86)CHROOTBUILD="1";;
-    esac;;
-esac;
+CHROOTBUILD="1";
