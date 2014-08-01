@@ -5,5 +5,4 @@ CONFOPT="--with-ffi-include=${ARCHROOT}/${barch}/usr/${B_LIBDIRS}/libffi-3.0.13/
 BUILDDIR="0";
 FIXUPLIB="1";
 CHROOTBUILD="1";
-DONTBUILD="arm64";
 ADDCFLAG="-I=/opt/mysql/include";
