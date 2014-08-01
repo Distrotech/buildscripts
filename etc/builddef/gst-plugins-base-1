@@ -2,6 +2,7 @@ VERSION="1.0.9"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-examples --enable-introspection=no";
+OPT_i686="ac_cv_header_xmmintrin_h=no ac_cv_header_emmintrin_h=no";
 ADDCFLAG="-I=/usr/include/gstreamer-1.0 -I=/usr/include/libxml2 -I=/usr/include/orc-0.4 -I=/usr/include/gnome-vfs-2.0
           -I=/usr/include/libvisual-0.4 -I=/usr/include/pango-1.0 -I=/usr/include/cairo -fPIC";
 LDISCC="1";
