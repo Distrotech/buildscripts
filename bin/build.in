@@ -334,8 +334,8 @@ check_java() {
       export JAVA_HOME="/usr/${NLIBDIR}/jvm/jre-${JAVA_VER}"
      elif [ -d /usr/lib/jvm/default-java ];then
       export JAVA_HOME="/usr/lib/jvm/default-java"
-#     else
-#      export JAVA_HOME=/usr/${NLIBDIR}/jvm/gcj-jdk
+     else
+      export JAVA_HOME=/usr/${NLIBDIR}/jvm/gcj-jdk
     fi;
     if [ "${JAVA_HOME}" ];then
       export PATH=${PATH}:${JAVA_HOME}/bin
@@ -465,7 +465,7 @@ check_create_arch() {
        [ ${KERN_HEADERS}/usr/include/linux -nt ${HDIR}/usr/include/linux ];then
       rsync -a --include=asm-${KARCH} --include=asm-generic --exclude=.install --exclude=..install.cmd \
                 --exclude=.check --exclude=..check.cmd \
-                --exclude=asm* ${KERN_HEADERS} ${HDIR}/usr/include/
+                --exclude=asm* ${KERN_HEADERS}/usr/include/ ${HDIR}/usr/include/
       touch ${HDIR}/usr/include/linux
       if [ -e ${HDIR}/usr/include/asm ];then
         rm -rf ${HDIR}/usr/include/asm
