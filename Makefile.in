@@ -334,6 +334,7 @@ libexec_SCRIPTS = \
 	libexec/make_iproute2 \
 	libexec/make_lsof \
 	libexec/make_openssl \
+	libexec/make_openssl-0.9.8 \
 	libexec/make_p7zip \
 	libexec/make_perl \
 	libexec/make_po4a \
