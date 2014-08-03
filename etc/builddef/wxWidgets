@@ -1,9 +1,10 @@
-VERSION="3.0.0"
+VERSION="3.0.2"
+GCC_VER="4.9.1";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 NOCCOPT="1";
 CLEARFLAGS="1";
-OPT_win32="--with-msw --enable-plugins --with-sdl --enable-official_build --with-libtiff COMPILER_VERSION=-4.8.2";
-OPT_win64="--with-msw --enable-plugins --with-sdl --enable-official_build --with-libtiff COMPILER_VERSION=-4.8.2";
-MAKEOPTS="COMPILER_VERSION=-4.8.2";
+OPT_win32="--with-msw --enable-plugins --with-sdl --enable-official_build --with-libtiff COMPILER_VERSION=-${GCC_VER}";
+OPT_win64="--with-msw --enable-plugins --with-sdl --enable-official_build --with-libtiff COMPILER_VERSION=-${GCC_VER}";
+MAKEOPTS="COMPILER_VERSION=-${GCC_VER}";
