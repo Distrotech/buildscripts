@@ -8,3 +8,6 @@ EXTRALIBS="-lrt";
 AMVER="1.12";
 NOSVNROOT="1";
 GITBRANCH="master";
+case ${barch} in
+  mips64)CHROOTBUILD="1";;
+esac;

@@ -3,5 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 case ${barch} in
-  powerpc*)CHROOTBUILD="1";;
+  mips64|powerpc*)CHROOTBUILD="1";;
 esac;

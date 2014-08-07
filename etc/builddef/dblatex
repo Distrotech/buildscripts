@@ -5,5 +5,5 @@ CONFOPT="";
 GITBRANCH="master";
 BUILDDIR="0";
 case ${barch} in
-  powerpc64)CHROOTBUILD="1";;
+  mips64|powerpc64)CHROOTBUILD="1";;
 esac;
