@@ -13,6 +13,7 @@ if [ "${barch:0:3}" == "win" ];then
   PREFIX="/usr";
 fi;
 OPT_x86_32="--enable-local-libopts";
+OPT_mips64="--disable-doc";
 ADDWITHSYSROOT="1";
 ADDCFLAG="-I=/${PREFIX}/include/p11-kit-1 -I=/${PREFIX}/include/guile/2.0 -I=${PREFIX}/include/evil-1";
 BUILDDIR="0";
