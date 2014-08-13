@@ -12,10 +12,9 @@ CONFOPT="--enable-static=no --with-config-file-path=/etc/php --with-openssl=shar
          --with-png-dir=shared --with-sqlite=shared --with-tiff-dir=shared --with-zlib-dir=shared --with-dbm=shared 
          --with-ldap-sasl=${ARCHROOT}/${barch}/usr --with-rrd=shared,${ARCHROOT}/${barch}/usr --with-pdo-sqlite=shared,${ARCHROOT}/${barch}/usr 
          --with-unixODBC=${ARCHROOT}/${barch}/usr --enable-sockets=shared --enable-pcntl=shared --with-dom=shared --with-iconv=shared 
-         --enable-zip --enable-intl --enable-mbregex --with-imap=shared,${ARCHROOT}/${barch}/usr FREETYPE2_DIR=${ARCHROOT}/${barch}/usr
-         --with-apxs2=${ARCHROOT}/${barch}/opt/apache2/bin/apxs";
+         --enable-zip --enable-intl --enable-mbregex --with-imap=shared,${ARCHROOT}/${barch}/usr --with-apxs2=${ARCHROOT}/${barch}/opt/apache2/bin/apxs";
 CLEARFLAGS="1";
-ADDCFLAG="-fPIC -I=/usr/include/sasl -I=/opt/mysql/include -I=/usr/include/freetype2";
+ADDCFLAG="-fPIC -I=/usr/include/sasl -I=/opt/mysql/include";
 ADDLDFLAG="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/usr/${C_LIBDIRS}";
 OPT_x86_64="--with-libdir=lib64";
 OPT_x86_32="--with-libdir=libx32 --disable-phar";
