@@ -7,6 +7,7 @@ FILTER_mips64="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)|(libevdev)
 FILTER_powerpc="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
 FILTER_powerpc64="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
 FILTER_cyg32="|(lib/libpciaccess)|(app/sessreg)";
+FILTER_i686="|(driver/xf86-video-v4l)|(driver/xf86-video-xgixp)|(driver/xf86-video-cirrus)|(driver/xf86-video-s3virge)|(driver/xf86-video-siliconmotion)|(driver/xf86-video-voodoo)";
 
 FILT=FILTER_${1}
 FILTER=${!FILT}
