@@ -1173,7 +1173,7 @@ build_project() {
            i[3-6]86|x86_64)SETARCH="setarch ${NEWARCH}";;
          esac;;
      esac;
-     if [ -d ${ARCHROOT}/${NEWARCH}/usr/bin/hybrid ];then
+     if [ -d ${ARCHROOT}/${NEWARCH}/usr/bin/hybrid ] && [ -e /proc/sys/fs/binfmt_misc/${NEWARCH} ];then
        if [ ! -e ${ARCHROOT}/${NEWARCH}/opt/dtsbuild/bin/hbuild ] || [ ${ARCHROOT}/${NEWARCH}/opt/dtsbuild/bin/build -nt ${ARCHROOT}/${NEWARCH}/opt/dtsbuild/bin/hbuild ];then
          sed -e 's/\(^#!\/bin\/\)bash$/\1\/hybrid\/bash/' ${ARCHROOT}/${NEWARCH}/opt/dtsbuild/bin/build > ${ARCHROOT}/${NEWARCH}/opt/dtsbuild/bin/hbuild
          chmod 750 ${ARCHROOT}/${NEWARCH}/opt/dtsbuild/bin/hbuild
