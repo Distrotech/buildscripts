@@ -5,7 +5,10 @@ if [ ! "${1}" ];then
   exit 1
 fi;
 
+if [ -h /var/opt/dtsbuild/sysroot/${1}/${mntdir} ];then
+  exit;
+fi;
 
-for mntdir in proc dev/pts dev sys @BUILDDIR@ @SRVDIRTAR@;do
-  umount @ARCHROOT@/${1}/${mntdir} || echo "Unmount ${mntdir} failed"
+for mntdir in proc/sys/fs/binfmt_misc proc dev/pts dev sys @BUILDDIR@ @SRVDIRTAR@;do
+  umount @ARCHROOT@/${1}/${mntdir}
 done
