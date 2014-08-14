@@ -1531,6 +1531,10 @@ build_project() {
     libtool finish ${DIST_ROOT}${libdir}/${C_LIBDIRS}
   fi;
 
+  if [ "${LIBDIRPRE}" ] && [ -d ${DIST_ROOT}/${PREFIX}/${C_LIBDIRS}/${LIBDIRPRE}/pkgconfig ];then
+    mv ${DIST_ROOT}/${PREFIX}/${C_LIBDIRS}/${LIBDIRPRE}/pkgconfig ${DIST_ROOT}/${PREFIX}/${C_LIBDIRS}/pkgconfig
+  fi;
+
   if [ -d ${DIST_ROOT}${ARCHROOT}/${ORIGARCH} ];then
     rsync -avP ${DIST_ROOT}${ARCHROOT}/${ORIGARCH}/ ${DIST_ROOT}/ && rm -rf ${DIST_ROOT}${ARCHROOT}
   fi;
