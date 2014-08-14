@@ -261,7 +261,7 @@ dialog_config() {
 mnt_archroot() {
   BINDFS="mount --bind";
 
-  if [ "${1}" != "${NARCH}" ];then
+  if [ "${1}" != "${NARCH}" ] || [ ! -h ${ARCHROOT}/${1} ];then
     if [ ! -d ${ARCHROOT}/${1}/${PKGDISTDIR}/${1} ];then
       if [ ! -d ${ARCHROOT}/${1}/${PKGDISTDIR} ];then
         mkdir -p ${ARCHROOT}/${1}/${PKGDISTDIR}
