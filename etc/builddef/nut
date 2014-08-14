@@ -6,5 +6,5 @@ CONFOPT="--with-all --with-cgi --without-avahi --without-powerman --without-ipmi
 ADDCFLAG="-I=/usr/include/neon";
 EXTRALIBS="-lgd -lpng";
 case ${barch} in
-        mips*|arm*|powerpc*)CHROOTBUILD="1";;
+        mips*|arm*|powerpc*|i[3-6]86|x86_32|x86_64)CHROOTBUILD="1";;
 esac;

@@ -4,3 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 RPMPROVIDES_libs="libdjvulibre.so.21()${ARCH_BITS}";
+case ${barch} in
+        i[3-6]86|x86_32|x86_64)CHROOTBUILD="1";;
+esac;
