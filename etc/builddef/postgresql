@@ -11,6 +11,6 @@ OPT_powerpc="--disable-thread-safety";
 NOCCOPT="1";
 EXTRALIBS="-shared-libgcc -lz -llber -lsasl2 -lrt -llzma -lpthread -lkrb5 -lkrb5support -lk5crypto -lcom_err -lresolv -ldl -lltdl -lutil -lldap_r";
 BUILDDIR="0";
-ADDCFLAG="-fPIC -I=/usr/include/python2.7 -I=/usr/lib/perl5/5.16.2/${HOST}-thread-multi/CORE";
-ADDLDFLAG="-L=/usr/lib/perl5/5.16.2/${HOST}-thread-multi/CORE";
+ADDCFLAG="-fPIC -I=/usr/include/python2.7 -I=/usr/lib/perl5/5.18.2/${HOST}-thread-multi/CORE";
+ADDLDFLAG="-L=/usr/lib/perl5/5.18.2/${HOST}-thread-multi/CORE";
 CHROOTBUILD="1";
