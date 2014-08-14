@@ -2880,7 +2880,7 @@ build_dependancies() {
   fi;
 
   if [ "${1}" != "${NARCH}" ];then
-    build_packages ${1} gobject-introspection libdaemon avahi-nogui talloc tevent libevent libverto krb5-static krb5 cups ghostscript \
+    build_packages ${1} gobject-introspection libdaemon avahi-nogui talloc tevent libevent libverto krb5-static krb5 libpaper cups ghostscript \
       gs-fonts ijs libspectre cairo poppler atk gdk-pixbuf libvdpau setuptools mozjs mozjs-17 polkit libmicrohttpd LVM2 cryptsetup systemd libgusb \
       bash-completion colord || return 1
   fi;
