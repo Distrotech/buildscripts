@@ -3,6 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="PYTHON=${ARCHROOT}/${barch}/usr/bin/python --disable-gtktest";
 ADDCFLAG="-I=/usr/include/python2.7";
-case ${barch} in
-  mips*|arm|arm64|x86_32|powerpc64)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";
