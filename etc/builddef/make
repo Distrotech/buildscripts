@@ -7,6 +7,6 @@ OPT_win64="--without-guile";
 OPT_cyg32="--without-guile";
 OPT_cyg64="--without-guile";
 COREBUILD="1";
-if [ ! -e ${ARCHROOT}/${barch}/usr/${C_LIBDIRS} ];then
+if [ ! -d ${ARCHROOT}/${barch}/usr/include/guile ];then
   CONFOPT="${CONFOPT} --without-guile";
 fi;

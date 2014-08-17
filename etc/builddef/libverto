@@ -5,3 +5,6 @@ CONFOPT="";
 OPT_cyg32="--without-tevent";
 OPT_cyg64="--without-tevent";
 DONTBUILD="cyg32 cyg64";
+if [ ! -e ${ARCHROOT}/${barch}/usr/include/tevent.h ];then
+  CONFOPT="${CONFOPT} --without-tevent";
+fi;
