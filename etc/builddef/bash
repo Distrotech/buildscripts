@@ -12,3 +12,4 @@ COREBUILD="1";
 DONTBUILD="cyg32 cyg64";
 NOCCOPT="1";
 CLEARFLAGS="1";
+RPMPROVIDES_base="/usr/bin/bash";
