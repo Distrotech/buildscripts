@@ -1358,20 +1358,14 @@ build_project() {
   export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH} ${BASE_LIBPATH} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=/opt/xfce/include";
 
   if [ "${BOOTSTRAP}" == "0" ];then
-    if [ "${ORIGARCH}" == "${NARCH}" ];then
-      if [ ! -d /usr/bin/hybrid ] || [ ! -e /proc/sys/fs/binfmt_misc/${ORIGARCH} ];then
-        CC="/usr/bin/${HOST}-gcc";
-        CXX="/usr/bin/${HOST}-g++"
-        LD="/usr/bin/${HOST}-ld"
-       else
-        CC="/usr/bin/hybrid/${HOST}-gcc";
-        CXX="/usr/bin/hybrid/${HOST}-g++"
-        LD="/usr/bin/hybrid/${HOST}-ld"
-      fi;
+    if [ ! -d /usr/bin/hybrid ] || [ ! -e /proc/sys/fs/binfmt_misc/${ORIGARCH} ];then
+      CC="/usr/bin/${HOST}-gcc";
+      CXX="/usr/bin/${HOST}-g++"
+      LD="/usr/bin/${HOST}-ld"
      else
-       CC="/usr/bin/hybrid/${HOST}-gcc";
-       CXX="/usr/bin/hybrid/${HOST}-g++"
-       LD="/usr/bin/hybrid/${HOST}-ld"
+      CC="/usr/bin/hybrid/${HOST}-gcc";
+      CXX="/usr/bin/hybrid/${HOST}-g++"
+      LD="/usr/bin/hybrid/${HOST}-ld"
     fi;
    else
     CC="${HOST}-gcc";
