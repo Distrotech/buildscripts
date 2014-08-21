@@ -19,5 +19,5 @@ ADDCFLAG="-I=/${PREFIX}/include/p11-kit-1 -I=/${PREFIX}/include/guile/2.0 -I=${P
 BUILDDIR="0";
 AMVER="1.14";
 case ${barch} in
-	mips64|arm*|x86_*|i[3-6]86|powerpc64)CHROOTBUILD="1";;
+	mips64|arm*|powerpc64)CHROOTBUILD="1";;
 esac;
