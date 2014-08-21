@@ -204,6 +204,35 @@ pkg2rpm() {
         echo -- ${pfile}
       fi;
 
+      case ${1} in
+        x86_64)MLIBARCH="i686 x86_32";
+               MLIBDIR="lib* usr/lib*";;
+        x86_32)MLIBARCH="i686 x86_64";
+               MLIBDIR="lib* usr/lib*";;
+        *)MLIBARCH="";;
+      esac;
+
+      if [ "${2}" == "glibc" ] || [ "${2}" == "zlib" ];then
+        if [ "${MLIBARCH}" ];then
+          if [ "${xpkg}" == "-libs" ] || [ "${xpkg}" == "-dbg" ];then
+            for glibc_arch in ${MLIBARCH};do
+              MLIBTAR=${PKGDISTDIR}/${glibc_arch}/${PNAME}/${PNAME}${xpkg}.tar.xz
+              case ${glibc_arch} in
+                x86_32)MLIBDIR="libx32";;
+                *64)MLIBDIR="lib64";;
+                *)MLIBDIR="lib";;
+              esac;
+              if [ "${2}" == "glibc" ];then
+                MLIBDIR="${MLIBDIR} usr/${MLIBDIR}";
+               else
+                MLIBDIR="usr/${MLIBDIR}";
+              fi;
+              tar -C ${RPMROOTDIR} -xf ${MLIBTAR} ${MLIBDIR}
+            done;
+          fi;
+        fi;
+      fi;
+
       if [ "${RPMREMOVE}" ];then
         for rpm_todel in ${RPMREMOVE};do
           if [ -e ${RPMROOTDIR}${rpm_todel} ];then
