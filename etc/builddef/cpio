@@ -1,4 +1,4 @@
-VERSION="2.11"
+VERSION="2.11.90"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-rmt=/usr/libexec/rmt";

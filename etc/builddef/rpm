@@ -1,4 +1,4 @@
-VERSION="4.11.3"
+VERSION="4.11.90"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT=" --with-external-db --without-lua --enable-python";
@@ -6,3 +6,4 @@ BUILDDIR="0";
 ADDCFLAG="-I=/usr/include/nspr -I=/usr/include/nss -I=/usr/include/libdwarf";
 CHROOTBUILD="1";
 MAKE_J="-j1";
+RPMPROVIDES_libs="librpmsign.so.1()${ARCH_BITS}";
