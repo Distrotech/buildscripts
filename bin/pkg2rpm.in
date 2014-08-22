@@ -214,20 +214,30 @@ pkg2rpm() {
 
       if [ "${2}" == "glibc" ] || [ "${2}" == "zlib" ];then
         if [ "${MLIBARCH}" ];then
-          if [ "${xpkg}" == "-libs" ] || [ "${xpkg}" == "-dbg" ];then
+          if [ "${xpkg}" == "-libs" ] || [ "${xpkg}" == "-dbg" ] || [ "${xpkg}" == "-dev" ];then
             for glibc_arch in ${MLIBARCH};do
               MLIBTAR=${PKGDISTDIR}/${glibc_arch}/${PNAME}/${PNAME}${xpkg}.tar.xz
               case ${glibc_arch} in
-                x86_32)MLIBDIR="libx32";;
-                *64)MLIBDIR="lib64";;
-                *)MLIBDIR="lib";;
+                x86_32)AMLIBDIR="libx32";;
+                *64)AMLIBDIR="lib64";;
+                *)AMLIBDIR="lib";;
               esac;
               if [ "${2}" == "glibc" ];then
-                MLIBDIR="${MLIBDIR} usr/${MLIBDIR}";
-               else
-                MLIBDIR="usr/${MLIBDIR}";
+                MLIBDIR="${AMLIBDIR} ";
+                if [ "${xpkg}" == "-dev" ];then
+                  case ${1} in
+                    x86_64)STUB="64";;
+                    x86_32)STUB="x32";;
+                    i[3-6]86)STUB="32";;
+                  esac;
+                  MLIBDIR="${MLIBDIR}usr/include/gnu/stubs-${STUB}.h ";
+                fi;
               fi;
+              MLIBDIR="${MLIBDIR}usr/${AMLIBDIR}";
               tar -C ${RPMROOTDIR} -xf ${MLIBTAR} ${MLIBDIR}
+              if [ "${2}" == "zlib" ];then
+                rm usr/${AMLIBDIR}/libz.so
+              fi;
             done;
           fi;
         fi;
