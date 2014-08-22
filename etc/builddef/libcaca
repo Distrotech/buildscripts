@@ -2,6 +2,7 @@ VERSION="0.99.beta18"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-csharp --disable-doc";
+OPT_x86_32="--disable-java";
 OPT_mips="--disable-java";
 OPT_powerpc="--disable-java";
 OPT_powerpc64="--disable-java";
@@ -9,6 +10,4 @@ OPT_mips64="--disable-java";
 ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/pango-1.0 -I../../caca";
 SYSROOTFIXUP="0";
 ADDWITHSYSROOT="0";
-case ${barch} in
-  mips*|powerpc*|arm*|i686|x86_32|x86_64)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";
