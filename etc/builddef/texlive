@@ -1,4 +1,4 @@
-VERSION="20130529";
+VERSION="20140523";
 VERSEP="-";
 PREFIX="/opt/texlive";
 CONFOPT="--host=${HOST} --build=${BUILD}";
@@ -31,3 +31,4 @@ RPMPROVIDES="perl(Pedigree) perl(TeXLive::TLConfFile) perl(TeXLive::TLConfig) pe
 case ${barch} in
   powerpc64|mips64)CHROOTBUILD="1";;
 esac;
+MAKEOPTS="HOST_CC=${HOST}-gcc";

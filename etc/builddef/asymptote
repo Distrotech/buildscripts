@@ -1,4 +1,4 @@
-VERSION="20130529";
+VERSION="20140523";
 VERSEP="-";
 PREFIX="/opt/texlive";
 STDOPTS="--prefix=${PREFIX} --datarootdir=${PREFIX}/texmf-dist --infodir=${PREFIX}/texmf-dist/doc/info --mandir=${PREFIX}/texmf-dist/doc/man
