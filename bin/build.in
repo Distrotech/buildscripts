@@ -1710,9 +1710,9 @@ build_glibc() {
   #building without gcc do so without SSP
   if [ ! -x /usr/bin/${2}-g++ ] && [ "${BOOTSTRAP}" == "0" ];then
     #dont build we are stuck on rerun ??
-    if [ "${1}" == "${NARCH}" ] && [ -e /${NLIBDIR}/libc.so.6 ];then
+    if [ "${1}" == "${NARCH}" ] && [ -e /usr/${NLIBDIR}/libc_nonshared.a ];then
       return 0;
-     elif [ "${1}" != "${NARCH}" ] && [ -e ${ARCHROOT}/${NLIBDIR}/libc.so.6 ];then
+     elif [ "${1}" != "${NARCH}" ] && [ -e ${ARCHROOT}/usr/${NLIBDIR}/libc_nonshared.a ];then
       return 0;
     fi;
     build_project glibc ${1} libc_cv_ssp=no
@@ -2051,7 +2051,11 @@ build_gcc_bootstrap() {
     GCCBOOTDEST=${PKGDESTDIR}/${TARCH}/${1}/${TARGPKG}
     PROGPRE="--program-prefix=${2}-";
   fi;
-  USELIBDIR=${TLIBDIR}
+  if [ "${4}" != "cross" ];then
+    USELIBDIR=${TLIBDIR}
+   else
+    USELIBDIR=${B_LIBDIRS}
+  fi;
 
   if [ -d ${GCCBOOTDEST} ] && [ -e /usr/bin/${2}-gcc ];then
     return;
@@ -2077,7 +2081,7 @@ build_gcc_bootstrap() {
   SRDIR=${BASEROOT}/${1}
   if [ -d ${PKGDESTDIR}/${1}/${GLIBC}/usr/include ] && [ -d ${SRDIR}/usr/include/linux ] &&
      [ "${4}" == "static" ];then
-    if [ -e ${ARCHROOT}/${1}/usr/${B_LIBDIRS}/libc.so ];then
+    if [ -e ${ARCHROOT}/${1}/usr/${B_LIBDIRS}/libc_nonshared.a ];then
       if [ "${1}" == "${3}" ];then
         BUILDDIR=/
        else
@@ -2480,7 +2484,7 @@ setup_hybrid_boot() {
       mount --bind ${ARCHROOT}/${1}/${B_LIBDIRS} /usr/gnemul/qemu-${QCPU}/${B_LIBDIRS}
     fi;
 
-    if [ ! -e /usr/gnemul/qemu-${QCPU}/usr/${B_LIBDIRS}/libc.so ];then
+    if [ ! -e /usr/gnemul/qemu-${QCPU}/usr/${B_LIBDIRS}/libc_nonshared.a ];then
       mount --bind ${ARCHROOT}/${1}/usr/${B_LIBDIRS} /usr/gnemul/qemu-${QCPU}/usr/${B_LIBDIRS}
     fi;
 
@@ -2808,7 +2812,7 @@ build_glibc_march() {
            (bootstrap_arch_root ${NARCH}) || return 1
            (bootstrap_arch_root powerpc powerpc64) || return 1;
            if [ -d ${ARCHROOT}/${1} ] && [ -e ${STATDIR}/powerpc/done/glibc ] && \
-              [ ! -e ${ARCHROOT}/${1}/usr/lib/libc.so ];then
+              [ ! -e ${ARCHROOT}/${1}/usr/lib/libc_nonshared.a ];then
              rm ${STATDIR}/powerpc/done/glibc
            fi;
            (build_glibc powerpc powerpc-linux-gnu) || return 1
@@ -2820,7 +2824,7 @@ build_glibc_march() {
            (bootstrap_arch_root ${NARCH}) || return 1
            (bootstrap_arch_root mips mips64) || return 1;
            if [ -d ${ARCHROOT}/${1} ] && [ -e ${STATDIR}/mips/done/glibc ] && \
-              [ ! -e ${ARCHROOT}/${1}/lib/libc.so.6 ];then
+              [ ! -e ${ARCHROOT}/${1}/lib/libc_nonshared.a ];then
              rm ${STATDIR}/mips/done/glibc
            fi;
            (build_glibc mips mips-linux-gnu) || return 1
