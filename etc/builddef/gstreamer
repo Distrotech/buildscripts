@@ -9,3 +9,4 @@ CLEARFLAGS="1";
 EXTRALIBS="-lm -lz -llzma";
 OPT_arm="--enable-introspection=no";
 CHROOTBUILD="1";
+RPMGROUP="root";

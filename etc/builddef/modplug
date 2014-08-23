@@ -5,3 +5,4 @@ CONFOPT="";
 CFGPTH="libmodplug";
 CFGBIN="libmodplug/";
 CHROOTBUILD="1";
+RPMGROUP="core";

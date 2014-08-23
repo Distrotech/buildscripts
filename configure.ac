@@ -72,6 +72,7 @@ AC_CONFIG_FILES([
   bin/pkg2rpm
   bin/umount-arch
   bin/mkkern
+  bin/mkgroups
   etc/yum_repo.conf
   lsb/lsb-release
   libexec/make_sip

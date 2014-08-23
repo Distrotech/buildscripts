@@ -24,3 +24,4 @@ MLIBDIRLN="libc.a libc.so libc_nonshared.a libm.so libm.a libdl.so libdl.a
 DONTBUILD="cyg32 cyg64";
 RPMPROVIDES_libs="libc.so.6(GLIBC_2.2.5)${ARCH_BITS} libpthread.so.0(GLIBC_2.2.5)${ARCH_BITS}
 	libm.so.6(GLIBC_2.2.5)${ARCH_BITS}"
+RPMGROUP="root";

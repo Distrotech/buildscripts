@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="--without-x";
 ADDWITHSYSROOT="1";
 AMVER="1.14";
+RPMGROUP="root";

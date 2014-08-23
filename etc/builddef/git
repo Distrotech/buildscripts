@@ -24,3 +24,4 @@ if which asciidoc >/dev/null 2>&1;then
   MAKEITARGETS="install-doc";
 fi;
 DONTBUILD="cyg32 cyg64";
+RPMGROUP="dev";

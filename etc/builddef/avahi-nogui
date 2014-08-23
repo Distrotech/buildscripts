@@ -10,3 +10,4 @@ GITREPO="avahi";
 CHROOTBUILD="1";
 DONTBUILD="cyg32 cyg64";
 ADDWITHSYSROOT="1";
+RPMGROUP="obsolete";

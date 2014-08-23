@@ -19,3 +19,4 @@ GITBRANCH="master";
 CHROOTBUILD="1";
 RPMPROVIDES_libs="libbind9.so.90()${ARCH_BITS} libdns.so.95()${ARCH_BITS} libisc.so.92()${ARCH_BITS}
 	libisccc.so.90()${ARCH_BITS} libisccfg.so.90()${ARCH_BITS} liblwres.so.90()${ARCH_BITS}";
+RPMGROUP="root";

@@ -5,3 +5,4 @@ PREFIX="/usr";
 CONFOPT="--program-suffix=${VERSEP}${VERSION}";
 AMVER="1.12";
 DONTBUILD="${barch}";
+RPMGROUP="dev";

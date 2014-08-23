@@ -10,3 +10,4 @@ GITBRANCH="master";
 case ${barch} in
   powerpc*|mips*)CHROOTBUILD=1;;
 esac;
+RPMGROUP="core";

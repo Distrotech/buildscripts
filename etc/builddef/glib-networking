@@ -11,3 +11,4 @@ ADDCFLAG="-I=${PREFIX}/lib/glib-2.0/include -I=${PREFIX}/include/glib-2.0/ -I=${
 #LDFLAGS="-L=/mingw/lib"
 NOCCOPT="1";
 CLEARFLAGS="1";
+RPMGROUP="core";

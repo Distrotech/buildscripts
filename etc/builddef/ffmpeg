@@ -58,3 +58,4 @@ NOTCONF="--enable-libilbc";
 FIXUPLIB="1";
 LDISCC="1";
 ADDCC="0";
+RPMGROUP="core";

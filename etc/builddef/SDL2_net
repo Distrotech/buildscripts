@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 ALIAS="SDL_net";
+RPMGROUP="gui";

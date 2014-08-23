@@ -7,3 +7,4 @@ ADDCFLAG="-I=/usr/include/nspr -I=/usr/include/nss -I=/usr/include/libdwarf";
 CHROOTBUILD="1";
 MAKE_J="-j1";
 RPMPROVIDES_libs="librpmsign.so.1()${ARCH_BITS}";
+RPMGROUP="root";

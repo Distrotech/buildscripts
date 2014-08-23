@@ -5,3 +5,4 @@ CONFOPT="";
 GITREPO="automake";
 GITBRANCH="distrotech-automake-1.10.3";
 RPMOBSOLETE_doc="automake-1.9";
+RPMGROUP="dev";

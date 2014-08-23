@@ -13,3 +13,4 @@ CFGBIN="tdb/"
 if [ "${barch}" != "arm64" ];then
   CHROOTBUILD="1";
 fi;
+RPMGROUP="root";

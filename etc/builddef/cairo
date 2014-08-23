@@ -23,3 +23,4 @@ if [ "${barch:0:3}" == "win" ];then
 fi;
 ADDWITHSYSROOT="1";
 ADDCFLAG="-ffat-lto-objects";
+RPMGROUP="root";

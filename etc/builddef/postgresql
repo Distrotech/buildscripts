@@ -14,3 +14,4 @@ BUILDDIR="0";
 ADDCFLAG="-fPIC -I=/usr/include/python2.7 -I=/usr/lib/perl5/5.18.2/${HOST}-thread-multi/CORE";
 ADDLDFLAG="-L=/usr/lib/perl5/5.18.2/${HOST}-thread-multi/CORE";
 CHROOTBUILD="1";
+RPMGROUP="root";

@@ -13,3 +13,4 @@ OPT_powerpc64="mr_cv_long_long_format_specifier=%lld";
 OPT_i686="mr_cv_long_long_format_specifier=%lld";
 OPT_x86_32="mr_cv_long_long_format_specifier=%lld";
 GITBRANCH="master";
+RPMGROUP="core";

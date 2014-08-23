@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="SHELLPROG=/bin/bash";
 CHROOTBUILD="1";
 ADDCFLAG="-I=/opt/mysql/include";
+RPMGROUP="core";

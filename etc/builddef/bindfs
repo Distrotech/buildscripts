@@ -6,3 +6,4 @@ ADDCFLAG="-I=/usr/include/fuse";
 BUILDDIR="0";
 AMVER="1.14";
 AUTORECONF="1";
+RPMGROUP="root";

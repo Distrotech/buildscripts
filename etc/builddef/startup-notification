@@ -2,3 +2,4 @@ VERSION="0.12"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="lf_cv_sane_realloc=yes";
+RPMGROUP="gui";

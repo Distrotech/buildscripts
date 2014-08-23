@@ -20,3 +20,4 @@ ADDCFLAG="-I=/usr/include/bind9";
 ADDLDFLAG="-L=/usr/lib/bind9";
 DISTCONF="dhclient.conf dhcpd.conf";
 GITBRANCH="master";
+RPMGROUP="core";

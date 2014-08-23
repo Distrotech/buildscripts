@@ -12,3 +12,4 @@ BUILDDIR="0";
 EXTRALIBS="-lpthread -lrt -ldl";
 ADDLDFLAG="${EXTRALIBS}";
 DONTBUILD="x86_32";
+RPMGROUP="gui";

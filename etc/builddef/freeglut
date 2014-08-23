@@ -5,3 +5,4 @@ CONFOPT="";
 LDISCC="0";
 CFGPTH="freeglut";
 CFGBIN="freeglut/";
+RPMGROUP="root";

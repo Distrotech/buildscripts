@@ -10,3 +10,4 @@ CONFOPT="-DCLANG_PATH_TO_LLVM_BUILD:PATH=${SRCDIR}/llvm/llvm-${LLVM_VERSION}/bui
 FIXUPLIB="1";
 ADDCFLAG="-I=/usr/include/libxml2";
 DONTBUILD="mips64";
+RPMGROUP="dev";

@@ -5,3 +5,4 @@ CONFOPT="";
 NOCCOPT="1";
 AMVER="1.9";
 GITBRANCH="master";
+RPMGROUP="dev";

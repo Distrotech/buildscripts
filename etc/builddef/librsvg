@@ -16,3 +16,4 @@ CLEARFLAGS="1";
 OPT_cyg32="--enable-introspection=no";
 OPT_arm64="--enable-introspection=${HASGIR}";
 ADDWITHSYSROOT="1";
+RPMGROUP="core";

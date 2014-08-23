@@ -21,3 +21,4 @@ GITBRANCH="master";
 DISTCONF="httpd/httpd.conf";
 SYSLAYOUT="1";
 CHROOTBUILD="1";
+RPMGROUP="core";

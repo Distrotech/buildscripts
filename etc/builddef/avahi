@@ -14,3 +14,4 @@ DONTBUILD="cyg32 cyg64";
 RPMOBSOLETE="avahi-nogui";
 QT_VER="4";
 ADDWITHSYSROOT="1";
+RPMGROUP="root";

@@ -7,3 +7,4 @@ FIXUPLIB="1";
 DONTBUILD="cyg32 cyg64";
 RPMPROVIDES_libs="libcap.so()${ARCH_BITS}";
 MLIBDIRLN="libcap.so";
+RPMGROUP="root";

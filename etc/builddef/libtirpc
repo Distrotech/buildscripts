@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 DONTBUILD="cyg32 cyg64";
 AUTORECONF="1";
+RPMGROUP="root";

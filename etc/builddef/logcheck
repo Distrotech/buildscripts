@@ -6,3 +6,4 @@ BUILDDIR="0";
 MAKEOPTS="SYSTYPE=linux";
 GITBRANCH="master";
 CHROOTBUILD="1";
+RPMGROUP="core";

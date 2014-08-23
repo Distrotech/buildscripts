@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-introspection=yes";
 CHROOTBUILD="1";
+RPMGROUP="gui";

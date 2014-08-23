@@ -5,3 +5,4 @@ CONFOPT="";
 CFGPTH="libical";
 CFGBIN="libical/";
 
+RPMGROUP="core";

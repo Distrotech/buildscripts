@@ -6,3 +6,4 @@ AMVER="1.14";
 NOCCOPT="1";
 ADDCC="0";
 CLEARFLAGS="1";
+RPMGROUP="core";

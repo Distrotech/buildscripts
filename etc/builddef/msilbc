@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 ADDLDFLAG="-L=/usr/${C_LIBDIRS}/ilbc";
+RPMGROUP="gui";

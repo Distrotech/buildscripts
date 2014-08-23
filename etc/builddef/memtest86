@@ -8,3 +8,4 @@ ADDCFLAG="-m32";
 ADDLDFLAG="-m elf_i386";
 LDISCC="0";
 DONTBUILD="arm arm64 mips mips64 powerpc powerpc64";
+RPMGROUP="core";

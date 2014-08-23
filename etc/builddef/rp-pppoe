@@ -7,3 +7,4 @@ CFGPTH="/src/";
 CFGBIN="/src/";
 GITBRANCH="master";
 DISTCONF="ppp/pppoe-server-options";
+RPMGROUP="root";

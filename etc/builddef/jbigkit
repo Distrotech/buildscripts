@@ -6,3 +6,4 @@ GITBRANCH="master";
 BUILDDIR="0";
 MAKEOPTS="LIBDIR=${C_LIBDIRS}";
 ADDCFLAG="-I../libjbig -fPIC";
+RPMGROUP="core";

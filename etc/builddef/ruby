@@ -18,3 +18,4 @@ case ${barch} in
   powerpc64|mips64)CHROOTBUILD="1";;
 esac;
 COREBUILD="1";
+RPMGROUP="core";

@@ -5,3 +5,4 @@ CONFOPT="";
 if [ "${HASGIR}" == "no" ];then
   DONTBUILD="${barch}";
 fi;
+RPMGROUP="gui";

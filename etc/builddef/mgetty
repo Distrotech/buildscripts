@@ -9,3 +9,4 @@ DONTBUILD="arm64 mips64";
 case ${barch} in
   powerpc*|mips*)CHROOTBUILD="1";;
 esac;
+RPMGROUP="core";

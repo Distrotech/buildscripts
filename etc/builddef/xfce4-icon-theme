@@ -2,3 +2,4 @@ VERSION="4.4.3"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+RPMGROUP="gui";

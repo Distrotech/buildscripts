@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-gui";
 GITBRANCH="master";
+RPMGROUP="dev";

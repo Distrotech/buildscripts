@@ -17,3 +17,4 @@ RPMOBSOLETE="schroedinger";
 case ${barch} in
         mips*)CHROOTBUILD="1";;
 esac;
+RPMGROUP="core";

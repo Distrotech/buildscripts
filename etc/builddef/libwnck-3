@@ -9,3 +9,4 @@ ALIAS="libwnck";
 CHROOTBUILD="1";
 RPMOBSOLETE_base="libwnck";
 RPMOBSOLETE_dbg="libwnck";
+RPMGROUP="gui";

@@ -10,3 +10,4 @@ EXTRALIBS="-lm -lz -llzma";
 ALIAS="gstreamer";
 OPT_arm="--enable-introspection=no";
 CHROOTBUILD="1";
+RPMGROUP="core";

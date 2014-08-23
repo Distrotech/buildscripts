@@ -5,3 +5,4 @@ CONFOPT="--with-gpm --with-shared --disable-widec --without-progs --disable-over
 ADDCC="0";
 GITBRANCH="master";
 MLIBDIRLN="libncurses.so";
+RPMGROUP="root";

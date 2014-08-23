@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 FIXUPLIB="1";
 GITBRANCH="master";
+RPMGROUP="core";

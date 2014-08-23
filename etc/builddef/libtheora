@@ -6,3 +6,4 @@ ADDLDFLAG="-shared-libgcc";
 OPT_win32="OGG_LIBS=\"-L=/mingw/lib -logg\" VORBIS_LIBS=\"-L=/mingw/lib -logg -lvorbis\"";
 OPT_win64="OGG_LIBS=\"-L=/mingw/lib -logg\" VORBIS_LIBS=\"-L=/mingw/lib -logg -lvorbis\"";
 ADDWITHSYSROOT="1";
+RPMGROUP="root";

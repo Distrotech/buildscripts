@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 CHROOTBUILD="1";
+RPMGROUP="root";

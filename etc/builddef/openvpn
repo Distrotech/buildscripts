@@ -2,3 +2,4 @@ VERSION="2.3.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-shared";
+RPMGROUP="root";

@@ -6,3 +6,4 @@ CFGPTH="yodl";
 CFGBIN="yodl/";
 BUILDDIR="0";
 CHROOTBUILD="1";
+RPMGROUP="dev";

@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-fPIC";
 GITBRANCH="master";
+RPMGROUP="core";

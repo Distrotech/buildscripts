@@ -7,3 +7,4 @@ DONTBUILD="cyg32 cyg64";
 case ${barch} in
   powerpc64|mips64)CHROOTBUILD="1";;
 esac;
+RPMGROUP="core";

@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="${X11DIR}";
 CONFOPT="";
 AMVER="1.9";
+RPMGROUP="gui";

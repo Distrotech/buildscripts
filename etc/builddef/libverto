@@ -8,3 +8,4 @@ DONTBUILD="cyg32 cyg64";
 if [ ! -e ${ARCHROOT}/${barch}/usr/include/tevent.h ];then
   CONFOPT="${CONFOPT} --without-tevent";
 fi;
+RPMGROUP="root";

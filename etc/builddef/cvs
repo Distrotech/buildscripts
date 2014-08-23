@@ -6,3 +6,4 @@ BUILDDIR="0";
 AMVER="1.9";
 NOSVNROOT="1";
 GITBRANCH="master";
+RPMGROUP="dev";

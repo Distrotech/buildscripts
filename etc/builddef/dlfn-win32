@@ -9,3 +9,4 @@ if [ "${barch:0:3}" != "win" ];then
   DONTBUILD="${barch}";
 fi;
 BUILDDIR="0";
+RPMGROUP="dev";

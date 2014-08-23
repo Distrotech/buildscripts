@@ -6,3 +6,4 @@ BUILDDIR="0";
 FIXUPLIB="1";
 CHROOTBUILD="1";
 ADDCFLAG="-I=/opt/mysql/include";
+RPMGROUP="core";

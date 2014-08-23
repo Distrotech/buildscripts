@@ -6,3 +6,4 @@ BUILDDIR="0";
 ADDCFLAG="-fPIC";
 CFGPTH="xvidcore/build/generic";
 CFGBIN="generic/";
+RPMGROUP="core";

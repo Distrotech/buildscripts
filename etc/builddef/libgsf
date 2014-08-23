@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-I=/usr/include/libxml2 -I=/usr/include/gdk-pixbuf-2.0";
+RPMGROUP="gui";

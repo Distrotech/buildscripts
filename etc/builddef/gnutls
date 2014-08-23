@@ -21,3 +21,4 @@ AMVER="1.14";
 case ${barch} in
 	mips64|arm*|powerpc64)CHROOTBUILD="1";;
 esac;
+RPMGROUP="root";

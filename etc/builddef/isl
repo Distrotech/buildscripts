@@ -17,3 +17,4 @@ OPT_win64="--with-gmp-prefix=${ARCHROOT}/win64/mingw --with-isl-prefix=${ARCHROO
 if [ "${barch:0:3}" == "win" ];then
   ADDCFLAG="-O2";
 fi;
+RPMGROUP="dev";

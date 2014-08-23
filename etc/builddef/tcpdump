@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="--enable-ipv6";
 CONFOPTX="ac_cv_linux_vers=3 td_cv_buggygetaddrinfo=no";
 EXTRALIBS="-lusb-1.0 -lpthread -lrt";
+RPMGROUP="core";

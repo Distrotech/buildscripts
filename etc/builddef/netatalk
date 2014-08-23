@@ -6,3 +6,4 @@ CONFOPT="--enable-zeroconf --with-pic --enable-fhs --with-cnid-cdb-backend --wit
 FIXUPLIB="1";
 NOCROSS="1";
 CHROOTBUILD="1";
+RPMGROUP="core";

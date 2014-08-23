@@ -12,3 +12,4 @@ GITBRANCH="master";
 MOPT_win32="-f Makefile.win";
 MOPT_win64="-f Makefile.win";
 RPMPROVIDES_libs="libgsm.so()${ARCH_BITS}";
+RPMGROUP="core";

@@ -7,3 +7,4 @@ OPT_cyg32="--with-libiconv-prefix=${ARCHROOT}/${barch}/${PREFIX} --with-ldap=${A
 CLEARFLAGS="1";
 NOCCOPT="1";
 DONTBUILD="cyg32 cyg64";
+RPMGROUP="core";

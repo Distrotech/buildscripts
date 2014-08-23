@@ -8,3 +8,4 @@ XCCOPT="";
 FIXUPLIB="1";
 GITBRANCH="master";
 MLIBDIRLN="libc-client.so";
+RPMGROUP="core";

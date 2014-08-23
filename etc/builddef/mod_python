@@ -9,3 +9,4 @@ ADDCFLAG="-I=/usr/include/python2.7";
 CLEARFLAGS="1";
 CHROOTBUILD="1";
 DONTBUILD="powerpc";
+RPMGROUP="core";

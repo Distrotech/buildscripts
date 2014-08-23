@@ -18,3 +18,4 @@ AMVER="1.14";
 if [ "${barch}" == "powerpc64" ] && [ "${barch}" != "${NARCH}" ];then
   MAKEOPTS="${MAKEOPTS} HELP2MAN=true";
 fi;
+RPMGROUP="core";

@@ -12,3 +12,4 @@ OPT_powerpc="--disable-mono";
 OPT_powerpc64="--disable-mono";
 OPT_mips="--disable-mono";
 OPT_mips64="--disable-mono";
+RPMGROUP="gui";

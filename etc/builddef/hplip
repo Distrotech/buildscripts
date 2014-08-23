@@ -16,3 +16,4 @@ DISTCONF="sane.d/dll.conf";
 case ${barch} in
   powerpc*|mips64)CHROOTBUILD="1";;
 esac;
+RPMGROUP="gui";

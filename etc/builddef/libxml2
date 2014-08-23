@@ -23,3 +23,4 @@ case ${barch} in
   powerpc*|mips*)CHROOTBUILD="1";;
 esac;
 ADDCFLAG="-I=/usr/include/python2.7"
+RPMGROUP="root";

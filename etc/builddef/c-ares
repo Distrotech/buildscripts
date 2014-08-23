@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 CLEARFLAGS="1";
 MLIBDIRLN="libcares.so";
+RPMGROUP="root";

@@ -9,3 +9,4 @@ CLEARFLAGS="1";
 ALIAS="gst-plugins-bad";
 ADDRPTHLINK="1";
 CHROOTBUILD="1";
+RPMGROUP="core";

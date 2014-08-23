@@ -2,3 +2,4 @@ VERSION="4.9.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--includedir=/usr/include/pxdr";
+RPMGROUP="core";

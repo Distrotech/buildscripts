@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-std=gnu99";
 GITBRANCH="master";
+RPMGROUP="core";

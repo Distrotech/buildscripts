@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 RPMPROVIDES="perl(MailScanner::FileInto) perl(MailScanner::MCPMessage)";
+RPMGROUP="core";

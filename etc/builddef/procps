@@ -6,3 +6,4 @@ BUILDDIR="0";
 XLDISCC="0";
 FIXUPLIB="1";
 GITBRANCH="master";
+RPMGROUP="root";

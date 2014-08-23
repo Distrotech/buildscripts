@@ -2,3 +2,4 @@ VERSION="3.0.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-maintainer-mode";
+RPMGROUP="gui";

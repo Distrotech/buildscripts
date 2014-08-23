@@ -6,3 +6,4 @@ BUILDDIR="0";
 CFGPTH="java";
 CFGBIN="java/";
 ALIAS="libphonenumber";
+RPMGROUP="java";

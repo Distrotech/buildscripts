@@ -13,3 +13,4 @@ CONFOPT="PYTHON=${ARCHROOT}/${barch}/usr/bin/python2.7";
 DONTBUILD="cyg32 cyg64";
 CHROOTBUILD="1";
 SYSROOTFIXUP="0";
+RPMGROUP="core";

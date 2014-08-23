@@ -9,3 +9,4 @@ MAKEOPTS="FONTDIR=/usr/share/grubfont SHAREDIR=/usr/share/grubfont";
 NOMAKEFLAGS="1";
 CHROOTBUILD="1";
 DONTBUILD="arm arm64 mips mips64 powerpc powerpc64";
+RPMGROUP="core";

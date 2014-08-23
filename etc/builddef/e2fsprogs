@@ -4,3 +4,4 @@ PREFIX="/";
 CONFOPT="--enable-elf-shlibs --disable-libblkid --disable-libuuid --disable-uuidd --disable-fsck";
 FIXUPLIB="1";
 ADDCC="0";
+RPMGROUP="root";

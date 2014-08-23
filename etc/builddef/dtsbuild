@@ -6,3 +6,4 @@ STDOPTS="--prefix=/opt --with-dist-release=${LSB_VERSION} --with-dist-codename=s
 ALIAS="buildscripts";
 GITBRANCH="master";
 BUILDDIR="0";
+RPMGROUP="dev";

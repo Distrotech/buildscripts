@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 FIXUPLIB="1";
 RPMPROVIDES_libs="libtinyxml.so()${ARCH_BITS}";
+RPMGROUP="gui";

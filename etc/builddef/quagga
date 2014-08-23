@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="--enable-vtysh --enable-isisd --enable-user=daemon --enable-group=daemon";
 SYSCONFPRE="quagga";
 STATEDIRPRE="/run";
+RPMGROUP="core";

@@ -10,3 +10,4 @@ BUILDDIR="0";
 ADDCC="0";
 GITBRANCH="master";
 CHROOTBUILD="1";
+RPMGROUP="core";

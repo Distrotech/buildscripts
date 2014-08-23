@@ -17,3 +17,4 @@ if [ "${BUILDPROJECT}" == "libtool-chroot" ];then
  elif [ -e "${STATDIR}/${barch}/done/libtool" ];then
   DONTBUILD="${barch}";
 fi
+RPMGROUP="root";

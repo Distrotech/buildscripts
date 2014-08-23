@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 GITBRANCH="master";
 DONTBUILD="mips64 mips";
+RPMGROUP="core";

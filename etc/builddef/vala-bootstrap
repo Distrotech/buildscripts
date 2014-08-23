@@ -10,3 +10,4 @@ fi;
 if [ "${HASGIR}" == "no" ];then
   DONTBUILD="${barch}";
 fi;
+RPMGROUP="obsolete";

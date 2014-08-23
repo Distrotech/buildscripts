@@ -7,3 +7,4 @@ EXTRALIBS="-lltdl -lutil -lssl -lcrypto -ldl -lsasl2";
 AMVER="1.11";
 GITBRANCH="master";
 DISTCONF="ldap.conf";
+RPMGROUP="root";

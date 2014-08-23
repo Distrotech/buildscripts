@@ -5,3 +5,4 @@ CONFOPT="--datarootdir=/usr/share --enable-maintainer-mode";
 BUILDDIR="0";
 AMVER="1.14";
 NOMLIBDIR="1";
+RPMGROUP="gui";

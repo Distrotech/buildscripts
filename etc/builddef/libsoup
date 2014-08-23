@@ -7,3 +7,4 @@ CLEARFLAGS="1";
 CHROOTBUILD="1";
 OPT_win32="--disable-introspection";
 OPT_win64="--disable-introspection";
+RPMGROUP="core";

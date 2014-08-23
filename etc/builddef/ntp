@@ -12,3 +12,4 @@ OPT_powerpc64="--with-net-snmp-config=${ARCHROOT}/powerpc64/usr/bin/net-snmp-con
 OPT_x86_32="--with-net-snmp-config=${ARCHROOT}/x86_32/usr/bin/net-snmp-config";
 AMVER="1.11";
 GITBRANCH="master";
+RPMGROUP="root";

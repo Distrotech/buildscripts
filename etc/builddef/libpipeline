@@ -2,3 +2,4 @@ VERSION="1.2.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+RPMGROUP="core";

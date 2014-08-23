@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 AMVER="1.10";
 GITBRANCH="master";
+RPMGROUP="core";

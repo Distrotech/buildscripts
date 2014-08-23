@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 GITBRANCH="master";
 ADDCFLAG="-I=/usr/include/freetype2";
+RPMGROUP="obsolete";

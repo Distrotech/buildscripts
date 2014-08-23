@@ -7,3 +7,4 @@ NOMAKEFLAGS="1";
 MAKEOPTS="USRDIR=/usr";
 CHROOTBUILD="1";
 RPMOBSOLETE_doc="grub-fonts";
+RPMGROUP="dev";

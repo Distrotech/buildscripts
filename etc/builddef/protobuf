@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 DONTBUILD="x86_32 arm64 powerpc powerpc64 mips mips64";
+RPMGROUP="gui";

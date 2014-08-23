@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 ADDCFLAG="-I../include";
 DISTCONF="iproute2/ematch_map iproute2/rt_tables";
+RPMGROUP="root";

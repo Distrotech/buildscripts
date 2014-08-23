@@ -9,3 +9,4 @@ FIXUPLIB="1";
 ADDWITHSYSROOT="1";
 DONTBUILD="cyg32 cyg64";
 RPMPROVIDES_libs="libacl.so.1()${ARCH_BITS} libacl.so.1(ACL_1.0)${ARCH_BITS}";
+RPMGROUP="root";

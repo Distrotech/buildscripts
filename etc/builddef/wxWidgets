@@ -8,3 +8,4 @@ CLEARFLAGS="1";
 OPT_win32="--with-msw --enable-plugins --with-sdl --enable-official_build --with-libtiff COMPILER_VERSION=-${GCC_VER}";
 OPT_win64="--with-msw --enable-plugins --with-sdl --enable-official_build --with-libtiff COMPILER_VERSION=-${GCC_VER}";
 MAKEOPTS="COMPILER_VERSION=-${GCC_VER}";
+RPMGROUP="gui";

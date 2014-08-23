@@ -6,3 +6,4 @@ CFGPTH="/squashfs-tools/";
 CFGBIN="/squashfs-tools/";
 BUILDDIR="0";
 NOMAKEFLAGS="1";
+RPMGROUP="root";

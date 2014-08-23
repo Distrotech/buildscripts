@@ -6,3 +6,4 @@ BUILDDIR="0";
 STATICOPT="LDFLAGS=-static";
 COREBUILD="1";
 DONTBUILD="cyg32 cyg64";
+RPMGROUP="root";

@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 AMVER="1.10";
 CHROOTBUILD="1";
+RPMGROUP="core";

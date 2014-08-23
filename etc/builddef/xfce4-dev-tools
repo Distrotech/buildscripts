@@ -4,3 +4,4 @@ PREFIX="/opt/xfce";
 CONFOPT="--datarootdir=/usr/share";
 BUILDDIR="0";
 NOMLIBDIR="1";
+RPMGROUP="gui";

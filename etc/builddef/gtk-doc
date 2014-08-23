@@ -5,3 +5,4 @@ CONFOPT="";
 AMVER="1.13";
 CHROOTBUILD="1";
 RPMPROVIDES="perl(gtkdoc-common.pl)";
+RPMGROUP="dev";

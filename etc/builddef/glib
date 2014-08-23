@@ -55,3 +55,4 @@ OPT_powerpc64="glib_cv_stack_grows=no glib_cv_uscore=no ac_cv_func_posix_getpwui
 ADDWITHSYSROOT="1";
 ADDCFLAG="-I=${PREFIX}/lib/libffi-3.0.13/include";
 COREBUILD="1";
+RPMGROUP="root";

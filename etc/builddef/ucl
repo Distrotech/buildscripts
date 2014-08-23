@@ -11,3 +11,4 @@ case ${barch} in
   x86_32|x86_64|i686)SYSROOTFIXUP="1";;
   *)SYSROOTFIXUP="0";;
 esac;
+RPMGROUP="dev";

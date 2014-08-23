@@ -8,3 +8,4 @@ if [ "${barch:0:3}" == "win" ];then
   EXTRALIBS="-lpthread";
 fi;
 
+RPMGROUP="core";

@@ -6,3 +6,4 @@ BUILDDIR="0";
 AMVER="1.14";
 CFGPTH="libvisual";
 CFGBIN="libvisual/";
+RPMGROUP="core";

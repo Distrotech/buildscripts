@@ -7,3 +7,4 @@ BUILDDIR="0";
 CFGPTH="python";
 CFGBIN="python/";
 CHROOTBUILD="1";
+RPMGROUP="core";

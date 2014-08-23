@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 GITBRANCH="master";
 CHROOTBUILD="1";
+RPMGROUP="dev";

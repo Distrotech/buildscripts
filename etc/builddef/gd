@@ -11,3 +11,4 @@ USEMINGW="1";
 EXTRALIBS="-lz -llzma";
 NOCCOPT="1";
 CLEARFLAGS="1";
+RPMGROUP="root";

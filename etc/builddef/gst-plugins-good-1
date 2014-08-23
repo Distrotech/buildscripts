@@ -8,3 +8,4 @@ LDISCC="1";
 ALIAS="gst-plugins-good";
 CLEARFLAGS="1";
 CHROOTBUILD="1";
+RPMGROUP="core";

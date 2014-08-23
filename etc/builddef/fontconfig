@@ -10,3 +10,4 @@ ADDCFLAG="-I=${PREFIX}/include/freetype2";
 AMVER="1.12";
 MLIBDIRLN="libfontconfig.so";
 ADDWITHSYSROOT="1";
+RPMGROUP="root";

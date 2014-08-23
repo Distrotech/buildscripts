@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 GITBRANCH="master";
 MANREMOVE="man4/fd.4";
+RPMGROUP="core";

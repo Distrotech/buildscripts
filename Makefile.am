@@ -7,6 +7,7 @@ SUBDIRS = lsb
 bin_SCRIPTS = \
 	bin/build \
 	bin/mkkern \
+	bin/mkgroups \
 	bin/mkbuilddef \
 	bin/pkg2rpm \
 	bin/umount-arch

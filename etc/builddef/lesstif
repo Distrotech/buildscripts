@@ -7,3 +7,4 @@ ADDCC="0";
 NOCCOPT="1";
 ADDCFLAG="-I=/usr/include/freetype2";
 OPT_arm="--x-libraries=${ARCHROOT}/arm/usr/X11R7/lib --x-includes=${ARCHROOT}/arm/usr/X11R7/include";
+RPMGROUP="gui";

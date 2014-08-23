@@ -5,3 +5,4 @@ BUILDDIR="0";
 CONFOPT="MP_APXS=${SYSROOT}/opt/apache2/bin/apxs  MP_APR_CONFIG=${SYSROOT}/opt/apr/bin/apr-1-config";
 RPMPROVIDES="perl(Apache2::FunctionTable) perl(Apache2::StructureTable) perl(Apache::TestConfigParse) perl(Apache::TestConfigPerl)";
 CHROOTBUILD="1";
+RPMGROUP="root";

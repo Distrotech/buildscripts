@@ -6,3 +6,4 @@ BUILDDIR="0";
 NOMAKEFLAGS="1";
 FIXUPLIB="1";
 GITBRANCH="master";
+RPMGROUP="core";

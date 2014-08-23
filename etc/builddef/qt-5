@@ -6,3 +6,4 @@ NOCCOPT="1";
 BUILDDIR="0";
 DONTBUILD="powerpc";
 CHROOTBUILD="1";
+RPMGROUP="gui";

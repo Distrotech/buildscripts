@@ -5,3 +5,4 @@ CONFOPT="";
 GITBRANCH="master";
 AMVER="1.14";
 AUTORECONF="1";
+RPMGROUP="gui";

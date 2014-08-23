@@ -15,3 +15,4 @@ LDISCC="1";
 CHROOTBUILD="1";
 ADDCFLAG="-I=/opt/mysql/include";
 DONTBUILD="mips64 mips";
+RPMGROUP="core";

@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 FIXUPLIB="1";
 AUTORECONF="1";
+RPMGROUP="root";

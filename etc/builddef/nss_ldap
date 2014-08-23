@@ -6,3 +6,4 @@ BUILDDIR="0";
 EXTRALIBS="-lltdl -lutil -lssl -lcrypto -ldl";
 GITBRANCH="master";
 DISTCONF="ldap-nss.conf";
+RPMGROUP="root";

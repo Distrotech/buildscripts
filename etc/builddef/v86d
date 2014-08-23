@@ -6,3 +6,4 @@ STDOPTS="--default";
 BUILDDIR="0";
 CLEARFLAGS="1";
 DONTBUILD="arm aarm64 mips mips64 powerpc powerpc64";
+RPMGROUP="core";

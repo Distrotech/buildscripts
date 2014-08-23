@@ -7,3 +7,4 @@ LDISCC="0";
 DONTBUILD="arm arm64 mips mips64 powerpc powerpc64";
 CHROOTBUILD="1";
 NOMAKEFLAGS="0";
+RPMGROUP="core";

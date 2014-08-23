@@ -14,3 +14,4 @@ OPT_powerpc="--target=powerpc-linux-gnueabi";
 OPT_powerpc64="--target=powerpc64-linux-gnueabi --with-DIR_LIBDATA=/usr/lib64/fax --with-DIR_LIB=/usr/lib64";
 NOCCOPT="1";
 CHROOTBUILD="1";
+RPMGROUP="core";

@@ -13,3 +13,4 @@ OPT_powerpc64="rd_cv_ieee_works=yes";
 OPT_i686="rd_cv_ieee_works=yes";
 OPT_x86_32="rd_cv_ieee_works=yes";
 RPMPROVIDES="perl(RRDp) perl(RRDs)";
+RPMGROUP="core";

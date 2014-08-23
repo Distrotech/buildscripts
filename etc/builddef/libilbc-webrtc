@@ -5,3 +5,4 @@ LIBDIRPRE="/ilbc-webrtc";
 CONFOPT="--includedir=/usr/include${LIBDIRPRE}";
 AUTORECONF="1";
 GITBRANCH="master";
+RPMGROUP="core";

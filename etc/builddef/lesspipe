@@ -5,3 +5,4 @@ CONFOPT="";
 STDOPTS="--prefix=/usr --yes";
 NOCCOPT="1";
 BUILDDIR="0";
+RPMGROUP="core";

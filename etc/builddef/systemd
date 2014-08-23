@@ -12,3 +12,4 @@ CONFOPT="--enable-compat-libs ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc
 case ${barch} in
   mips*|i686|x86_32|x86_64|arm*)CHROOTBUILD="1";;
 esac;
+RPMGROUP="root";

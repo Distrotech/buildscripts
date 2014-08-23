@@ -23,3 +23,4 @@ SYSROOTFIXUP="1";
 DONTBUILD="powerpc powerpc64 mips64";
 NODIET="1";
 FIXUPLIB="1"
+RPMGROUP="root";

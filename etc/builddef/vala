@@ -8,3 +8,4 @@ if [ "${HASGIR}" == "no" ];then
   DONTBUILD="${barch}";
 fi;
 ADDWITHSYSROOT="1";
+RPMGROUP="gui";

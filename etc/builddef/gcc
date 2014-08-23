@@ -109,3 +109,4 @@ case ${barch} in
          libgcc_s.so.1(GCC_3.3.1)(64bit) libgcc_s.so.1(GCC_4.2.0)(64bit) libgcc_s.so.1(GCC_4.3.0)(64bit)
          libgcc_s.so.1(GCC_4.4.0)(64bit) libgcc_s.so.1(GCC_4.8.0)(64bit) libgcc_s.so.1(GLIBC_2.0)(64bit)";;
 esac;
+RPMGROUP="dev";

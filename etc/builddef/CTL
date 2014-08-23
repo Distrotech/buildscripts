@@ -6,3 +6,4 @@ CFGPTH="CTL";
 CFGBIN="CTL/";
 DONTBUILD="arm powerpc powerpc64 mips mips64";
 RPMOBSOLETE="ctl";
+RPMGROUP="gui";

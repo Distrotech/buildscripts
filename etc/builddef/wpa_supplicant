@@ -7,3 +7,4 @@ CFGPTH="wpa_supplicant";
 NOMAKEFLAGS="1";
 FIXUPLIB="1";
 ALIAS="hostapd";
+RPMGROUP="core";

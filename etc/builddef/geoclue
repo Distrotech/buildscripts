@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 BUILDDIR="0";
 AMVER="1.14";
+RPMGROUP="gui";

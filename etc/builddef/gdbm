@@ -8,3 +8,4 @@ ADDCFLAG="-I../src";
 AMVER="1.13";
 NOCCOPT="1";
 MLIBDIRLN="libgdbm_compat.so libgdbm.so";
+RPMGROUP="root";

@@ -9,3 +9,4 @@ GITBRANCH="master";
 STATICOPT="LDFLAGS=\"-static -L=/usr/${C_LIBDIRS}\" LIBS=\"-lgpm -ldl\"";
 STATICBSTRAP="1";
 DONTBUILD="cyg32 cyg64";
+RPMGROUP="root";

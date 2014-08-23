@@ -11,3 +11,4 @@ case ${barch} in
 	mips)ADDCFLAG="-fPIC";;
 esac;
 RPMOBSOLETE="openssl-0.9.8";
+RPMGROUP="root";

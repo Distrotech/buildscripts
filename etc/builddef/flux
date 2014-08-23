@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="--disable-libdirect";
 CHROOTBUILD="1";
 COREBUILD="1";
+RPMGROUP="dev";

@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/harfbuzz/";
+RPMGROUP="core";

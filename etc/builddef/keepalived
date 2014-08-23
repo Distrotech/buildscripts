@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-kernel-dir=/usr/include";
 BUILDDIR="0";
+RPMGROUP="core";

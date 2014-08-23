@@ -26,3 +26,4 @@ ADDCC="0";
 LDISCC="1";
 CLEARFLAGS="1";
 DONTBUILD="cyg32 cyg64";
+RPMGROUP="root";

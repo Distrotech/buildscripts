@@ -5,3 +5,4 @@ CONFOPT="";
 OPT_i686="--x-includes==${X11DIR}/include --x-libraries==${X11DIR}/lib";
 CFGPTH="gv";
 CFGBIN="gv/";
+RPMGROUP="gui";

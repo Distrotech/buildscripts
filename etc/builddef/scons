@@ -6,3 +6,4 @@ BUILDDIR="0";
 CHROOTBUILD="1";
 CFGPTH="build/scons/";
 CFGBIN="scons/";
+RPMGROUP="dev";

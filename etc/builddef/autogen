@@ -9,3 +9,4 @@ CHROOTBUILD="1";
 case ${barch} in
   powerpc)DONTBUILD="powerpc";;
 esac;
+RPMGROUP="dev";

@@ -6,3 +6,4 @@ ADDCFLAG="-I=/usr/include/orbit-2.0 -I=/usr/include/libxml2 -I=/usr/include/polk
 BUILDDIR="0";
 CLEARFLAGS="1";
 CHROOTBUILD="1";
+RPMGROUP="root";

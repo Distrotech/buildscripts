@@ -5,3 +5,4 @@ CONFOPT="";
 if [ "${HASGIR}" == "no" ];then
   CONFOPT="${CONFOPT} --disable-python --disable-glade";
 fi;
+RPMGROUP="gui";

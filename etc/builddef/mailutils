@@ -13,3 +13,4 @@ case ${barch} in
 esac
 ADDCFLAG="-I=/opt/radius/include";
 ADDLDFLAG="-L=/opt/radius/${B_LIBDIRS}";
+RPMGROUP="core";

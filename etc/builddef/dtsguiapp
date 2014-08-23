@@ -13,3 +13,4 @@ PREFIX="/usr";
 CONFOPT="";
 GITBRANCH="master";
 CHROOTBUILD="1";
+RPMGROUP="gui";

@@ -5,3 +5,4 @@ CONFOPT="--enable-geoip-server=yes";
 BUILDDIR="0";
 ALIAS="geoclue";
 AMVER="1.14";
+RPMGROUP="core";

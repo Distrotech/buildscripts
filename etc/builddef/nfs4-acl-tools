@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="LIBTOOL=${ARCHROOT}/${barch}/usr/bin/libtool";
 BUILDDIR="0";
 NOCCOPT="1";
+RPMGROUP="core";

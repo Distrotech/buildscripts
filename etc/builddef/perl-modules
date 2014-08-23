@@ -14,3 +14,4 @@ RPMPROVIDES="perl(AnyEvent::BDB) perl(BDB) perl(Cocoa::EventLoop) perl(Event::Li
 	perl(Mac::BuildTools) perl(Mac::InternetConfig) perl(VMS::Filespec) perl(VMS::Stdio) perl(Your::Module::Here) \
         perl(unicore::Name) perl(Tk::LabRadio) perl(Tk::Dialog) perl(Tk::NoteBook) perl(the) perl(Crypt::OpenSSL::X509) \
         perl(Net::SSLeay)";
+RPMGROUP="root";

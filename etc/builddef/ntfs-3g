@@ -3,3 +3,4 @@ VERSEP="_";
 PREFIX="/usr";
 CONFOPT="";
 GITBRANCH="master";
+RPMGROUP="root";

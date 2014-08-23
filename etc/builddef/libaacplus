@@ -14,3 +14,4 @@ OPT_x86_32="ac_cv_file__bin_bash=/bin/bash";
 MAKE_J="";
 GITBRANCH="master";
 AMVER="1.14";
+RPMGROUP="core";

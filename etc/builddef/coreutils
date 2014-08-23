@@ -26,3 +26,4 @@ if [ "${barch:0:3}" == "cyg" ];then
 fi;
 DONTBUILD="cyg32 cyg64";
 RPMOBSOLETE="mktemp";
+RPMGROUP="root";

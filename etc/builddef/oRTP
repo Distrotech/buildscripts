@@ -11,3 +11,4 @@ CONFOPT="--with-srtp=${PREFIX} --disable-strict";
 AMVER="1.14";
 CLEARFLAGS="1";
 NOCCOPT="1";
+RPMGROUP="core";

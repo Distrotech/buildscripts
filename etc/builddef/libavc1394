@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 CFGPTH="libavc1394";
 CFGBIN="libavc1394/";
+RPMGROUP="core";

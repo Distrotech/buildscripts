@@ -2559,7 +2559,7 @@ if test x$sysconfdir = x'${prefix}/etc'; then :
 fi
 PATCHDIR=${datarootdir}/patches
 
-ac_config_files="$ac_config_files Makefile bin/build bin/mkbuilddef bin/pkg2rpm bin/umount-arch bin/mkkern etc/yum_repo.conf lsb/lsb-release libexec/make_sip libexec/make_qt-5 libexec/make_qt-4-bin"
+ac_config_files="$ac_config_files Makefile bin/build bin/mkbuilddef bin/pkg2rpm bin/umount-arch bin/mkkern bin/mkgroups etc/yum_repo.conf lsb/lsb-release libexec/make_sip libexec/make_qt-5 libexec/make_qt-4-bin"
 
 
 
@@ -3294,6 +3294,7 @@ do
     "bin/pkg2rpm") CONFIG_FILES="$CONFIG_FILES bin/pkg2rpm" ;;
     "bin/umount-arch") CONFIG_FILES="$CONFIG_FILES bin/umount-arch" ;;
     "bin/mkkern") CONFIG_FILES="$CONFIG_FILES bin/mkkern" ;;
+    "bin/mkgroups") CONFIG_FILES="$CONFIG_FILES bin/mkgroups" ;;
     "etc/yum_repo.conf") CONFIG_FILES="$CONFIG_FILES etc/yum_repo.conf" ;;
     "lsb/lsb-release") CONFIG_FILES="$CONFIG_FILES lsb/lsb-release" ;;
     "libexec/make_sip") CONFIG_FILES="$CONFIG_FILES libexec/make_sip" ;;

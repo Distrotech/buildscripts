@@ -6,3 +6,4 @@ STATICOPT="--disable-shared --with-rmt=/usr/libexec/rmt";
 STATICMOPT="LDFLAGS=-static";
 AMVER="1.13";
 COREBUILD="1";
+RPMGROUP="root";

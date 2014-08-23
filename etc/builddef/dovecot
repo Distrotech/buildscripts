@@ -40,3 +40,4 @@ OPT_x86_64="i_cv_epoll_works=yes i_cv_inotify_works=yes i_cv_posix_fallocate_wor
          i_cv_c99_vsnprintf=yes lib_cv_va_copy=yes lib_cv___va_copy=yes lib_cv_va_val_copy=no i_cv_gssapi_spnego=yes
          ac_cv_prog_KRB5CONFIG=${ARCHROOT}/x86_64/usr/bin/krb5-config";
 ADDCFLAG="-I=/usr/include/gssapi";
+RPMGROUP="root";

@@ -13,3 +13,4 @@ RPMINTDEPS="0";
 COREBUILD="1";
 DONTBUILD="mips64";
 RPMPROVIDES_libs="libcacard.so.0()${ARCH_BITS}";
+RPMGROUP="dev";

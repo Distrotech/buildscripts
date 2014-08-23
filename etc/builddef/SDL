@@ -6,3 +6,4 @@ OPT_win32="--disable-directx";
 OPT_win64="--disable-directx";
 SYSROOTFIXUP="0";
 ADDWITHSYSROOT="1";
+RPMGROUP="core";

@@ -6,3 +6,4 @@ ALIAS="openexr";
 CFGPTH="IlmBase";
 CFGBIN="IlmBase/";
 DONTBUILD="arm powerpc powerpc64 mips64 mips";
+RPMGROUP="gui";

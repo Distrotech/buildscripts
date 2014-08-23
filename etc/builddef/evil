@@ -8,3 +8,4 @@ fi;
 SYSROOTFIXUP="0";
 AMVER="1.14";
 BUILDDIR="0";
+RPMGROUP="dev";

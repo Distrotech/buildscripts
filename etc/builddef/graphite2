@@ -9,3 +9,4 @@ OPT_x86_32="-DLIB_SUFFIX=x32";
 FIXUPLIB="1";
 DONTBUILD="win64";
 MLIBDIRLN="libgraphite2.la libgraphite2.so";
+RPMGROUP="root";

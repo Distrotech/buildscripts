@@ -9,3 +9,4 @@ if [ "${barch}" != "win32" ];then
 fi;
 CFGPTH="mingw-w64-libraries/pseh";
 CFGBIN="pseh/";
+RPMGROUP="dev";

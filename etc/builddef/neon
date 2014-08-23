@@ -11,3 +11,4 @@ LDISCC="0";
 EXTRALIBS="-lkrb5support -lkeyutils -lresolv -ldl";
 CHROOTBUILD="1";
 SYSROOTFIXUP="0";
+RPMGROUP="root";

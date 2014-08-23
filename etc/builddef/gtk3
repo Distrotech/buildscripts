@@ -11,3 +11,4 @@ ADDCFLAG="-I${ARCHROOT}/${barch}/usr/lib/glib-2.0/include";
 CLEARFLAGS="1";
 ADDCC="0";
 ADDWITHSYSROOT="1";
+RPMGROUP="root";

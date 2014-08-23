@@ -6,3 +6,4 @@ BUILDDIR="0";
 LIBDIRPRE="radius";
 CONFOPTX="ac_cv_prog_MYSQL_CONFIG=${ARCHROOT}/${barch}/opt/mysql/bin/mysql_config";
 DISTCONF="raddb/clients.conf raddb/proxy.conf raddb/radiusd.conf raddb/sql.conf raddb/ldap.attrmap raddb/eap.conf";
+RPMGROUP="core";

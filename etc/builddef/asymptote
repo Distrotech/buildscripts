@@ -12,3 +12,4 @@ BUILDDIR="0";
 if [ "${barch}" != "${NARCH}" ];then
   MAKEOPTS="ASY=\"asy -dir ../base -config \\\"\\\" -render=0\"";
 fi;
+RPMGROUP="gui";

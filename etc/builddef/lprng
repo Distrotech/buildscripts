@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="--enable-shared --with-openssl --with-ssl_ca_file=/etc/ipsec.d/cacerts/cacert.pem --with-ssl_ca_key=/etc/openssl/private/cakey.pem 
          --with-ssl_certs_dir=/etc/ipsec.d/certs --with-ssl_crl_file=/etc/ipsec.d/crls/crl.pem --with-ssl_server_cert=/etc/openssl/server.signed.pem 
          --with-ssl_server_password_file=/etc/openssl/serverkey.pem";
+RPMGROUP="obsolete";

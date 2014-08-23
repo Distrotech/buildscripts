@@ -32,7 +32,7 @@ Epoch: ${RPMEPOCH}
 Version: ${7}
 Release: ${3}
 Summary: ${4} installed files
-Group: Distrotech ${1}
+Group: ${8}
 License: Refer to sourcecode
 URL: ${PKGURL}/${5}
 AutoReqProv: ${AUTODEP}
@@ -88,6 +88,10 @@ pkg2rpm() {
 
   if [ ! -d ${RPMDIR}/${1}/${2}/${PNAME} ];then
     mkdir -p ${RPMDIR}/${1}/${2}/${PNAME}
+  fi;
+
+  if [ ! "${RPMGROUP}" ];then
+    RPMGROUP="no-group";
   fi;
 
   for pfile in `ls -d ${PKGDISTDIR}/${1}/${PNAME}/${PNAME}*tar.xz 2>/dev/null`;do
@@ -261,7 +265,7 @@ pkg2rpm() {
 
       if [ -d ${RPMROOTDIR} ] && [ "`ls -A ${RPMROOTDIR}`" ];then
         (cd ${RPMROOTDIR}
-        mkrpmspec ${1} ${VERSION} ${release} ${rpmname} ${git} ${pfile} ${RVERSION} > ${RPMSPECFILE})
+        mkrpmspec ${1} ${VERSION} ${release} ${rpmname} ${git} ${pfile} ${RVERSION} ${RPMGROUP}${xpkg} > ${RPMSPECFILE})
         rpmbuild -bb --target=${1} --buildroot ${RPMROOTDIR} ${RPMSPECFILE}
         if [ -e ${RPMSPECFILE} ];then
           rm ${RPMSPECFILE}

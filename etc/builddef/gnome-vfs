@@ -19,3 +19,4 @@ OPT_i686="ac_cv_func_posix_getpwuid_r=yes
 OPT_x86_32="ac_cv_func_posix_getpwuid_r=yes
           ac_cv_path_KRB5_CONFIG=${ARCHROOT}/x86_32/usr/bin/krb5-config";
 ADDCFLAG="-I=/usr/include/libxml2 -I=/usr/include/gconf/2";
+RPMGROUP="root";

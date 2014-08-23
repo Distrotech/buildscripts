@@ -10,3 +10,4 @@ STDOPTS="--prefix=${PREFIX} --sysconfdir=/etc --mandir=${PREFIX}/share/man --loc
 FIXUPLIB="1";
 GITBRANCH="master";
 MLIBDIRLN="libtiff.so";
+RPMGROUP="root";

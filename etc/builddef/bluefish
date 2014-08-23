@@ -2,3 +2,4 @@ VERSION="2.2.5"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--without-freedesktop_org-mime";
+RPMGROUP="gui";

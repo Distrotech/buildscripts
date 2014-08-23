@@ -9,3 +9,4 @@ if [ "${barch:0:3}" != "win" ];then
 fi;
 CFGPTH="mingw-w64-libraries/libmangle";
 CFGBIN="libmangle/";
+RPMGROUP="dev";

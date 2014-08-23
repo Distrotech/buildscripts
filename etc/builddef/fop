@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/opt/fop";
 CONFOPT="";
 BUILDDIR="0";
+RPMGROUP="java";

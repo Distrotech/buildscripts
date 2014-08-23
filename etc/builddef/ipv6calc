@@ -12,3 +12,4 @@ OPT_powerpc64="ac_cv_func_memcmp_working=yes";
 OPT_i686="ac_cv_func_memcmp_working=yes";
 OPT_x86_32="ac_cv_func_memcmp_working=yes";
 GITBRANCH="master";
+RPMGROUP="root";

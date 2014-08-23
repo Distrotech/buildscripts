@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 CFGPTH="icmake";
 CFGBIN="icmake/";
+RPMGROUP="dev";

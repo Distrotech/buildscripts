@@ -8,3 +8,4 @@ MOPT_mips="BUILDFOR=32-bit";
 ADDCFLAG="-g -Wall -Werror -fPIC";
 ADDLDFLAG="-L=/usr/${B_LIBDIRS}";
 FIXUPLIB="1";
+RPMGROUP="root";

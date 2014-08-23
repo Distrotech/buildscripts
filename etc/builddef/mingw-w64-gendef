@@ -10,3 +10,4 @@ ADDWITHSYSROOT="1";
 ALIAS="mingw-w64";
 CFGPTH="mingw-w64-tools/gendef";
 CFGBIN="gendef/";
+RPMGROUP="dev";

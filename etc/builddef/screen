@@ -8,3 +8,4 @@ CFGPTH="src";
 CFGBIN="src/";
 CHROOTBUILD="1";
 RPMEPOCH="1";
+RPMGROUP="root";

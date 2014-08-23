@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 GITBRANCH="master";
 DONTBUILD="cyg32 cyg64";
+RPMGROUP="core";

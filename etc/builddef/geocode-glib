@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 AMVER="1.14";
 CHROOTBUILD="1";
+RPMGROUP="gui";

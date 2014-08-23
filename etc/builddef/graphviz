@@ -6,3 +6,4 @@ QT_VER="4";
 BUILDDIR="0";
 AMVER="1.14";
 CHROOTBUILD="1";
+RPMGROUP="core";

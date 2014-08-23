@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-documentation";
 CHROOTBUILD="1";
+RPMGROUP="core";

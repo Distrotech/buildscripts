@@ -6,3 +6,4 @@ GITBRANCH="master";
 BUILDDIR="0";
 CHROOTBUILD="1";
 RPMPROVIDES_libs="libt1.so.5()${ARCH_BITS} libt1x.so.5()${ARCH_BITS}";
+RPMGROUP="gui";

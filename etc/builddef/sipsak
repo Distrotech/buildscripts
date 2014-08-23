@@ -2,3 +2,4 @@ VERSION="0.9.6"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="ac_cv_func_malloc_0_nonnull=yes";
+RPMGROUP="core";

@@ -5,3 +5,4 @@ CONFOPT="";
 #STDCSTATIC="--disable-shared LDFLAGS=-static";
 CLEARFLAGS="1";
 MLIBDIRLN="libpcre.so";
+RPMGROUP="root";

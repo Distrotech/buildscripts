@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 GITBRANCH="master";
 BUILDDIR="0";
+RPMGROUP="dev";

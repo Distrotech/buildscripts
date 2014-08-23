@@ -8,3 +8,4 @@ if [ "${barch:0:3}" == "win" ];then
   ADDCFLAG="-DHAVE_PTHREAD_WIN32 -DHAVE_STRUCT_TIMESPEC";
   EXTRALIBS="-liphlpapi -ldnsapi -lcrypt32";
 fi;
+RPMGROUP="core";

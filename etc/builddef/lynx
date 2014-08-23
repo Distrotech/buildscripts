@@ -7,3 +7,4 @@ OPT_x86_64=I"ac_cv_sizeof_off_t=8 cf_cv_baddef_remove=no";
 ADDCFLAG="-I/usr/include/openssl";
 ADDFILTER="makefile";
 GITBRANCH="master";
+RPMGROUP="root";

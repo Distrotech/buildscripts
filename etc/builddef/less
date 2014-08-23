@@ -4,3 +4,4 @@ PREFIX="/usr";
 STATICMOPT="\"LDFLAGS=-static -L=/usr/${C_LIBDIRS}\"";
 GITBRANCH="master";
 STATICBSTRAP="1";
+RPMGROUP="root";

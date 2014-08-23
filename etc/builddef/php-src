@@ -24,3 +24,4 @@ OPT_arm64="--with-libdir=lib64";
 OPT_mips64="--with-libdir=lib64";
 OPT_powerpc64="--with-libdir=lib64";
 CHROOTBUILD="1";
+RPMGROUP="core";

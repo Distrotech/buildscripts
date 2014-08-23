@@ -10,3 +10,4 @@ COREBUILD="1";
 if [ ! -d ${ARCHROOT}/${barch}/usr/include/guile ];then
   CONFOPT="${CONFOPT} --without-guile";
 fi;
+RPMGROUP="dev";

@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--includedir=/usr/include/ungif";
 GITBRANCH="master";
+RPMGROUP="gui";

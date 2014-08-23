@@ -8,3 +8,4 @@ BUILDDIR="0";
 ADDCC="1";
 DONTBUILD="cyg32 cyg64";
 RPMOBSOLETE="lprng";
+RPMGROUP="root";

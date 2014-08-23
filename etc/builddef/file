@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 STATICOPT="--disable-shared"
 STATICMOPT="LDFLAGS=-all-static";
+RPMGROUP="root";

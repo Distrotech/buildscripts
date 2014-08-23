@@ -36,3 +36,4 @@ ADDCFLAG="-I../../../src/util/verto -I../../../../src/util/verto";
 LDISCC="0";
 STATICINSTLIBS="1";
 DONTBUILD="cyg32 cyg64";
+RPMGROUP="root";

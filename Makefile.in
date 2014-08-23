@@ -82,7 +82,8 @@ DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(top_srcdir)/bin/build.in $(top_srcdir)/bin/mkbuilddef.in \
 	$(top_srcdir)/bin/pkg2rpm.in $(top_srcdir)/bin/umount-arch.in \
-	$(top_srcdir)/bin/mkkern.in $(top_srcdir)/etc/yum_repo.conf.in \
+	$(top_srcdir)/bin/mkkern.in $(top_srcdir)/bin/mkgroups.in \
+	$(top_srcdir)/etc/yum_repo.conf.in \
 	$(top_srcdir)/lsb/lsb-release.in \
 	$(top_srcdir)/libexec/make_sip.in \
 	$(top_srcdir)/libexec/make_qt-5.in \
@@ -96,8 +97,9 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES = bin/build bin/mkbuilddef bin/pkg2rpm \
-	bin/umount-arch bin/mkkern etc/yum_repo.conf lsb/lsb-release \
-	libexec/make_sip libexec/make_qt-5 libexec/make_qt-4-bin
+	bin/umount-arch bin/mkkern bin/mkgroups etc/yum_repo.conf \
+	lsb/lsb-release libexec/make_sip libexec/make_qt-5 \
+	libexec/make_qt-4-bin
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -316,6 +318,7 @@ SUBDIRS = lsb
 bin_SCRIPTS = \
 	bin/build \
 	bin/mkkern \
+	bin/mkgroups \
 	bin/mkbuilddef \
 	bin/pkg2rpm \
 	bin/umount-arch
@@ -395,6 +398,8 @@ bin/pkg2rpm: $(top_builddir)/config.status $(top_srcdir)/bin/pkg2rpm.in
 bin/umount-arch: $(top_builddir)/config.status $(top_srcdir)/bin/umount-arch.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 bin/mkkern: $(top_builddir)/config.status $(top_srcdir)/bin/mkkern.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+bin/mkgroups: $(top_builddir)/config.status $(top_srcdir)/bin/mkgroups.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 etc/yum_repo.conf: $(top_builddir)/config.status $(top_srcdir)/etc/yum_repo.conf.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@

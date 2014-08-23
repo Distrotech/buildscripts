@@ -10,3 +10,4 @@ MAKEOPTS="LIBDIR=${B_LIBDIRS}";
 case ${NARCH} in
 	x86_32|arm*|powepc*|ppc*|mips*)DONTBUILD="${barch}";;
 esac;
+RPMGROUP="java";

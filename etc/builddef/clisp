@@ -14,3 +14,4 @@ if [ -e /proc/sys/fs/binfmt_misc/${barch} ];then
  else
   DONTBUILD="powerpc64 powerpc x86_32";
 fi
+RPMGROUP="dev";

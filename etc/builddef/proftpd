@@ -5,3 +5,4 @@ CONFOPT="--enable-dso --with-modules=mod_tls:mod_auth_pam --enable-auth-pam";
 BUILDDIR="0";
 GITBRANCH="master";
 DISTCONF="proftpd.conf";
+RPMGROUP="core";

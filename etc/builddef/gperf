@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 STATICOPT="LDFLAGS=-static";
+RPMGROUP="dev";

@@ -9,3 +9,4 @@ GITREPO="ebtables";
 GITBRANCH="distrotech-arptables-v0.0.4";
 CFGPTH="userspace/arptables";
 CFGBIN="arptables/";
+RPMGROUP="core";

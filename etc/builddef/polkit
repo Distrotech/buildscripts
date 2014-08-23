@@ -14,3 +14,4 @@ CHROOTBUILD="1";
 if [ "${HASGIR}" == "no" ];then
   DONTBUILD="${barch}";
 fi;
+RPMGROUP="root";

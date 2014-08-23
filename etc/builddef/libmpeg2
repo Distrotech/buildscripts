@@ -6,3 +6,4 @@ GITBRANCH="master";
 case ${barch} in
   powerpc)DONTBUILD="${barch}";;
 esac;
+RPMGROUP="core";

@@ -17,3 +17,4 @@ OPT_powerpc="-DPYTHON_INCLUDE_DIR:PATH=${ARCHROOT}/powerpc/usr/include/python2.7
              -DENABLE_SSE3:BOOL=OFF -DENABLE_SSE2:BOOL=OFF -DENABLE_SSE:BOOL=OFF";
 OPT_powerpc64="-DPYTHON_INCLUDE_DIR:PATH=${ARCHROOT}/powerpc64/usr/include/python2.7";
 DONTBUILD="aarch64 mips mips64";
+RPMGROUP="core";

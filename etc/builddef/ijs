@@ -10,3 +10,4 @@ AMVER="1.9";
 GITBRANCH="master";
 GITREPO="ghostscript";
 DONTBUILD="cyg32 cyg64";
+RPMGROUP="core";

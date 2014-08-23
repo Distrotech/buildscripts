@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 RPMPROVIDES_libs="libgpm.so.2()${ARCH_BITS}";
+RPMGROUP="core";

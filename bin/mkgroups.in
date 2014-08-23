@@ -1,0 +1,47 @@
+#!/bin/bash
+
+DTSETCDIR=@sysconfdir@
+DEFDIR=${DTSETCDIR}/builddef
+RPMDIR=@SRVDIRYUM@
+
+PKGLIST_PTH=$( mktemp -p /tmp -d yumrpmpgklist.XXXXXXXXXXX)
+
+if [ ! -d ${PKGLIST_PTH} ];then
+  exit 1;
+fi;
+
+for pkg in `ls ${DEFDIR}/`;do
+  (. ${DEFDIR}/${pkg}
+  if [ ! "${RPMGROUP}" ];then
+    RPMGROUP="no-group";
+  fi;
+  echo ${pkg} >> ${PKGLIST_PTH}/${RPMGROUP})
+done
+
+(printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+printf "<!DOCTYPE comps PUBLIC \"-//Red Hat, Inc.//DTD Comps info//EN\" \"comps.dtd\"><comps>";
+
+for pkglist in `ls ${PKGLIST_PTH}/`;do
+  for xpkg in "" "-dev" "-doc" "-libs" "-dbg" "-locale" "-conf";do
+    printf "<group>";
+    printf "<id>%s%s</id>" ${pkglist} ${xpkg};
+    printf "<default>False</default>";
+    printf "<uservisible>True</uservisible>";
+    printf "<display_order>1024</display_order>";
+    printf "<name>%s%s</name>" ${pkglist} ${xpkg};
+    printf "<description></description>";
+    printf "<packagelist>";
+    cat ${PKGLIST_PTH}/${pkglist} |sort |uniq | \
+    (while read pkg;do
+      printf "<packagereq type=\"optional\">%s%s</packagereq>" ${pkg} ${xpkg};
+    done)
+
+    printf "</packagelist>";
+    printf "</group>";
+  done;
+done;
+
+printf "</comps>";
+) |xmllint --format  - > ${RPMDIR}/groups.xml
+
+rm -rf ${PKGLIST_PTH}

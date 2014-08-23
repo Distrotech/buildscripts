@@ -10,3 +10,4 @@ CFGBIN="source/";
 NODIET="1";
 NOCCOPT="1";
 CLEARFLAGS="1";
+RPMGROUP="root";

@@ -9,3 +9,4 @@ case ${barch} in
                 -DOPENSSL_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include";;
 esac;
 FIXUPLIB="1";
+RPMGROUP="core";

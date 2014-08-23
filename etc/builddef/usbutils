@@ -7,3 +7,4 @@ EXTRALIBS="-lrt -lpthread";
 ADDCFLAG="-I../include -I=/usr/include/libusb-1.0";
 AMVER="1.14";
 RPMOBSOLETE="usbhid-dump";
+RPMGROUP="root";

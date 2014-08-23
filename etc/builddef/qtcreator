@@ -7,3 +7,4 @@ QTMAKE="1";
 DONTBUILD="powerpc powerpc64 mips mips64";
 GITMODULES="1";
 CHROOTBUILD="1";
+RPMGROUP="gui";

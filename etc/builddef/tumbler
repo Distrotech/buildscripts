@@ -5,3 +5,4 @@ CONFOPT="--datarootdir=/usr/share --enable-maintainer-mode";
 NOMLIBDIR="1";
 SYSLAYOUT="1";
 ADDCFLAG="-I=/usr/include/freetype2";
+RPMGROUP="gui";

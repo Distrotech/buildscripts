@@ -14,3 +14,4 @@ OPT_x86_64="ac_cv_have_abstract_sockets=no with_dbus_binding_tool=dbus-binding-t
 OPT_x86_32="ac_cv_have_abstract_sockets=no with_dbus_binding_tool=dbus-binding-tool";
 ADDWITHSYSROOT="1";
 CHROOTBUILD="1";
+RPMGROUP="root";

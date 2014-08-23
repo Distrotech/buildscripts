@@ -6,3 +6,4 @@ CONFOPT="--enable-shared --enable-ipv6 ac_cv_buggy_getaddrinfo=no ac_cv_have_lon
 ALIAS="cpython";
 LDISCC="0";
 CHROOTBUILD="1";
+RPMGROUP="core";

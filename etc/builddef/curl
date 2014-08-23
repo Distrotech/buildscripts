@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-ares --with-ssl --with-gnutls --with-nss --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt";
 CLEARFLAGS="1";
+RPMGROUP="root";

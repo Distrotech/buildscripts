@@ -4,3 +4,4 @@ PREFIX="/var/spool/apache/viewvc";
 CONFOPT="";
 BUILDDIR="0";
 NOMAKEFLAGS="1";
+RPMGROUP="core";

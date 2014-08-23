@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="PYTHON=${ARCHROOT}/${barch}/usr/bin/python --disable-gtktest";
 ADDCFLAG="-I=/usr/include/python2.7";
 CHROOTBUILD="1";
+RPMGROUP="gui";

@@ -6,3 +6,4 @@ CONFOPT="--without-iso-read --without-iso-info  --without-cd-read  --without-cd-
 ALIAS="libcdio";
 BUILDDIR="0";
 GITBRANCH="distrotech-libcdio-cdda";
+RPMGROUP="core";

@@ -8,3 +8,4 @@ DONTBUILD="cyg32 cyg64";
 if [ "${barch}" != "${NARCH}" ];then
   MAKEOPTS="TROFFBIN=troff GROFFBIN=groff GROFF_BIN_PATH=/usr/bin";
 fi;
+RPMGROUP="core";

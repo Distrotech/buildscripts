@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 MAKEOPTS="PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
 CHROOTBUILD="1";
+RPMGROUP="core";

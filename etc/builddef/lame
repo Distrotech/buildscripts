@@ -4,3 +4,4 @@ PREFIX="/usr";
 OPT_i686="ac_cv_header_xmmintrin_h=no";
 CONFOPT="";
 GITBRANCH="master";
+RPMGROUP="core";

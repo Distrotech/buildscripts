@@ -8,3 +8,4 @@ MLIBDIRLN="libidn.so";
 AUTORECONF="1";
 OPT_x86_32="--disable-csharp";
 RPMPROVIDES_libs="mono(mscorlib)";
+RPMGROUP="root";

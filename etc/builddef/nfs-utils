@@ -5,3 +5,4 @@ CONFOPT="-with-tcp-wrappers=no --with-statduser=nobody --with-gnu-ld --enable-mo
 BUILDDIR="0";
 LDISCC="1";
 ADDCC="0";
+RPMGROUP="root";

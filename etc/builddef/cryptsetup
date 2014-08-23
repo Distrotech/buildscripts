@@ -2,3 +2,4 @@ VERSION="1.6.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-libgcrypt-prefix=${ARCHROOT}/${barch}/usr";
+RPMGROUP="root";

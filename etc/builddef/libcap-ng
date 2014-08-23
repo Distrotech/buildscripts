@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 DONTBUILD="cyg32 cyg64";
+RPMGROUP="root";

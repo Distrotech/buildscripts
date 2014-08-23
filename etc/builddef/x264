@@ -9,3 +9,4 @@ ADDCC="0";
 NOCCOPT="1";
 OPT_win32="--sysroot=${ARCHROOT}/${barch} --cross-prefix=${HOST}-";
 OPT_win64="--sysroot=${ARCHROOT}/${barch} --cross-prefix=${HOST}-";
+RPMGROUP="core";

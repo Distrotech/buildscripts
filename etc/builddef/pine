@@ -8,3 +8,4 @@ NOMAKEFLAGS="1";
 FIXUPLIB="1";
 GITBRANCH="master";
 RPMPROVIDES_libs="libpico.so()${ARCH_BITS}";
+RPMGROUP="core";

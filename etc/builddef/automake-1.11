@@ -6,3 +6,4 @@ AMVER="1.13";
 GITREPO="automake";
 GITBRANCH="distrotech-automake-1.11.6";
 RPMOBSOLETE_doc="automake-1.10 automake-1.9";
+RPMGROUP="dev";

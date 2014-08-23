@@ -12,3 +12,4 @@ ADDCFLAG="-I=${X11DIR}/include -I=/usr/${B_LIBDIRS}/jvm/gcj-jdk/include"
 ADDCC="0";
 CHROOTBUILD="1";
 GITCLEAN="0";
+RPMGROUP="java";

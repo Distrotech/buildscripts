@@ -27,3 +27,4 @@ OPT_i686="-DJPEG_LIBRARY=${ARCHROOT}/i686/usr/lib/libjpeg.so -DFONTCONFIG_LIB=${
          -DX11_Xft_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXft.so -DX11_Xinerama_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXinerama.so
          -DX11_Xfixes_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXfixes.so -DX11_Xcursor_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXcursor.so";
 ADDCFLAG="-fPIC";
+RPMGROUP="gui";

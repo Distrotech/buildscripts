@@ -5,3 +5,4 @@ CONFOPT="";
 MAKEOPTS="prefix=${PREFIX}";
 BUILDDIR="0";
 LDISCC="1";
+RPMGROUP="core";

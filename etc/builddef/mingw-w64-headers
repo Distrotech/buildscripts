@@ -13,3 +13,4 @@ if [ "${barch:0:3}" == "win" ];then
 fi;
 CFGPTH="mingw-w64-headers";
 CFGBIN="mingw-w64-headers/";
+RPMGROUP="dev";

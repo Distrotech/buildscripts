@@ -11,3 +11,4 @@ NODIET="1";
 GITBRANCH="master";
 CHROOTBUILD="1";
 RPMPROVIDES_libs="libpt.so.2.10.1()${ARCH_BITS}";
+RPMGROUP="core";

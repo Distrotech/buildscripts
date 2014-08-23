@@ -4,3 +4,4 @@ PREFIX="/opt/Xorg";
 CONFOPT="";
 BUILDDIR="0";
 STEPBUILD="1";
+RPMGROUP="root";

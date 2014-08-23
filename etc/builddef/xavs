@@ -14,3 +14,4 @@ OPT_arm64="--host=aarch64-linux-gnu --enable-shared --enable-pic";
 BUILDDIR="0";
 ADDCFLAG="-fPIC";
 FIXUPLIB="1";
+RPMGROUP="core";

@@ -4,3 +4,4 @@ PREFIX="/";
 CONFOPT="--with-zlib --with-xz --enable-shared";
 NOCCOPT="1";
 EXTRALIBS="-llzma";
+RPMGROUP="root";

@@ -6,3 +6,4 @@ MAKEOPTS="LDFLAGS=-static"
 NOINST="1";
 ALIAS="module-init-tools";
 CHROOTBUILD="1";
+RPMGROUP="obsolete";

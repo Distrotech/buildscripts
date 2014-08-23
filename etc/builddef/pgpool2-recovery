@@ -7,3 +7,4 @@ SYSCONFPRE="pgpool";
 ALIAS="pgpool2";
 CFGPTH="sql/pgpool-recovery";
 CHROOTBUILD="1";
+RPMGROUP="core";

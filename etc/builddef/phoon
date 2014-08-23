@@ -5,3 +5,4 @@ CONFOPT="";
 BUILDDIR="0";
 ADDCFLAG="-DOS_BSD";
 GITBRANCH="master";
+RPMGROUP="core";

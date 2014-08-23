@@ -6,3 +6,4 @@ ADDCC="0";
 BUILDDIR="0";
 AMVER="1.14";
 NOCCOPT="1";
+RPMGROUP="root";

@@ -20,3 +20,4 @@ case ${barch} in
   *)harch=${barch};;
 esac;
 RPMPROVIDES_libs="libh323_linux_${harch}_.so.1.24.0()${ARCH_BITS}";
+RPMGROUP="core";

@@ -13,3 +13,4 @@ STATICOPT="--with-sysroot=/ --disable-werror --enable-lto --enable-64-bit-bfd --
 COREBUILD="1";
 NOSYSROOTLT="1";
 INFOREMOVE="configure.info";
+RPMGROUP="dev";

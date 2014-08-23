@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 CFGPTH="bogofilter";
 CFGBIN="bogofilter/";
+RPMGROUP="core";

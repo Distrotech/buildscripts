@@ -2,3 +2,4 @@ VERSION="1.4.10"
 VERSEP="-";
 PREFIX="/opt/MailScanner";
 CONFOPT="";
+RPMGROUP="core";

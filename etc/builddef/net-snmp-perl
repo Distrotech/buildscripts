@@ -8,3 +8,4 @@ CFGPTH="perl";
 CFGBIN="perl/";
 CHROOTBUILD="1";
 RPMPROVIDES="perl(Net::SNMP) perl(NetSNMP::agent::netsnmp_request_infoPtr)";
+RPMGROUP="root";

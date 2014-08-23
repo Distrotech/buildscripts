@@ -7,3 +7,4 @@ NOMAKEFLAGS="1";
 MAKEOPTS="INS_BASE=/usr";
 GITBRANCH="master";
 FIXUPLIB="1";
+RPMGROUP="core";

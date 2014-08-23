@@ -7,3 +7,4 @@ if [ "${barch:0:3}" == "win" ];then
   EXTRALIBS="-lws2_32";
 fi;
 
+RPMGROUP="core";

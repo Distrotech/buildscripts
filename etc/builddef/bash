@@ -14,3 +14,4 @@ NOCCOPT="1";
 CLEARFLAGS="1";
 RPMPROVIDES_base="/usr/bin/bash";
 NOCROSS="1";
+RPMGROUP="root";

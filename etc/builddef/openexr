@@ -6,3 +6,4 @@ ADDCFLAG="-I=/usr/include/OpenEXR/";
 CFGPTH="OpenEXR";
 CFGBIN="OpenEXR/";
 DONTBUILD="arm powerpc powerpc64 mips64 mips";
+RPMGROUP="gui";

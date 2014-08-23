@@ -5,3 +5,4 @@ CONFOPT="";
 AMVER="1.9";
 CFGPTH="openslp";
 CFGBIN="openslp/";
+RPMGROUP="root";

@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 LIBDIRPRE="psqlodbc";
+RPMGROUP="core";

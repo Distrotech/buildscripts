@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 DONTBUILD="${barch}";
+RPMGROUP="gui";

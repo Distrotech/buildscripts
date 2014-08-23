@@ -10,3 +10,4 @@ OPT_x86_32="--disable-goa";
 if [ "${HASGIR}" == "no" ];then
   CONFOPT="${CONFOPT} --disable-goa";
 fi;
+RPMGROUP="gui";

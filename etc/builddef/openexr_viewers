@@ -8,3 +8,4 @@ ALIAS="openexr";
 CFGPTH="OpenEXR_Viewers";
 CFGBIN="OpenEXR_Viewers/";
 DONTBUILD="arm powerpc powerpc64 mips mips64";
+RPMGROUP="gui";

@@ -5,3 +5,4 @@ CONFOPT="";
 STATICMOPT="LDFLAGS=-static";
 AMVER="1.12";
 COREBUILD="1";
+RPMGROUP="root";

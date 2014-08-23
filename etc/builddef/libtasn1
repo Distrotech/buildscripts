@@ -7,3 +7,4 @@ if [ "${barch:0:3}" == "win" ] || [ "${barch:0:3}" == "cyg" ];then
  else
   CONFOPT="";
 fi;
+RPMGROUP="root";

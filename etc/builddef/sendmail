@@ -7,3 +7,4 @@ NOMAKEFLAGS="1";
 ADDLDFLAG="-L=/usr/${B_LIBDIRS}";
 GITBRANCH="master";
 DISTCONF="mail/submit.cf";
+RPMGROUP="core";

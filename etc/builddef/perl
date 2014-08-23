@@ -19,3 +19,4 @@ MANREMOVE="man3/Digest::MD5.3 man3/List::Util.3 man3/List::Util::XS.3 man3/Scala
            man3/Test::Builder::Tester::Color.3 man3/Test::More.3 man3/Test::Simple.3 \
            man3/Test::Tutorial.3 man3/Text::Soundex.3 man3/CPAN::Meta::YAML.3 \
            man3/Parse::CPAN::Meta.3 man3/DB_File.3";
+RPMGROUP="root";

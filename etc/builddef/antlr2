@@ -8,3 +8,4 @@ BUILDDIR="0";
 GITBRANCH="master";
 MAKE_J="";
 ADDCC="0";
+RPMGROUP="java";

@@ -7,3 +7,4 @@ OPT_arm="--with-openssl=${ARCHROOT}/arm/usr";
 EXTRALIBS="-lusb-1.0 -lpthread -lrt";
 ADDGCCDIR="0";
 CHROOTBUILD="1";
+RPMGROUP="root";

@@ -12,3 +12,4 @@ LDISCC="1";
 MAKEALL="optshared";
 GITBRANCH="master";
 CHROOTBUILD="1";
+RPMGROUP="core";

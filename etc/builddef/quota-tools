@@ -7,3 +7,4 @@ case ${barch} in
   powerpc*)CHROOTBUILD="1";;
 esac;
 DISTCONF="warnquota.conf";
+RPMGROUP="core";

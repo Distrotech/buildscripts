@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 ADDLDFLAG="-shared-libgcc";
+RPMGROUP="root";

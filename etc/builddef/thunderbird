@@ -16,3 +16,4 @@ OPT_i686="--target=i686-linux-gnu";
 OPT_x86_32="--target=x86_64-linux-gnux32 --disable-methodjit";
 DONTBUILD="x86_32";
 MAKEOPTS="PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
+RPMGROUP="gui";

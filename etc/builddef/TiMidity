@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="lib_cv_va_copy=yes lib_cv___va_copy=yes lib_cv_va_val_copy=no";
 GITBRANCH="master";
+RPMGROUP="core";

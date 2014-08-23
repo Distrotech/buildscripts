@@ -6,3 +6,4 @@ CONFOPTX="--with-wx-config=${ARCHROOT}/${barch}/usr/bin/wx-config";
 ADDCFLAG="-I=/usr/include/wx-3.0";
 ADDWITHSYSROOT="1";
 CHROOTBUILD="1";
+RPMGROUP="gui";

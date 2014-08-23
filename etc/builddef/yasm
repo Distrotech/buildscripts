@@ -5,3 +5,4 @@ CONFOPT="";
 FIXUPLIB="1";
 DONTBUILD="arm64 arm powerpc powerpc64 cyg32 cyg64";
 GITBRANCH="master";
+RPMGROUP="dev";

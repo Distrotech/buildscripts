@@ -21,3 +21,4 @@ esac;
 #  CHROOTBUILD="1";
 #fi
 DONTBUILD="cyg32 cyg64";
+RPMGROUP="root";

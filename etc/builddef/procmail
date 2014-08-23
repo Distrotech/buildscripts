@@ -13,3 +13,4 @@ if [ "${barch}" != "${NARCH}" ];then
     mips64)CHROOTBUILD="1";;
   esac;
 fi;
+RPMGROUP="core";

@@ -6,3 +6,4 @@ ADDCFLAG="-I=/usr/include/poppler/glib";
 case ${barch} in
         mips*)CHROOTBUILD="1";;
 esac;
+RPMGROUP="gui";
