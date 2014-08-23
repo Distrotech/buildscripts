@@ -1987,14 +1987,7 @@ build_gcc_bootstrap() {
     fi
   fi;
 
-  if [ ! "${4}" ] || [ "${4}" == "static" ];then
-    MARCH=BOOTOPT_${1}
-    CONFOPT="${BOOTOPT} ${SYSROOT} --with-boot-ldflags=-static --with-gmp-lib=${ARCHROOT}/${3}/usr/${TLIBDIR}/${TMLIBDIR}"
-    CFLAGS="${GCCFLAGS} -fPIC -O2"
-    CXXFLAGS="${GCCFLAGS} -fPIC -O2"
-    LDFLAGS="-static ${GCCLFLAGS}"
-    SDIROPT=-boot
-   elif [ "${4}" == "shared" ];then
+  if [ "${4}" == "shared" ];then
     MARCH=BOOTOPT_${1}
     CONFOPT="${SHAREDOPT} ${SYSROOT} ${CONFOPTX} --with-gmp-lib=${ARCHROOT}/${3}/usr/${TLIBDIR}/${TMLIBDIR}";
     if [ "${1:0:3}" != "cyg" ];then
@@ -2058,20 +2051,12 @@ build_gcc_bootstrap() {
   fi;
 
   if [ -d ${GCCBOOTDEST} ] && [ -e /usr/bin/${2}-gcc ];then
-    return;
+    if [ "${1}" == "${TARCH}" ];then
+      (md5sum -c ${STATDIR}/${TARCH}/done/gcc-${4} > /dev/null 2>&1) && return
+     else
+      (md5sum -c ${STATDIR}/${TARCH}/done/gcc-${1}-${4} > /dev/null 2>&1) && return
+    fi;
   fi;
-
-#  if which ${2}-gcc 2>/dev/null;then
-#    GCCLDIR=$( dirname `${2}-gcc --print-libgcc-file-name` )
-#    if [ -d ${GCCLDIR} ];then
-#      for booto in crti.o crt1.o crtn.o;do
-#        if [ -f /usr/${USELIBDIR}/${booto} ];then
-#          cp ${BUILDROOT}/usr/${USELIBDIR}/${booto} ${GCCLDIR}/
-#        fi;
-#      done;
-#      CONFOPT="${CONFOPT} --with-stage1-ldflags=-L${GCCLDIR} --with-boot-ldflags=-L${GCCLDIR} CFLAGS=-B${GCCLDIR}";
-#    fi;
-#  fi;
 
   git_load_pkg gcc ${VERSEP}${VERSION} distrotech-${GCC} gcc
 
@@ -2091,9 +2076,6 @@ build_gcc_bootstrap() {
       BUILDDIR=${SRDIR}
     fi;
     (cd ${PKGDESTDIR}/${1}/${GLIBC}
-#    if [ -d ${PKGDESTDIR}/${1}/${GCC} ];then
-#      rsync -a ${PKGDESTDIR}/${1}/${GCC}/ ${SRDIR}/
-#    fi;
      if [ ! -e ${SRDIR}/usr/include/stdio.h ];then
        rsync -aR . usr/include ${SRDIR}/
      fi;
@@ -2170,6 +2152,7 @@ build_gcc_bootstrap() {
       ln -s gcc ${GCCBOOTDEST}/usr/bin/cc
     fi;
     tar_package ${GCCBOOTDEST} ${TOOLPKG}/${TARCH} ${TARGPKG} > /dev/null 2>&1
+    md5sum -b ${TOOLPKG}/${TARCH}/${TARGPKG}/* > ${STATDIR}/${TARCH}/done/gcc-${4}
     #Fill the gap till full gcc built
     if [ "${TARCH}" == "${NARCH}" ] && [ ! -e ${STATDIR}/${TARCH}/done/gcc ] && [ "${BOOTSTRAP}" == "0" ];then
       rsync -aP ${GCCBOOTDEST}/ /
@@ -2182,6 +2165,7 @@ build_gcc_bootstrap() {
     fi;
    else
     tar_package ${GCCBOOTDEST} ${TOOLPKG}/${TARCH}/${1} ${TARGPKG} > /dev/null 2>&1
+    md5sum -b ${TOOLPKG}/${TARCH}/${1}/${TARGPKG}/* > ${STATDIR}/${TARCH}/done/gcc-${1}-${4}
     if [ "${TARCH}" == "${NARCH}" ];then
       #Install if there is no existing compiler or im the cross
       if [ ! -e /usr/bin/${2}-gcc ] || [ "${4}" == "cross" ];then
@@ -2528,13 +2512,6 @@ bootstrap_arch_root() {
       build_packages ${arch} libtool || exit 1
       #Build full cross compiler
       (build_gcc_bootstrap ${arch} ${HOST} ${NARCH} cross) || exit 1
-#      case ${NARCH} in
-#        x86_*)
-#          case ${arch} in
-#            i[3-6]86|x86_*)(cd /usr/;rsync -avPR ${B_LIBDIRS}/libstdc++* ${C_LIBDIRS}/libstdc++* /usr/${HOST}/);;
-#          esac;
-#        ;;
-#      esac;
     fi;
 
     #handle hybrid/cross builds
@@ -2865,9 +2842,6 @@ build_dependancies() {
   build_packages ${1} elfutils libdwarf rpm pysqlite yum-metadata-parser pycurl urlgrabber yum deltarpm createrepo || return 1
 
   if [ "${1}" == "${NARCH}" ];then
-    #Time to build a static gcc bootstrap distributable
-    (build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
-
     #Static binutils distributable
     (build_bootstrap_binutils ${1} ${2}) || return 1
 
@@ -3392,7 +3366,7 @@ build_bootstrap() {
   (if [ -x /usr/bin/gnatgcc ];then
     export CC=gnatgcc;
   fi;
-  build_gcc_bootstrap ${1} ${2} ${1} static) || return 1
+  build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
 
   echo "Shared tools"
   build_packages ${1} bison flex sed gawk make rsync grep gzip \
