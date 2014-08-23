@@ -1,6 +1,5 @@
 #!/bin/bash
 
-SUBPKGS="libs conf locale";
 
 NARCH=${NARCH:=$(uname -m)}
 
@@ -42,9 +41,12 @@ fi;
 RPM_PKG_LIST="";
 for pkggrp in ${PKGLIST};do
   RPM_PKG_LIST+="${pkggrp} "
-  for spkg in ${SUBPKGS};do
+  for spkg in libs conf locale;do
     RPM_PKG_LIST+="${pkggrp}-${spkg} "
   done;
+  if [ "${pkggrp}" == "static-root" ];then
+    RPM_PKG_LIST+="${pkggrp}-dev "
+  fi;
 done
 do_yuminstall ${TMPDIR} ${RPM_PKG_LIST}
 
