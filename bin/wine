@@ -1,0 +1,3 @@
+#!/bin/bash
+
+WINEPREFIX=~/.wine32 /var/opt/dtsbuild/sysroot/i686/usr/bin/wine $@

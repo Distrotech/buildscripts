@@ -1,0 +1,72 @@
+#!/bin/bash
+
+SUBPKGS="libs conf locale";
+
+NARCH=${NARCH:=$(uname -m)}
+
+if [ ! "${1}" ];then
+  echo needs arch
+  exit
+ else
+  ARCH=${1}
+fi;
+
+shift
+PKGLIST=$@
+
+do_yuminstall() {
+  YINSTROOT=${1}
+  shift
+  case ${NARCH} in
+    x86_32|x86_64|i[3-6]86)
+      case ${ARCH} in
+        x86_64)yum -y --installroot=${YINSTROOT} --exclude="*.x86_32" --exclude="*.i686" groupinstall $@;;
+        x86_32)yum -y --installroot=${YINSTROOT} --exclude="*.x86_64" --exclude="*.i686" groupinstall $@;;
+        i[3-6]86)yum -y --installroot=${YINSTROOT} --exclude="*.x86_64" --exclude="*.x86_32" groupinstall $@;;
+        *)yum --installroot=${YINSTROOT} --exclude="*.x86_64" --exclude="*.x86_32" --exclude="*.i686" groupinstall $@;;
+      esac;;
+    *)if [ "${NARCH}" == "${ARCH}" ];then
+        yum -y --installroot=${YINSTROOT} groupinstall $@;
+       else
+        yum -y --installroot=${YINSTROOT} --exclude="*.${NARCH}" groupinstall $@;
+      fi;;
+  esac;
+}
+
+#TMPDIR=$( mktemp -d -p /root dtsinstall.XXXXXXXXXXX)
+TMPDIR=/root/instdir
+if [ ! -d ${TMPDIR} ];then
+  mkdir -p ${TMPDIR}
+fi;
+
+RPM_PKG_LIST="";
+for pkggrp in ${PKGLIST};do
+  RPM_PKG_LIST+="${pkggrp} "
+  for spkg in ${SUBPKGS};do
+    RPM_PKG_LIST+="${pkggrp}-${spkg} "
+  done;
+done
+do_yuminstall ${TMPDIR} ${RPM_PKG_LIST}
+
+for dir in root proc sys dev tmp;do
+  if [ ! -d ${TMPDIR}/${dir} ];then
+    mkdir ${TMPDIR}/${dir}
+  fi;
+done
+chmod 1777 ${TMPDIR}/${dir}
+
+#if [ "${TMPDIR}" ] && [ -d ${TMPDIR} ];then
+#  rm -rf ${TMPDIR}
+#fi;
+exit;
+
+chroot ${TMPDIR} /sbin/ldconfig
+
+if [ -e install-${ARCH}.squashfs ];then
+  rm install-${ARCH}.squashfs
+fi;
+mksquashfs ${TMPDIR}/* install-${ARCH}.squashfs -comp xz
+
+if [ "${TMPDIR}" ] && [ -d ${TMPDIR} ];then
+  rm -rf ${TMPDIR}
+fi;

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+SRCDIR=/var/opt/dtsbuild/src
+DISTDIR=${prefix}
+ARCHROOT=/var/opt/dtsbuild/sysroot
+DTSETCDIR=/etc/opt/dtsbuild
+DEFDIR=${DTSETCDIR}/builddef
+DTSLEXEC=/opt/dtsbuild/libexec
+SCRIPTDIR=/opt/dtsbuild/bin
+SKELDIR=${DTSETCDIR}/skel
+PKGBUILDDIR=/var/opt/dtsbuild/build
+DTSSRVDIR=/srv/opt/dtsbuild
+PKGDISTDIR=/srv/opt/dtsbuild/tar
+TOOLPKG=${PKGDISTDIR}/core
+PKGDESTDIR=${PKGBUILDDIR}/staging
+BASEROOT=${PKGBUILDDIR}/bootstrap
+STATDIR=${PKGBUILDDIR}/status
+GITURL=${GITURL}
+
+get_pkg_name() {
+  BUILDPROJECT=${1}
+  . ${DEFDIR}/${1}
+  AVER=VERSION_${2}
+  if [ "${!AVER}" ];then
+    VERSION=${!AVER}
+  fi;
+  eval ${AVER}=""
+  PNAME=${1}${VERSEP}${VERSION}
+}
+
+for arch in `ls ${STATDIR}`;do
+  for pkg in `ls ${DEFDIR}`;do
+    if [ -e ${STATDIR}/${arch}/done/${pkg} ];then
+      continue
+    fi;
+    (get_pkg_name ${pkg} ${arch}
+    if [ -d ${PKGDISTDIR}/${arch}/${PNAME} ];then
+      md5sum -b ${PKGDISTDIR}/${arch}/${PNAME}/* > ${STATDIR}/${arch}/done/${pkg}
+     else
+      echo ${PKGDISTDIR}/${arch}/${PNAME}
+    fi)
+  done;
+done;
