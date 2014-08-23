@@ -4,6 +4,15 @@ DTSETCDIR=@sysconfdir@
 DEFDIR=${DTSETCDIR}/builddef
 RPMDIR=@SRVDIRYUM@
 
+bootstrap_group() {
+  for bpkg in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
+              pkg-config util-linux diffutils libtool gperf m4 cpio git binutils glibc autoconf \
+              automake-1.9 apache-ant qemu junit rhino antlr4 gmp mpfr mpc cloog isl zlib gcc \
+              findutils patch iana-etc tzdata ecj linux_logo dtsbuild ncursesw;do
+    echo ${bpkg}
+  done;
+}
+
 generate_groups() {
   for pkg in `ls ${DEFDIR}/`;do
     (. ${DEFDIR}/${pkg}
@@ -12,6 +21,8 @@ generate_groups() {
     fi;
     echo ${pkg} >> ${PKGLIST_PTH}/${RPMGROUP})
   done
+
+  bootstrap_group > ${PKGLIST_PTH}/static-root
 
   printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
   printf "<!DOCTYPE comps PUBLIC \"-//Red Hat, Inc.//DTD Comps info//EN\" \"comps.dtd\"><comps>";
