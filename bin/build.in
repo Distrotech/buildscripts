@@ -1991,7 +1991,12 @@ build_gcc_bootstrap() {
     MARCH=BOOTOPT_${1}
     CONFOPT="${SHAREDOPT} ${SYSROOT} ${CONFOPTX} --with-gmp-lib=${ARCHROOT}/${3}/usr/${TLIBDIR}/${TMLIBDIR}";
     if [ "${1:0:3}" != "cyg" ];then
-      CONFOPT="${CONFOPT} --enable-languages=c,c++,ada";
+      CONFOPT="${CONFOPT} --enable-languages=c,c++,ada,java --with-ecj-jar=/usr/share/java/ecj-4.3.2.jar --enable-java-home";
+      if [ "${1}" == "${TARCH}" ];then
+        CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${TLIBDIR}/jvm/gcj-jdk";
+       else
+        CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${TLIBDIR}/jvm/gcj-jdk-${1}";
+      fi;
      else
       CONFOPT="${CONFOPT} --enable-languages=c,c++";
     fi;
@@ -2840,14 +2845,6 @@ build_dependancies() {
 
   #RPM/Yum
   build_packages ${1} elfutils libdwarf rpm pysqlite yum-metadata-parser pycurl urlgrabber yum deltarpm createrepo || return 1
-
-  if [ "${1}" == "${NARCH}" ];then
-    #Static binutils distributable
-    (build_bootstrap_binutils ${1} ${2}) || return 1
-
-    #Shared GCC C/C++/ADA distributable
-    (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
-  fi;
 }
 
 sync_ml_libs() {
@@ -3047,8 +3044,14 @@ bootstrap_toolchain() {
 
   if [ "${1}" != "${NARCH}" ];then
     (build_bootstrap_binutils ${1} ${HOST}) && \
-    (build_glibc_march ${1}) || return 1 
+    (build_glibc_march ${1}) || return 1
    else
+    #Static binutils distributable
+    (build_bootstrap_binutils ${1} ${HOST}) || return 1
+
+    #Shared GCC C/C++/ADA/Java distributable
+    (build_gcc_bootstrap ${1} ${HOST} ${1} shared) || return 1
+
     build_dependancies ${NARCH} ${BUILD} || return 1
     return 0;
   fi;
