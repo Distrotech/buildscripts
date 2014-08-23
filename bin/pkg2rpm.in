@@ -57,17 +57,28 @@ find . |awk '{printf "if [ ! -d '"'"'%s'"'"' ] || [ -h '"'"'%s'"'"' ];then echo 
 }
 
 pkg2rpm() {
-  BUILDPROJECT=${2}
   barch=${1}
   case ${1} in
     *64)ARCH_BITS="(64bit)";;
     *)ARCH_BITS="";;
   esac;
-  . ${DEFDIR}/${2}
 
-  DONTBUILDPAT=${DONTBUILD// /|}
-  if [ "${DONTBUILD}" ] && [[ ${1} =~ ${DONTBUILDPAT} ]];then
-    return 0;
+  if [ "${2}" == "gcc-shared" ];then
+    BUILDPROJECT="gcc";
+    ALIAS="gcc";
+    VERADD="-shared";
+    PKGROOTDIR="${PKGDISTDIR}/core";
+    RPMOBSOLETE="";
+   else
+    VERADD="";
+    BUILDPROJECT=${2}
+    PKGROOTDIR=${PKGDISTDIR}
+  fi;
+
+  . ${DEFDIR}/${BUILDPROJECT}
+
+  if [ "${2}" == "gcc" ];then
+    RPMOBSOLETE="gcc-shared";
   fi;
 
   AVER=VERSION_${1}
@@ -76,15 +87,20 @@ pkg2rpm() {
   fi;
   eval ${AVER}=""
 
+  DONTBUILDPAT=${DONTBUILD// /|}
+  if [ "${DONTBUILD}" ] && [[ ${1} =~ ${DONTBUILDPAT} ]];then
+    return 0;
+  fi;
+
   if [ "${GITREPO}" ];then
     git=${GITREPO}
    elif [ "${ALIAS}" ];then
     git=${ALIAS}
    else
-    git=${2}
+    git=${BUILDPROJECT}
   fi;
 
-  PNAME=${2}${VERSEP}${VERSION}
+  PNAME=${BUILDPROJECT}${VERSEP}${VERSION}${VERADD}
 
   if [ ! -d ${RPMDIR}/${1}/${2}/${PNAME} ];then
     mkdir -p ${RPMDIR}/${1}/${2}/${PNAME}
@@ -94,7 +110,7 @@ pkg2rpm() {
     RPMGROUP="no-group";
   fi;
 
-  for pfile in `ls -d ${PKGDISTDIR}/${1}/${PNAME}/${PNAME}*tar.xz 2>/dev/null`;do
+  for pfile in `ls -d ${PKGROOTDIR}/${1}/${PNAME}/${PNAME}*tar.xz 2>/dev/null`;do
     TFSIZE=$(stat -c %s ${pfile})
     if [ "${TFSIZE}" == "76" ] || [ "${TFSIZE}" == "112" ];then
       continue
@@ -148,7 +164,7 @@ pkg2rpm() {
           SRPMPROVIDES="${SRPMPROVIDES} ${rpm_sub_pro}";
         done;
         if [ ! "${ARCH_BITS}" ];then
-          if [ "${2}" != "gcc" ] || [ "${xpkg}" ];then
+          if [ "${BUILDPROJECT}" != "gcc" ] || [ "${xpkg}" ];then
             SRPMPROVIDES=$(echo ${SRPMPROVIDES} |sed -e "s/()//g")
           fi;
         fi;
@@ -220,7 +236,7 @@ pkg2rpm() {
         if [ "${MLIBARCH}" ];then
           if [ "${xpkg}" == "-libs" ] || [ "${xpkg}" == "-dbg" ] || [ "${xpkg}" == "-dev" ];then
             for glibc_arch in ${MLIBARCH};do
-              MLIBTAR=${PKGDISTDIR}/${glibc_arch}/${PNAME}/${PNAME}${xpkg}.tar.xz
+              MLIBTAR=${PKGROOTDIR}/${glibc_arch}/${PNAME}/${PNAME}${xpkg}.tar.xz
               case ${glibc_arch} in
                 x86_32)AMLIBDIR="libx32";;
                 *64)AMLIBDIR="lib64";;
@@ -303,34 +319,34 @@ pkg_rpm_arch() {
   fi;
   export RPMROOT
 
-  for pkg in `ls ${DEFDIR}`;do
+  for pkg in `ls ${DEFDIR}` gcc-shared;do
     if [ ! -e ${STATDIR}/${1}/done/${pkg} ];then
       continue;
     fi;
     (pkg2rpm ${1} ${pkg})
   done;
 
-  if [ -d ${RPMDIR}/repodata ];then
-    createrepo --update ${RPMDIR}
-   else
-    createrepo ${RPMDIR}
-  fi;
+#  if [ -d ${RPMDIR}/repodata ];then
+#    createrepo --update ${RPMDIR}
+#   else
+#    createrepo ${RPMDIR}
+#  fi;
 
-  yum --installroot=${RPMROOT} clean all
-  if [ "${1}" != "${NARCH}" ];then
-    FILTER="*.${NARCH}";
-  fi;
+#  yum --installroot=${RPMROOT} clean all
+#  if [ "${1}" != "${NARCH}" ];then
+#    FILTER="*.${NARCH}";
+#  fi;
 
-  case ${NARCH} in
-    x86_64|x86_32|i[3-6]86)
-      case ${1} in
-        x86_64)yum --installroot=${RPMROOT} --exclude="${FILTER}" --exclude="*.i686" --exclude="*.x86_32" --skip-broken --assumeyes update;;
-        x86_32)yum --installroot=${RPMROOT} --exclude="${FILTER}" --exclude="*.i686" --exclude="*.x86_64" --skip-broken --assumeyes update;;
-        i[3-6]86)yum --installroot=${RPMROOT} --exclude="${FILTER}" --exclude="*.x86_64" --exclude="*.x86_32" --skip-broken --assumeyes update;;
-        *)yum --installroot=${RPMROOT} --exclude="*.x86_64" --exclude="*.x86_32" --exclude="*.i686" --skip-broken --assumeyes update;;
-      esac;;
-      *)yum --installroot=${RPMROOT} --exclude="${FILTER}" --skip-broken --assumeyes update;;
-  esac;
+#  case ${NARCH} in
+#    x86_64|x86_32|i[3-6]86)
+#      case ${1} in
+#        x86_64)yum --installroot=${RPMROOT} --exclude="${FILTER}" --exclude="*.i686" --exclude="*.x86_32" --skip-broken --assumeyes update;;
+#        x86_32)yum --installroot=${RPMROOT} --exclude="${FILTER}" --exclude="*.i686" --exclude="*.x86_64" --skip-broken --assumeyes update;;
+#        i[3-6]86)yum --installroot=${RPMROOT} --exclude="${FILTER}" --exclude="*.x86_64" --exclude="*.x86_32" --skip-broken --assumeyes update;;
+#        *)yum --installroot=${RPMROOT} --exclude="*.x86_64" --exclude="*.x86_32" --exclude="*.i686" --skip-broken --assumeyes update;;
+#      esac;;
+#      *)yum --installroot=${RPMROOT} --exclude="${FILTER}" --skip-broken --assumeyes update;;
+#  esac;
 }
 
 if [ "${1}" ];then
