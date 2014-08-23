@@ -2230,59 +2230,6 @@ build_gcc_bootstrap() {
   return 0
 }
 
-build_qemu_static() {
-  BUILDPROJECT=qemu
-  . ${DEFDIR}/qemu;
-  AVER=VERSION_${NARCH}
-  if [ "${!AVER}" ];then
-    VERSION=${!AVER}
-  fi;
-  eval ${AVER}=""
-  QEMU=qemu${VERSEP}${VERSION}
-  export PREFIX
-
-  export PKG_CONFIG_PATH="/${NLIBDIR}/pkgconfig:/usr/${NLIBDIR}/pkgconfig:/opt/apache2/${NLIBDIR}/pkgconfig:/usr/share/${NLIBDIR}/pkgconfig:${X11DIR}/${NLIBDIR}/pkgconfig:/lib/pkgconfig:/usr/lib/pkgconfig:/opt/qt-${QT_VER}/${NLIBDIR}/pkgconfig:/opt/xfce/${NLIBDIR}/pkgconfig";
-
-  QEMU_DIR=${PKGDESTDIR}/${NARCH}/${QEMU}-static
-  QEMU_PTH=${TOOLPKG}/${NARCH}/${QEMU}-static
-  DIST_PKG=${QEMU_PTH}/${QEMU}-static.tar.xz
-
-  if [ -d ${QEMU_DIR} ] && [ -f ${DIST_PKG} ];then
-    return
-  fi;
-  git_load_pkg qemu ${VERSEP}${VERSION} distrotech-${QEMU} qemu
-
-  setup_build_dir ${NARCH} qemu ${QEMU} ${NARCH} -static
-
-  if [ "${NMLIBDIR}" ];then
-    C_LIBDIRS="${NLIBDIR}/${NMLIBDIR}"
-   else
-    C_LIBDIRS=${NLIBDIR}
-  fi;
-  run_configure ${C_LIBDIRS} .. --static --disable-system --disable-user --enable-linux-user --disable-werror \
-                --target-list=arm-linux-user,mips-linux-user,mips64-linux-user,ppc-linux-user,ppc64-linux-user,aarch64-linux-user \
-                --cc=${BUILD}-gcc --extra-ldflags="-L=/usr/${C_LIBDIRS}" || return 1
-  make ${MAKE_J} || make || return 1
-
-  mkdir -p ${QEMU_DIR}/usr/bin
-  for arch in arm mips mips64 ppc ppc64 aarch64;do
-    if [ "${arch}" != "${NARCH}" ];then
-      uemu=${arch}-linux-user/qemu-${arch};
-      cp ${uemu} ${QEMU_DIR}/usr/bin/qemu-${arch}-static
-    fi;
-  done
-
-  if [ "${DIETBUILD}" == "1" ];then
-     cd ${SRCDIR}/qemu/${QEMU}
-     rm -rf build-${NARCH}-${1}-static
-  fi;
-
-  rsync -aP --exclude=/usr/bin/qemu-${NARCH}-static ${QEMU_DIR}/ /
-  (cd ${QEMU_DIR};
-   mkdir -p ${QEMU_PTH};
-   tar -cJf ${DIST_PKG} *)
-}
-
 build_packages() {
   DARCH=${1}
   shift
@@ -2298,160 +2245,12 @@ build_packages() {
   done;
 }
 
-build_static_tool() {
-  barch=${1}
-  BUILDPROJECT=${4}
-  . ${DEFDIR}/${4}
-  AVER=VERSION_${1}
-  if [ "${!AVER}" ];then
-    VERSION=${!AVER}
-  fi;
-  eval ${AVER}=""
-  STATICTOOL=${4}${VERSEP}${VERSION}
-
-  PATH=${PATH}:.
-
-  if [ -d ${PKGDESTDIR}/${1}/${STATICTOOL}-static ];then
-    return
-  fi;
-
-  echo "Building ${4}"
-
-  if [ ! "${GITREPO}" ];then
-    export GITREPO=${4}
-  fi;
-  if [ ! "${GITBRANCH}" ];then
-    export GITBRANCH="distrotech-${STATICTOOL}";
-  fi
-  git_load_pkg ${4} ${VERSEP}${VERSION} ${GITBRANCH} ${GITREPO}
-
-  if [ -d ${SRCDIR}/${4}/${STATICTOOL}/build-${1}-static ];then
-    rm -rf ${SRCDIR}/${4}/${STATICTOOL}/build-${1}-static
-  fi;
-
-  if [  "${4}" != "subversion" ];then
-    ARCHOPTV=OPT_${1}
-    ARCHOPT=${!ARCHOPTV}
-   else
-    ARCHOPT="--with-neon=${ARCHROOT}/${1}/usr/ --with-apr-util=${ARCHROOT}/${1}/usr/";
-  fi;
-
-  if [ "${CFGPTH}" ];then
-    CFGPTH="/${CFGPTH}"
-   else
-    CFGPTH="";
-  fi;
-
-  if [ "${BUILDDIR}" ] && [ "${BUILDDIR}" == "0" ];then
-    cd ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}
-    CFG_BIN=.
-   else
-    mkdir ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}/build-${1}-static
-    cd ${SRCDIR}/${4}/${STATICTOOL}${CFGPTH}/build-${1}-static
-    CFG_BIN=..
-  fi;
-
-  eval ${CFG_BIN}/configure --libdir=${PREFIX}/${3} --prefix=${PREFIX} --sysconfdir=/etc --mandir=${PREFIX}/share/man \
-               --infodir=${PREFIX}/share/info --localstatedir=/var --build=${BUILD} --host=${2} ${STATICOPT} ${ARCHOPT} || return 1
-
-  #Touch up documents
-  find ${SRCDIR}/${4}/${STATICTOOL} -regex '.*\.info$' -or -regex '.*\.pdf$'|awk '{printf "touch %s\n",$1}' |sh
-
-  if [ "${4}" == "flex" ];then
-    sed -i -e "s/\(all:\).*/\1/" doc/Makefile
-    cp ../scan.c ../parse.h ../parse.c ./
-  fi;
-
-  if [ "${4}" == "make" ];then
-    sed -i -e "s/\(all:\).*/\1/" doc/Makefile
-  fi;
-
-  if [ "${4}" == "binutils" ];then
-    make ${MAKE_J} configure-host || return 1
-  fi;
-
-  if [ -x libtool ] && [ "${BOOTSTRAP}" == "0" ];then
-    cp ${ARCHROOT}/${1}/usr/bin/libtool ./
-  fi;
-
-  if [ ! "${SYSROOTFIXUP}" ];then
-    SYSROOTFIXUP="1";
-  fi;
-  export SYSROOTFIXUP;
-  if [ "${BOOTSTRAP}" == "0" ];then
-    sysroot_fixup ${1}
-  fi;
-
-  #Postconfig hook
-  if [ -e ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-config ];then
-    if [ ! -x ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-config ];then
-      chmod 750 ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-config
-    fi
-    eval ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-config ${1} ${SRCDIR}/${4}/${STATICTOOL} ${PKGDESTDIR}/${1}/${STATICTOOL}-static
-  fi;
-
-  eval make ${MAKE_J} ${STATICMOPT} || eval make ${STATICMOPT} || return 1
-  eval make ${STATICMOPT} DESTDIR=${PKGDESTDIR}/${1}/${STATICTOOL}-static install || return 1
-
-  #Postinstall hook
-  if [ -e ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install ];then
-    if [ ! -x ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install ];then
-      chmod 750 ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install
-    fi
-    eval ${SRCDIR}/${4}/${STATICTOOL}/.build-info/post-install ${1} ${SRCDIR}/${4}/${STATICTOOL} ${PKGDESTDIR}/${1}/${STATICTOOL}-static
-  fi;
-
-  if [ "${STATICINSTLIBS}" ] && [ "${STATICINSTLIBS}" == "1" ];then
-    if [ -d ${ARCHROOT}/${1} ];then
-      rsync -avP ${PKGDESTDIR}/${1}/${STATICTOOL}-static/usr/${3}/*.a ${ARCHROOT}/${1}/usr/${3}/
-     else
-      rsync -avP ${PKGDESTDIR}/${1}/${STATICTOOL}-static/usr/${3}/*.a /usr/${3}/
-    fi;
-  fi;
-
-  if [ "${DIETBUILD}" == "1" ];then
-     cd ${SRCDIR}/${4}/${STATICTOOL}
-     rm -rf build-${1}-static
-  fi;
-
-  tar_package ${PKGDESTDIR}/${1}/${STATICTOOL}-static ${TOOLPKG}/${1} ${STATICTOOL}-static > /dev/null 2>&1
-}
-
-static_toolbuild() {
-  if [ "${1}" != "${NARCH}" ];then
-    arch_config ${1}
-    TLIBDIR=${SETLIBDIR}
-    TARGET=${TUPPLE}
-    if [ "${MLIBDIR}" ];then
-      TLIBDIR="${TLIBDIR}/${MLIBDIR}";
-    fi;
-   else
-    TLIBDIR=${NLIBDIR}
-    TARGET=${BUILD}
-    if [ "${NMLIBDIR}" ];then
-      TLIBDIR="${TLIBDIR}/${NMLIBDIR}";
-    fi;
-  fi;
-
-  export C_LIBDIRS=${TLIBDIR}
-
-  STATICPKG="bash coreutils nano less pkg-config git dialog";
-#  if [ "${BOOTSTRAP}" == "0" ];then
-#    STATICPKG="${STATICPKG} bison flex sed gawk make grep gzip tar xz diffutils libtool gperf m4 cpio";
-#  fi;
-
-  for stool in ${STATICPKG};do
-    (build_static_tool ${1} ${TARGET} ${TLIBDIR} ${stool}) || return 1
-  done;
-}
-
 fixup_glibc_link() {
   if [ -h ${1}/usr/${2}/${3} ];then
     rm ${1}/usr/${2}/${3}
   fi;
   ln -s -r ${1}/${2}/${3}.${4} ${1}/usr/${2}/${3}
 }
-
 
 java_hybrid_setup() {
   if [ -x ${1}/usr/bin/hybrid/${3} ] && [ -h ${1}/usr/${4}/jvm/gcj-jdk/bin/${2} ];then
@@ -3074,9 +2873,6 @@ build_dependancies() {
 
     #Shared GCC C/C++/ADA distributable
     (build_gcc_bootstrap ${1} ${2} ${1} shared) || return 1
-
-    #Build tools needed for compiling
-    static_toolbuild ${1} ${2}
   fi;
 }
 
@@ -3280,19 +3076,7 @@ bootstrap_toolchain() {
     (build_glibc_march ${1}) || return 1 
    else
     build_dependancies ${NARCH} ${BUILD} || return 1
-
-    #QEMU Static runtime emulator
-    (build_qemu_static)
     return 0;
-  fi;
-
-  #Add QEMU static to build
-  if [ -d ${ARCHROOT}/${1}/usr/bin ] && [ "${QCPU}" ] && [ "${1}" != "${NARCH}" ] && \
-     [ -f ${PKGDESTDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ];then
-    if [ ! -f ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static ] || \
-       [ ${PKGDESTDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static -nt ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static ];then
-      cp ${PKGDESTDIR}/${NARCH}/${QEMU}/usr/bin/qemu-${QCPU}-static ${ARCHROOT}/${1}/usr/bin/qemu-${QCPU}-static
-    fi;
   fi;
 
   build_dependancies ${1} ${HOST} || return 1
@@ -3618,13 +3402,6 @@ build_bootstrap() {
   echo "Packages for static root"
   build_packages ${1} junit rhino antlr4 apache-ant automake-1.9 autoconf ecj linux_logo || return 1
 
-  echo "Static tools"
-  (export PYTHON=${ARCHROOT}/${1}/usr/bin/python
-  export PYTHONHOME=${ARCHROOT}/${1}/usr
-  static_toolbuild ${1}) || return 1
-
-  echo "Qemu static bits"
-  (build_qemu_static) || return 1
   return;
 }
 
