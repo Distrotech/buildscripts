@@ -44,8 +44,9 @@ for pkggrp in ${PKGLIST};do
   for spkg in libs conf locale;do
     RPM_PKG_LIST+="${pkggrp}-${spkg} "
   done;
-  if [ "${pkggrp}" == "static-root" ];then
-    RPM_PKG_LIST+="${pkggrp}-dev "
+  if [ "${pkggrp}" == "buildroot" ];then
+    RPM_PKG_LIST+="${pkggrp}-dev --exclude=gcc-libs --exclude=gcc --exclude=gcc-locale --exclude=gcc-dev
+"
   fi;
 done
 do_yuminstall ${TMPDIR} ${RPM_PKG_LIST}

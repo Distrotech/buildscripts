@@ -22,7 +22,7 @@ generate_groups() {
     echo ${pkg} >> ${PKGLIST_PTH}/${RPMGROUP})
   done
 
-  bootstrap_group > ${PKGLIST_PTH}/static-root
+  bootstrap_group > ${PKGLIST_PTH}/buildroot
 
   printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
   printf "<!DOCTYPE comps PUBLIC \"-//Red Hat, Inc.//DTD Comps info//EN\" \"comps.dtd\"><comps>";
