@@ -8,7 +8,8 @@ bootstrap_group() {
   for bpkg in bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo \
               pkg-config util-linux diffutils libtool gperf m4 cpio git binutils glibc autoconf \
               automake-1.9 apache-ant junit rhino antlr4 gmp mpfr mpc cloog isl zlib gcc-shared \
-              findutils patch iana-etc tzdata ecj linux_logo dtsbuild ncursesw;do
+              findutils patch iana-etc tzdata ecj linux_logo dtsbuild ncursesw Python Linux-PAM \
+              Xorg autogen db;do
     echo ${bpkg}
   done;
 }
@@ -52,10 +53,12 @@ generate_groups() {
 
 PKGLIST_PTH=$( mktemp -p /tmp -d yumrpmpgklist.XXXXXXXXXXX)
 if [ -d ${PKGLIST_PTH} ];then
-  generate_groups |xmllint --format  - > ${RPMDIR}/repodata/groups.xml
   if [ -d ${RPMDIR}/repodata ];then
+    generate_groups |xmllint --format  - > ${RPMDIR}/repodata/groups.xml
     createrepo -g repodata/groups.xml --update ${RPMDIR}
    else
+    mkdir -p ${RPMDIR}/repodata
+    generate_groups |xmllint --format  - > ${RPMDIR}/repodata/groups.xml
     createrepo -g repodata/groups.xml ${RPMDIR}
   fi;
   rm -rf ${PKGLIST_PTH}
