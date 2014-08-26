@@ -2535,8 +2535,8 @@ bootstrap_arch_root() {
        rsync -avP ${PKGDESTDIR}/${arch}/${PNAME}/ ${ARCHROOT}/${arch}/)
     fi;
 
-    build_packages ${arch} Python talloc tevent libevent libverto krb5 libtirpc flex selinux \
-      Linux-PAM readline popt dialog util-linux bash coreutils bison sed texinfo libunistring libatomic_ops gc \
+    build_packages ${arch} make Python talloc tevent libevent libverto krb5 libtirpc flex selinux \
+      readline popt dialog libcap-ng Linux-PAM util-linux bash coreutils bison sed texinfo libunistring libatomic_ops gc \
       glib pkg-config gzip tar rsync grep xz diffutils patch gperf m4 cpio findutils less \
       libxslt gdbm gawk iana-etc tzdata binutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 \
       automake-1.13 automake-1.14 file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl \
@@ -2664,8 +2664,8 @@ build_dependancies() {
 
   if [ "${1}" != "${NARCH}" ];then
     build_packages ${1} gobject-introspection libdaemon avahi-nogui talloc tevent libevent libverto krb5-static krb5 libpaper cups ghostscript \
-      gs-fonts ijs libspectre cairo poppler atk gdk-pixbuf libvdpau setuptools mozjs mozjs-17 polkit libmicrohttpd LVM2 cryptsetup systemd libgusb \
-      bash-completion colord || return 1
+      gs-fonts ijs libspectre cairo poppler atk gdk-pixbuf libvdpau setuptools mozjs mozjs-17 polkit libmicrohttpd LVM2 cryptsetup systemd \
+      bash-completion libgusb colord || return 1
   fi;
 
   build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango || return 1
@@ -2677,7 +2677,7 @@ build_dependancies() {
   fi;
 
   build_packages ${1} vala libdrm intltool llvm talloc tevent libevent libverto krb5-static krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
-    module-init-tools Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh LVM2 cryptsetup systemd || return 1
+    module-init-tools libvdpau Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh LVM2 cryptsetup systemd || return 1
 
   if [ "${NARCH}" == "${1}" ];then
     (if [ "${MLIBDIR}" ];then
@@ -2722,7 +2722,7 @@ build_dependancies() {
 
   build_packages ${1} glamor Xorg poppler poppler-data qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
     txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib docutils dbus-python mozjs mozjs-17 polkit GConf libbonobo \
-    libatomic_ops gc guile autogen libmad Xaw3d gv rtmpdump polkit-gnome icmake yodl swig M2Crypto wireless-regdb crda || return 1
+    libatomic_ops gc guile autogen libmad Xaw3d gv rtmpdump polkit-gnome icmake yodl swig setuptools M2Crypto wireless-regdb crda || return 1
 
   #Build openjdk on native
   if [ "${NARCH}" == "${1}" ];then
@@ -2758,7 +2758,7 @@ build_dependancies() {
     xorriso apg archivemount bc bindfs bsd-finger cdde dcron dmraid ecryptfs-utils ed fbset fdutils fetchmail \
     foomatic-filters globe hdparm hfsutils joe logcheck logrotate mailutils libpipeline po4a man-db man-pages mdadm mrouted \
     mcelog mt-st p7zip phoon pimd procmail quagga quota-tools radvd rp-pppoe screen sdparm setserial sharutils \
-    usb-modeswitch usb-modeswitch-data xterm Pyrex bzr cdrdao libgusb colord cvs dash dcd dmake faad2 frox \
+    usb-modeswitch usb-modeswitch-data xterm Pyrex bzr cdrdao bash-completion libgusb colord cvs dash dcd dmake faad2 frox \
     gaa gdb gpm igmpproxy iksemel imap portablexdr ippool ipv6calc kbd keepalived lksctp-tools libid3tag madplay man2html \
     mercurial mrtg nmap openl2tp freeradius-server freeradius-client memcached libmemcached lksctp-tools libmicrohttpd \
     opensips openvpn pine psqlodbc rpcbind sendmail sox sqliteodbc stund hostapd wpa_supplicant libnetfilter_cthelper \
@@ -2900,17 +2900,18 @@ bootstrap_native() {
   fi;
 
   build_packages ${NARCH} gmp ncursesw ncurses gettext p11-kit nettle texinfo gnutls libgpg-error libgcrypt pcre ustr \
-    flex bison libprelude bzip2 libaudit selinux libtirpc Linux-PAM dialog ||return 1
+    flex bison libprelude bzip2 libcap-ng libaudit selinux glib libverto keyutils krb5 libtirpc dialog ||return 1
 
   #Bootstrap native arch with deps for GCC [libjava] if gcc not built
   if [ ! -e ${STATDIR}/${NARCH}/done/unzip ];then
-    build_packages ${NARCH} xz libxml2 libxslt libffi gdbm Python libcap libcap-ng patch docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
-      docbook-4.5 docbook-xsl xmlto OpenSP openjade expat dbus glib pkg-config gtk-doc libcroco zip unzip || return 1
+    build_packages ${NARCH} xz libxml2 libxslt libffi gdbm Python libcap patch docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
+      docbook-4.5 docbook-xsl xmlto OpenSP openjade expat intltool gtk-doc attr acl kmod openssl trousers systemd dbus pkg-config \
+      libcroco zip unzip || return 1
   fi;
 
   #Rebuild some packages with python/shared gcc
   if [ ! -e ${STATDIR}/${NARCH}/done/gcc ];then
-    for delstamp in glibc libxml2 libxslt texinfo libaudit selinux;do
+    for delstamp in glibc libxml2 libxslt texinfo libaudit selinux glib;do
       if [ -e ${STATDIR}/${NARCH}/done/${delstamp} ];then
         rm ${STATDIR}/${NARCH}/done/${delstamp}
       fi;
