@@ -19,15 +19,15 @@ do_yuminstall() {
   case ${NARCH} in
     x86_32|x86_64|i[3-6]86)
       case ${ARCH} in
-        x86_64)yum -y --installroot=${YINSTROOT} --exclude="*.x86_32" --exclude="*.i686" groupinstall $@;;
-        x86_32)yum -y --installroot=${YINSTROOT} --exclude="*.x86_64" --exclude="*.i686" groupinstall $@;;
-        i[3-6]86)yum -y --installroot=${YINSTROOT} --exclude="*.x86_64" --exclude="*.x86_32" groupinstall $@;;
-        *)yum --installroot=${YINSTROOT} --exclude="*.x86_64" --exclude="*.x86_32" --exclude="*.i686" groupinstall $@;;
+        x86_64)yum -y --installroot=${YINSTROOT} --exclude="*.x86_32" --exclude="*.i686" install $@;;
+        x86_32)yum -y --installroot=${YINSTROOT} --exclude="*.x86_64" --exclude="*.i686" install $@;;
+        i[3-6]86)yum -y --installroot=${YINSTROOT} --exclude="*.x86_64" --exclude="*.x86_32" install $@;;
+        *)yum --installroot=${YINSTROOT} --exclude="*.x86_64" --exclude="*.x86_32" --exclude="*.i686" install $@;;
       esac;;
     *)if [ "${NARCH}" == "${ARCH}" ];then
-        yum -y --installroot=${YINSTROOT} groupinstall $@;
+        yum -y --installroot=${YINSTROOT} install $@;
        else
-        yum -y --installroot=${YINSTROOT} --exclude="*.${NARCH}" groupinstall $@;
+        yum -y --installroot=${YINSTROOT} --exclude="*.${NARCH}" install $@;
       fi;;
   esac;
 }
@@ -40,12 +40,12 @@ fi;
 
 RPM_PKG_LIST="";
 for pkggrp in ${PKGLIST};do
-  RPM_PKG_LIST+="${pkggrp} "
+  RPM_PKG_LIST+="@${pkggrp} "
   for spkg in libs conf locale;do
-    RPM_PKG_LIST+="${pkggrp}-${spkg} "
+    RPM_PKG_LIST+="@${pkggrp}-${spkg} "
   done;
   if [ "${pkggrp}" == "buildroot" ];then
-    RPM_PKG_LIST+="${pkggrp}-dev --exclude=gcc-libs --exclude=gcc --exclude=gcc-locale --exclude=gcc-dev
+    RPM_PKG_LIST+="@${pkggrp}-dev Xorg-dev.${ARCH} --exclude=gcc-libs --exclude=gcc --exclude=gcc-locale --exclude=gcc-dev
 "
   fi;
 done
