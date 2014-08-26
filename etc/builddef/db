@@ -2,13 +2,7 @@ VERSION="6.0.30"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-compat185 --enable-shared=yes --enable-dbm --enable-cxx --enable-tcl
-         --with-tcl=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}";
-if [ "${BUILDPROJECT}" == "db-nojava" ];then
-  CONFOPT="${CONFOPT} --disable-java";
- else
-  CONFOPT="${CONFOPT} --enable-java";
-  RPMOBSOLETE="db-nojava";
-fi;
+         --with-tcl=${ARCHROOT}/${barch}/usr/${C_LIBDIRS} --enable-java";
 CFGPTH="build_unix";
 CFGBIN="/dist/";
 OPT_arm="ac_cv_func_pstat_getdynamic=no";
