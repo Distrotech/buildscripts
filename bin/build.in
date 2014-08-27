@@ -1024,7 +1024,7 @@ autoconf_cross_build() {
     if [ "${ADDCC}" ] && [ "${ADDCC}" == "0" ];then
       eval /usr/bin/make ${MAKE_J} HOSTCC=\"${BUILD}-gcc\" HOSTLD=\"${BUILD}-gcc\" \
         HOSTCC_LDFLAGS=\"-L=/${NLIBDIR} -L=/usr/${NLIBDIR}\" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} && \
-        eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
+        eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install
       RES=$?
       if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
         eval /usr/bin/make HOSTCC=\"${BUILD}-gcc\" HOSTLD=\"${BUILD}-gcc\" HOSTCC_LDFLAGS=\"-L=/${NLIBDIR} -L=/usr/${NLIBDIR}\" \
@@ -1037,7 +1037,7 @@ autoconf_cross_build() {
       eval /usr/bin/make ${MAKE_J} LD=\"${LD}\" CC=\"${CC}\" CXX=\"${CXX}\" HOSTCC=\"${BUILD}-gcc\" \
         HOSTCC_LDFLAGS=\"-L=/${NLIBDIR} -L=/usr/${NLIBDIR}\" ${MAKEOPTS} ${ARCHMOPT} \
         ${MAKEALL} ${MAKETARGETS} && \
-      eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
+      eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install
       RES=$?
       if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
         eval /usr/bin/make LD=\"${LD}\" CC=\"${CC}\" CXX=\"${CXX}\" HOSTCC=\"${BUILD}-gcc\" \
