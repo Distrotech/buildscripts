@@ -1024,12 +1024,12 @@ autoconf_cross_build() {
     if [ "${ADDCC}" ] && [ "${ADDCC}" == "0" ];then
       eval /usr/bin/make ${MAKE_J} HOSTCC=\"${BUILD}-gcc\" HOSTLD=\"${BUILD}-gcc\" \
         HOSTCC_LDFLAGS=\"-L=/${NLIBDIR} -L=/usr/${NLIBDIR}\" ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} && \
-        eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install
+        eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
       RES=$?
       if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
         eval /usr/bin/make HOSTCC=\"${BUILD}-gcc\" HOSTLD=\"${BUILD}-gcc\" HOSTCC_LDFLAGS=\"-L=/${NLIBDIR} -L=/usr/${NLIBDIR}\" \
           ${MAKEOPTS} ${ARCHMOPT} ${MAKEALL} ${MAKETARGETS} || make ${MAKE_J} || return 1
-        eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install 
+        eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
        elif [ ${RES} != 0 ];then
         return 1
       fi;
@@ -1037,13 +1037,13 @@ autoconf_cross_build() {
       eval /usr/bin/make ${MAKE_J} LD=\"${LD}\" CC=\"${CC}\" CXX=\"${CXX}\" HOSTCC=\"${BUILD}-gcc\" \
         HOSTCC_LDFLAGS=\"-L=/${NLIBDIR} -L=/usr/${NLIBDIR}\" ${MAKEOPTS} ${ARCHMOPT} \
         ${MAKEALL} ${MAKETARGETS} && \
-      eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install
+      eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
       RES=$?
       if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
         eval /usr/bin/make LD=\"${LD}\" CC=\"${CC}\" CXX=\"${CXX}\" HOSTCC=\"${BUILD}-gcc\" \
           HOSTCC_LDFLAGS=\"-L=/${NLIBDIR} -L=/usr/${NLIBDIR}\" ${MAKEOPTS} ${ARCHMOPT} \
           ${MAKEALL} ${MAKETARGETS} || make ${MAKE_J} || return 1
-        eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install
+        eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
        elif [ ${RES} != 0 ];then
         return 1
       fi;
@@ -2547,7 +2547,7 @@ bootstrap_arch_root() {
       (setup_hybrid_boot ${arch} ${NARCH}) || return 1
       #perl wants db if it finds it we will build it on native with Java support so leave native for now
       if [ -e /usr/${NLIBDIR}/${NMLIBDIR}/libdb.so ];then
-        build_packages ${arch} tcl8 db|| return 1
+        build_packages ${arch} tcl8 || return 1
       fi;
     fi;
 
@@ -2799,7 +2799,7 @@ build_dependancies() {
 
   #Other bits
   build_packages ${1} alsa-oss alsa-plugins alsa-tools alsa-utils TiMidity calamaris dirac netatalk mod_perl \
-    mod_python nut omniORB dtc qemu wxWidgets taglib xerces-c maven jhylafax admin_console lua || return 1
+    mod_python nut omniORB dtc qemu wxWidgets taglib xerces-c maven jhylafax admin_console forrest fop lua || return 1
 
   #XFCE
   build_packages ${1} xfce4-dev-tools libxfce4util xfconf libxfce4ui garcon exo xfce4-panel tumbler \
@@ -2837,14 +2837,14 @@ build_dependancies() {
   #Gnome Games
   build_packages ${1} gnome-chess gnome-klotski gnome-mahjongg gnome-mines Python3 pycairo pygobject3 gnome-sudoku aisleriot || return 1
 
-  #Voip libs
-#XXX  build_packages ${1} openr2 libpri libss7 || return 1
-
   #Almost done
   build_packages ${1} grub-fonts grub || return 1
 
   #RPM/Yum
   build_packages ${1} elfutils libdwarf rpm pysqlite yum-metadata-parser pycurl urlgrabber yum deltarpm createrepo || return 1
+
+  #Asterisk
+  build_packages ${1} libpri libss7 dahdi-tools mISDNuser openr2 asterisk asterisk-g72x || return 1
 }
 
 sync_ml_libs() {
@@ -2905,7 +2905,7 @@ bootstrap_native() {
   #Bootstrap native arch with deps for GCC [libjava] if gcc not built
   if [ ! -e ${STATDIR}/${NARCH}/done/unzip ];then
     build_packages ${NARCH} xz libxml2 libxslt libffi gdbm Python libcap patch docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
-      docbook-4.5 docbook-xsl xmlto OpenSP openjade expat intltool gtk-doc attr acl kmod openssl trousers systemd dbus pkg-config \
+      docbook-4.5 docbook-xsl xmlto OpenSP openjade expat intltool gtk-doc attr acl kmod openssl trousers dbus systemd pkg-config \
       libcroco zip unzip || return 1
   fi;
 
