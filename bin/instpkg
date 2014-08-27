@@ -45,8 +45,7 @@ for pkggrp in ${PKGLIST};do
     RPM_PKG_LIST+="@${pkggrp}-${spkg} "
   done;
   if [ "${pkggrp}" == "buildroot" ];then
-    RPM_PKG_LIST+="@${pkggrp}-dev Xorg-dev.${ARCH} --exclude=gcc-libs --exclude=gcc --exclude=gcc-locale --exclude=gcc-dev
-"
+    RPM_PKG_LIST+="@${pkggrp}-dev Xorg-dev.${ARCH} --exclude=gcc-libs --exclude=gcc --exclude=gcc-locale --exclude=gcc-dev systemd-dev"
   fi;
 done
 do_yuminstall ${TMPDIR} ${RPM_PKG_LIST}
