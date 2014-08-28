@@ -64,6 +64,7 @@ AS_IF([test "x$with_yum_repo_conf_dir" = "x"], [YUMREPOCONFDIR=/etc/yum/repos.d]
 
 AS_IF([test x$sysconfdir = x'${prefix}/etc'], [sysconfdir=${prefix}/etc])
 PATCHDIR=${datarootdir}/patches
+KCONFIGDIR=${datarootdir}/config
 
 AC_CONFIG_FILES([
   Makefile
@@ -87,6 +88,7 @@ AC_SUBST(SRCDIR)
 AC_SUBST(BUILDDIR)
 AC_SUBST(ARCHROOT)
 AC_SUBST(PATCHDIR)
+AC_SUBST(KCONFIGDIR)
 
 AC_OUTPUT
 
@@ -101,4 +103,5 @@ printf "%-40s: %s\n" "srcdir" "${SRCDIR}"
 printf "%-40s: %s\n" "builddir" "${BUILDDIR}"
 printf "%-40s: %s\n" "sysrootdir" "${ARCHROOT}"
 printf "%-40s: %s\n" "patchdir" "${PATCHDIR}"
+printf "%-40s: %s\n" "kernel config" "${KCONFIGDIR}"
 printf "%-40s: %s\n" "repodir" "${YUMREPOCONFDIR}"
