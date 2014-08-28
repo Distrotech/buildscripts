@@ -1,26 +1,27 @@
-qemu-img create dts-install 8G
-parted -s dts-install mklabel msdos
-parted -s dts-install "mkpart primary 1 -1"
-parted dts-install set 1 boot on
-FLOOP=$(losetup -f)
-if [ ! "${FLOOP}" ];then
-  exit 1;
-fi;
+#!/bin/bash
 
-losetup -o 1048576 ${FLOOP} dts-install
-TMPDIR=$(mktemp -d)
-mkdosfs -F 32 -n DTS_INSTALL ${FLOOP}
-mount ${FLOOP} ${TMPDIR}
-mkdir ${TMPDIR}/syslinux
+fdisk_installer() {
+  parted -s ${1} mklabel msdos
+  parted -s ${1} "mkpart primary 1 -1"
+  parted ${1} set 1 boot on
+}
 
-for slinfile in syslinux64.exe syslinux.com syslinux.exe vesamenu.c32;do
-  if [ -e /usr/share/syslinux/${slinfile} ];then
-    cp /usr/share/syslinux/${slinfile} ${TMPDIR}/syslinux
-  fi;
-done
+make_fsimg() {
+  qemu-img create ${1} 16G
+  fdisk_installer ${1}
+}
 
-(cat <<EOF
-DEFAULT vesamenu.c32 
+config_installer() {
+  mkdir ${1}/syslinux
+
+  for slinfile in syslinux64.exe syslinux.com syslinux.exe vesamenu.c32 libcom32.c32 libutil.c32;do
+    if [ -e /usr/share/syslinux/${slinfile} ];then
+      cp /usr/share/syslinux/${slinfile} ${1}/syslinux
+    fi;
+  done
+
+  (cat <<EOF
+DEFAULT vesamenu.c32
 TIMEOUT 50
 ONTIMEOUT install-x86_64
 PROMPT 0
@@ -37,14 +38,44 @@ LABEL rescue-x86_64
   KERNEL /distrotech/x86_64/vmlinuz
   APPEND ro root=/dev/loop0 initrd=/distrotech/x86_64/initrd.img dts_opt=squashfs S
 EOF
-) > ${TMPDIR}/syslinux/syslinux.cfg
+) > ${1}/syslinux/syslinux.cfg
 
-if [ -e /boot/grub/background.jpg ];then
-  cp /boot/grub/background.jpg ${TMPDIR}/syslinux/
-fi;
+  if [ -e /boot/grub/background.jpg ];then
+    cp /boot/grub/background.jpg ${1}/syslinux/
+  fi;
+}
 
-umount ${TMPDIR}
+build_installer() {
+  if [ ! -b ${1} ] && [ ! -e ${1} ];then
+    make_fsimg ${1}
+    FLOOP=$(losetup -f)
+    if [ ! "${FLOOP}" ];then
+      exit 1;
+    fi;
+    losetup ${FLOOP} ${1}
+    INSTDEV=${FLOOP}p1
+   elif [ -b ${1} ];then
+    make_fsimg ${1}
+    INSTDEV=${1}1
+   else
+    exit 1
+  fi;
+  mkdosfs -F 32 -n DTS_INSTALL ${INSTDEV}
 
-syslinux -i -d syslinux ${FLOOP}
-losetup -d ${FLOOP}
-dd if=/usr/share/syslinux/mbr.bin of=dts-install conv=notrunc
+  TMPDIR=$(mktemp -d)
+  mount ${INSTDEV} ${TMPDIR}
+
+  config_installer ${TMPDIR}
+
+  syslinux -i -d syslinux ${INSTDEV}
+
+  umount ${TMPDIR}
+  dd if=/usr/share/syslinux/mbr.bin of=${1} conv=notrunc
+  if [ ! -b ${1} ];then
+    losetup -d ${FLOOP}
+  fi;
+  rm -rf ${TMPDIR}
+}
+
+
+build_installer dts-install
