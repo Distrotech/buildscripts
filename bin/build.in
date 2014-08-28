@@ -84,8 +84,6 @@ BASEROOT=${PKGBUILDDIR}/bootstrap
 STATDIR=${PKGBUILDDIR}/status
 GITURL=${GITURL}
 
-KERN_HEADERS=${PKGDESTDIR}/${NARCH}/linux-headers-${LINUX_VER}
-
 GITUPDATE=1;
 DIETBUILD=1;
 
@@ -393,6 +391,12 @@ check_create_arch() {
     mkdir -p ${HDIR}/usr/include
   fi;
 
+
+  #Pull in the linux source and create headers dir
+  if [ ! "${RUNBASHRC}" ];then
+    build_linux_headers ${1} || exit 1
+  fi;
+
   #Create symlink to / for  sysroot of native arch
   if [ "${1}" == "${NARCH}" ] && [ ! -e ${ARCHROOT}/${1} ];then
     ln -sr / ${ARCHROOT}/${1}
@@ -454,43 +458,6 @@ check_create_arch() {
     mnt_archroot ${1}
    elif [ "${1}" == "${NARCH}" ] && [ ! -e ${ARCHROOT}/${NARCH} ];then
     ln -s .. ${ARCHROOT}/${NARCH}
-  fi;
-
-#  if [ -d /usr/${HOST}/${B_LIBDIRS} ] && [ ! -e ${ARCHROOT}/${1}/usr/${HOST}/${B_LIBDIRS}/libstdc++.so ];then
-#    rsync -aR /usr/${HOST}/${B_LIBDIRS} ${ARCHROOT}/${1}/
-#  fi;
-
-  if [ -d ${KERN_HEADERS} ];then
-    if [ ! -d ${HDIR}/usr/include ] || [ ! -f ${TOOLPKG}/${1}/kernel-headers.tar.xz ] || \
-       [ ${KERN_HEADERS}/usr/include/linux -nt ${HDIR}/usr/include/linux ];then
-      rsync -a --include=asm-${KARCH} --include=asm-generic --exclude=.install --exclude=..install.cmd \
-                --exclude=.check --exclude=..check.cmd \
-                --exclude=asm* ${KERN_HEADERS}/usr/include/ ${HDIR}/usr/include/
-      touch ${HDIR}/usr/include/linux
-      if [ -e ${HDIR}/usr/include/asm ];then
-        rm -rf ${HDIR}/usr/include/asm
-      fi;
-      if [ ! -e ${HDIR}/usr/include/asm ];then
-        ln -sr ${HDIR}/usr/include/asm-${KARCH} ${HDIR}/usr/include/asm
-      fi;
-      if [ -d ${ARCHROOT}/${1} ] && [ ! -h ${ARCHROOT}/${1} ];then
-        if [ ! -d ${ARCHROOT}/${1}/usr/include ];then
-          mkdir -p ${ARCHROOT}/${1}/usr/include
-        fi;
-        if [ -e ${ARCHROOT}/${1}/usr/include/asm ];then
-          rm -rf ${ARCHROOT}/${1}/usr/include/asm
-        fi;
-        rsync -ap ${HDIR}/usr/include/ ${ARCHROOT}/${1}/usr/include/ >/dev/null
-      fi;
-
-      (cd ${KERN_HEADERS}
-      if [ ! -d ${TOOLPKG}/${1}/ ];then
-        mkdir -p ${TOOLPKG}/${1}
-      fi;
-      find . ! -regex '.*\.install$' -and ! -regex '.*\.\.install.cmd$'  -and ! -regex '.*\.check$' -and ! -regex \
-             '.*\.check.cmd$' -and -regex '\.\/usr\/include\/.*' |\
-      cpio -o -H tar |xz -9 > ${TOOLPKG}/${1}/kernel-headers.tar.xz)
-    fi;
   fi;
 
   #Sync root too arch if no includes
@@ -3304,46 +3271,99 @@ build_toolchain_dir() {
 }
 
 build_linux_headers() {
-  if [ ! -d ${SRCDIR}/kernel ];then
-    mkdir ${SRCDIR}/kernel
+  HDIR=${BASEROOT}/${1}
+  KERN_HEADERS=${PKGDESTDIR}/${1}/linux-headers-${LINUX_VER}
+  LINSRCDIR=${ARCHROOT}/${1}/${SRCDIR}
+
+  if [ ! -d ${LINSRCDIR}/kernel ];then
+    mkdir -p ${LINSRCDIR}/kernel
   fi;
-  if [ ! -d ${SRCDIR}/linux/linux-${LINUX_VER} ] || [ ! -d ${1}/usr/include/linux ];then
+
+  if [ ! -d ${HDIR} ];then
+    mkdir -p ${HDIR}/usr/include
+  fi;
+
+  if [ ! -d ${KERN_HEADERS} ];then
+    mkdir -p ${KERN_HEADERS}
+  fi;
+
+  if [ ! -d ${SRCDIR}/linux/linux-${LINUX_VER} ] || [ ! -e ${KERN_HEADERS}/usr/include/linux/version.h ];then
     echo "Linux Headers"
     (git_load_pkg linux -${LINUX_VER} distrotech-linux-${LINUX_VER} linux || exit 1
-    if [ -e ${SRCDIR}/kernel/linux ];then
-      rm ${SRCDIR}/kernel/linux
+    if [ -e ${LINSRCDIR}/kernel/linux ];then
+      rm ${LINSRCDIR}/kernel/linux
     fi;
-    ln -s ${SRCDIR}/linux/linux-${LINUX_VER} ${SRCDIR}/kernel/linux
+    ln -s ${SRCDIR}/linux/linux-${LINUX_VER} ${LINSRCDIR}/kernel/linux
     cd ${SRCDIR}/linux/linux-${LINUX_VER}
-    git checkout -b distrotech-linux
-    if [ "${1}" ] && [ ! -d ${1} ];then
-      mkdir -p ${1}
-      make INSTALL_HDR_PATH=${1}/usr headers_install_all
-    fi) || return 1
+    make INSTALL_HDR_PATH=${KERN_HEADERS}/usr headers_install_all
+    if [ -e ${KERN_HEADERS}/usr/include/asm ];then
+        rm -rf ${KERN_HEADERS}/usr/include/asm
+    fi;
+    if [ ! -e ${KERN_HEADERS}/usr/include/asm ];then
+      ln -sr ${KERN_HEADERS}/usr/include/asm-${KARCH} ${KERN_HEADERS}/usr/include/asm
+    fi;
+    ) || return 1
   fi;
-  if [ ! -d ${SRCDIR}/dahdi-linux/dahdi-linux-${DAHDI_VER} ] || [ ! -d ${1}/usr/include/dahdi ];then
+
+  if [ ! -d ${SRCDIR}/dahdi-linux/dahdi-linux-${DAHDI_VER} ] || [ ! -d ${KERN_HEADERS}/usr/include/dahdi ];then
     echo "Dahdi driver headers"
     (git_load_pkg dahdi-linux -${DAHDI_VER} distrotech-dahdi-linux-${DAHDI_VER} dahdi-linux || exit 1
-    if [ -e ${SRCDIR}/kernel/dahdi ];then
-      rm ${SRCDIR}/kernel/dahdi
+    if [ -e ${LINSRCDIR}/kernel/dahdi ];then
+      rm ${LINSRCDIR}/kernel/dahdi
     fi;
-    ln -s ${SRCDIR}/dahdi-linux/dahdi-linux-${DAHDI_VER} ${SRCDIR}/kernel/dahdi
+    ln -s ${SRCDIR}/dahdi-linux/dahdi-linux-${DAHDI_VER} ${LINSRCDIR}/kernel/dahdi
     cd ${SRCDIR}/dahdi-linux/dahdi-linux-${DAHDI_VER}
-    make DESTDIR=${1} install-include
-    touch ${1}/usr/include/linux
+    make DESTDIR=${KERN_HEADERS} install-include
+    if [ -d ${KERN_HEADERS}/usr/include/linux ];then
+      touch ${KERN_HEADERS}/usr/include/linux
+    fi;
     ) || return 1
   fi;
-  if [ ! -d ${SRCDIR}/mISDN/mISDN-master ] || [ ! -d ${1}/usr/include/mISDN ];then
+
+  if [ ! -d ${SRCDIR}/mISDN/mISDN-master ] || [ ! -d ${KERN_HEADERS}/usr/include/mISDN ];then
     echo "mISDN driver headers"
     (git_load_pkg mISDN -master master mISDN || exit 1
-    if [ -e ${SRCDIR}/kernel/mISDN ];then
-      rm ${SRCDIR}/kernel/mISDN
+    if [ -e ${LINSRCDIR}/kernel/mISDN ];then
+      rm ${LINSRCDIR}/kernel/mISDN
     fi;
-    ln -s ${SRCDIR}/mISDN/mISDN-master ${SRCDIR}/kernel/mISDN
+    ln -s ${SRCDIR}/mISDN/mISDN-master ${LINSRCDIR}/kernel/mISDN
     cd ${SRCDIR}/mISDN/mISDN-master
-    make INSTALL_PREFIX=${1} misdn-headers
-    touch ${1}/usr/include/linux
+    make INSTALL_PREFIX=${KERN_HEADERS} misdn-headers
+    if [ -d ${KERN_HEADERS}/usr/include/linux ];then
+      touch ${KERN_HEADERS}/usr/include/linux
+    fi;
     ) || return 1
+  fi;
+
+  if [ -d ${KERN_HEADERS} ];then
+    if [ ! -d ${HDIR}/usr/include ] || [ ! -f ${TOOLPKG}/${1}/kernel-headers.tar.xz ] || \
+       [ ${KERN_HEADERS}/usr/include/linux -nt ${HDIR}/usr/include/linux ];then
+      rsync -a --include=asm-${KARCH} --include=asm-generic --exclude=.install --exclude=..install.cmd \
+                --exclude=.check --exclude=..check.cmd \
+                --exclude=asm* ${KERN_HEADERS}/usr/include/ ${HDIR}/usr/include/
+
+      if [ -d ${HDIR}/usr/include/linux ];then
+        touch ${HDIR}/usr/include/linux
+      fi;
+
+      if [ -d ${ARCHROOT}/${1} ] && [ ! -h ${ARCHROOT}/${1} ];then
+        if [ ! -d ${ARCHROOT}/${1}/usr/include ];then
+          mkdir -p ${ARCHROOT}/${1}/usr/include
+        fi;
+        if [ -e ${ARCHROOT}/${1}/usr/include/asm ];then
+          rm -rf ${ARCHROOT}/${1}/usr/include/asm
+        fi;
+        rsync -ap ${HDIR}/usr/include/ ${ARCHROOT}/${1}/usr/include/ >/dev/null
+      fi;
+
+      (cd ${KERN_HEADERS}
+      if [ ! -d ${TOOLPKG}/${1}/ ];then
+        mkdir -p ${TOOLPKG}/${1}
+      fi;
+      find . -regex '.*\.install$' -or -regex '.*\.\.install.cmd$'  -or -regex '.*\.check$' -or -regex '.*\.check.cmd$' |\
+           awk '{printf "rm %s\n",$1}' |sh
+      tar -cJf ${TOOLPKG}/${1}/kernel-headers.tar.xz *)
+    fi;
   fi;
 }
 
@@ -3461,11 +3481,6 @@ done
 
 if [ ! -d ${PKGDISTDIR} ];then
   mkdir -p ${PKGDISTDIR}
-fi;
-
-#Pull in the linux source and create headers dir
-if [ ! "${RUNBASHRC}" ];then
-  build_linux_headers ${KERN_HEADERS} || exit 1
 fi;
 
 if [ "${BOOTSTRAP}" ] && [ "${BOOTSTRAP}" == "1" ];then
