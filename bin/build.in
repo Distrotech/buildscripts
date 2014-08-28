@@ -986,7 +986,7 @@ autoconf_cross_build() {
     if [ ! -x ${SRCDIR}/${PSOURCEDIR}/.build-info/make-config ];then
       chmod 750 ${SRCDIR}/${PSOURCEDIR}/.build-info/make-config
     fi
-    eval ${SRCDIR}/${PSOURCEDIR}/.build-info/make-config ${NARCH} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT} ${HOST} ${2}
+    eval ${SRCDIR}/${PSOURCEDIR}/.build-info/make-config ${NARCH} ${SRCDIR}/${PSOURCEDIR} ${DIST_ROOT} ${HOST} ${2} || return 1
    else
     if [ "${ADDCC}" ] && [ "${ADDCC}" == "0" ];then
       eval /usr/bin/make ${MAKE_J} HOSTCC=\"${BUILD}-gcc\" HOSTLD=\"${BUILD}-gcc\" \
@@ -1009,7 +1009,8 @@ autoconf_cross_build() {
       if [ ${RES} != 0 ] && [ "${MAKE_J}" ];then
         eval /usr/bin/make LD=\"${LD}\" CC=\"${CC}\" CXX=\"${CXX}\" HOSTCC=\"${BUILD}-gcc\" \
           HOSTCC_LDFLAGS=\"-L=/${NLIBDIR} -L=/usr/${NLIBDIR}\" ${MAKEOPTS} ${ARCHMOPT} \
-          ${MAKEALL} ${MAKETARGETS} || make ${MAKE_J} || return 1
+          ${MAKEALL} ${MAKETARGETS} || return 1
+        make ${MAKE_J} || return 1
         eval /usr/bin/make DESTDIR=${DIST_ROOT} ${MAKEOPTS} ${ARCHMOPT} ${MAKEITARGETS} install || return 1
        elif [ ${RES} != 0 ];then
         return 1
@@ -2811,7 +2812,7 @@ build_dependancies() {
   build_packages ${1} elfutils libdwarf rpm pysqlite yum-metadata-parser pycurl urlgrabber yum deltarpm createrepo || return 1
 
   #Asterisk
-  build_packages ${1} libpri libss7 dahdi-tools mISDNuser openr2 asterisk asterisk-g72x || return 1
+  build_packages ${1} dahdi-tools libpri libss7 mISDNuser openr2 asterisk asterisk-g72x || return 1
 }
 
 sync_ml_libs() {
