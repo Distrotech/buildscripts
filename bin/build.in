@@ -638,7 +638,7 @@ tar_package() {
          ! -regex "${manpages}" -and ! -regex "${infopages}" -and ! -regex "\.\/usr\/${B_LIBDIRS}\/locale\/.*" \
          ! -regex ".*\/include" -and ! -regex ".*\/share\/doc" -and ! -regex ".*\/share\/man" -and \
          ! -regex ".*\/share\/info" -and ! -regex "${allloc}" -or -regex "${myloc}" |\
-       cpio -ov -H tar |xz -9 > ${pkgpre}.tar.xz
+       cpio -ov -H ustar |xz -9 > ${pkgpre}.tar.xz
 
   #try limit it to pkgs with include dirs / libdirs this is not fool proof ie /opt/....
   if [ -d include ] || [ -d usr/include ] || [ -d usr/X11R7/include ] || [ -d opt ] || \
@@ -650,40 +650,40 @@ tar_package() {
            ! -regex "\.\/usr\/${B_LIBDIRS}\/thunderbird-devel-.*" -and \
            ! -regex "\.\/usr\/${B_LIBDIRS}\/firefox-devel-.*" -and ! -regex "\.\/usr\/${B_LIBDIRS}\/locale\/.*" -and \
            -regex ".*\/${B_LIBDIRS}\/.*" |\
-         cpio -ov -H tar |xz -9 > ${pkgpre}-libs.tar.xz
+         cpio -ov -H ustar |xz -9 > ${pkgpre}-libs.tar.xz
     find . -regex "\.\/include\/.*" -or -regex "\.\/usr\/include\/.*" -or \
            -regex "\.\/opt\/[a-zA-Z0-9\-\_]+\/include\/.*" -or -regex "\.\/usr\/X11R7\/include\/.*" -or \
            -regex ".*\/${B_LIBDIRS}\/.*\.a" -or -regex "\.\/usr\/${B_LIBDIRS}\/go.*" -or \
            -regex "\.\/usr\/${B_LIBDIRS}\/thunderbird-devel-.*" -or \
            -regex "\.\/usr\/${B_LIBDIRS}\/firefox-devel-.*" -or \
            -regex "\.\/usr\/${B_LIBDIRS}\/gcc.*" -or -regex ".*\/${B_LIBDIRS}\/.*\.la" | grep -vE "/\.dbg/.*\.a" | \
-         cpio -ov -H tar |xz -9 > ${pkgpre}-dev.tar.xz
+         cpio -ov -H ustar |xz -9 > ${pkgpre}-dev.tar.xz
     if [ -d usr/${B_LIBDIRS}/jvm ] && [ ! -d usr/${B_LIBDIRS}/jvm/gcj-jdk ];then
       find . -regex "\.\/usr\/${B_LIBDIRS}\/jvm\/jre-.*"  |\
-           cpio -ov -H tar |xz -9 > ${pkgpre}-jre.tar.xz
+           cpio -ov -H ustar |xz -9 > ${pkgpre}-jre.tar.xz
       find . -regex "\.\/usr\/${B_LIBDIRS}\/jvm\/jdk-.*"  |\
-           cpio -ov -H tar |xz -9 > ${pkgpre}-jdk.tar.xz
+           cpio -ov -H ustar |xz -9 > ${pkgpre}-jdk.tar.xz
     fi;
   fi;
 
   find . -regex "${dbginfo}\/.*" -and ! -regex ".*\/${B_LIBDIRS}\/\.dbg\/.*\.a" |\
-         cpio -ov -H tar |xz -9 > ${pkgpre}-dbg.tar.xz
+         cpio -ov -H ustar |xz -9 > ${pkgpre}-dbg.tar.xz
 
   if [ -d usr/share/locale ] || [ -d usr/${B_LIBDIRS}/locale ];then
     find . -regex "${allloc}" -and ! -regex "${myloc}" -or -regex "\.\/usr\/${B_LIBDIRS}\/locale\/.*" |\
-         cpio -ov -H tar |xz -9 > ${pkgpre}-locale.tar.xz
+         cpio -ov -H ustar |xz -9 > ${pkgpre}-locale.tar.xz
   fi;
 
   if [ -d usr/share/man ] || [ -d usr/share/doc ] || [ -d usr/share/info ] || \
      [ -d usr/X11R7/share/man ] || [ -d usr/X11R7/share/doc ] || [ -d usr/X11R7/share/info ] || \
      [ -d share/man ] || [ -d share/doc ] || [ -d share/info ] || [ -d opt ];then
     find . -regex "${sharedoc}" -or -regex "${manpages}" -or -regex "${infopages}" |\
-         cpio -ov -H tar |xz -9 > ${pkgpre}-doc.tar.xz
+         cpio -ov -H ustar |xz -9 > ${pkgpre}-doc.tar.xz
   fi;
 
   if [ -d etc ];then
     find . -regex "\.\/etc\/.*" |\
-         cpio -ov -H tar |xz -9 > ${pkgpre}-conf.tar.xz
+         cpio -ov -H ustar |xz -9 > ${pkgpre}-conf.tar.xz
   fi;)
 }
 
