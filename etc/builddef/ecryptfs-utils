@@ -1,7 +1,7 @@
 VERSION="102"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-pamdir=/usr/${B_LIBDIRS}/security";
+CONFOPT="--with-pamdir=/usr/${C_LIBDIRS}/security";
 MAKEOPTS="SWIG=swig";
 GITBRANCH="master";
 CHROOTBUILD="1";
