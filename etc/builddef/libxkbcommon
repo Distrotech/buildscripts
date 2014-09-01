@@ -3,4 +3,3 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 RPMGROUP="gui";
-ADDCFLAG="-std=c11";
