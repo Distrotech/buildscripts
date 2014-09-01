@@ -20,4 +20,5 @@ GITBRANCH="master";
 BUILDDIR="0";
 CHROOTBUILD="1";
 LDISCC="0";
-RPMGROUP="dev";
+#Used by apache and has always been installed
+RPMGROUP="core";
