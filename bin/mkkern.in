@@ -211,7 +211,7 @@ build_kernel() {
   mkdir -p ${1}/boot
 
 
-  make distclean mrproper && \
+  make ARCH=${KARCH} distclean mrproper && \
   cp ${KCONFIG} .config &&  \
   make ARCH=${KARCH} KCONFIG_CONFIG=${KCONFIG} ${MAKE_J} CROSS_COMPILE=${CROSS_COMPILE} all firmware modules ${KERNELT} && \
   make ARCH=${KARCH} KCONFIG_CONFIG=${KCONFIG} INSTALL_MOD_PATH=${1} INSTALL_PATH=${1}/boot INSTALL_HDR_PATH=${1}/usr \
