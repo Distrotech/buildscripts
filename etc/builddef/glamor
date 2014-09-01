@@ -3,4 +3,3 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-selective-werror";
 RPMGROUP="gui";
-DONTBUILD="${barch}";
