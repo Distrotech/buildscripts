@@ -4,3 +4,4 @@ PREFIX="/boot";
 CONFOPT="";
 BUILDDIR="0";
 RPMGROUP="core";
+CHROOTBUILD="1";
