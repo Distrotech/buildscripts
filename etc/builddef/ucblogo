@@ -7,4 +7,3 @@ BUILDDIR="0";
 ADDCFLAG="-fpermissive";
 CHROOTBUILD="1";
 RPMGROUP="gui";
-MAKEALL="everything";

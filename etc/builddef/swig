@@ -5,4 +5,3 @@ CONFOPT="";
 MAKEITARGETS="install-ccache";
 BUILDDIR="0";
 RPMGROUP="dev";
-MAKEALL="swig";
