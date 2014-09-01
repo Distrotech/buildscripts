@@ -6,3 +6,4 @@ GITBRANCH="master"
 BUILDDIR="0";
 NOINST="1";
 RPMPROVIDES="/bin/ash perl(user) perl(group)";
+RPMGROUP="root";

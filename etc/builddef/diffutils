@@ -7,4 +7,4 @@ MAKEOPTS="WERROR_CFLAGS=";
 STATICOPT="LDFLAGS=-static --disable-gcc-warnings";
 XSTATICMOPT="LDFLAGS=-static LIBCSTACK=-lc LIBSIGSEGV=-lsigsegv";
 DONTBUILD="cyg32 cyg64";
-RPMGROUP="dev";
+RPMGROUP="root";

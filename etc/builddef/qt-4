@@ -19,4 +19,4 @@ case ${barch} in
     esac;;
   *)RPMREMOVE="${PREFIX}/bin/moc ${PREFIX}/bin/qmake ${PREFIX}/bin/rcc ${PREFIX}/bin/uic ${PREFIX}/bin/uic3 ${PREFIX}/bin/lrelease";;
 esac;
-RPMGROUP="root";
+RPMGROUP="gui";
