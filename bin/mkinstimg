@@ -1,7 +1,121 @@
 #!/bin/bash
 
 BRAND="Distrotech Solutions";
+SYSROOT=/var/opt/dtsbuild/sysroot
 KSUF="dts";
+
+Make_Bootetc() {
+  cd ${1}
+
+  dd if=/dev/zero of=install/etc bs=1M count=10 > /dev/null 2>&1
+  ELOOP=`/sbin/losetup -f`
+  ELOOP=`readlink -f ${ELOOP}`
+  /sbin/losetup ${ELOOP} install/etc
+  /sbin/mkfs.ext4 -L bootetc -i 1024 ${ELOOP} > /dev/null 2>&1
+
+  if [ ! -d mnt/floppy ] && [ -e mnt/floppy ];then
+    rm -rf mnt/floppy
+    mkdir mnt/floppy
+   elif [ ! -e mnt/floppy ];then
+    mkdir -p mnt/floppy
+   else
+    rm -rf mnt/floppy/*
+  fi;
+  mount ${ELOOP} mnt/floppy
+
+  if [ $? != 0 ];then
+    losetup -d ${ELOOP}
+    rm install/etc
+    return 1
+  fi;
+
+  echo "/dev/flash/install	/	ext4	defaults	0	1" > etc/fstab
+  rm etc/blkid.* > /dev/null 2>&1
+  cp -Rp etc/* mnt/floppy
+
+  (cat <<EOF
+hosts:  	files dns
+passwd:		files
+shadow:		files
+group:		files
+EOF
+) > mnt/floppy/nsswitch.conf
+
+  echo "smbadm::139:" >> mnt/floppy/group
+  echo "*.*                                       /dev/tty5" > mnt/floppy/syslog.conf
+  echo "telnet          stream  tcp     nowait  root    /usr/sbin/in.telnetd" > mnt/floppy/inetd.conf
+  sed -e "s/^\(PasswordAuthentication\).*/\1 yes/" \
+      -e "s/^\(UsePAM\).*/\1 no/" etc/sshd_config > mnt/floppy/sshd_config
+  sed -e "s/^.*agetty.*//" etc/inittab > mnt/floppy/inittab
+  sed -e "s/\(suggested-size.*\)20011/\1211/" etc/nscd.conf > mnt/floppy/nscd.conf
+
+  ln -s ../usr/share/zoneinfo/Africa/Johannesburg mnt/floppy/localtime
+
+  for todel in HOSTNAME openssl/ca.conf ifconf/* mtab* ppp/ip-up;do
+    rm mnt/floppy/${todel} > /dev/null 2>&1
+  done
+
+  if [ ! -d mnt/floppy/ifconf ];then
+    mkdir mnt/floppy/ifconf
+  fi;
+  (cat <<_EOF_
+#!/bin/bash
+
+(flock -w 20 10 || exit
+if [ ! -e /dev/gsmmodem ];then
+  TST=X
+  while [ "${TST}" != "XXXXXXXX" ] && [ ! -e /dev/gsmmodem ];do
+    /usr/bin/sleep 5
+    TST=${TST}X
+  done;
+  if [ ! -e /dev/gsmmodem ];then
+    exit
+  fi;
+fi;
+
+/usr/sbin/pppd /dev/gsmmodem connect "/usr/sbin/chat -v -f /etc/ppp/diald.3g" lock maxfail 5 unit 10 logfile /var/log/pppd.log.3g linkname 3g ipparam 3g defaultroute noauth persist nomultilink usepeerdns
+
+flock -u 10
+) 10>/var/lock/ppp10.lock &
+_EOF_
+) > mnt/floppy/ifconf/pppup.ppp3g
+  chmod 755 mnt/floppy/ifconf/pppup.ppp3g
+
+  (cat <<_EOF_
+#!/bin/bash
+
+grep -v "nameserver" /etc/resolv.conf > /tmp/resolv.conf
+
+if [ "\${DNS1}" ];then
+  echo "nameserver \${DNS1}" >> /tmp/resolv.conf
+fi;
+
+if [ "\${DNS2}" ];then
+  echo "nameserver \${DNS2}" >> /tmp/resolv.conf
+fi;
+
+cp /tmp/resolv.conf /etc/resolv.conf
+
+_EOF_
+) > mnt/floppy/ppp/ip-up
+  chmod 755 mnt/floppy/ppp/ip-up
+
+  for totouch in mtab .install .networksentry-lite;do
+    touch mnt/floppy/${totouch}
+  done
+
+  while [ -d mnt/floppy/lost+found ];do
+    umount mnt/floppy > /dev/null 2>&1
+    sleep 2
+  done;
+
+  e2fsck -Dfy ${ELOOP} > /dev/null 2>&1
+  sleep 2
+  /sbin/losetup -d ${ELOOP}
+  gzip -f -9 install/etc
+
+  rm root/.bash_history > /dev/null 2>&1
+}
 
 image_create() {
   qemu-img create ${1} 16G
@@ -22,49 +136,83 @@ MENU BACKGROUND background.jpg
 
 EOF
 
-  for kernbits in x86 x86_64;do
+  for kernbits in x86_64 x86_x32 x86;do
     if [ -d ${1}/boot/${kernbits} ];then
       cat <<EOF
 LABEL install-${kernbits}
   MENU LABEL ${BRAND} ${kernbits} (Install)
   KERNEL /boot/${kernbits}/vmlinuz
-  APPEND ro root=/dev/loop0 initrd=/boot/${kernbits}/initrd.img dts_opt=squashfs quiet
+  INITRD /boot/${kernbits}/initrd.img
+  APPEND ro root=/dev/loop0 dts_opt=squashfs squashimg=/boot/${kernbits}/install.img quiet
 LABEL rescue-${kernbits}
   MENU LABEL ${BRAND} ${kernbits} (Rescue)
   KERNEL /boot/${kernbits}/vmlinuz
-  APPEND ro root=/dev/loop0 initrd=/boot/${kernbits}/initrd.img dts_opt=squashfs S
+  INITRD /boot/${kernbits}/initrd.img
+  APPEND ro root=/dev/loop0 dts_opt=squashfs squashimg=/boot/${kernbits}/install.img S
 EOF
     fi;
   done;
 }
 
+build_install_img() {
+  IMGDIR=$(mktemp -d -p /root install-img-${1}.XXXXXXXXXXX)
+  if [ ! "${IMGDIR}" ] || [ ! -d ${IMGDIR} ];then
+    return 1
+  fi;
+
+  case ${1} in
+    x86)ARCH="i686";;
+    x86_x32)ARCH="x86_32";;
+    *)ARCH=${1};;
+  esac;
+
+  sh /root/buildscripts/bin/instpkg ${ARCH} ${IMGDIR} root
+
+  chroot ${IMGDIR} /sbin/ldconfig
+  (Make_Bootetc ${IMGDIR})
+
+  mksquashfs ${IMGDIR}/* ${2} -comp xz
+  rm -rf ${IMGDIR}
+}
+
 add_kernel() {
-  for kernbits in x86 x86_64;do
-    if [ -e /boot/vmlinuz-${2}-${kernbits}-${KSUF} ];then
+  for kernbits in x86 x86_64 x86_x32;do
+    case ${kernbits} in
+      x86)ARCH="i686";;
+      x86_x32)ARCH="x86_32";;
+      *)ARCH=${kernbits};;
+    esac;
+
+    if [ -e ${SYSROOT}/${ARCH}/boot/vmlinuz-${2}-${kernbits}-${KSUF} ];then
       if [ ! -d ${1}/boot/${kernbits} ];then
         mkdir -p ${1}/boot/${kernbits}
       fi;
-      cp /boot/vmlinuz-${2}-${kernbits}-${KSUF} ${1}/boot/${kernbits}/vmlinuz
+      cp ${SYSROOT}/${ARCH}/boot/vmlinuz-${2}-${kernbits}-${KSUF} ${1}/boot/${kernbits}/vmlinuz
+      mkinitrd bootimg ${1}/boot/${kernbits}/initrd.img ${SYSROOT}/${ARCH}/  ${2}-${kernbits}
+      if [ ! -e  ${1}/boot/${kernbits}/install.img ];then
+        build_install_img ${kernbits} ${1}/boot/${kernbits}/install.img
+      fi;
     fi;
   done;
 }
 
 config_installer() {
   if [ ! -d ${1}/syslinux ];then
-    mkdir ${1}/syslinux
+    mkdir -p ${1}/boot/syslinux
   fi;
 
-  for slinfile in syslinux64.exe syslinux.com syslinux.exe vesamenu.c32 libcom32.c32 libutil.c32;do
+  for slinfile in vesamenu.c32 libcom32.c32 libutil.c32;do
     if [ -e /usr/share/syslinux/${slinfile} ];then
-      cp /usr/share/syslinux/${slinfile} ${1}/syslinux
+      cp /usr/share/syslinux/${slinfile} ${1}/boot/syslinux
     fi;
   done
+#  cp /usr/share/syslinux/*.{c32,com,exe} ${1}/boot/syslinux
 
   add_kernel ${1} ${2}
-  syslinux_cfg ${1} > ${1}/syslinux/syslinux.cfg
+  syslinux_cfg ${1} > ${1}/boot/syslinux/syslinux.cfg
 
   if [ -e /boot/grub/background.jpg ];then
-    cp /boot/grub/background.jpg ${1}/syslinux/
+    cp /boot/grub/background.jpg ${1}/boot/syslinux/
   fi;
 }
 
@@ -91,10 +239,12 @@ build_installer() {
     exit 1
   fi;
 
+  dosfsck -a ${INSTDEV}
+
   mount ${INSTDEV} ${3}
 
   config_installer ${3} ${2}
-  syslinux -i -d syslinux ${INSTDEV}
+  syslinux -i -d boot/syslinux ${INSTDEV}
 
   umount ${3}
   dd if=/usr/share/syslinux/mbr.bin of=${1} conv=notrunc
@@ -105,7 +255,7 @@ build_installer() {
 }
 
 
-TMPDIR=$(mktemp -d)
+TMPDIR=$(mktemp -d -p /tmp mkinstmnt.XXXXXXXXXXX)
 if [ ! "${TMPDIR}" ] || [ ! -d ${TMPDIR} ];then
   exit 1
 fi;
