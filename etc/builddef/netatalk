@@ -7,3 +7,4 @@ FIXUPLIB="1";
 NOCROSS="1";
 CHROOTBUILD="1";
 RPMGROUP="core";
+ADDCFLAG="-std=gnu99";
