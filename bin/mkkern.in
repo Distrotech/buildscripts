@@ -44,7 +44,7 @@ case ${ARCH} in
   arm64)CROSS_COMPILE=aarch64-linux-gnu-;;
   arm)CROSS_COMPILE=arm-linux-gnueabi-;;
   mips64)CROSS_COMPILE=mips64-octeon-linux-gnu-;;
-  x86_32)CROSS_COMPILE=x86_64-linux-gnux32-;;
+  x86_32)CROSS_COMPILE=x86_64-linux-gnu-;;
   *)CROSS_COMPILE=${ARCH}-linux-gnu-;;
 esac;
 
