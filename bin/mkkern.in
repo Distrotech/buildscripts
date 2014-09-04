@@ -136,6 +136,8 @@ build_kernel_rpm() {
   RPMNAME=linux-${KFLAVOR}
   if [ ! -d ${RPMDIR}/${ARCH}/${RPMNAME}/${2} ];then
     mkdir -p ${RPMDIR}/${ARCH}/${RPMNAME}/${2}
+   else
+    rm ${RPMDIR}/${ARCH}/${RPMNAME}/${2}/*
   fi;
 
   if [ "${ARCH}" == "${NARCH}" ];then
