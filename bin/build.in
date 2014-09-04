@@ -3014,6 +3014,9 @@ bootstrap_toolchain() {
   if [ "${1}" != "${NARCH}" ];then
     (build_bootstrap_binutils ${1} ${HOST}) && \
     (build_glibc_march ${1}) || return 1
+
+    #Shared GCC C/C++/ADA/Java distributable
+    (build_gcc_bootstrap ${1} ${HOST} ${1} shared) || return 1
    else
     #Static binutils distributable
     (build_bootstrap_binutils ${1} ${HOST}) || return 1
