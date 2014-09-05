@@ -18,8 +18,9 @@ NARCH=${NARCH:=$( uname -m )}
 DISTRONAME="Distro Solutions"
 
 DEF_JAVA_VER="1.7.0_51";
-LINUX_VER="3.14.4";
+LINUX_VER="3.14.17";
 DAHDI_VER="2.9.1.1";
+WANPIPE_VER="7.0.10";
 DEF_QT_VER="5";
 export X11DIR="/opt/Xorg";
 PYVER=2;
@@ -3336,6 +3337,15 @@ build_linux_headers() {
     if [ -d ${KERN_HEADERS}/usr/include/linux ];then
       touch ${KERN_HEADERS}/usr/include/linux
     fi;
+    ) || return 1
+  fi;
+
+  if [ ! -d ${SRCDIR}/wanpipe-${WANPIPE_VER} ] || [ ! -d ${LINSRCDIR}/kernel/wanpipe ];then
+    (git_load_pkg wanpipe -${WANPIPE_VER} wanpipe-${WANPIPE_VER} wanpipe || exit 1
+    if [ -e ${LINSRCDIR}/kernel/wanpipe ];then
+      rm ${LINSRCDIR}/kernel/wanpipe
+    fi;
+    ln -s ${SRCDIR}/wanpipe/wanpipe-${WANPIPE_VER} ${LINSRCDIR}/kernel/wanpipe
     ) || return 1
   fi;
 
