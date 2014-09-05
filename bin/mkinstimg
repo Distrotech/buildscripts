@@ -127,8 +127,8 @@ image_create() {
 syslinux_cfg() {
   cat <<EOF
 DEFAULT vesamenu.c32
-TIMEOUT 5000
-ONTIMEOUT install-x86_64
+TIMEOUT 150
+ONTIMEOUT x86_64
 PROMPT 0
 NOESCAPE 1
 MENU TITLE ${BRAND}
@@ -137,25 +137,72 @@ MENU BACKGROUND background.jpg
 EOF
 
   for kernbits in x86_64 x86_x32 x86;do
-    if [ -d ${1}/boot/${kernbits} ];then
+    if [ -e ${1}/boot/${kernbits}/syslinux.cfg ];then
       cat <<EOF
-LABEL install-${kernbits}
-  MENU LABEL ${BRAND} ${kernbits} (Install)
-  KERNEL /boot/${kernbits}/vmlinuz
-  INITRD /boot/${kernbits}/initrd.img
-  APPEND ro root=/dev/loop0 dts_opt=squashfs squashimg=/boot/${kernbits}/install.img quiet
-LABEL rescue-${kernbits}
-  MENU LABEL ${BRAND} ${kernbits} (Rescue)
-  KERNEL /boot/${kernbits}/vmlinuz
-  INITRD /boot/${kernbits}/initrd.img
-  APPEND ro root=/dev/loop0 dts_opt=squashfs squashimg=/boot/${kernbits}/install.img S
+LABEL Install options for ${kernbits}
+  CONFIG /boot/${kernbits}/syslinux.cfg
+
 EOF
     fi;
   done;
 }
 
+syslinux_cfg_arch() {
+  cat <<EOF
+DEFAULT /boot/syslinux/vesamenu.c32
+TIMEOUT 50
+ONTIMEOUT install
+PROMPT 0
+NOESCAPE 1
+MENU TITLE ${BRAND}
+MENU BACKGROUND /boot/syslinux/background.jpg
+
+LABEL install
+  MENU LABEL ${BRAND} ${1} (Install)
+  KERNEL /boot/${1}/vmlinuz
+  INITRD /boot/${1}/initrd.img
+  APPEND ro root=/dev/loop0 nomodeset dts_opt=squashfs squashimg=/boot/${1}/install.img quiet
+LABEL rescue
+  MENU LABEL ${BRAND} ${1} (Rescue)
+  KERNEL /boot/${1}/vmlinuz
+  INITRD /boot/${1}/initrd.img
+  APPEND ro root=/dev/loop0 nomodeset dts_opt=squashfs squashimg=/boot/${1}/install.img S
+LABEL build
+  MENU LABEL ${BRAND} ${1} (Build)
+  KERNEL /boot/${1}/vmlinuz
+  INITRD /boot/${1}/initrd.img
+  APPEND ro root=/dev/loop0 nomodeset dts_opt=squashfs squashimg=/boot/${1}/buildroot.img init=/bin/bash
+EOF
+}
+
 build_install_img() {
   IMGDIR=$(mktemp -d -p /root install-img-${1}.XXXXXXXXXXX)
+  if [ ! "${IMGDIR}" ] || [ ! -d ${IMGDIR} ];then
+    return 1
+  fi;
+
+  case ${1} in
+    x86)ARCH="i686";
+      LIBDIR="lib";;
+    x86_x32)ARCH="x86_32";
+      LIBDIR="libx32";;
+    x86_64)ARCH="x86_64";
+      LIBDIR="lib64";;
+  esac;
+
+  sh /root/buildscripts/bin/instpkg ${ARCH} ${IMGDIR} root
+
+  ls -d ${IMGDIR}/opt/*/${LIBDIR} |awk -v MNT=${IMGDIR} '{printf "%s\n",substr($1,length(MNT)+1)}' > ${IMGDIR}/etc/ld.so.conf.d/opt.conf
+
+  chroot ${IMGDIR} /sbin/ldconfig
+  (Make_Bootetc ${IMGDIR})
+
+  mksquashfs ${IMGDIR}/* ${2} -comp xz
+  rm -rf ${IMGDIR}
+}
+
+build_buildroot_img() {
+  IMGDIR=$(mktemp -d -p /root buildroot-img-${1}.XXXXXXXXXXX)
   if [ ! "${IMGDIR}" ] || [ ! -d ${IMGDIR} ];then
     return 1
   fi;
@@ -166,7 +213,7 @@ build_install_img() {
     *)ARCH=${1};;
   esac;
 
-  sh /root/buildscripts/bin/instpkg ${ARCH} ${IMGDIR} root
+  sh /root/buildscripts/bin/instpkg ${ARCH} ${IMGDIR} buildroot
 
   chroot ${IMGDIR} /sbin/ldconfig
   (Make_Bootetc ${IMGDIR})
@@ -192,6 +239,10 @@ add_kernel() {
       if [ ! -e  ${1}/boot/${kernbits}/install.img ];then
         build_install_img ${kernbits} ${1}/boot/${kernbits}/install.img
       fi;
+      if [ ! -e  ${1}/boot/${kernbits}/buildroot.img ];then
+        build_buildroot_img ${kernbits} ${1}/boot/${kernbits}/buildroot.img
+      fi;
+      syslinux_cfg_arch ${kernbits} > ${1}/boot/${kernbits}/syslinux.cfg
     fi;
   done;
 }
@@ -260,6 +311,6 @@ if [ ! "${TMPDIR}" ] || [ ! -d ${TMPDIR} ];then
   exit 1
 fi;
 
-build_installer dts-install 3.14.4 ${TMPDIR}
+build_installer dts-install 3.14.17 ${TMPDIR}
 
 rm -rf ${TMPDIR}
