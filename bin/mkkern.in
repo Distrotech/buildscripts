@@ -12,6 +12,8 @@ RPMDIR=${DTSSRVDIR}/yum
 PKGURL=http://github.com/Distrotech
 RPMBROOT=/root/rpmbuild
 
+ASTVER="10.12.4";
+
 ARCH=${1}
 LINDIR=${ARCHROOT}/${ARCH}/${SRCDIR}/kernel/linux
 
@@ -38,7 +40,7 @@ fi;
 CPUNO=$(lscpu  |awk '/^CPU\(s\)/ {print $2}')
 MAKE_J="-j${CPUNO}"
 
-export KERNELT DESTDIR MAKE_J KFLAVOR VERSION ARCH KCONFIG
+export KERNELT DESTDIR MAKE_J KFLAVOR VERSION ARCH KCONFIG ASTVER
 
 case ${ARCH} in
   arm64)CROSS_COMPILE=aarch64-linux-gnu-;;
@@ -61,6 +63,14 @@ case ${NARCH} in
   ppc64|powerpc64)NARCH=powerpc64;;
   arm*)NARCH=arm;;
   aarch64)NARCH=arm64;;
+esac;
+
+case ${ARCH} in
+  x86_32)LIBDIR="libx32/i686";;
+  x86_64)LIBDIR="lib64/x86_64";;
+  i686)LIBDIR="lib/i686";;
+  *64)LIBDIR="lib64";;
+  *)LIBDIR="lib";;
 esac;
 
 build_kernel_rpm_spec() {
@@ -97,9 +107,21 @@ Summary: Linux ${VERSION}-${KFLAVOR} installed files (firmware)
 Group: Distrotech Linux ${VERSION} ${KFLAVOR}
 Summary: Linux ${VERSION}-${KFLAVOR} installed files (dahdi)
 
+%package wanpipe
+Group: Distrotech Linux ${VERSION} ${KFLAVOR}
+Summary: Linux ${VERSION}-${KFLAVOR} installed files (wanpipe)
+
 %package dev
 Group: Distrotech Linux ${VERSION} ${KFLAVOR}
 Summary: Linux ${VERSION}-${KFLAVOR} installed files (dev)
+
+%package dbg
+Group: Distrotech Linux ${VERSION} ${KFLAVOR}
+Summary: Linux ${VERSION}-${KFLAVOR} installed files (dbg)
+
+%package doc
+Group: Distrotech Linux ${VERSION} ${KFLAVOR}
+Summary: Linux ${VERSION}-${KFLAVOR} installed files (doc)
 
 %description modules
 Distrotech Linux ${VERSION} ${KFLAVOR} installed files (modules)
@@ -110,8 +132,17 @@ Distrotech Linux ${VERSION} ${KFLAVOR} installed files (firmware)
 %description dahdi
 Distrotech Linux ${VERSION} ${KFLAVOR} installed files (dahdi)
 
+%description wanpipe
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files (wanpipe)
+
 %description dev
 Distrotech Linux ${VERSION} ${KFLAVOR} installed files (dev)
+
+%description dbg
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files (dbg)
+
+%description doc
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files (doc)
 
 %files
 /boot
@@ -124,10 +155,26 @@ Distrotech Linux ${VERSION} ${KFLAVOR} installed files (dev)
 
 %files dev
 /usr/include
+/usr/${LIBDIR}/lib*.a
+/usr/${LIBDIR}/*.la
+
+%files dbg
+/usr/sbin/.dbg
+/usr/${LIBDIR}/.dbg
+
+%files doc
+/usr/share/doc/wanpipe
 
 %files dahdi
-/usr/lib
-/usr/share
+/usr/lib/hotplug
+/usr/share/dahdi
+
+%files wanpipe
+/usr/${LIBDIR}/libsangoma.so*
+/usr/${LIBDIR}/libstelephony.so*
+/usr/${LIBDIR}/libteletone.so*
+/etc
+/usr/sbin
 
 EOF
 }
@@ -170,7 +217,7 @@ build_kernel_rpm() {
     mkdir -p ${YUM_PATH}
   fi;
 
-  for rfile in "" "modules" "firmware" "dahdi" "dev";do
+  for rfile in "" "modules" "firmware" "dahdi" "dev" "wanpipe" "doc" "dbg";do
     RPM_FILE=${RPMNAME}
     if [ "${rfile}" ];then
       RPM_FILE=${RPM_FILE}-${rfile}
@@ -202,8 +249,11 @@ build_kernel_tar() {
   tar -cJf ${TARBALL}/${2}.tar.xz boot/
   tar -cJf ${TARBALL}/${2}-modules.tar.xz lib/modules
   tar -cJf ${TARBALL}/${2}-firmware.tar.xz lib/firmware
-  tar -cJf ${TARBALL}/${2}-dev.tar.xz usr/include
-  tar -cJf ${TARBALL}/${2}-dahdi.tar.xz usr/lib usr/share)
+  tar -cJf ${TARBALL}/${2}-dev.tar.xz usr/include usr/${LIBDIR}/lib*.a usr/${LIBDIR}/*.la
+  tar -cJf ${TARBALL}/${2}-dbg.tar.xz usr/sbin/.dbg usr/${LIBDIR}/.dbg
+  tar -cJf ${TARBALL}/${2}-doc.tar.xz usr/share/doc/wanpipe
+  tar --exclude=usr/sbin/.dbg -cJf ${TARBALL}/${2}-wanpipe.tar.xz usr/${LIBDIR}/libsangoma.so* usr/${LIBDIR}/libstelephony.so* usr/${LIBDIR}/libteletone.so* etc usr/sbin
+  tar -cJf ${TARBALL}/${2}-dahdi.tar.xz usr/lib/hotplug usr/share/dahdi)
 }
 
 build_kernel() {
@@ -211,7 +261,6 @@ build_kernel() {
     rm -rf ${1}
   fi;
   mkdir -p ${1}/boot
-
 
   make ARCH=${KARCH} distclean mrproper && \
   cp ${KCONFIG} .config &&  \
@@ -255,6 +304,33 @@ build_kernel() {
     make ARCH=${KARCH} LINUX_SOURCE=${LINDIR} LINUX=${LINDIR} KVERS=${VSUF} INSTALL_PREFIX=${1} CROSS_COMPILE=${CROSS_COMPILE} misdn-headers install
   fi;
 
+  if [ -d ${SRCDIR}/kernel/wanpipe ];then
+    cd ${SRCDIR}/kernel/wanpipe
+    ./Setup install --protocol=DEF,TDM,TDMV,BRI --with-asterisk=${SRCDIR}/asterisk/asterisk-${ASTVER}/ \
+      --zaptel-path=${SRCDIR}/kernel/dahdi  --silent --no_woomera --with-linux=${LINDIR} --builddir=${1} --usr-cc="${CROSS_COMPILE}gcc"
+    rsync -a ${1}/usr/local/ ${1}/usr/
+    rm -rf ${1}/usr/local ${1}/var
+
+    if [ "${LIBDIR}" != "lib" ];then
+      mkdir -p ${1}/usr/${LIBDIR}
+      mv ${1}/usr/lib/lib* ${1}/usr/${LIBDIR}/
+    fi;
+    (for path in ${1}/usr/${LIBDIR}/ ${1}/usr/sbin/;do
+      if [ ! -d ${path}/.dbg ];then
+        mkdir ${path}/.dbg
+      fi;
+      for file in `ls ${path}`;do
+        if [ ! -s ${path}/${file} ] || [ -h ${path}/${file} ];then
+          continue
+        fi;
+        if ${CROSS_COMPILE}objcopy --only-keep-debug ${path}/${file} ${path}/.dbg/${file};then
+          ${CROSS_COMPILE}objcopy --strip-debug ${path}/${file}
+          ${CROSS_COMPILE}objcopy --add-gnu-debuglink=${path}/.dbg/${file} ${path}/${file}
+        fi;
+      done;
+    done) >/dev/null 2>&1
+  fi;
+
   depmod -b ${1} -ae -F ${1}/boot/System.map-${VSUF} ${VSUF}
 
   for kernln in source build;do
@@ -262,6 +338,7 @@ build_kernel() {
       rm ${1}/lib/modules/${VSUF}/${kernln}
     fi;
   done;
+
   build_kernel_tar ${1} ${2}
   build_kernel_rpm ${1} ${2}
 }
