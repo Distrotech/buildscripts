@@ -1825,12 +1825,7 @@ build_bootstrap_binutils() {
   BINUTILS=${PNAME}
 
   if [ "${1}" == "${NARCH}" ];then
-    DIST_ROOT=${PKGDESTDIR}/${NARCH}/${BINUTILS}-static
-    if [ "${BOOTSTRAP}" == "0" ];then
-      CSYSROOT="--with-sysroot=/"
-     else
-      CSYSROOT="--with-sysroot=${ARCHROOT}/${1}"
-    fi
+    return 0;
    else
     DIST_ROOT=${PKGDESTDIR}/${NARCH}/${1}/${BINUTILS}
     CSYSROOT="--with-sysroot=${ARCHROOT}/${1}"
@@ -1846,14 +1841,8 @@ build_bootstrap_binutils() {
   ARCHOPTV=OPT_${1}
   ARCHOPT=${!ARCHOPTV}
 
-  if [ "${1}" == "${NARCH}" ];then
-    PROGPRE="";
-    ARCHOPT="${ARCHOPT} LDFLAGS=-static";
-    MAKEOPT="LDFLAGS=-all-static";
-   else
-    MAKEOPT="";
-    PROGPRE="--program-prefix=${2}-";
-  fi;
+  MAKEOPT="";
+  PROGPRE="--program-prefix=${2}-";
 
   setup_build_dir ${1} binutils ${BINUTILS} ${NARCH}
   export MAKEOPT
@@ -1879,30 +1868,19 @@ build_bootstrap_binutils() {
      rm -rf build-${NARCH}-${1}
   fi;
 
-  if [ "${1}" != "${NARCH}" ];then
-    rsync -aP ${DIST_ROOT}/ /
+  rsync -aP ${DIST_ROOT}/ /
 
-    MULTIARCH=MARCH_${NARCH}
-    NATIVE=${!MULTIARCH}
-    if [ "${NATIVE}" ];then
-      case ${1} in
-	${NATIVE})rsync -a ${DIST_ROOT}/usr/${2} ${BASEROOT}/${NARCH}/usr/;;
-        *)echo rsync -a ${DIST_ROOT}/ ${ARCHROOT}/${1}/;;
-      esac;
-     else
-      rsync -a ${DIST_ROOT}/ ${ARCHROOT}/${1}/;
-    fi;
-    tar_package ${DIST_ROOT} ${TOOLPKG}/${NARCH}/${1} ${BINUTILS} > /dev/null 2>&1
+  MULTIARCH=MARCH_${NARCH}
+  NATIVE=${!MULTIARCH}
+  if [ "${NATIVE}" ];then
+    case ${1} in
+      ${NATIVE})rsync -a ${DIST_ROOT}/usr/${2} ${BASEROOT}/${NARCH}/usr/;;
+      *)echo rsync -a ${DIST_ROOT}/ ${ARCHROOT}/${1}/;;
+    esac;
    else
-    tar_package ${DIST_ROOT} ${TOOLPKG}/${NARCH} ${BINUTILS}-static > /dev/null 2>&1
-    rsync -a ${DIST_ROOT}/ ${BASEROOT}/${1}/
-    if [ ! -e ${ARCHROOT}/${1}/usr/bin/ld ];then
-      rsync -a ${DIST_ROOT}/ ${ARCHROOT}/${1}/
-    fi
-    if [ ! -e /usr/${2}/bin/ld ] && [ "${BOOTSTRAP}" == "0" ];then
-      rsync -a ${DIST_ROOT}/usr/${2}/ /usr/${2}/
-    fi
+    rsync -a ${DIST_ROOT}/ ${ARCHROOT}/${1}/;
   fi;
+  tar_package ${DIST_ROOT} ${TOOLPKG}/${NARCH}/${1} ${BINUTILS} > /dev/null 2>&1
 }
 
 build_gcc_bootstrap() {
@@ -3019,9 +2997,6 @@ bootstrap_toolchain() {
     #Shared GCC C/C++/ADA/Java distributable
     (build_gcc_bootstrap ${1} ${HOST} ${1} shared) || return 1
    else
-    #Static binutils distributable
-    (build_bootstrap_binutils ${1} ${HOST}) || return 1
-
     #Shared GCC C/C++/ADA/Java distributable
     (build_gcc_bootstrap ${1} ${HOST} ${1} shared) || return 1
 
