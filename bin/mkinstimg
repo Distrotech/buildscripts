@@ -7,31 +7,7 @@ KSUF="dts";
 Make_Bootetc() {
   cd ${1}
 
-  dd if=/dev/zero of=install/etc bs=1M count=10 > /dev/null 2>&1
-  ELOOP=`/sbin/losetup -f`
-  ELOOP=`readlink -f ${ELOOP}`
-  /sbin/losetup ${ELOOP} install/etc
-  /sbin/mkfs.ext4 -L bootetc -i 1024 ${ELOOP} > /dev/null 2>&1
-
-  if [ ! -d mnt/floppy ] && [ -e mnt/floppy ];then
-    rm -rf mnt/floppy
-    mkdir mnt/floppy
-   elif [ ! -e mnt/floppy ];then
-    mkdir -p mnt/floppy
-   else
-    rm -rf mnt/floppy/*
-  fi;
-  mount ${ELOOP} mnt/floppy
-
-  if [ $? != 0 ];then
-    losetup -d ${ELOOP}
-    rm install/etc
-    return 1
-  fi;
-
-  echo "/dev/flash/install	/	ext4	defaults	0	1" > etc/fstab
   rm etc/blkid.* > /dev/null 2>&1
-  cp -Rp etc/* mnt/floppy
 
   (cat <<EOF
 hosts:  	files dns
@@ -39,25 +15,38 @@ passwd:		files
 shadow:		files
 group:		files
 EOF
-) > mnt/floppy/nsswitch.conf
+) > etc/nsswitch.conf
 
-  echo "smbadm::139:" >> mnt/floppy/group
-  echo "*.*                                       /dev/tty5" > mnt/floppy/syslog.conf
-  echo "telnet          stream  tcp     nowait  root    /usr/sbin/in.telnetd" > mnt/floppy/inetd.conf
-  sed -e "s/^\(PasswordAuthentication\).*/\1 yes/" \
-      -e "s/^\(UsePAM\).*/\1 no/" etc/sshd_config > mnt/floppy/sshd_config
-  sed -e "s/^.*agetty.*//" etc/inittab > mnt/floppy/inittab
-  sed -e "s/\(suggested-size.*\)20011/\1211/" etc/nscd.conf > mnt/floppy/nscd.conf
+  echo "*.*                                       /dev/tty5" > etc/syslog.conf
+  echo "telnet          stream  tcp     nowait  root    /usr/sbin/in.telnetd" > etc/inetd.conf
 
-  ln -s ../usr/share/zoneinfo/Africa/Johannesburg mnt/floppy/localtime
+  if [ -e etc/sshd_config ];then
+    sed -i -e "s/^\(PasswordAuthentication\).*/\1 yes/" \
+           -e "s/^\(UsePAM\).*/\1 no/" etc/sshd_config
+  fi;
+
+  if [ -e etc/inittab ];then
+    sed -i -e "s/^.*agetty.*//" etc/inittab
+  fi;
+
+  if [ -e etc/nscd.conf ];then
+    sed -i -e "s/\(suggested-size.*\)20011/\1211/" etc/nscd.conf
+  fi;
+
+  if [ -e etc/localtime ];then
+    rm etc/localtime
+  fi;
+  ln -s ../usr/share/zoneinfo/Africa/Johannesburg etc/localtime
 
   for todel in HOSTNAME openssl/ca.conf ifconf/* mtab* ppp/ip-up;do
-    rm mnt/floppy/${todel} > /dev/null 2>&1
+    rm etc/${todel} > /dev/null 2>&1
   done
+  ln -s /proc/self/mounts etc/mtab
 
-  if [ ! -d mnt/floppy/ifconf ];then
-    mkdir mnt/floppy/ifconf
+  if [ ! -d etc/ifconf ];then
+    mkdir etc/ifconf
   fi;
+
   (cat <<_EOF_
 #!/bin/bash
 
@@ -78,9 +67,12 @@ fi;
 flock -u 10
 ) 10>/var/lock/ppp10.lock &
 _EOF_
-) > mnt/floppy/ifconf/pppup.ppp3g
-  chmod 755 mnt/floppy/ifconf/pppup.ppp3g
+) > etc/ifconf/pppup.ppp3g
+  chmod 755 etc/ifconf/pppup.ppp3g
 
+  if [ ! -d etc/ppp ];then
+    mkdir etc/ppp
+  fi;
   (cat <<_EOF_
 #!/bin/bash
 
@@ -97,22 +89,9 @@ fi;
 cp /tmp/resolv.conf /etc/resolv.conf
 
 _EOF_
-) > mnt/floppy/ppp/ip-up
-  chmod 755 mnt/floppy/ppp/ip-up
-
-  for totouch in mtab .install .networksentry-lite;do
-    touch mnt/floppy/${totouch}
-  done
-
-  while [ -d mnt/floppy/lost+found ];do
-    umount mnt/floppy > /dev/null 2>&1
-    sleep 2
-  done;
-
-  e2fsck -Dfy ${ELOOP} > /dev/null 2>&1
-  sleep 2
-  /sbin/losetup -d ${ELOOP}
-  gzip -f -9 install/etc
+) > etc/ppp/ip-up
+  chmod 755 etc/ppp/ip-up
+  touch etc/.install
 
   rm root/.bash_history > /dev/null 2>&1
 }
@@ -139,7 +118,8 @@ EOF
   for kernbits in x86_64 x86_x32 x86;do
     if [ -e ${1}/boot/${kernbits}/syslinux.cfg ];then
       cat <<EOF
-LABEL Install options for ${kernbits}
+LABEL ${kernbits}
+  MENU LABEL Install options for ${kernbits}
   CONFIG /boot/${kernbits}/syslinux.cfg
 
 EOF
@@ -161,12 +141,12 @@ LABEL install
   MENU LABEL ${BRAND} ${1} (Install)
   KERNEL /boot/${1}/vmlinuz
   INITRD /boot/${1}/initrd.img
-  APPEND ro root=/dev/loop0 nomodeset dts_opt=squashfs squashimg=/boot/${1}/install.img quiet
+  APPEND ro root=/dev/loop0 nomodeset dts_opt=squashfs squashimg=/boot/${1}/root.img quiet
 LABEL rescue
   MENU LABEL ${BRAND} ${1} (Rescue)
   KERNEL /boot/${1}/vmlinuz
   INITRD /boot/${1}/initrd.img
-  APPEND ro root=/dev/loop0 nomodeset dts_opt=squashfs squashimg=/boot/${1}/install.img S
+  APPEND ro root=/dev/loop0 nomodeset dts_opt=squashfs squashimg=/boot/${1}/root.img S
 LABEL build
   MENU LABEL ${BRAND} ${1} (Build)
   KERNEL /boot/${1}/vmlinuz
@@ -175,8 +155,8 @@ LABEL build
 EOF
 }
 
-build_install_img() {
-  IMGDIR=$(mktemp -d -p /root install-img-${1}.XXXXXXXXXXX)
+build_squashfs_img() {
+  IMGDIR=$(mktemp -d -p /root ${3}-img-${1}.XXXXXXXXXXX)
   if [ ! "${IMGDIR}" ] || [ ! -d ${IMGDIR} ];then
     return 1
   fi;
@@ -190,35 +170,14 @@ build_install_img() {
       LIBDIR="lib64";;
   esac;
 
-  sh /root/buildscripts/bin/instpkg ${ARCH} ${IMGDIR} root
+  /usr/libexec/distrotech/instpkg ${ARCH} ${IMGDIR} ${3}
 
-  ls -d ${IMGDIR}/opt/*/${LIBDIR} |awk -v MNT=${IMGDIR} '{printf "%s\n",substr($1,length(MNT)+1)}' > ${IMGDIR}/etc/ld.so.conf.d/opt.conf
+  ls -d ${IMGDIR}/opt/*/${LIBDIR} |awk -v MNT=${IMGDIR} '{printf "%s\n",substr($1,length(MNT)+1)}' > ${IMGDIR}/etc/ld.so.conf.d/opt-${3}.conf
 
-  chroot ${IMGDIR} /sbin/ldconfig
+  chroot ${IMGDIR} /sbin/ldconfig > /dev/null 2>&1
   (Make_Bootetc ${IMGDIR})
 
-  mksquashfs ${IMGDIR}/* ${2} -comp xz
-  rm -rf ${IMGDIR}
-}
-
-build_buildroot_img() {
-  IMGDIR=$(mktemp -d -p /root buildroot-img-${1}.XXXXXXXXXXX)
-  if [ ! "${IMGDIR}" ] || [ ! -d ${IMGDIR} ];then
-    return 1
-  fi;
-
-  case ${1} in
-    x86)ARCH="i686";;
-    x86_x32)ARCH="x86_32";;
-    *)ARCH=${1};;
-  esac;
-
-  sh /root/buildscripts/bin/instpkg ${ARCH} ${IMGDIR} buildroot
-
-  chroot ${IMGDIR} /sbin/ldconfig
-  (Make_Bootetc ${IMGDIR})
-
-  mksquashfs ${IMGDIR}/* ${2} -comp xz
+  mksquashfs ${IMGDIR}/* ${2}/${3}.img -comp xz
   rm -rf ${IMGDIR}
 }
 
@@ -236,11 +195,11 @@ add_kernel() {
       fi;
       cp ${SYSROOT}/${ARCH}/boot/vmlinuz-${2}-${kernbits}-${KSUF} ${1}/boot/${kernbits}/vmlinuz
       mkinitrd bootimg ${1}/boot/${kernbits}/initrd.img ${SYSROOT}/${ARCH}/  ${2}-${kernbits}
-      if [ ! -e  ${1}/boot/${kernbits}/install.img ];then
-        build_install_img ${kernbits} ${1}/boot/${kernbits}/install.img
+      if [ ! -e  ${1}/boot/${kernbits}/root.img ];then
+        build_squashfs_img ${kernbits} ${1}/boot/${kernbits} root
       fi;
       if [ ! -e  ${1}/boot/${kernbits}/buildroot.img ];then
-        build_buildroot_img ${kernbits} ${1}/boot/${kernbits}/buildroot.img
+        build_squashfs_img ${kernbits} ${1}/boot/${kernbits} buildroot
       fi;
       syslinux_cfg_arch ${kernbits} > ${1}/boot/${kernbits}/syslinux.cfg
     fi;
