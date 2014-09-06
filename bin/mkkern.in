@@ -50,6 +50,12 @@ case ${ARCH} in
   *)CROSS_COMPILE=${ARCH}-linux-gnu-;;
 esac;
 
+if [ "${ARCH}" == "x86_32" ];then
+  HOST="x86_64-linux-gnux32-";
+ else
+  HOST="${CROSS_COMPILE}"
+fi;
+
 case ${ARCH} in
   x86_*|i[3-6]86)KARCH="x86";;
   arm64)KARCH=arm64;;
@@ -71,6 +77,11 @@ case ${ARCH} in
   i686)LIBDIR="lib/i686";;
   *64)LIBDIR="lib64";;
   *)LIBDIR="lib";;
+esac;
+
+case ${ARCH} in
+  x86_64|i686|x86_32)HAS_WANPIPE="1";;
+  *)HAS_WANPIPE="0";;
 esac;
 
 build_kernel_rpm_spec() {
@@ -99,51 +110,58 @@ find %{buildroot} -empty -type d -delete
 Group: Distrotech Linux ${VERSION} ${KFLAVOR}
 Summary: Linux ${VERSION}-${KFLAVOR} installed files (modules)
 
+%description modules
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files (modules)
+
 %package firmware
 Group: Distrotech Linux ${VERSION} ${KFLAVOR}
 Summary: Linux ${VERSION}-${KFLAVOR} installed files (firmware)
+
+%description firmware
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files (firmware)
 
 %package dahdi
 Group: Distrotech Linux ${VERSION} ${KFLAVOR}
 Summary: Linux ${VERSION}-${KFLAVOR} installed files (dahdi)
 
-%package wanpipe
-Group: Distrotech Linux ${VERSION} ${KFLAVOR}
-Summary: Linux ${VERSION}-${KFLAVOR} installed files (wanpipe)
+%description dahdi
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files (dahdi)
 
 %package dev
 Group: Distrotech Linux ${VERSION} ${KFLAVOR}
 Summary: Linux ${VERSION}-${KFLAVOR} installed files (dev)
 
+%description dev
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files (dev)
+
 %package dbg
 Group: Distrotech Linux ${VERSION} ${KFLAVOR}
 Summary: Linux ${VERSION}-${KFLAVOR} installed files (dbg)
+
+EOF
+
+if [ "${HAS_WANPIPE}" == "1" ];then
+  cat <<EOF
+%description dbg
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files (dbg)
 
 %package doc
 Group: Distrotech Linux ${VERSION} ${KFLAVOR}
 Summary: Linux ${VERSION}-${KFLAVOR} installed files (doc)
 
-%description modules
-Distrotech Linux ${VERSION} ${KFLAVOR} installed files (modules)
-
-%description firmware
-Distrotech Linux ${VERSION} ${KFLAVOR} installed files (firmware)
-
-%description dahdi
-Distrotech Linux ${VERSION} ${KFLAVOR} installed files (dahdi)
-
-%description wanpipe
-Distrotech Linux ${VERSION} ${KFLAVOR} installed files (wanpipe)
-
-%description dev
-Distrotech Linux ${VERSION} ${KFLAVOR} installed files (dev)
-
-%description dbg
-Distrotech Linux ${VERSION} ${KFLAVOR} installed files (dbg)
-
 %description doc
 Distrotech Linux ${VERSION} ${KFLAVOR} installed files (doc)
 
+%package wanpipe
+Group: Distrotech Linux ${VERSION} ${KFLAVOR}
+Summary: Linux ${VERSION}-${KFLAVOR} installed files (wanpipe)
+
+%description wanpipe
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files (wanpipe)
+EOF
+  fi;
+
+  cat <<EOF
 %files
 /boot
 
@@ -153,8 +171,16 @@ Distrotech Linux ${VERSION} ${KFLAVOR} installed files (doc)
 %files firmware
 /lib/firmware
 
+%files dahdi
+/usr/lib/hotplug
+/usr/share/dahdi
+
 %files dev
 /usr/include
+EOF
+
+if [ "${HAS_WANPIPE}" == "1" ];then
+  cat <<EOF
 /usr/${LIBDIR}/lib*.a
 /usr/${LIBDIR}/*.la
 
@@ -165,10 +191,6 @@ Distrotech Linux ${VERSION} ${KFLAVOR} installed files (doc)
 %files doc
 /usr/share/doc/wanpipe
 
-%files dahdi
-/usr/lib/hotplug
-/usr/share/dahdi
-
 %files wanpipe
 /usr/${LIBDIR}/libsangoma.so*
 /usr/${LIBDIR}/libstelephony.so*
@@ -177,6 +199,7 @@ Distrotech Linux ${VERSION} ${KFLAVOR} installed files (doc)
 /usr/sbin
 
 EOF
+  fi;
 }
 
 build_kernel_rpm() {
@@ -306,8 +329,15 @@ build_kernel() {
 
   if [ -d ${SRCDIR}/kernel/wanpipe ];then
     cd ${SRCDIR}/kernel/wanpipe
-    ./Setup install --protocol=DEF,TDM,TDMV,BRI --with-asterisk=${SRCDIR}/asterisk/asterisk-${ASTVER}/ \
-      --zaptel-path=${SRCDIR}/kernel/dahdi  --silent --no_woomera --with-linux=${LINDIR} --builddir=${1} --usr-cc="${CROSS_COMPILE}gcc"
+    git clean -x -f -d
+    if [ "${ARCH}" == "i686" ];then
+      SETARCH="setarch i686 ";
+     else
+      SETARCH="";
+    fi;
+    CROSS_COMPILE=${CROSS_COMPILE} CC=${HOST}gcc CXX=${HOST}g++ ${SETARCH}./Setup install --protocol=DEF,TDM,TDMV,BRI \
+      --with-asterisk=${SRCDIR}/asterisk/asterisk-${ASTVER}/ --zaptel-path=${SRCDIR}/kernel/dahdi  --silent --no_woomera \
+      --with-linux=${LINDIR} --builddir=${1} --usr-cc="${HOST}gcc"
     rsync -a ${1}/usr/local/ ${1}/usr/
     rm -rf ${1}/usr/local ${1}/var
 
