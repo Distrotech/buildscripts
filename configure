@@ -595,10 +595,6 @@ SRVDIR
 SRVDIRYUM
 SRVDIRTAR
 YUMREPOCONFDIR
-DIST_DI
-DIST_CN
-DIST_RE
-DIST_ID
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
 AM_DEFAULT_V
@@ -668,10 +664,6 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 enable_silent_rules
-with_dist_id
-with_dist_release
-with_dist_codename
-with_dist_description
 with_srvdir
 with_src_dir
 with_build_dir
@@ -1303,11 +1295,6 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-dist-id          Distribution id stored in lsb-release (Distrotech)
-  --with-dist-release     Distribution release stored in lsb-release
-  --with-dist-codename    Distribution codename stored in lsb-release
-  --with-dist-description Distribution codename stored in lsb-release
-                          (Distrotech Solutions)
   --with-srv-dir          toplevel direcrory for tar packages and yum
                           repository
   --with-src-dir          where the source is checked out and built
@@ -2358,58 +2345,6 @@ END
 fi
 
 
-# Check whether --with-dist-id was given.
-if test "${with_dist_id+set}" = set; then :
-  withval=$with_dist_id;
-fi
-
-if test "x$with_dist_id" = "x" ; then :
-  DIST_ID=Distrotech
-else
-  DIST_ID=$with_dist_id
-fi
-
-
-
-# Check whether --with-dist-release was given.
-if test "${with_dist_release+set}" = set; then :
-  withval=$with_dist_release;
-fi
-
-if test "x$with_dist_release" = "x" ; then :
-  DIST_RE=""
-else
-  DIST_RE=$with_dist_release
-fi
-
-
-
-# Check whether --with-dist-codename was given.
-if test "${with_dist_codename+set}" = set; then :
-  withval=$with_dist_codename;
-fi
-
-if test "x$with_dist_codename" = "x" ; then :
-  DIST_CN=""
-else
-  DIST_CN=$with_dist_codename
-fi
-
-
-
-# Check whether --with-dist-description was given.
-if test "${with_dist_description+set}" = set; then :
-  withval=$with_dist_description;
-fi
-
-if test "x$with_dist_description" = "x" ; then :
-  DIST_DI="Distrotech Solutions Linux"
-else
-  DIST_DI=$with_dist_description
-fi
-
-
-
 # Check whether --with-srvdir was given.
 if test "${with_srvdir+set}" = set; then :
   withval=$with_srvdir;
@@ -2561,7 +2496,7 @@ fi
 PATCHDIR=${datarootdir}/patches
 KCONFIGDIR=${datarootdir}/config
 
-ac_config_files="$ac_config_files Makefile bin/build bin/mkbuilddef bin/pkg2rpm bin/umount-arch bin/mkkern bin/mkgroups etc/yum_repo.conf lsb/lsb-release libexec/make_sip libexec/make_qt-5 libexec/make_qt-4-bin"
+ac_config_files="$ac_config_files Makefile bin/build bin/mkbuilddef bin/pkg2rpm bin/umount-arch bin/mkkern bin/mkgroups etc/yum_repo.conf libexec/make_sip libexec/make_qt-5 libexec/make_qt-4-bin"
 
 
 
@@ -3299,7 +3234,6 @@ do
     "bin/mkkern") CONFIG_FILES="$CONFIG_FILES bin/mkkern" ;;
     "bin/mkgroups") CONFIG_FILES="$CONFIG_FILES bin/mkgroups" ;;
     "etc/yum_repo.conf") CONFIG_FILES="$CONFIG_FILES etc/yum_repo.conf" ;;
-    "lsb/lsb-release") CONFIG_FILES="$CONFIG_FILES lsb/lsb-release" ;;
     "libexec/make_sip") CONFIG_FILES="$CONFIG_FILES libexec/make_sip" ;;
     "libexec/make_qt-5") CONFIG_FILES="$CONFIG_FILES libexec/make_qt-5" ;;
     "libexec/make_qt-4-bin") CONFIG_FILES="$CONFIG_FILES libexec/make_qt-4-bin" ;;

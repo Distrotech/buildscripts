@@ -3,22 +3,6 @@ AC_INIT([dtsbuild],[0.1],[gregory@distrotech.co.za])
 
 AM_INIT_AUTOMAKE
 
-AC_ARG_WITH([dist-id], AS_HELP_STRING([--with-dist-id], [Distribution id stored in lsb-release (Distrotech)]))
-AS_IF([test "x$with_dist_id" = "x" ], [DIST_ID=Distrotech], [DIST_ID=$with_dist_id])
-AC_SUBST(DIST_ID)
-
-AC_ARG_WITH([dist-release], AS_HELP_STRING([--with-dist-release], [Distribution release stored in lsb-release]))
-AS_IF([test "x$with_dist_release" = "x" ], [DIST_RE=""], [DIST_RE=$with_dist_release])
-AC_SUBST(DIST_RE)
-
-AC_ARG_WITH([dist-codename], AS_HELP_STRING([--with-dist-codename], [Distribution codename stored in lsb-release]))
-AS_IF([test "x$with_dist_codename" = "x" ], [DIST_CN=""], [DIST_CN=$with_dist_codename])
-AC_SUBST(DIST_CN)
-
-AC_ARG_WITH([dist-description], AS_HELP_STRING([--with-dist-description], [Distribution codename stored in lsb-release (Distrotech Solutions)]))
-AS_IF([test "x$with_dist_description" = "x" ], [DIST_DI="Distrotech Solutions Linux"], [DIST_DI=$with_dist_description])
-AC_SUBST(DIST_DI)
-
 AC_ARG_WITH([srvdir], AS_HELP_STRING([--with-srv-dir], [toplevel direcrory for tar packages and yum repository]))
 AC_ARG_WITH([src-dir], AS_HELP_STRING([--with-src-dir], [where the source is checked out and built]))
 AC_ARG_WITH([build-dir], AS_HELP_STRING([--with-build-dir], [staging/bootstrap directory]))
@@ -75,7 +59,6 @@ AC_CONFIG_FILES([
   bin/mkkern
   bin/mkgroups
   etc/yum_repo.conf
-  lsb/lsb-release
   libexec/make_sip
   libexec/make_qt-5
   libexec/make_qt-4-bin])
