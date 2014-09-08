@@ -1,8 +1,7 @@
 VERSION="0.1"
 VERSEP="-";
 PREFIX="/opt/${BUILDPROJECT=}";
-LSB_VERSION=$(date +v%y.%m)
-STDOPTS="--prefix=/opt --with-dist-release=${LSB_VERSION} --with-dist-codename=skankypants";
+STDOPTS="--prefix=/opt";
 ALIAS="buildscripts";
 GITBRANCH="master";
 BUILDDIR="0";
