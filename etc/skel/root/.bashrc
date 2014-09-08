@@ -40,10 +40,12 @@ if [ ! -e /sys/kernel ];then
   mount -t sysfs ${HOST_ARCH}_sys /sys
 fi;
 
-LANG=${LANG:=en_ZA.UTF8}
+export LANG=${LANG:=en_ZA.UTF8}
 if [ ! -e /etc/localtime ];then
   export TZ=${TZ:=Africa/Johannesburg}
 fi;
+
+unset JAVA_HOME ANT_HOME M2_HOME QTDIR FOP_HOME FORREST_HOME LESSCLOSE
 
 LIB_PATH="/${HOST_LIBDIR}";
 if [ "${HOST_MLIBDIR}" ];then
@@ -62,7 +64,6 @@ for libpth in /usr /opt/Xorg /opt/qt-5 /opt/qt-4 /opt/xfce /opt/apr /opt/mysql /
   fi;
 done;
 
-unset JAVA_HOME ANT_HOME M2_HOME QTDIR FOP_HOME FORREST_HOME
 if [ -e /proc/sys/fs/binfmt_misc/${NARCH} ];then
   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin/hybrid:/usr/bin:/sbin:/bin/hybrid:/bin:/opt/apache2/bin:/opt/Xorg/bin:/opt/xfce/bin
   export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
@@ -70,7 +71,7 @@ if [ -e /proc/sys/fs/binfmt_misc/${NARCH} ];then
  else
   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/apache2/bin:/opt/Xorg/bin:/opt/xfce/bin
 fi;
-MANPATH=/usr/share/man
+MANPATH=/share:/usr/share/man
 
 if [ "${JAVA_VER}" ] && [ -d /usr/${HOST_LIBDIR}/jvm/jdk-${JAVA_VER} ];then
   export JAVA_HOME=/usr/${HOST_LIBDIR}/jvm/jdk-${JAVA_VER}
@@ -127,8 +128,7 @@ export GIT_EDITOR="nano"
 
 export LESSOPEN="|lesspipe.sh %s"
 export LESSQUIET=1
-export LESS="-Mr"
-unset LESSCLOSE
+export LESS="-MR"
 
 eval `dircolors -b`
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
