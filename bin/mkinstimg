@@ -151,7 +151,7 @@ LABEL build
   MENU LABEL ${BRAND} ${1} (Build)
   KERNEL /boot/${1}/vmlinuz
   INITRD /boot/${1}/initrd.img
-  APPEND ro root=/dev/loop0 nomodeset dts_opt=squashfs squashimg=/boot/${1}/buildroot.img init=/bin/bash
+  APPEND ro root=/dev/loop0 nomodeset dts_opt=buildroot squashimg=/boot/${1}/root.img buildimg=/boot/${1}/buildroot.img init=/bin/bash
 EOF
 }
 
@@ -194,7 +194,7 @@ add_kernel() {
         mkdir -p ${1}/boot/${kernbits}
       fi;
       cp ${SYSROOT}/${ARCH}/boot/vmlinuz-${2}-${kernbits}-${KSUF} ${1}/boot/${kernbits}/vmlinuz
-      mkinitrd bootimg ${1}/boot/${kernbits}/initrd.img ${SYSROOT}/${ARCH}/  ${2}-${kernbits}
+      mkinitrd bootimg ${1}/boot/${kernbits}/initrd.img ${SYSROOT}/${ARCH}/  ${2}-${kernbits}-${KSUF}
       if [ ! -e  ${1}/boot/${kernbits}/root.img ];then
         build_squashfs_img ${kernbits} ${1}/boot/${kernbits} root
       fi;
