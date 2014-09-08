@@ -1,4 +1,4 @@
-LSB_VERSION=$(date +v%y.%m)
+LSB_VERSION=$(date +%y.%m)
 VERSION="${LSB_VERSION}"
 VERSEP="-";
 PREFIX="/usr";
