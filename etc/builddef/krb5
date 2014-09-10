@@ -15,6 +15,7 @@ if [ "${BUILDPROJECT}" == "krb5" ];then
 	libkadm5srv_mit.so.9(kadm5srv_mit_9_MIT)${ARCH_BITS} libkdb5.so.7()${ARCH_BITS} libkdb5.so.7(kdb5_7_MIT)${ARCH_BITS}
 	libkrb5support.so.0(krb5support_0_MIT)${ARCH_BITS}";
  else
+  ADDCC="0";
   CONFOPT="--disable-shared --enable-static --with-system-verto --without-tcl";
   MAKEOPTS="LDFLAGS=-static";
   ALIAS="krb5";
