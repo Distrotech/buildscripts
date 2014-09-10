@@ -10,3 +10,4 @@ DONTBUILD="cyg32 cyg64";
 RPMPROVIDES_libs="libattr.so.1()${ARCH_BITS} libattr.so.1(ATTR_1.0)${ARCH_BITS}
 	libattr.so.1(ATTR_1.1)${ARCH_BITS} libattr.so.1(ATTR_1.2)${ARCH_BITS}";
 RPMGROUP="root";
+MAKEALL="default";
