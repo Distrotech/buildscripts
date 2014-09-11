@@ -24,3 +24,4 @@ fi;
 ADDWITHSYSROOT="1";
 ADDCFLAG="-ffat-lto-objects";
 RPMGROUP="root";
+CHROOTBUILD="1";
