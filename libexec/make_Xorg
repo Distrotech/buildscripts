@@ -45,14 +45,14 @@ sync_fin() {
     exit ${2}
   fi;
 
-  if [ -h ${SYSROOT}/${PREFIX} ];then
+  if [ "${1}" == "0" ] && [ -h ${SYSROOT}/${PREFIX} ];then
     rm ${SYSROOT}/${PREFIX}
   fi;
 
   exit 0
 }
 
-NARCH=`uname -m`
+NARCH=${NARCH:=$( uname -m )}
 
 export BARCH=${1}
 export DESTDIR=${3}
