@@ -270,6 +270,12 @@ if [ ! "${TMPDIR}" ] || [ ! -d ${TMPDIR} ];then
   exit 1
 fi;
 
-build_installer dts-install 3.14.17 ${TMPDIR}
+if [ "${1}" ];then
+  INST_DEV="${1}"
+ else
+  INST_DEV="dts-install";
+fi;
+
+build_installer ${INST_DEV} 3.14.17 ${TMPDIR}
 
 rm -rf ${TMPDIR}
