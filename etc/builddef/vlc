@@ -6,7 +6,7 @@ OPT_powerpc="--disable-libmpeg2";
 OPT_powerpc64="--disable-libmpeg2";
 OPT_mips="--disable-libmpeg2 --disable-mad";
 OPT_mips64="--disable-libmpeg2 --disable-mad";
-ADDCFLAG="-fPIC -O2";
+ADDCFLAG="-fPIC -O2 -std=gnu99";
 AMVER="1.14";
 ADDWITHSYSROOT="1";
 CHROOTBUILD="1";
