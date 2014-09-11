@@ -2653,7 +2653,8 @@ build_dependancies() {
   #Perl modules
   build_packages ${1} tcl8 tk8 unixODBC perl-modules || return 1
 
-  build_packages ${1} gtk+ freeglut pcsc-lite wayland libxkbcommon at-spi2-core at-spi2-atk || return 1
+  build_packages ${1} gtk+ freeglut pcsc-lite wayland libxkbcommon at-spi2-core at-spi2-atk \
+    bash-completion libgusb mozjs mozjs-17 polkit colord || return 1
 
   #we need gdk-pixbuf/librsvg built with gtk3 to build gtk33 bootstrap it [dont build demos/tests/examples on 1st pass]
   if [ ! -e ${STATDIR}/${1}/done/gtk3 ] && [ "${1}" == "${NARCH}" ];then
