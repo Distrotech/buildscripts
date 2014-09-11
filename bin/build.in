@@ -2642,11 +2642,6 @@ build_dependancies() {
 
   #Continue X Build with GL/Mesa
   if [ -e ${STATDIR}/${1}/fail/Xorg ];then
-    if [ ! -e ${STATDIR}/${1}/done/glamor ];then
-      (unset CLEANOPT;build_project Xorg ${1})
-      (build_project glamor ${1}) || return 1
-      (unset CLEANOPT;build_project Xorg ${1})
-    fi;
     (unset CLEANOPT;build_project Xorg ${1}) || return 1
   fi;
 
@@ -2673,7 +2668,7 @@ build_dependancies() {
     build_packages ${1} gtk3 || return 1
   fi;
 
-  build_packages ${1} glamor Xorg poppler poppler-data qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
+  build_packages ${1} Xorg poppler poppler-data qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
     txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib docutils dbus-python mozjs mozjs-17 polkit GConf libbonobo \
     libatomic_ops gc guile autogen libmad Xaw3d gv rtmpdump polkit-gnome icmake yodl swig setuptools M2Crypto wireless-regdb crda || return 1
 
