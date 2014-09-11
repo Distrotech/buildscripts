@@ -387,24 +387,29 @@ check_create_arch() {
      return 0;
   fi;
 
+  #Create symlink to / for  sysroot of native arch
+  if [ "${1}" == "${NARCH}" ] && [ ! -e ${ARCHROOT}/${1} ];then
+    ln -sr / ${ARCHROOT}/${1}
+  fi;
+
+  #Base root
   HDIR=${BASEROOT}/${1}
   if [ ! -d ${HDIR} ];then
     mkdir -p ${HDIR}/usr/include
   fi;
-
 
   #Pull in the linux source and create headers dir
   if [ ! "${RUNBASHRC}" ];then
     build_linux_headers ${1} || exit 1
   fi;
 
-  #Create symlink to / for  sysroot of native arch
-  if [ "${1}" == "${NARCH}" ] && [ ! -e ${ARCHROOT}/${1} ];then
-    ln -sr / ${ARCHROOT}/${1}
-   elif [ ! -d ${ARCHROOT}/${1} ];then
-    mkdir -p ${ARCHROOT}/${1}
+  #Sync kernel files
+  if [ ! -d ${ARCHROOT}/${1}/usr/include/asm ];then
     if [ -d ${ARCHROOT}/${1} ] && [ -d ${HDIR} ];then
       rsync -a ${HDIR}/ ${ARCHROOT}/${1}/
+      if [ ! -e ${ARCHROOT}/${1}/usr/include/asm ];then
+        ln -sr ${ARCHROOT}/${1}/usr/include/asm-${KARCH} ${ARCHROOT}/${1}/usr/include/asm
+      fi;
     fi;
   fi;
 
@@ -2237,7 +2242,7 @@ setup_hybrid_boot() {
   fi;
 
   TMPDIR=$( mktemp -d -p /root cross_${NARCH}_${1}.XXXXXXXXXXX)
-  if [ ! "${TMPDIR}" ];then
+  if [ ! "${TMPDIR}" ] || [ ! -d ${TMPDIR} ];then
     return 1
   fi;
 
@@ -2392,21 +2397,21 @@ setup_hybrid_boot() {
   done;
 
   rsync -a ${TMPDIR}/ ${ARCHROOT}/${1}/
-  if [ "${TMPDIR}" ] && [ -d "${TMPDIR}" ];then
-    if [ ! -d ${PKGDISTDIR}/core/${2}/${1} ];then
-      mkdir -p ${PKGDISTDIR}/core/${2}/${1}
-    fi;
-    (cd ${TMPDIR};tar -cJf ${PKGDISTDIR}/core/${2}/${1}/hybrid-build.tar.xz *)
-    rm -rf ${TMPDIR}
+
+  if [ ! -d ${PKGDISTDIR}/core/${2}/${1} ];then
+    mkdir -p ${PKGDISTDIR}/core/${2}/${1}
   fi;
+
   chroot ${ARCHROOT}/${1} /sbin/ldconfig
   ${ARCHROOT}/${1}/sbin/ldconfig -r ${ARCHROOT}/${1}
 
   if [ "${ERROR}" == "0" ];then
+    (cd ${TMPDIR};tar -cJf ${PKGDISTDIR}/core/${2}/${1}/hybrid-build.tar.xz *)
     touch ${ARCHROOT}/${1}/usr/${NLIBDIR}/${NMLIBDIR}/.distro_done
    else
     echo "ERROR";
   fi;
+  rm -rf ${TMPDIR}
 }
 
 bootstrap_arch_lib() {
@@ -2852,7 +2857,7 @@ bootstrap_native() {
   #Bootstrap native arch with deps for GCC [libjava] if gcc not built
   if [ ! -e ${STATDIR}/${NARCH}/done/unzip ];then
     build_packages ${NARCH} xz libxml2 libxslt libffi gdbm Python libcap patch docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
-      docbook-4.5 docbook-xsl xmlto OpenSP openjade expat intltool gtk-doc attr acl kmod openssl trousers dbus systemd pkg-config \
+      docbook-4.5 docbook-xsl xmlto OpenSP openjade expat intltool gtk-doc attr acl kmod openssl trousers dbus popt cryptsetup systemd pkg-config \
       libcroco zip unzip || return 1
   fi;
 
@@ -3018,7 +3023,7 @@ bootstrap_toolchain() {
 
 configstatdir() {
   if [ ! -d ${STATDIR} ];then
-    mkdir ${STATDIR}
+    mkdir -p ${STATDIR}
   fi;
 
   if [ ! -d ${STATDIR}/${1} ];then
