@@ -2,7 +2,6 @@ VERSION="0.99.beta18"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-csharp --disable-doc";
-OPT_x86_32="--disable-java";
 OPT_mips="--disable-java";
 OPT_powerpc="--disable-java";
 OPT_powerpc64="--disable-java";
