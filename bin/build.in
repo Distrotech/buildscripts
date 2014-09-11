@@ -2654,6 +2654,8 @@ build_dependancies() {
        gdk-pixbuf-query-loaders > /usr/${B_LIBDIRS}/gdk-pixbuf-2.0/2.10.0/loaders.cache
     fi;
     pango-querymodules --update-cache) >/dev/null 2>&1
+   else
+    chroot ${ARCHROOT}/${1} gdk-pixbuf-query-loaders > ${ARCHROOT}/${1}/usr/${C_LIBDIRS}/gdk-pixbuf-2.0/2.10.0/loaders.cache
   fi;
 
   #Continue X Build with GL/Mesa
