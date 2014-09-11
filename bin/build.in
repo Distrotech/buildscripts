@@ -2588,10 +2588,7 @@ build_dependancies() {
     build_packages ${1} icmake yodl || return 1
   fi;
 
-  build_packages ${1} intltool popt rsync bzip2 nspr sqlite-autoconf nss openssl Python libcap-ng ply expat libxml2 libxslt gnome-doc-utils \
-    docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi dbus glib gnome-doc-utils gtk-doc \
-    pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg trousers onig slang autoconf automake-1.9 automake-1.10 automake-1.11 \
-    automake-1.12 automake-1.13 automake-1.14 findutils || return 1
+  build_packages ${1} intltool popt rsync bzip2 nspr sqlite-autoconf nss openssl Python libcap-ng ply expat || return 1
 
   #Rebuild libxml2 with Python support
   if [ ${STATDIR}/${1}/done/Python -nt ${STATDIR}/${1}/done/libxml2 ] || \
@@ -2601,6 +2598,10 @@ build_dependancies() {
     done;
     build_packages ${1} libxml2 libxslt || return 1
   fi;
+
+  build_packages ${1} gnome-doc-utils docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi \
+    dbus glib gnome-doc-utils gtk-doc pkg-config libcroco libassuan libksba pth libusb libusb-compat gnupg trousers onig slang autoconf \
+    automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 findutils || return 1
 
   build_packages ${1} util-linux nano rsync grep less gzip tar pkg-config cpio iana-etc xmlto xmltoman giflib freetype \
     fontconfig fonttools lcms2 jpeg libpng jbigkit tiff libmng OpenSP c-ares curl asciidoc git || return 1
