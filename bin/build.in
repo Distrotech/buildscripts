@@ -2677,9 +2677,12 @@ build_dependancies() {
     txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib docutils dbus-python mozjs mozjs-17 polkit GConf libbonobo \
     libatomic_ops gc guile autogen libmad Xaw3d gv rtmpdump polkit-gnome icmake yodl swig setuptools M2Crypto wireless-regdb crda || return 1
 
-  #Build openjdk on native
+  #Build openjdk 7
+  build_packages ${1} icedtea7-2.3 icedtea7-2.4 || return 1
+
+  #Build openjdk6 on native
   if [ "${NARCH}" == "${1}" ];then
-    build_packages ${1} icedtea7-2.3 icedtea7-2.4 icedtea6-1.12 || return 1
+    build_packages ${1} icedtea6-1.12 || return 1
     JAVA_DIR=/usr/lib64/jvm
     for JARSEC in ${JAVA_DIR}/jre-${JAVA_VER}/lib/security/cacerts \
                   ${JAVA_DIR}/jdk-${JAVA_VER}/jre/lib/security/cacerts;do
