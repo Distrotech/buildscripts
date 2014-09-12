@@ -2990,7 +2990,7 @@ bootstrap_toolchain() {
   done;
 
   #bin tools in build dir
-  if [ -d ${ARCHROOT}/${1} ];then
+  if [ -d ${ARCHROOT}/${1}/usr/${HOST}/bin ];then
     for bintool in `ls ${ARCHROOT}/${1}/usr/${HOST}/bin/`;do
       if [ ! -e ${ARCHROOT}/${1}/usr/bin/${HOST}-${bintool} ] && [ ! -d ${ARCHROOT}/${1}/usr/${HOST}/bin/${bintool} ];then
         ln -s /usr/${HOST}/bin/${bintool} ${ARCHROOT}/${1}/usr/bin/${HOST}-${bintool}
