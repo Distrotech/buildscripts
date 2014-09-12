@@ -2496,7 +2496,9 @@ bootstrap_arch_root() {
     fi;
 
     build_packages ${arch} perl guile make Python talloc tevent selinux help2man libtool-chroot c-ares curl git unzip \
-      zip linux_logo cmake dbus gengetopt libcroco gettext gtk-doc libcap nasm OpenSP intltool openjade xmlto yasm nano || exit 1) || return 1;
+      zip linux_logo cmake dbus gengetopt libcroco gettext gtk-doc libcap nasm OpenSP intltool openjade xmlto yasm nano || exit 1
+
+    chroot ${ARCHROOT}/${arch} cpan -i XML::Parser XML::SAX  DBI Path::Class Try::Tiny DBI NetAddr::IP Net::DNS) || return 1;
   done;
 }
 
