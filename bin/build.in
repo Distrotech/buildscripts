@@ -882,7 +882,7 @@ autoconf_cross_build() {
       export CXXFLAGS="${GCC_OPT}${ADDCFLAG}"
     fi;
     if [ "${ADDCXXFLAG}" ];then
-      export CXXFLAGS="${GCC_OPT}${CXXFLAGS} ${ADDCXXFLAG}"
+      export CXXFLAGS="${CXXFLAGS} ${GCC_OPT}${ADDCXXFLAG}"
     fi;
    else
     export CC="${CC} ${CC_SYSROOT}"
@@ -2622,7 +2622,7 @@ build_dependancies() {
     if [ ! -e ${STATDIR}/${1}/done/Xorg ];then
       (get_pkg_name Xorg
       rsync -avP ${PKGDESTDIR}/${1}/${PNAME}/ ${ARCHROOT}/${1}/)
-   fi;
+    fi;
     build_packages ${1} libdrm llvm libvdpau Mesa LVM2 cryptsetup kmod systemd libgusb mtdev cairo || return 1
     if [ ! -e ${STATDIR}/${1}/done/Xorg ];then
       (unset CLEANOPT;build_project Xorg ${1})
@@ -2637,9 +2637,8 @@ build_dependancies() {
     fi;
   fi;
 
-  build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango || return 1
+  build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala-bootstrap || return 1
 
-  build_packages ${1} vala-bootstrap || return 1
   if [ ! -e ${STATDIR}/${1}/done/vala ];then
      (get_pkg_name vala-bootstrap
      rsync -avP ${PKGDESTDIR}/${1}/${PNAME}/ ${ARCHROOT}/${1}/)
