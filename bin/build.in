@@ -25,6 +25,8 @@ DEF_QT_VER="5";
 export X11DIR="/opt/Xorg";
 PYVER=2;
 
+GCC_OPT="-O2 ";
+
 JAVA6_VER="1.6.0_27";
 JAVA_VER="${DEF_JAVA_VER}";
 QT_VER="${DEF_QT_VER}";
@@ -37,7 +39,7 @@ case ${NARCH} in
   arm*)NARCH=arm;
       JAVA_VER="1.7.0_25";;
 esac;
-export NARCH LINUX_VER
+export NARCH LINUX_VER GCC_OPT
 
 ANT_VER="1.9.2";
 M2_VER="3.1.1";
@@ -813,8 +815,8 @@ cmake_cross_build() {
     fi;
 
     if [ "${ADDCFLAG}" ];then
-      export CFLAGS="${ADDCFLAG}"
-      export CXXFLAGS="${ADDCFLAG}"
+      export CFLAGS="${GCC_OPT}${ADDCFLAG}"
+      export CXXFLAGS="${GCC_OPT}${ADDCFLAG}"
     fi;
   fi;
   export LDFLAGS="${LDFLAGS} ${EXTRALIBS}"
@@ -876,12 +878,11 @@ autoconf_cross_build() {
     export LDFLAGS
 
     if [ "${ADDCFLAG}" ];then
-      export CFLAGS="${ADDCFLAG}"
-#      export CPPFLAGS="${ADDCFLAG}"
-      export CXXFLAGS="${ADDCFLAG}"
+      export CFLAGS="${GCC_OPT}${ADDCFLAG}"
+      export CXXFLAGS="${GCC_OPT}${ADDCFLAG}"
     fi;
     if [ "${ADDCXXFLAG}" ];then
-      export CXXFLAGS="${CXXFLAGS} ${ADDCXXFLAG}"
+      export CXXFLAGS="${GCC_OPT}${CXXFLAGS} ${ADDCXXFLAG}"
     fi;
    else
     export CC="${CC} ${CC_SYSROOT}"
@@ -1290,7 +1291,7 @@ build_project() {
     ARCHPREFIX="/usr";
   fi;
 
-  CFLAGS="${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=${ARCHPREFIX}/lib/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=/opt/xfce/include -I=/opt/apr/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include -I=${ARCHPREFIX}/include/security";
+  CFLAGS="${GCC_OPT}${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=/opt/xfce/include -I=/opt/apr/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include -I=${ARCHPREFIX}/include/security";
   if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
     CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
   fi
