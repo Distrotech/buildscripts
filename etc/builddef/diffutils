@@ -2,7 +2,7 @@ VERSION="3.3"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-gcc-warnings";
-ADDCFLAG="-std=c99";
+ADDCFLAG="-O0 -std=c99";
 MAKEOPTS="WERROR_CFLAGS=";
 STATICOPT="LDFLAGS=-static --disable-gcc-warnings";
 XSTATICMOPT="LDFLAGS=-static LIBCSTACK=-lc LIBSIGSEGV=-lsigsegv";
