@@ -443,6 +443,7 @@ check_create_arch() {
       mkdir -p ${ARCHROOT}/${1}/etc
       ln -s ../proc/self/mounts ${ARCHROOT}/${1}/etc/mtab
       rsync -a ${SKELDIR}/ ${ARCHROOT}/${1}/
+      cp /etc/hosts ${ARCHROOT}/${1}/etc/
       if [ -x /bin/domainname ];then
         echo "domainname $(domainname)" > ${ARCHROOT}/${1}/etc/resolv.conf
         echo "search $(domainname)" >> ${ARCHROOT}/${1}/etc/resolv.conf
@@ -2410,7 +2411,7 @@ setup_hybrid_boot() {
     (cd ${TMPDIR};tar -cJf ${PKGDISTDIR}/core/${2}/${1}/hybrid-build.tar.xz *)
     touch ${ARCHROOT}/${1}/usr/${NLIBDIR}/${NMLIBDIR}/.distro_done
    else
-    echo "ERROR";
+    echo "${ERROR}";
   fi;
   rm -rf ${TMPDIR}
 }
@@ -2436,6 +2437,9 @@ bootstrap_arch_lib() {
     #build glibc and dependandcies for arch
     if [ ! -e ${ARCHROOT}/${arch}/usr/include/stdlib.h ];then
       (build_glibc ${arch} ${TUPPLE}) || return 1
+       if [ -e ${STATDIR}/${arch}/done/glibc ];then
+         rm ${STATDIR}/${arch}/done/glibc
+       fi;
     fi;
   done;
 }
@@ -2464,7 +2468,7 @@ bootstrap_arch_root() {
       build_packages ${arch} zlib libtool || exit 1
 
       #Build shared compiler with support libs
-      (build_gcc_bootstrap ${arch} ${HOST} ${NARCH} shared) || return 1
+      (build_gcc_bootstrap ${arch} ${HOST} ${NARCH} shared) || exit 1
 
       #Rebuild libtool
       build_packages ${arch} libtool || exit 1
@@ -2472,43 +2476,27 @@ bootstrap_arch_root() {
       (build_gcc_bootstrap ${arch} ${HOST} ${NARCH} cross) || exit 1
     fi;
 
-    #handle hybrid/cross builds
-    if [ "${arch}" != "${NARCH}" ];then
-      (setup_hybrid_boot ${arch} ${NARCH}) || return 1
-    fi;
-
     #GCC needs system zlib glibc can use selinux/gd Add packages for a build enviroment
     BOOTCLEAN=distclean
     build_packages ${arch} dtsbuild libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat xz libxml2 freetype \
       fontconfig jpeg jbigkit tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac libsigsegv ncurses ncursesw \
-      onig slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude glib util-linux-static || return 1
+      onig slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude glib libevent libverto \
+      krb5 libtirpc flex readline popt dialog libcap-ng Linux-PAM util-linux bash coreutils bison sed libunistring \
+      libatomic_ops gc texinfo pkg-config gzip tar rsync grep diffutils patch gperf m4 cpio findutils less libxslt gdbm \
+      gawk iana-etc binutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 \
+      file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl which groff tcl8 make || exit 1
 
-    if [ ! -e ${STATDIR}/${arch}/done/util-linux ];then
-       (get_pkg_name util-linux-static
-       rsync -avP ${PKGDESTDIR}/${arch}/${PNAME}/ ${ARCHROOT}/${arch}/)
+    if [ ! -e ${STATDIR}/${arch}/done/guile ];then
+      rm ${STATDIR}/${arch}/done/make
     fi;
-
-    build_packages ${arch} make Python talloc tevent libevent libverto krb5 libtirpc flex selinux \
-      readline popt dialog libcap-ng Linux-PAM util-linux bash coreutils bison sed texinfo libunistring libatomic_ops gc \
-      glib pkg-config gzip tar rsync grep xz diffutils patch gperf m4 cpio findutils less \
-      libxslt gdbm gawk iana-etc tzdata binutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 \
-      automake-1.13 automake-1.14 file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl \
-      which groff || return 1
 
     #handle hybrid/cross builds
     if [ "${arch}" != "${NARCH}" ];then
       (setup_hybrid_boot ${arch} ${NARCH}) || return 1
-      #perl wants db if it finds it we will build it on native with Java support so leave native for now
-      if [ -e /usr/${NLIBDIR}/${NMLIBDIR}/libdb.so ];then
-        build_packages ${arch} tcl8 || return 1
-      fi;
     fi;
 
-    build_packages ${arch} perl Python help2man libtool-chroot c-ares curl git unzip zip linux_logo gc guile make ||return 1
-
-    #Pacakges used in native bootstrap
-    build_packages ${arch} cmake dbus gengetopt libcroco gettext gtk-doc libcap libcap-ng \
-      nasm OpenSP intltool openjade xmlto yasm nano || return 1) || return 1;
+    build_packages ${arch} perl guile make Python talloc tevent selinux help2man libtool-chroot c-ares curl git unzip \
+      zip linux_logo cmake dbus gengetopt libcroco gettext gtk-doc libcap nasm OpenSP intltool openjade xmlto yasm nano || exit 1) || return 1;
   done;
 }
 
@@ -2593,11 +2581,12 @@ build_dependancies() {
 
   #Rebuild libxml2 with Python support
   if [ ${STATDIR}/${1}/done/Python -nt ${STATDIR}/${1}/done/libxml2 ] || \
+     [ ${STATDIR}/${1}/done/Python -nt ${STATDIR}/${1}/done/libcap-ng ] || \
      [ ${STATDIR}/${1}/done/Python -nt ${STATDIR}/${1}/done/libxslt ];then
     for delstamp in libxml2 libxslt;do
       rm ${STATDIR}/${1}/done/${delstamp}
     done;
-    build_packages ${1} libxml2 libxslt || return 1
+    build_packages ${1} libxml2 libxslt libcap-ng || return 1
   fi;
 
   build_packages ${1} gnome-doc-utils docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4  docbook-4.5 docbook-xsl scrollkeeper which libffi \
