@@ -1,6 +1,10 @@
 VERSION="0.7.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+if [ ! -d ${ARCHROOT}/${barch}/usr/include/python2.7 ];then
+  CONFOPT="--without-python";
+ else
+  CONFOPT="";
+fi;
 DONTBUILD="cyg32 cyg64";
 RPMGROUP="root";
