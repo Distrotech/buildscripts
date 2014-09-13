@@ -181,6 +181,15 @@ arch_config() {
     *)SETLIBDIR="lib";;
   esac;
 
+  #Set Stub file
+  case ${1} in
+    i[3-6]86)ARCHSTUB="stubs-32.h";;
+    x86_32)ARCHSTUB="stubs-x32.h";;
+    x86_64)ARCHSTUB="stubs-64.h";;
+    mips)ARCHSTUB="stubs-o32.h";;
+    *)ARCHSTUB="";;
+  esac;
+
   #Set If itrospection is required
   case ${1} in
     aarch64|arm64)AHASGIR="yes";;
@@ -361,6 +370,29 @@ __EOF__
 ) > ${1}/root/.distrotech_build
 }
 
+
+multilib_glibc_sync() {
+  case ${1} in
+    x86_32)MLIBARCH="i686 x86_64";;
+    x86_64)MLIBARCH="i686 x86_32";;
+  esac;
+
+  for march in ${MLIBARCH};do
+    (arch_config ${march}
+    get_pkg_name glibc ${march}
+    if [ -d ${PKGDESTDIR}/${march}/${PNAME}/${SETLIBDIR} ] && [ -d ${PKGDESTDIR}/${march}/${PNAME}/usr/${SETLIBDIR} ];then
+      if [ "${ARCHSTUB}" ];then
+        ARCHFILE="usr/include/gnu/${ARCHSTUB}";
+       else
+        ARCHFILE="";
+      fi;
+      (cd ${PKGDESTDIR}/${march}/${PNAME}
+      rsync -aR ${SETLIBDIR} usr/${SETLIBDIR} ${ARCHFILE} ${ARCHROOT}/${1}/)
+    fi;)
+  done
+}
+
+
 check_create_arch() {
   #Set tupple
   arch_config ${1}
@@ -392,6 +424,8 @@ check_create_arch() {
   #Create symlink to / for  sysroot of native arch
   if [ "${1}" == "${NARCH}" ] && [ ! -e ${ARCHROOT}/${1} ];then
     ln -sr / ${ARCHROOT}/${1}
+   elif [ "${1}" != "${NARCH}" ];then
+    multilib_glibc_sync ${1}
   fi;
 
   #Base root
@@ -1329,6 +1363,15 @@ build_project() {
     PKG_CONFIG_PATH="${SYSROOT}/${C_LIBDIRS}/pkgconfig:${SYSROOT}/usr/${C_LIBDIRS}/pkgconfig:${PKG_CONFIG_PATH}";
     RLINK_PATH="${SYSROOT}/${C_LIBDIRS}:${SYSROOT}/usr/${C_LIBDIRS}:${RLINK_PATH}";
     BASE_LIBPATH="-L=/${C_LIBDIRS} -L=/usr/${C_LIBDIRS} ${BASE_LIBPATH}"
+  fi
+
+  #If Xorg has not finished been built build from staging directory
+  if [ -d ${PKGDESTDIR}/${ORIGARCH}/Xorg-git/opt/Xorg/${B_LIBDIRS}/pkgconfig ] && [ -h ${ARCHROOT}/${ORIGARCH}/opt/Xorg ];then
+    PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${PKGDESTDIR}/${ORIGARCH}/Xorg-git/opt/Xorg/${B_LIBDIRS}/pkgconfig";
+    CFLAGS="${CFLAGS} -I=${PKGDESTDIR}/${ORIGARCH}/Xorg-git/opt/Xorg/include";
+    BASE_LIBPATH="${BASE_LIBPATH} -L=${PKGDESTDIR}/${ORIGARCH}/Xorg-git/opt/Xorg/${B_LIBDIRS}";
+    rm ${ARCHROOT}/${ORIGARCH}/opt/Xorg
+    ln -s -r ${PKGDESTDIR}/${ORIGARCH}/Xorg-git/opt/Xorg ${ARCHROOT}/${ORIGARCH}/opt/Xorg
   fi;
 
   export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH} ${BASE_LIBPATH} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=/opt/xfce/include";
@@ -1414,6 +1457,8 @@ build_project() {
     if [ ! "${STEPBUILD}" ] || [ "${STEPBUILD}" == "0" ];then
       rm -rf ${DIST_ROOT}
       mkdir -p ${DIST_ROOT}
+     elif [ "${STEPBUILD}" ] || [ "${STEPBUILD}" == "1" ];then
+      touch ${DIST_ROOT}
      elif [ "${NOCLEAN}" != "1" ];then
       rm -rf ${DIST_ROOT}
       mkdir -p ${DIST_ROOT}
@@ -2129,15 +2174,13 @@ build_gcc_bootstrap() {
       #Install if there is no existing compiler or im the cross
       if [ ! -e /usr/bin/${2}-gcc ] || [ "${4}" == "cross" ];then
         rsync -aP ${GCCBOOTDEST}/ /
-        if [ "${4}" != "cross" ];then
-          touch /usr/bin/${2}-gcc.${4}
-         else
+        if [ "${4}" == "null" ];then
+          touch /usr/bin/${2}-gcc.null
+         elif [ "${4}" == "cross" ];then
           ln -sr ${GCCBOOTDEST}/usr/bin/ecj ${GCCBOOTDEST}/usr/${TLIBDIR}/jvm/gcj-jdk-${1}
-          for stamp in null boot shared;do
-            if [ -e /usr/bin/${2}-gcc.${stamp} ];then
-              rm /usr/bin/${2}-gcc.${stamp}
-            fi;
-          done
+          if [ -e /usr/bin/${2}-gcc.null ];then
+            rm /usr/bin/${2}-gcc.null
+          fi;
           if [ -e ${STATDIR}/${1}/done/libtool ];then
             rm ${STATDIR}/${1}/done/libtool
           fi;
@@ -2153,20 +2196,12 @@ build_gcc_bootstrap() {
             rsync -a ${GCCBOOTDEST}/ ${ARCHROOT}/${1}/
           fi;
         fi
-       elif [ -e /usr/bin/${2}-gcc.null ] && [ "${4}" == "boot" ];then
-        rsync -aP ${GCCBOOTDEST}/ /
-        touch /usr/bin/${2}-gcc.boot
-        rm /usr/bin/${2}-gcc.null
        elif [ -e /usr/bin/${2}-gcc.null ] && [ "${4}" == "shared" ];then
         rsync -aP ${GCCBOOTDEST}/ /
-        touch /usr/bin/${2}-gcc.shared
         rm /usr/bin/${2}-gcc.null
         if [ -e ${STATDIR}/${1}/done/libtool ];then
           rm ${STATDIR}/${1}/done/libtool
         fi;
-       elif [ -e /usr/bin/${2}-gcc.boot ] && [ "${4}" == "shared" ];then
-        rsync -aP ${GCCBOOTDEST}/ /
-        touch /usr/bin/${2}-gcc.${4}
       fi;
     fi;
   fi;
@@ -2437,9 +2472,6 @@ bootstrap_arch_lib() {
     #build glibc and dependandcies for arch
     if [ ! -e ${ARCHROOT}/${arch}/usr/include/stdlib.h ];then
       (build_glibc ${arch} ${TUPPLE}) || return 1
-       if [ -e ${STATDIR}/${arch}/done/glibc ];then
-         rm ${STATDIR}/${arch}/done/glibc
-       fi;
     fi;
   done;
 }
@@ -2495,10 +2527,17 @@ bootstrap_arch_root() {
       (setup_hybrid_boot ${arch} ${NARCH}) || return 1
     fi;
 
-    build_packages ${arch} perl guile make Python talloc tevent selinux help2man libtool-chroot c-ares curl git unzip \
+    #Dependancies requireing CHROOT
+    build_packages ${arch} perl guile make Python talloc tevent selinux help2man libtool-chroot c-ares curl unzip \
       zip linux_logo cmake dbus gengetopt libcroco gettext gtk-doc libcap nasm OpenSP intltool openjade xmlto yasm nano || exit 1
 
-    chroot ${ARCHROOT}/${arch} cpan -i XML::Parser XML::SAX  DBI Path::Class Try::Tiny DBI NetAddr::IP Net::DNS) || return 1;
+    #Bootstrap some perl modules
+    if [ ! -e ${STATDIR}/${arch}/done/perl-modules ];then
+      if [ "${NARCH}" != "${arch}" ] && [ -e ${ARCHROOT}/${NARCH}/root/.cpan/CPAN/MyConfig.pm ] && [ ! -e ${ARCHROOT}/${arch}/root/.cpan/CPAN/MyConfig.pm ];then
+        cp ${ARCHROOT}/${NARCH}/root/.cpan/CPAN/MyConfig.pm ${ARCHROOT}/${arch}/root/.cpan/CPAN/MyConfig.pm
+      fi;
+      chroot ${ARCHROOT}/${arch} cpan -i XML::Parser XML::SAX  DBI Path::Class Try::Tiny DBI NetAddr::IP Net::DNS Test::Requires Convert::ASN1
+    fi) || return 1;
   done;
 }
 
@@ -2585,7 +2624,7 @@ build_dependancies() {
   if [ ${STATDIR}/${1}/done/Python -nt ${STATDIR}/${1}/done/libxml2 ] || \
      [ ${STATDIR}/${1}/done/Python -nt ${STATDIR}/${1}/done/libcap-ng ] || \
      [ ${STATDIR}/${1}/done/Python -nt ${STATDIR}/${1}/done/libxslt ];then
-    for delstamp in libxml2 libxslt;do
+    for delstamp in libxml2 libxslt libcap-ng;do
       rm ${STATDIR}/${1}/done/${delstamp}
     done;
     build_packages ${1} libxml2 libxslt libcap-ng || return 1
@@ -2609,23 +2648,15 @@ build_dependancies() {
 
   if [ "${1}" != "${NARCH}" ];then
     build_packages ${1} gobject-introspection libdaemon avahi-nogui talloc tevent libevent libverto krb5-static krb5 libpaper cups ghostscript \
-      gs-fonts ijs libspectre || return 1
-    if [ ! -e ${STATDIR}/${1}/done/Xorg ];then
-      (get_pkg_name Xorg
-      rsync -avP ${PKGDESTDIR}/${1}/${PNAME}/ ${ARCHROOT}/${1}/)
+      gs-fonts ijs libspectre libdrm llvm libvdpau Mesa LVM2 cryptsetup kmod systemd libgusb mtdev || return 1
+    if [ ! -e ${STATDIR}/${1}/done/Xorg ] && [ -e ${STATDIR}/${1}/fail/Xorg ];then
+      (unset CLEANOPT;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
     fi;
-    build_packages ${1} libdrm llvm libvdpau Mesa LVM2 cryptsetup kmod systemd libgusb mtdev cairo || return 1
-    if [ ! -e ${STATDIR}/${1}/done/Xorg ];then
-      (unset CLEANOPT;build_project Xorg ${1})
-      (get_pkg_name Xorg;
-      rsync -avP ${PKGDESTDIR}/${1}/${PNAME}/ ${ARCHROOT}/${1}/)
+    build_packages ${1} cairo poppler atk gdk-pixbuf || return 1
+    if [ ! -e ${STATDIR}/${1}/done/Xorg ] && [ -e ${STATDIR}/${1}/fail/Xorg ];then
+      (unset CLEANOPT;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
     fi;
-    build_packages ${1} cairo poppler atk gdk-pixbuf setuptools mozjs mozjs-17 polkit libmicrohttpd cryptsetup systemd db \
-      bash-completion colord || return 1
-    if [ ! -e ${STATDIR}/${1}/done/Xorg ];then
-      (get_pkg_name Xorg;
-      rsync -avP ${PKGDESTDIR}/${1}/${PNAME}/ ${ARCHROOT}/${1}/)
-    fi;
+    build_packages ${1}  setuptools mozjs mozjs-17 polkit libmicrohttpd cryptsetup systemd db bash-completion colord || return 1
   fi;
 
   build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala-bootstrap || return 1
@@ -2680,6 +2711,10 @@ build_dependancies() {
   build_packages ${1} Xorg poppler poppler-data qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
     txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib docutils dbus-python mozjs mozjs-17 polkit GConf libbonobo \
     libatomic_ops gc guile autogen libmad Xaw3d gv rtmpdump polkit-gnome icmake yodl swig setuptools M2Crypto wireless-regdb crda || return 1
+
+  if [ "${NARCH}" != "${1}" ];then
+    build_packages ${1} rhino junit antlr4 apache-ant ecj antlr2 || return 1
+  fi;
 
   #Build openjdk 7
   build_packages ${1} icedtea7-2.3 icedtea7-2.4 || return 1
@@ -2826,37 +2861,21 @@ bootstrap_native() {
     mkdir -p ${TOOLPKG}/${NARCH}
   fi;
 
-  #Build Native Arch Libs
-  if [ -e /etc/.static ] || [ -e /usr/bin/${BUILD}-gcc.null ] || [ -e /usr/bin/${BUILD}-gcc.boot ];then
-    (build_glibc ${NARCH} ${BUILD}) || return 1
-    /sbin/ldconfig >/dev/null 2>&1
-    rm /etc/.static
-    touch /usr/bin/${BUILD}-gcc.boot
-  fi;
+  BOOTSTRAP_PKG="glibc binutils groff gdbm perl help2man autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13
+    automake-1.14 help2man zlib libtool gmp findutils file gengetopt libidn libtasn1 libffi libtool gmp mpfr mpc isl cloog";
 
   #Bootstrap native arch buildtools
-  build_packages ${NARCH} binutils groff gdbm perl help2man autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 \
-    automake-1.14 help2man zlib libtool gmp findutils file gengetopt libidn libtasn1 libffi || return 1
+  build_packages ${NARCH} ${BOOTSTRAP_PKG} || return 1
 
-  #build shared gcc to get shared libstdc++/libada/libgcc [C/C++/ADA]
-  if [ -e /usr/bin/${BUILD}-gcc.boot ] || [ -e /usr/bin/${BUILD}-gcc.shared ];then
-    build_packages ${NARCH} libtool gmp mpfr mpc isl cloog || return 1
-    touch /usr/bin/${BUILD}-gcc.boot
+  #build shared gcc and bootstrap packages
+  if [ ! -e ${STATDIR}/${NARCH}/done/gcc-shared ];then
     (build_gcc_bootstrap ${NARCH} ${BUILD} ${NARCH} shared) || return 1
-    rm /usr/bin/${BUILD}-gcc.boot /usr/bin/${BUILD}-gcc.shared
-    for delstamp in libtool gmp mpfr mpc isl cloog;do
+    for delstamp in ${BOOTSTRAP_PKG} ;do
       if [ -e ${STATDIR}/${NARCH}/done/${delstamp} ];then
         rm ${STATDIR}/${NARCH}/done/${delstamp}
       fi;
     done;
-    if [ -e /usr/${NLIBDIR}/libgmp.a ];then
-      rm /usr/${NLIBDIR}/libgmp.a
-    fi;
-    if [ -e ${ARCHROOT}/${NARCH}/usr/${NLIBDIR}/libgmp.a ];then
-      rm ${ARCHROOT}/${NARCH}/usr/${NLIBDIR}/libgmp.a
-    fi;
-   elif [ ! -e ${STATDIR}/${NARCH}/done/nettle ] && [ -e ${STATDIR}/${NARCH}/done/gmp ];then
-    rm ${STATDIR}/${NARCH}/done/gmp
+    build_packages ${NARCH} ${BOOTSTRAP_PKG} || return 1
   fi;
 
   build_packages ${NARCH} gmp ncursesw ncurses gettext p11-kit nettle texinfo gnutls libgpg-error libgcrypt pcre ustr \
@@ -2997,36 +3016,16 @@ bootstrap_toolchain() {
   done;
 
   #Get native toolchain in order / multilib
-  (bootstrap_native || return 1
-  if [ "${1}" != "${NARCH}" ];then
-    #Files required for cross builds
-    build_packages ${NARCH} icu mysql || return 1
-  fi;) ||return 1
+  (bootstrap_native) || return 1
 
   if [ "${1}" != "${NARCH}" ];then
     (build_bootstrap_binutils ${1} ${HOST}) && \
     (build_glibc_march ${1}) || return 1
-
-    #Shared GCC C/C++/ADA/Java distributable
-    (build_gcc_bootstrap ${1} ${HOST} ${1} shared) || return 1
-   else
-    #Shared GCC C/C++/ADA/Java distributable
-    (build_gcc_bootstrap ${1} ${HOST} ${1} shared) || return 1
-
-    build_dependancies ${NARCH} ${BUILD} || return 1
-    return 0;
   fi;
 
+  #Shared GCC C/C++/ADA/Java distributable
+  (build_gcc_bootstrap ${1} ${HOST} ${1} shared) || return 1
   build_dependancies ${1} ${HOST} || return 1
-
-#     mips64)
-#       #Need stubs-o32.h from 32bit
-#       rsync -aP ${PKGDESTDIR}/mips/${GLIBC}/usr/include/gnu/stubs-o32.h ${ARCHROOT}/${1}/usr/include/gnu/
-#
-#       #Add the 32bit libs to 64bit for sysroot
-#       rsync -aP ${PKGDESTDIR}/mips/${GLIBC}/lib ${ARCHROOT}/${1}/
-#       rsync -aP ${PKGDESTDIR}/mips/${GLIBC}/usr/lib ${ARCHROOT}/${1}/usr/
-#     ;;
 }
 
 configstatdir() {
@@ -3169,7 +3168,6 @@ build_toolchain_dir() {
   STRIP=${TUPPLE}-strip
 
   mkdir -p ${BUILDROOTDIR}/etc
-  touch ${BUILDROOTDIR}/etc/.static
 
   BPKGS="bison flex sed gawk bash make coreutils nano rsync grep less gzip tar xz texinfo-static \
          pkg-config util-linux diffutils libtool gperf m4 cpio git binutils glibc autoconf \
