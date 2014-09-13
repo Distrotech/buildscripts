@@ -76,6 +76,10 @@ if [ "${4}" ];then
   rm -rf ${3}
 fi;
 
+if [ -h ${SYSROOT}/${PREFIX} ];then
+  rm ${SYSROOT}/${PREFIX}
+fi;
+
 if [ ! -d ${SYSROOT}/${PREFIX}/${B_LIBDIRS} ];then
   if [ ! -d ${3}/${PREFIX} ];then
     mkdir -p ${3}/${PREFIX}
