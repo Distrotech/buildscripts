@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/opt/MailScanner";
 CONFOPT="";
 RPMGROUP="core";
+ADDCFLAG="-O0";
