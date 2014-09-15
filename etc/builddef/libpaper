@@ -12,3 +12,4 @@ OPT_x86_64="--host=x86_64-linux-gnu";
 STDOPTS="--prefix=/usr --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var --enable-dynamic";
 SYSROOTFIXUP="1";
 FIXUPLIB="1";
+MLIBDIRLN="libpaper.so";
