@@ -7,6 +7,6 @@ SYSROOTFIXUP="1";
 GITBRANCH="master";
 DONTBUILD="cyg32 cyg64";
 case ${barch} in
-        i[3-6]86|x86_32|x86_64)CHROOTBUILD="1";;
+        i[3-6]86|x86_32|x86_64|arm)CHROOTBUILD="1";;
 esac;
 RPMGROUP="core";
