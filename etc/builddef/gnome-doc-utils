@@ -1,7 +1,7 @@
 VERSION="0.20.10"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="INTLTOOL_PERL=/usr/bin/perl";
 case ${barch} in
   powerpc*|mips*)unset CHROOTBUILD;;
   *)CHROOTBUILD="1";;
