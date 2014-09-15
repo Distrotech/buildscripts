@@ -4,3 +4,5 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 RPMGROUP="core";
+NOCCOPT="1";
+ADDCC="0";
