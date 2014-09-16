@@ -1,7 +1,7 @@
 VERSION="1.0.1";
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="INTLTOOL_PERL=/usr/bin/perl";
 OPT_arm="--enable-introspection=no";
 OPT_arm64="--enable-introspection=no";
 OPT_mips="--enable-introspection=no";
