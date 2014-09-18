@@ -12,6 +12,6 @@ OPT_powerpc64="--host=powerpc-linux-gnu --enable-shared --enable-pic";
 OPT_arm="--host=arm-linux-gnueabi --enable-shared --enable-pic";
 OPT_arm64="--host=aarch64-linux-gnu --enable-shared --enable-pic";
 BUILDDIR="0";
-ADDCFLAG="-fPIC";
+ADDCFLAG="-O0 -fPIC";
 FIXUPLIB="1";
 RPMGROUP="core";
