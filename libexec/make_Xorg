@@ -1,15 +1,18 @@
 #!/bin/bash
 
-FILTER_arm="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
-FILTER_arm64="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)|(data/cursors)|(font/)";
+DRVFILT="|(driver/xf86-video-v4l)|(driver/xf86-video-xgixp)|(driver/xf86-video-cirrus)|(driver/xf86-video-s3virge)|(driver/xf86-video-siliconmotion)|(driver/xf86-video-voodoo)";
+
+FILTER_arm="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)${DRVFILT}";
+FILTER_arm64="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)${DRVFILT}";
+#|(data/cursors)|(font/)";
 FILTER_mips="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
 FILTER_mips64="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)|(libevdev)|(driver/xf86-input-synaptics)|(driver/xf86-input-evdev)";
 FILTER_powerpc="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
 FILTER_powerpc64="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)";
 FILTER_cyg32="|(lib/libpciaccess)|(app/sessreg)";
-FILTER_i686="|(driver/xf86-video-v4l)|(driver/xf86-video-xgixp)|(driver/xf86-video-cirrus)|(driver/xf86-video-s3virge)|(driver/xf86-video-siliconmotion)|(driver/xf86-video-voodoo)";
-FILTER_x86_64="|(driver/xf86-video-v4l)|(driver/xf86-video-xgixp)|(driver/xf86-video-cirrus)|(driver/xf86-video-s3virge)|(driver/xf86-video-siliconmotion)|(driver/xf86-video-voodoo)";
-FILTER_x86_32="|(driver/xf86-video-v4l)|(driver/xf86-video-xgixp)|(driver/xf86-video-cirrus)|(driver/xf86-video-s3virge)|(driver/xf86-video-siliconmotion)|(driver/xf86-video-voodoo)";
+FILTER_i686="${DRVFILT}";
+FILTER_x86_64="${DRVFILT}";
+FILTER_x86_32="${DRVFILT}";
 
 FILT=FILTER_${1}
 FILTER=${!FILT}
