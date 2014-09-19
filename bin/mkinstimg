@@ -151,7 +151,10 @@ LABEL build
   MENU LABEL ${BRAND} ${1} (Build)
   KERNEL /boot/${1}/vmlinuz
   INITRD /boot/${1}/initrd.img
-  APPEND ro root=/dev/loop0 nomodeset dts_opt=buildroot squashimg=/boot/${1}/root.img buildimg=/boot/${1}/buildroot.img init=/bin/bash
+  APPEND ro root=/dev/loop0 nomodeset dts_opt=buildroot squashimg=/boot/${1}/root.img buildimg=/boot/${1}/buildroot.img S
+LABEL Main Menu
+  MENU LABEL Return To Main Menu
+  CONFIG /boot/syslinux.cfg
 EOF
 }
 
@@ -276,6 +279,6 @@ if [ "${1}" ];then
   INST_DEV="dts-install";
 fi;
 
-build_installer ${INST_DEV} 3.14.17 ${TMPDIR}
+build_installer ${INST_DEV} 3.16.3 ${TMPDIR}
 
 rm -rf ${TMPDIR}
