@@ -1,8 +1,7 @@
-LSB_VERSION=$(date +%y.%m)
-VERSION="${LSB_VERSION}"
+VERSION=$(date +%y.%m)
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-dist-release=${LSB_VERSION} --with-dist-codename=skankypants";
+CONFOPT="--with-dist-release=${VERSION} --with-dist-codename=skankypants";
 GITBRANCH="master"
 BUILDDIR="0";
 NOINST="1";
