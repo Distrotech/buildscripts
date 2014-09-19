@@ -9,6 +9,7 @@ STDOPTS="--prefix=${PREFIX} --includedir=/usr/include --libdir=/usr/${C_LIBDIRS}
   --enable-ttf2pk2 --enable-xdv2pdf --datarootdir=${PREFIX}  --infodir=${PREFIX}/texmf-dist/doc/info --mandir=${PREFIX}/texmf-dist/doc/man
   --bindir=${PREFIX}/bin/custom --x-libraries=${ARCHROOT}/${barch}/${X11DIR}/includ --x-libraries=${ARCHROOT}/${barch}/${X11DIR}/${B_LIBDIRS}";
 OPT_x86_32="--disable-luajittex";
+OPT_arm64="--disable-luajittex";
 case ${BUILDPROJECT} in
   texlive-boot)
     if [ "${BUILD}" == "${HOST}" ] && [ -x ${ARCHROOT}/${barch}/usr/bin/clisp ];then
