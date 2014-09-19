@@ -32,11 +32,6 @@ JAVA_VER="${DEF_JAVA_VER}";
 QT_VER="${DEF_QT_VER}";
 
 case ${NARCH} in
-  mips64)LINUX_VER="2.6.32";;
-  *)LINUX_VER=${DEF_LINUX_VER};;
-esac;
-
-case ${NARCH} in
   ppc|powerpc)QT_VER="4";
       NARCH=powerpc;;
   ppc64|powerpc64)QT_VER="4";
@@ -45,7 +40,7 @@ case ${NARCH} in
   arm*)NARCH=arm;
       JAVA_VER="1.7.0_25";;
 esac;
-export NARCH LINUX_VER GCC_OPT
+export NARCH GCC_OPT
 
 ANT_VER="1.9.2";
 M2_VER="3.1.1";
@@ -166,6 +161,12 @@ fi;
 unset CFLAGS LDFLAGS CPPFLAGS
 
 arch_config() {
+  #Set linux version
+  case ${1} in
+    mips64)LIN_VER="2.6.32";;
+    *)LIN_VER=${DEF_LINUX_VER};;
+  esac;
+
   #Set build tupple
   case ${1} in
     arm64)TUPPLE=aarch64-linux-gnu;;
@@ -217,7 +218,7 @@ arch_config() {
     i[3-6]86)LDNAME=ld-linux.so.2;;
     arm)LDNAME=ld-linux-armhf.so.3;;
     arm64)LDNAME=ld-linux-aarch64.so.1;;
-    powerpc)LDNAME=ld.so.1;;
+    powerpc|mips*)LDNAME=ld.so.1;;
     powerpc64)LDNAME=ld64.so.1;;
   esac;
 
@@ -383,6 +384,25 @@ multilib_glibc_sync() {
     x86_64)MLIBARCH="i686 x86_32";;
   esac;
 
+  #Seed the archroot with GCC libs if they missing
+  (arch_config ${1}
+  get_pkg_name gcc ${1}
+  if [ -d ${PKGDESTDIR}/${NARCH}/${1}/${PNAME}-cross ];then
+   for ldir in `ls -d ${PKGDESTDIR}/${NARCH}/${1}/${PNAME}-cross/usr/${HOST}/lib*`;do
+     lib_dir=$(basename ${ldir})
+     if [ ! -e ${ARCHROOT}/${1}/usr/${lib_dir}/libstdc++.so ] && [ -e ${ldir}/libstdc++.so ];then
+        rsync -avP ${ldir}/{*.a,*.so,*.so.*} ${ARCHROOT}/${1}/usr/${lib_dir}/
+     fi;
+     if [ -d ${ARCHROOT}/${1}/var/hybrid/${HOST} ] && [ ! -e ${ARCHROOT}/${1}/var/hybrid/${HOST}/${lib_dir}/libstdc++.so ] && [ -e ${ldir}/libstdc++.so ];then
+        if [ ! -d ${ARCHROOT}/${1}/var/hybrid/${HOST}/${lib_dir} ];then
+          mkdir ${ARCHROOT}/${1}/var/hybrid/${HOST}/${lib_dir}
+        fi;
+        rsync -avP ${ldir}/{*.a,*.so,*.so.*} ${ARCHROOT}/${1}/var/hybrid/${HOST}/${lib_dir}/
+     fi;
+   done
+  fi;)
+
+  #Sync the multi arch glibc
   for march in ${MLIBARCH};do
     (arch_config ${march}
     get_pkg_name glibc ${march}
@@ -409,7 +429,8 @@ check_create_arch() {
   MLIBDIR=${AMLIBDIR}
   QCPU=${AQCPU}
   HASGIR=${AHASGIR}
-  unset TUPPLE SETLIBDIR LINARCH AQCPU AHASGIR
+  LINUX_VER=${LIN_VER}
+  unset TUPPLE SETLIBDIR LINARCH AQCPU AHASGIR LIN_VER
 
   if [ "${MLIBDIR}" ];then
     C_LIBDIRS="${B_LIBDIRS}/${MLIBDIR}"
@@ -433,6 +454,11 @@ check_create_arch() {
    elif [ "${1}" != "${NARCH}" ];then
     multilib_glibc_sync ${1}
   fi;
+
+  #We need /usr/lib always
+  if [ ! -d ${ARCHROOT}/${1}/usr/lib ];then
+    mkdir -p ${ARCHROOT}/${1}/usr/lib
+  fi
 
   #Base root
   HDIR=${BASEROOT}/${1}
@@ -531,7 +557,8 @@ git_load_pkg() {
       GIT_TAG=distrotech-${4}${2}
     fi;
     echo Cloning branch/tag ${GIT_TAG} of repository ${4}
-    git clone --depth 1 -b ${GIT_TAG} ${GITURL}/${4}.git ${SRCDIR}/${PKGGITDIR}
+    git clone --depth 1 -b ${GIT_TAG} ${GITURL}/${4}.git ${SRCDIR}/${PKGGITDIR} && \
+      (cd ${SRCDIR}/${PKGGITDIR};git checkout -b ${GIT_TAG}-build)
 
     #some packages are retards null config them
     if [ "${NONULLCONF}" ] && [ "${NONULLCONF}" == "1" ];then
@@ -2166,12 +2193,6 @@ build_gcc_bootstrap() {
     #Fill the gap till full gcc built
     if [ "${TARCH}" == "${NARCH}" ] && [ ! -e ${STATDIR}/${TARCH}/done/gcc ] && [ "${BOOTSTRAP}" == "0" ];then
       rsync -aP ${GCCBOOTDEST}/ /
-      if [ "${4}" == "shared" ];then
-        (rm ${STATDIR}/${1}/done/gmp ${STATDIR}/${1}/done/mpfr ${STATDIR}/${1}/done/mpc \
-            /usr/${NLIBDIR}/libgmp.a /usr/${NLIBDIR}/libgmpxx.a /usr/${NLIBDIR}/libppl.a \
-            /usr/${NLIBDIR}/libppl_c.a /usr/${NLIBDIR}/libpwl.a /usr/${NLIBDIR}/libisl.a \
-            /usr/${NLIBDIR}/libcloog-isl.a) >/dev/null 2>&1
-      fi;
     fi;
    else
     tar_package ${GCCBOOTDEST} ${TOOLPKG}/${TARCH}/${1} ${TARGPKG} > /dev/null 2>&1
@@ -2246,16 +2267,28 @@ java_hybrid_setup() {
   fi;
 }
 
-setup_hybrid_boot() {
-  if [ "${1}" == "${2}" ] || [ "${1:0:3}" == "cyg" ];then
-    return 0;
+java_hybrid_setup_ln() {
+  if [ -x ${1}/usr/bin/hybrid/${3} ] && [ -h ${1}/usr/${4}/jvm/gcj-jdk/bin/${2} ];then
+    basejdkfile=$(readlink -f ${1}/usr/${4}/jvm/gcj-jdk/bin/${2})
+    if [ "${basejdkfile}" != "${1}/usr/bin/hybrid/${3}" ];then
+      rm ${1}/usr/${4}/jvm/gcj-jdk/bin/${2}
+      ln -sr ${1}/usr/bin/hybrid/${3} ${1}/usr/${4}/jvm/gcj-jdk/bin/${2}
+    fi;
   fi;
+}
 
-  if [ ! "${NLDNAME}" ] || [ ! "${NMLIBDIR}" ];then
-    echo "LD name or multilib dir is not defined !!!"
-    return 1;
-  fi;
+java_hybrid_setup() {
+  TMPJDIR=${ARCHROOT}/${1}
+  for jdkbin in "appletviewer gappletviewer" "jar gjar" "jarsigner gjarsigner" \
+                "java gij" "javac ecj" "javadoc gjdoc" "javah gjavah" \
+                "keytool gkeytool" "native2ascii gnative2ascii" "orbd gorbd" \
+                "rmic grmic" "rmid grmid" "rmiregistry grmiregistry" \
+                "serialver gserialver" "tnameserv gtnameserv";do
+    java_hybrid_setup_ln ${TMPJDIR} ${jdkbin} ${B_LIBDIRS}
+  done;
+}
 
+setup_hybrid_qemu() {
   if [ "${QCPU}" ];then
     for emldir in /${B_LIBDIRS} /usr/${B_LIBDIRS} ${X11DIR} /opt;do
       if [ ! -d /usr/gnemul/qemu-${QCPU}${emldir} ];then
@@ -2278,7 +2311,35 @@ setup_hybrid_boot() {
     if [ "`ls /${ARCHROOT}/${1}/opt`" ] &&  [ ! "`ls /usr/gnemul/qemu-${QCPU}/opt`" ];then
       mount --bind ${ARCHROOT}/${1}/opt /usr/gnemul/qemu-${QCPU}/opt
     fi;
+
+    #Local Hybrid support
+    if [ ! -e /usr/bin/hybrid ];then
+      ln -s -r /usr/bin/ /usr/bin/hybrid
+    fi;
+
+    if [ ! -d /var/hybrid/libexec/gcc ];then
+      mkdir -p /var/hybrid/libexec/gcc
+    fi;
+
+    if [ ! -e /var/hybrid/libexec/gcc/${HOST} ];then
+      ln -s -r /usr/${B_LIBDIRS}/gcc/${HOST} /var/hybrid/libexec/gcc/
+    fi;
+    java_hybrid_setup ${1}
   fi;
+}
+
+setup_hybrid_boot() {
+  if [ "${1}" == "${2}" ] || [ "${1:0:3}" == "cyg" ];then
+    return 0;
+  fi;
+
+  if [ ! "${NLDNAME}" ] || [ ! "${NMLIBDIR}" ];then
+    echo "LD name or multilib dir is not defined !!!"
+    return 1;
+  fi;
+
+  #if using Qemu mount the lib dirs
+  setup_hybrid_qemu ${1}
 
   if [ -e ${ARCHROOT}/${1}/usr/${NLIBDIR}/${NMLIBDIR}/.distro_done ];then
     return 0;
@@ -2328,7 +2389,7 @@ setup_hybrid_boot() {
    fi) || ERROR="${ERROR}${pkg} Executable Missing\n"
   done
 
-  for pkg in ruby perl;do
+  for pkg in ruby;do
    (get_pkg_name ${pkg} ${NARCH}
    PDIR=${PKGDISTDIR}/${NARCH}/${PNAME}
    if [ ! -d ${PDIR} ] || [ -x ${ARCHROOT}/${1}/usr/bin/${pkg} ];then
@@ -2338,8 +2399,8 @@ setup_hybrid_boot() {
    if [ -e ${PNAME}.tar.xz ];then
      tar -C ${TMPDIR} -xf ${PNAME}.tar.xz
    fi
-   if [ -e ${PNAME}-lib.tar.xz ];then
-     tar -C ${TMPDIR} -xf ${PNAME}-lib.tar.xz
+   if [ -e ${PNAME}-libs.tar.xz ];then
+     tar -C ${TMPDIR} -xf ${PNAME}-libs.tar.xz
    fi)
   done
 
@@ -2407,7 +2468,7 @@ setup_hybrid_boot() {
       mkdir -p ${TMPDIR}/var/hybrid/libexec
     fi;
     mv ${TMPDIR}/usr/libexec/gcc ${TMPDIR}/var/hybrid/libexec/
-    rsync -a ${TMPDIR}/usr/${NLIBDIR}/${NMLIBDIR}/gcc/${HOST} ${TMPDIR}/var/hybrid/libexec/gcc/
+    rsync -a ${TMPDIR}/usr/${B_LIBDIRS}/gcc/${HOST} ${TMPDIR}/var/hybrid/libexec/gcc/
     rm -rf ${TMPDIR}/usr/${NLIBDIR}/${NMLIBDIR}/gcc/${HOST}
     mv ${TMPDIR}/usr/${HOST} ${TMPDIR}/var/hybrid/
     mv ${TMPDIR}/usr/libexec/git-core ${TMPDIR}/var/hybrid/
@@ -2514,15 +2575,20 @@ bootstrap_arch_root() {
       (build_gcc_bootstrap ${arch} ${HOST} ${NARCH} cross) || exit 1
     fi;
 
+    #if using Qemu mount the lib dirs
+    if [ "${arch}" != "${NARCH}" ] && [ "${QCPU}" ];then
+      (setup_hybrid_boot ${arch} ${NARCH}) || return 1
+    fi;
+
     #GCC needs system zlib glibc can use selinux/gd Add packages for a build enviroment
     BOOTCLEAN=distclean
     build_packages ${arch} dtsbuild libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat xz libxml2 freetype \
-      fontconfig jpeg jbigkit tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac libsigsegv ncurses ncursesw \
+      fontconfig jpeg jbigkit tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac ncurses ncursesw \
       onig slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude glib libevent libverto \
-      krb5 libtirpc flex readline popt dialog libcap-ng Linux-PAM util-linux bash coreutils bison sed libunistring \
+      krb5 libtirpc flex readline popt dialog libcap-ng Linux-PAM util-linux bash coreutils sed libunistring \
       libatomic_ops gc texinfo pkg-config gzip tar rsync grep diffutils patch gperf m4 cpio findutils less libxslt gdbm \
       gawk iana-etc binutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 \
-      file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl which groff tcl8 make || exit 1
+      file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl which groff tcl8 make libsigsegv || exit 1
 
     if [ ! -e ${STATDIR}/${arch}/done/guile ];then
       rm ${STATDIR}/${arch}/done/make
@@ -2534,7 +2600,7 @@ bootstrap_arch_root() {
     fi;
 
     #Dependancies requireing CHROOT
-    build_packages ${arch} perl guile make Python talloc tevent selinux help2man libtool-chroot c-ares curl unzip \
+    build_packages ${arch} perl guile make bison Python talloc tevent selinux help2man libtool-chroot c-ares curl unzip \
       zip linux_logo cmake dbus gengetopt libcroco gettext gtk-doc libcap nasm OpenSP intltool openjade xmlto yasm nano || exit 1
 
     #Bootstrap some perl modules
@@ -2723,7 +2789,12 @@ build_dependancies() {
   fi;
 
   #Build openjdk 7
-  build_packages ${1} icedtea7-2.3 icedtea7-2.4 || return 1
+  case ${NARCH} in
+    x86_64|x86_32|i[3-6]86)
+      case ${1} in
+         x86_64|x86_32|i[3-6]86)build_packages ${1} icedtea7-2.3 icedtea7-2.4 || return 1;;
+      esac;;
+  esac;
 
   #Build openjdk6 on native
   if [ "${NARCH}" == "${1}" ];then
@@ -2748,8 +2819,8 @@ build_dependancies() {
     libnetfilter_conntrack libao libtimidity libnetfilter_cttimeout ilmbase gss iptables \
     usbutils xavs x264 libvpx fdk-aac libmpeg2 a52dec ffmpeg h323plus gnugk t38modem qt-5 qt-4 \
     py2cairo pygobject libglade pygtk help2man rrdtool avahi djvulibre libarchive cogl json-glib \
-    pciutils net-snmp sane-backends libvdpau LibVNCServer i2c-tools openexr ImageMagick \
-    libungif libiodbc tdb libcanberra libgnome-keyring pangox-compat mhash libmcrypt vim || return 1
+    pciutils net-snmp zziplib teckit texlive-boot texlive sane-backends libvdpau LibVNCServer i2c-tools \
+    openexr ImageMagick libungif libiodbc tdb libcanberra libgnome-keyring pangox-compat mhash libmcrypt vim || return 1
 
   #Core Utilities
   build_packages ${1} arptables autofs cdrtools cifs-utils dialog dosfstools e2fsprogs ebtables ethtool gptfdisk htop \
@@ -2868,7 +2939,7 @@ bootstrap_native() {
   fi;
 
   BOOTSTRAP_PKG="glibc binutils groff gdbm perl help2man autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13
-    automake-1.14 help2man zlib libtool gmp findutils file gengetopt libidn libtasn1 libffi libtool gmp mpfr mpc isl cloog";
+    automake-1.14 help2man zlib libtool gmp findutils file gengetopt libidn libtasn1 libffi libtool mpfr mpc isl cloog";
 
   #Bootstrap native arch buildtools
   build_packages ${NARCH} ${BOOTSTRAP_PKG} || return 1
@@ -2884,25 +2955,15 @@ bootstrap_native() {
     build_packages ${NARCH} ${BOOTSTRAP_PKG} || return 1
   fi;
 
-  build_packages ${NARCH} gmp ncursesw ncurses gettext p11-kit nettle texinfo gnutls libgpg-error libgcrypt pcre ustr \
+  build_packages ${NARCH} ncursesw ncurses gettext p11-kit nettle texinfo gnutls libgpg-error libgcrypt pcre ustr \
     flex bison libprelude bzip2 libcap-ng libaudit selinux glib libverto keyutils krb5 libtirpc dialog ||return 1
 
   #Bootstrap native arch with deps for GCC [libjava] if gcc not built
   if [ ! -e ${STATDIR}/${NARCH}/done/unzip ];then
-    build_packages ${NARCH} xz libxml2 libxslt libffi gdbm Python libcap patch docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
-      docbook-4.5 docbook-xsl xmlto OpenSP openjade expat intltool gtk-doc attr acl kmod openssl trousers dbus popt cryptsetup systemd pkg-config \
-      libcroco zip unzip || return 1
+    build_packages ${NARCH} xz libxml2 libxslt Python libcap patch docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
+      docbook-4.5 docbook-xsl xmlto OpenSP openjade expat intltool gtk-doc attr acl kmod openssl trousers dbus popt \
+      cryptsetup systemd pkg-config libcroco zip unzip || return 1
   fi;
-
-  #Rebuild some packages with python/shared gcc
-  if [ ! -e ${STATDIR}/${NARCH}/done/gcc ];then
-    for delstamp in glibc libxml2 libxslt texinfo libaudit selinux glib;do
-      if [ -e ${STATDIR}/${NARCH}/done/${delstamp} ];then
-        rm ${STATDIR}/${NARCH}/done/${delstamp}
-      fi;
-    done;
-  fi;
-  (BOOTCLEAN=distclean;build_packages ${NARCH} libtool gmp mpfr mpc isl cloog) || return 1
 
   #Need yasm that needs cmake add nasm for free
   build_packages ${NARCH} cmake yasm nasm || return 1
@@ -3030,7 +3091,9 @@ bootstrap_toolchain() {
   fi;
 
   #Shared GCC C/C++/ADA/Java distributable
-  (build_gcc_bootstrap ${1} ${HOST} ${1} shared) || return 1
+  if [ "${1}" == "${NARCH}" ];then
+    (build_gcc_bootstrap ${1} ${HOST} ${1} shared) || return 1
+  fi;
   build_dependancies ${1} ${HOST} || return 1
 }
 
@@ -3437,6 +3500,46 @@ set_date_time() {
   clear)
 }
 
+config_binfmt() {
+  if [ -e /proc/sys/fs/binfmt_misc/${1} ];then
+    echo -1 > /proc/sys/fs/binfmt_misc/${1}
+  fi;
+
+  case ${1} in
+    arm)BFMT_STATUS=":${1}:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm:";;
+    armeb)BFMT_STATUS=":${1}:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-armeb:";;
+    arm64)BFMT_STATUS=":${1}:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-aarch64:";;
+    sparc)BFMT_STATUS=":${1}:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x02:\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-sparc:";;
+    powerpc)BFMT_STATUS=":${1}:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x14:\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-ppc:";;
+    powerpc64)BFMT_STATUS=":${1}:M::\x7fELF\x02\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x15:\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-ppc64:";;
+    m68k)BFMT_STATUS=":${1}:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x04:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-m68k:";;
+    mips)BFMT_STATUS=":${1}:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x08:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-mips:";;
+    mipsn32)BFMT_STATUS=":${1}:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x08:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-mips:";;
+    mips64)BFMT_STATUS=":${1}:M::\x7fELF\x02\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x08:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-mips64:";;
+    mipsel)BFMT_STATUS=":${1}:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x08\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-mipsel:";;
+    mips64el)BFMT_STATUS=":${1}:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x08\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-mipsel:";;
+    mipsn32el)BFMT_STATUS=":${1}:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x08\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-mipsel:";;
+  esac;
+  echo ${BFMT_STATUS} > /proc/sys/fs/binfmt_misc/register
+}
+
+setup_binfmt() {
+  if [ ! -d /proc/sys/fs/binfmt_misc ]; then
+    /sbin/modprobe binfmt_misc
+  fi
+
+  if [ ! -f /proc/sys/fs/binfmt_misc/register ]; then
+    mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
+  fi
+
+  for target in arm arm64 powerpc powerpc64 mips mips64;do
+    if [ ! -e /proc/sys/fs/binfmt_misc/${target} ];then
+      config_binfmt ${target}
+    fi;
+  done;
+}
+
+
 #Bootstrap on ubuntu
 if test -e /etc/os-release;then
   check_host || exit 1
@@ -3519,12 +3622,16 @@ if [ "${BOOTSTRAP}" ] && [ "${BOOTSTRAP}" == "1" ];then
   exit 0;
 fi;
 
+setup_binfmt
+
 for barch in ${ARCHLIST};do
   #Setup stat dir
   configstatdir ${barch}
 
   #Check arch build dir exists Setup linux headers and env vars
   check_create_arch ${barch}
+
+  setup_hybrid_qemu ${barch}
 
   JAVA_VER=${DEF_JAVA_VER}
   QT_VER="${DEF_QT_VER}";
