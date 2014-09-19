@@ -18,7 +18,7 @@ NARCH=${NARCH:=$( uname -m )}
 DISTRONAME="Distro Solutions"
 
 DEF_JAVA_VER="1.7.0_51";
-LINUX_VER="3.16.3";
+DEF_LINUX_VER="3.16.3";
 DAHDI_VER="2.9.2";
 WANPIPE_VER="7.0.10";
 DEF_QT_VER="5";
@@ -30,6 +30,12 @@ GCC_OPT="-O2 ";
 JAVA6_VER="1.6.0_27";
 JAVA_VER="${DEF_JAVA_VER}";
 QT_VER="${DEF_QT_VER}";
+
+case ${NARCH} in
+  mips64)LINUX_VER="2.6.32";;
+  *)LINUX_VER=${DEF_LINUX_VER};;
+esac;
+
 case ${NARCH} in
   ppc|powerpc)QT_VER="4";
       NARCH=powerpc;;
