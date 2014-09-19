@@ -1,0 +1,13 @@
+VERSION="4.4.7"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--target=mips64-octeon-linux-gnu --with-build-sysroot=${ARCHROOT}/mips64/ --enable-lto --enable-cloog-backend=isl
+         --with-system-zlib --with-gmp-lib=${ARCHROOT}/mips64/usr/lib64/ --disable-multilib --with-gmp-lib=/usr/${C_LIBDIRS}
+         --enable-languages=c --with-abi=64 --with-sysroot=${ARCHROOT}/mips64";
+if [ "${barch}" != "${NARCH}" ];then
+  DONTBUILD="${barch}";
+fi;
+ALIAS="gcc";
+ADDWITHSYSROOT="0";
+NOCCOPT="1";
+ADDCC="0";
