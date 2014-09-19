@@ -18,8 +18,8 @@ NARCH=${NARCH:=$( uname -m )}
 DISTRONAME="Distro Solutions"
 
 DEF_JAVA_VER="1.7.0_51";
-LINUX_VER="3.14.17";
-DAHDI_VER="2.9.1.1";
+LINUX_VER="3.16.3";
+DAHDI_VER="2.9.2";
 WANPIPE_VER="7.0.10";
 DEF_QT_VER="5";
 export X11DIR="/opt/Xorg";

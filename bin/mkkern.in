@@ -172,7 +172,6 @@ EOF
 /lib/firmware
 
 %files dahdi
-/usr/lib/hotplug
 /usr/share/dahdi
 
 %files dev
@@ -276,7 +275,7 @@ build_kernel_tar() {
   tar -cJf ${TARBALL}/${2}-dbg.tar.xz usr/sbin/.dbg usr/${LIBDIR}/.dbg
   tar -cJf ${TARBALL}/${2}-doc.tar.xz usr/share/doc/wanpipe
   tar --exclude=usr/sbin/.dbg -cJf ${TARBALL}/${2}-wanpipe.tar.xz usr/${LIBDIR}/libsangoma.so* usr/${LIBDIR}/libstelephony.so* usr/${LIBDIR}/libteletone.so* etc usr/sbin
-  tar -cJf ${TARBALL}/${2}-dahdi.tar.xz usr/lib/hotplug usr/share/dahdi)
+  tar -cJf ${TARBALL}/${2}-dahdi.tar.xz usr/share/dahdi)
 }
 
 build_kernel() {
@@ -316,8 +315,8 @@ build_kernel() {
 
     mkdir -p ${1}/etc/udev/rules.d/
     make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} clean
-    make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} CROSS_COMPILE=${CROSS_COMPILE} ${MAKE_J} all
-    make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} DESTDIR=${1} CROSS_COMPILE=${CROSS_COMPILE} install
+    make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} CROSS_COMPILE=${CROSS_COMPILE} ${MAKE_J} all && \
+    make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} DESTDIR=${1} CROSS_COMPILE=${CROSS_COMPILE} install || exit 1
     make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} clean
   fi;
 
