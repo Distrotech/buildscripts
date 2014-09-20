@@ -2,8 +2,8 @@ VERSION="2.1.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-vdpau";
-OPT_powerpc="--disable-libmpeg2";
-OPT_powerpc64="--disable-libmpeg2";
+OPT_ppc="--disable-libmpeg2";
+OPT_ppc64="--disable-libmpeg2";
 OPT_mips="--disable-libmpeg2 --disable-mad";
 OPT_mips64="--disable-libmpeg2 --disable-mad";
 ADDCFLAG="-fPIC -O2 -std=gnu99";

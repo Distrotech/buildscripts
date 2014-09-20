@@ -12,6 +12,6 @@ GITBRANCH="master";
 if [ -e /proc/sys/fs/binfmt_misc/${barch} ];then
   DONTBUILD="${barch}";
  else
-  DONTBUILD="powerpc64 powerpc x86_32";
+  DONTBUILD="ppc64 ppc x86_32";
 fi
 RPMGROUP="dev";

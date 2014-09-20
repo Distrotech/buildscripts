@@ -5,8 +5,8 @@ CONFOPT="--enable-introspection --enable-accelerated-compositing --enable-web-au
 XOPT_x86_32="--disable-jit";
 GTK_LIBS=$(pkg-config gtk+-3.0 --libs)
 GTK2_LIBS=$(pkg-config gtk+-2.0 --libs)
-OPT_powerpc="GTK_LIBS=\"-latomic ${GTK_LIBS}\" GTK2_LIBS=\"-latomic ${GTK2_LIBS}\"";
-OPT_powerpc64="GTK_LIBS=\"-latomic ${GTK_LIBS}\" GTK2_LIBS=\"-latomic ${GTK2_LIBS}\"";
+OPT_ppc="GTK_LIBS=\"-latomic ${GTK_LIBS}\" GTK2_LIBS=\"-latomic ${GTK2_LIBS}\"";
+OPT_ppc64="GTK_LIBS=\"-latomic ${GTK_LIBS}\" GTK2_LIBS=\"-latomic ${GTK2_LIBS}\"";
 OPT_mips="GTK_LIBS=\"-latomic ${GTK_LIBS}\" GTK2_LIBS=\"-latomic ${GTK2_LIBS}\"";
 AMVER="1.14";
 CLEARFLAGS="1";

@@ -5,5 +5,5 @@ CONFOPT="";
 ALIAS="openexr";
 CFGPTH="IlmBase";
 CFGBIN="IlmBase/";
-DONTBUILD="arm powerpc powerpc64 mips64 mips";
+DONTBUILD="arm ppc ppc64 mips64 mips";
 RPMGROUP="gui";

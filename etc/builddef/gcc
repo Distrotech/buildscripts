@@ -23,9 +23,9 @@ OPT_mips64="--target=mips64-linux-gnuabi64 --with-sysroot=/ --with-abi=64 --with
             --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
 OPT_mips="--target=mips-linux-gnu --with-sysroot=/ --with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32
           --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go,ada";
-OPT_powerpc="--target=powerpc-linux-gnu --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk
+OPT_ppc="--target=ppc-linux-gnu --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk
              --enable-languages=c,c++,fortran,lto,objc,obj-c++,go,ada,java --disable-libsanitizer";
-OPT_powerpc64="--target=powerpc64-linux-gnu --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk
+OPT_ppc64="--target=ppc64-linux-gnu --with-sysroot=/ --with-jvm-root-dir=/usr/lib/jvm/gcj-jdk
              --enable-languages=c,c++,fortran,lto,objc,obj-c++,go,ada,java --disable-libsanitizer";
 OPT_win32="--target=i686-w64-mingw32 --with-sysroot=/ --with-jvm-root-dir=/mingw/lib/jvm/gcj-jdk
           --disable-multilib --enable-languages=c,c++,fortran,java,lto,objc,obj-c++,go";
@@ -46,8 +46,8 @@ BOOTOPT="${BASEOPT} ${BASEOPT2} --enable-languages=c,c++,ada";
 SHAREDOPT="--with-system-zlib --enable-lto --enable-cloog-backend=isl";
 BOOTOPT_mips="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32 --disable-multilib";
 BOOTOPT_mips64="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=64 --disable-multilib";
-BOOTOPT_powerpc="--disable-multilib --disable-libsanitizer";
-BOOTOPT_powerpc64="--disable-multilib --disable-libsanitizer";
+BOOTOPT_ppc="--disable-multilib --disable-libsanitizer";
+BOOTOPT_ppc64="--disable-multilib --disable-libsanitizer";
 BOOTOPT_i686="--disable-multilib";
 BOOTOPT_x86_32="--disable-multilib";
 BOOTOPT_x86_64="--disable-multilib";
@@ -58,8 +58,8 @@ BOOTOPT_cyg32="--disable-multilib --enable-version-specific-runtime-libs";
 BOOTOPT_cyg32="--enable-version-specific-runtime-libs";
 CROSSOPT_x86_32="--with-multilib-list=m32,m64,mx32";
 CROSSOPT_x86_64="--with-multilib-list=m32,m64,mx32";
-CROSSOPT_powerpc="--disable-multilib --disable-libsanitizer";
-CROSSOPT_powerpc64="--disable-multilib --disable-libsanitizer";
+CROSSOPT_ppc="--disable-multilib --disable-libsanitizer";
+CROSSOPT_ppc64="--disable-multilib --disable-libsanitizer";
 CROSSOPT_arm="${ARM7OPTS} --with-mode=arm";
 CROSSOPT_arm64="--disable-multilib";
 CROSSOPT_mips="--with-arch-32=mips32 --with-arch-64=mips64 --with-abi=32";
@@ -74,8 +74,8 @@ LANG_arm="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,ada,go";
 LANG_arm64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,ada,go";
 LANG_mips="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,ada,go";
 LANG_mips64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,ada,go";
-LANG_powerpc="--enable-languages=c,c++,fortran,lto,objc,obj-c++,ada,java,go";
-LANG_powerpc64="--enable-languages=c,c++,fortran,lto,objc,obj-c++,ada,java,go";
+LANG_ppc="--enable-languages=c,c++,fortran,lto,objc,obj-c++,ada,java,go";
+LANG_ppc64="--enable-languages=c,c++,fortran,lto,objc,obj-c++,ada,java,go";
 LANG_win32="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,ada,go";
 LANG_win64="--enable-languages=c,c++,fortran,java,lto,objc,obj-c++,ada,go";
 LANG_cyg32="--enable-languages=c,c++,fortran,lto,objc,obj-c++,go";

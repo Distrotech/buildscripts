@@ -33,9 +33,9 @@ QT_VER="${DEF_QT_VER}";
 
 case ${NARCH} in
   ppc|powerpc)QT_VER="4";
-      NARCH=powerpc;;
+      NARCH=ppc;;
   ppc64|powerpc64)QT_VER="4";
-      NARCH=powerpc64;;
+      NARCH=ppc64;;
   arm64|aarch64)NARCH=arm64;;
   arm*)NARCH=arm;
       JAVA_VER="1.7.0_25";;
@@ -97,13 +97,13 @@ BOOTCLEAN="distclean";
 #Multiarch Definitions
 MARCH_x86_64='@(x86_32|i[3-6]86|x86_64)'
 MARCH_x86_32=${MARCH_x86_64}
-MARCH_powerpc64='@(powerpc|powerpc64)'
+MARCH_ppc64='@(ppc|ppc64)'
 
 export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA_VER JAVA6_VER M2_VER QT_VER
 
 #Parse cmdline opts
 #Adding a arch here may require you adding tupple/kernel arch/libdirs and bellow in arch_config
-ALLARCHLIST="i686 arm x86_64 x86_32 mips mips64 powerpc powerpc64 win32 win64 cyg32 cyg64";
+ALLARCHLIST="i686 arm x86_64 x86_32 mips mips64 ppc ppc64 win32 win64 cyg32 cyg64";
 ARCHMPAT=${ALLARCHLIST// /|}
 ALLARCH="0";
 
@@ -218,8 +218,8 @@ arch_config() {
     i[3-6]86)LDNAME=ld-linux.so.2;;
     arm)LDNAME=ld-linux-armhf.so.3;;
     arm64)LDNAME=ld-linux-aarch64.so.1;;
-    powerpc|mips*)LDNAME=ld.so.1;;
-    powerpc64)LDNAME=ld64.so.1;;
+    ppc|mips*)LDNAME=ld.so.1;;
+    ppc64)LDNAME=ld64.so.1;;
   esac;
 
   #QT Spec file
@@ -229,8 +229,8 @@ arch_config() {
     mips64)QTSPEC=linux-mips-g++-64;;
     arm)QTSPEC=linux-arm-gnueabi-g++;;
     arm64)QTSPEC=linux-aarch64-gnu-g++;;
-    powerpc)QTSPEC=linux-ppc-g++;;
-    powerpc64)QTSPEC=linux-ppc-g++-64;;
+    ppc)QTSPEC=linux-ppc-g++;;
+    ppc64)QTSPEC=linux-ppc-g++-64;;
     x86_64)QTSPEC=linux-g++-64;;
     x86_32)QTSPEC=linux-g++-x32;;
   esac;
@@ -247,8 +247,8 @@ arch_config() {
     arm64)AQCPU=aarch64;;
     mips)AQCPU=mips;;
     mips64)AQCPU=mips64;;
-    powerpc)AQCPU=ppc;;
-    powerpc64)AQCPU=ppc64;;
+    ppc)AQCPU=ppc;;
+    ppc64)AQCPU=ppc64;;
   esac;
 }
 
@@ -1426,7 +1426,7 @@ build_project() {
   fi;
 
   export CC CXX PKG_CONFIG_PATH RLINK_PATH MLIBDIRLN ARCHPREFIX
-  if [ "${BOOTSTRAP}" == "0" ] && [ "${ORIGARCH}" != "powerpc64" ] && [ "${ORIGARCH}" != "mips64" ] && [ "${ORIGARCH}" != "${NARCH}" ];then
+  if [ "${BOOTSTRAP}" == "0" ] && [ "${ORIGARCH}" != "ppc64" ] && [ "${ORIGARCH}" != "mips64" ] && [ "${ORIGARCH}" != "${NARCH}" ];then
     export LD_LIBRARY_PATH="${RLINK_PATH}";
   elif [ "${ORIGARCH}" == "${NARCH}" ];then
     export LD_LIBRARY_PATH="${RLINK_PATH}";
@@ -1842,12 +1842,12 @@ build_glibc() {
       rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-64.h ${ARCHROOT}/x86_32/
       rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-64.h ${BASEROOT}/x86_32/
     ;;
-    powerpc)
-      if [ ! -d ${ARCHROOT}/powerpc64 ];then
-        mkdir -p ${ARCHROOT}/powerpc64
+    ppc)
+      if [ ! -d ${ARCHROOT}/ppc64 ];then
+        mkdir -p ${ARCHROOT}/ppc64
       fi
-      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${ARCHROOT}/powerpc64/
-      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${BASEROOT}/powerpc64/
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${ARCHROOT}/ppc64/
+      rsync -aR ${USELIBDIR} usr/${USELIBDIR} usr/include/gnu/stubs-32.h ${BASEROOT}/ppc64/
     ;;
     mips)
       if [ ! -d ${ARCHROOT}/mips64 ];then
@@ -2643,16 +2643,16 @@ build_glibc_march() {
              (setup_ldconf i686 x86_32 x86_64)
            fi;
     ;;
-    powerpc64)(bootstrap_arch_lib powerpc powerpc64) || return 1;
+    ppc64)(bootstrap_arch_lib ppc ppc64) || return 1;
            (bootstrap_arch_root ${NARCH}) || return 1
-           (bootstrap_arch_root powerpc powerpc64) || return 1;
-           if [ -d ${ARCHROOT}/${1} ] && [ -e ${STATDIR}/powerpc/done/glibc ] && \
+           (bootstrap_arch_root ppc ppc64) || return 1;
+           if [ -d ${ARCHROOT}/${1} ] && [ -e ${STATDIR}/ppc/done/glibc ] && \
               [ ! -e ${ARCHROOT}/${1}/usr/lib/libc_nonshared.a ];then
-             rm ${STATDIR}/powerpc/done/glibc
+             rm ${STATDIR}/ppc/done/glibc
            fi;
-           (build_glibc powerpc powerpc-linux-gnu) || return 1
+           (build_glibc ppc ppc-linux-gnu) || return 1
            if [ "${1}" == "${NARCH}" ];then
-             (setup_ldconf powerpc powerpc64)
+             (setup_ldconf ppc ppc64)
            fi;
     ;;
     mips64)(bootstrap_arch_lib mips mips64) || return 1;
@@ -3510,8 +3510,8 @@ config_binfmt() {
     armeb)BFMT_STATUS=":${1}:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-armeb:";;
     arm64)BFMT_STATUS=":${1}:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-aarch64:";;
     sparc)BFMT_STATUS=":${1}:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x02:\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-sparc:";;
-    powerpc)BFMT_STATUS=":${1}:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x14:\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-ppc:";;
-    powerpc64)BFMT_STATUS=":${1}:M::\x7fELF\x02\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x15:\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-ppc64:";;
+    ppc)BFMT_STATUS=":${1}:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x14:\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-ppc:";;
+    ppc64)BFMT_STATUS=":${1}:M::\x7fELF\x02\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x15:\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-ppc64:";;
     m68k)BFMT_STATUS=":${1}:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x04:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-m68k:";;
     mips)BFMT_STATUS=":${1}:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x08:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-mips:";;
     mipsn32)BFMT_STATUS=":${1}:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x08:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-mips:";;
@@ -3532,7 +3532,7 @@ setup_binfmt() {
     mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
   fi
 
-  for target in arm arm64 powerpc powerpc64 mips mips64;do
+  for target in arm arm64 ppc ppc64 mips mips64;do
     if [ ! -e /proc/sys/fs/binfmt_misc/${target} ];then
       config_binfmt ${target}
     fi;

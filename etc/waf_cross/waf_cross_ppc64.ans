@@ -1,6 +1,6 @@
 Checking uname sysname type: "Linux"
-Checking uname machine type: "powerpc"
-Checking uname release type: "3.4.12-powerpc-dts"
+Checking uname machine type: "ppc"
+Checking uname release type: "3.4.12-ppc-dts"
 Checking uname version type: "#1 SMP PREEMPT Sun Oct 21 05:12:11 SAST 2012"
 Checking simple C program: OK
 building library support: OK

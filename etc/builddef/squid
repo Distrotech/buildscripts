@@ -9,13 +9,13 @@ OPT_arm="squid_cv_broken_heimdal_krb5_h=no";
 OPT_arm64="squid_cv_broken_heimdal_krb5_h=no";
 OPT_mips="squid_cv_broken_heimdal_krb5_h=no";
 OPT_mips64="squid_cv_broken_heimdal_krb5_h=no";
-OPT_powerpc="squid_cv_broken_heimdal_krb5_h=no";
-OPT_powerpc64="squid_cv_broken_heimdal_krb5_h=no";
+OPT_ppc="squid_cv_broken_heimdal_krb5_h=no";
+OPT_ppc64="squid_cv_broken_heimdal_krb5_h=no";
 OPT_i686="squid_cv_broken_heimdal_krb5_h=no";
 OPT_x86_32="squid_cv_broken_heimdal_krb5_h=no";
 MAKEOPTS="HOSTCXX=g++ BASIC_AUTH_HELPERS=\"PAM NCSA\"";
 DISTCONF="squid/squid.conf";
 case ${barch} in
-  powerpc64|mips64)CHROOTBUILD="1";;
+  ppc64|mips64)CHROOTBUILD="1";;
 esac;
 RPMGROUP="core";

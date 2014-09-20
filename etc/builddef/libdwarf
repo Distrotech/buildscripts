@@ -6,6 +6,6 @@ BUILDDIR="0";
 EXTRALIBS="-L=/usr/${C_LIBDIRS}";
 FIXUPLIB="1";
 case ${barch} in
-  powerpc*)DONTBUILD="${barch}";;
+  ppc*)DONTBUILD="${barch}";;
   mips64)CHROOTBUILD="1";;
 esac;

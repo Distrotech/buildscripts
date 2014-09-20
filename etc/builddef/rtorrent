@@ -9,6 +9,6 @@ ADDCFLAG="-I=/usr/include/ncursesw -I=/usr/include/sigc++-2.0";
 AMVER="1.11";
 NOSVNROOT="1";
 case ${barch} in
-  powerpc*|mips64)CHROOTBUILD="1";;
+  ppc*|mips64)CHROOTBUILD="1";;
 esac;
 RPMGROUP="core";

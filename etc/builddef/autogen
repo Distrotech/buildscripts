@@ -7,6 +7,6 @@ ADDCFLAG="-I=/usr/include/guile/2.0";
 AMVER="1.14";
 CHROOTBUILD="1";
 case ${barch} in
-  powerpc)DONTBUILD="powerpc";;
+  ppc)DONTBUILD="ppc";;
 esac;
 RPMGROUP="dev";

@@ -3,11 +3,12 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-csharp --disable-doc";
 OPT_mips="--disable-java";
-OPT_powerpc="--disable-java";
-OPT_powerpc64="--disable-java";
+OPT_ppc="--disable-java";
+OPT_ppc64="--disable-java";
 OPT_mips64="--disable-java";
 ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/pango-1.0 -I../../caca";
-SYSROOTFIXUP="0";
-ADDWITHSYSROOT="0";
-CHROOTBUILD="1";
+case ${barch} in
+  arm*|x86_64|x86_32|i[3-6]86)CHROOTBUILD="0";;
+  *)CHROOTBUILD="1";;
+esac;
 RPMGROUP="core";

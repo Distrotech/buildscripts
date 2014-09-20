@@ -8,7 +8,7 @@ OPT_x86_32="--target=x86_64-linux-gnux32 --disable-methodjit";
 OPT_x86_64="--target=x86_64-linux-gnu";
 OPT_i686="--target=i686-linux-gnu";
 OPT_arm64="--target=aarch64-linux-gnu --disable-methodjit";
-OPT_powerpc64="--target=powerpc64-linux-gnu --disable-methodjit";
+OPT_ppc64="--target=ppc64-linux-gnu --disable-methodjit";
 OPT_mips64="--target=mips64-linux-gnu --disable-methodjit";
 GITBRANCH="mozjs-17";
 CHROOTBUILD="1";

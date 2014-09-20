@@ -5,15 +5,7 @@ case ${barch} in
   mips*)CONFOPT="--enable-add-ons --enable-static-nss";;
   *)CONFOPT="--enable-add-ons --enable-multi-arch --enable-static-nss";;
 esac;
-OPTX_i686="--with-headers=${ARCHROOT}/i686/usr/include";
-OPTX_x86_64="--with-headers=${ARCHROOT}/x86_64/usr/include";
-OPTX_x86_32="--with-headers=${ARCHROOT}/x86_32/usr/include";
-OPTX_arm="--with-headers=${ARCHROOT}/arm/usr/include";
-OPTX_arm64="--with-headers=${ARCHROOT}/arm64/usr/include";
-OPTX_mips="--with-headers=${ARCHROOT}/mips/usr/include";
-OPTX_mips64="--with-headers=${ARCHROOT}/mips64/usr/include";
-OPTX_powerpc="--with-headers=${ARCHROOT}/powerpc/usr/include";
-OPTX_powerpc64="--with-headers=${ARCHROOT}/powerpc64/usr/include";
+CONFOPT="${CONFOPT} --with-headers=${ARCHROOT}/${barch}/usr/include";
 OPT_arm64="--disable-multi-arch";
 NOCCOPT="1";
 CLEARFLAGS="1";

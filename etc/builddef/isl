@@ -9,8 +9,8 @@ OPT_arm="--with-gmp-prefix=${ARCHROOT}/arm/usr --with-isl-prefix=${ARCHROOT}/arm
 OPT_arm64="--with-gmp-prefix=${ARCHROOT}/arm64/usr --with-isl-prefix=${ARCHROOT}/arm64/usr";
 OPT_mips="--with-gmp-prefix=${ARCHROOT}/mips/usr --with-isl-prefix=${ARCHROOT}/mips/usr";
 OPT_mips64="--with-gmp-prefix=${ARCHROOT}/mips64/usr --with-isl-prefix=${ARCHROOT}/mips64/usr";
-OPT_powerpc="--with-gmp-prefix=${ARCHROOT}/powerpc/usr --with-isl-prefix=${ARCHROOT}/powerpc/usr";
-OPT_powerpc64="--with-gmp-prefix=${ARCHROOT}/powerpc64/usr --with-isl-prefix=${ARCHROOT}/powerpc64/usr";
+OPT_ppc="--with-gmp-prefix=${ARCHROOT}/ppc/usr --with-isl-prefix=${ARCHROOT}/ppc/usr";
+OPT_ppc64="--with-gmp-prefix=${ARCHROOT}/ppc64/usr --with-isl-prefix=${ARCHROOT}/ppc64/usr";
 STDCSTATIC="--disable-shared LDFLAGS=-static";
 OPT_win32="--with-gmp-prefix=${ARCHROOT}/win32/mingw --with-isl-prefix=${ARCHROOT}/win32/mingw --disable-static";
 OPT_win64="--with-gmp-prefix=${ARCHROOT}/win64/mingw --with-isl-prefix=${ARCHROOT}/win64/mingw --disable-static";

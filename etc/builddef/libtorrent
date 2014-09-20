@@ -8,6 +8,6 @@ ADDCC="0";
 EXTRALIBS="-L=/usr/lib";
 NOSVNROOT="1";
 case ${barch} in
-  mips*|powerpc*)CHROOTBUILD="1";;
+  mips*|ppc*)CHROOTBUILD="1";;
 esac;
 RPMGROUP="core";

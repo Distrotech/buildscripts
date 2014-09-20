@@ -4,6 +4,6 @@ PREFIX="/opt/qt-5";
 CONFOPT="-opensource -openssl-linked -confirm-license -prefix ${PREFIX} -v -system-sqlite -libdir ${PREFIX}/${B_LIBDIRS} -sysroot ${ARCHROOT}/${barch}";
 NOCCOPT="1";
 BUILDDIR="0";
-DONTBUILD="powerpc";
+DONTBUILD="ppc";
 CHROOTBUILD="1";
 RPMGROUP="gui";

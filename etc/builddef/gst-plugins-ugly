@@ -2,7 +2,7 @@ VERSION="0.10.19"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--x-libraries=/usr/X11/${B_LIBDIRS} --x-includes=${X11DIR}/include --disable-cdio";
-OPT_powerpc="--disable-mpeg2dec";
+OPT_ppc="--disable-mpeg2dec";
 ADDCFLAG="-I=/usr/include/gstreamer-0.10 -I=/usr/include/libxml2 -I=/usr/include/orc-0.4 -I=/usr/include/gnome-vfs-2.0 \
           -I=/usr/include/libvisual-0.4 -I=/usr/include/pango-1.0 -I=/usr/include/cairo -I=${X11DIR}/include \
           -I=/usr/include/opencore-amrnb -I=/usr/include/opencore-amrwb -I=/usr/include/opencore-amrnb";

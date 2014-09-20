@@ -13,8 +13,8 @@ OPTX_arm="-DENABLE_PRECOMPILED_HEADERS:BOOL=OFF";
 OPT_arm64="-DPYTHON_INCLUDE_DIR:PATH=${ARCHROOT}/arm64/usr/include/python2.7";
 OPT_mips="-DPYTHON_INCLUDE_DIR:PATH=${ARCHROOT}/mips/usr/include/python2.7";
 OPT_mips64="-DPYTHON_INCLUDE_DIR:PATH=${ARCHROOT}/mips64/usr/include/python2.7";
-OPT_powerpc="-DPYTHON_INCLUDE_DIR:PATH=${ARCHROOT}/powerpc/usr/include/python2.7
+OPT_ppc="-DPYTHON_INCLUDE_DIR:PATH=${ARCHROOT}/ppc/usr/include/python2.7
              -DENABLE_SSE3:BOOL=OFF -DENABLE_SSE2:BOOL=OFF -DENABLE_SSE:BOOL=OFF";
-OPT_powerpc64="-DPYTHON_INCLUDE_DIR:PATH=${ARCHROOT}/powerpc64/usr/include/python2.7";
+OPT_ppc64="-DPYTHON_INCLUDE_DIR:PATH=${ARCHROOT}/ppc64/usr/include/python2.7";
 DONTBUILD="aarch64 mips mips64";
 RPMGROUP="core";

@@ -18,7 +18,4 @@ ADDWITHSYSROOT="1";
 ADDCFLAG="-I=/${PREFIX}/include/p11-kit-1 -I=/${PREFIX}/include/guile/2.0 -I=${PREFIX}/include/evil-1";
 BUILDDIR="0";
 AMVER="1.14";
-case ${barch} in
-	mips64|arm64|powerpc64)CHROOTBUILD="1";;
-esac;
 RPMGROUP="root";

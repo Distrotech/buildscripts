@@ -5,5 +5,5 @@ CONFOPT="";
 STDOPTS="--default";
 BUILDDIR="0";
 CLEARFLAGS="1";
-DONTBUILD="arm aarm64 mips mips64 powerpc powerpc64";
+DONTBUILD="arm aarm64 mips mips64 ppc ppc64";
 RPMGROUP="core";

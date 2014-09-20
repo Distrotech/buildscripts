@@ -43,11 +43,11 @@ OPT_mips64="--enable-cross-compile --sysroot=${ARCHROOT}/mips64 --arch=mips64 --
          --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/mips64/usr/lib64:${ARCHROOT}/mips64/lib64:${ARCHROOT}/mips64/${X11DIR}/lib644
          --host-cc=/usr/bin/gcc --disable-mips32r2 --disable-mipsdspr1 --disable-mipsdspr2 --extra-cxxflags=-fpermissive
          --enable-libv4l2 --enable-libvpx";
-OPT_powerpc="--enable-cross-compile --sysroot=${ARCHROOT}/powerpc --arch=powerpc --target-os=linux --cross-prefix=powerpc-linux-gnu-
-         --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/powerpc/usr/lib:${ARCHROOT}/powerpc/lib:${ARCHROOT}/powerpc/${X11DIR}/lib
+OPT_ppc="--enable-cross-compile --sysroot=${ARCHROOT}/ppc --arch=powerpc --target-os=linux --cross-prefix=ppc-linux-gnu-
+         --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/ppc/usr/lib:${ARCHROOT}/ppc/lib:${ARCHROOT}/ppc/${X11DIR}/lib
          --host-cc=/usr/bin/gcc --enable-libv4l2 --enable-libvpx";
-OPT_powerpc64="--enable-cross-compile --sysroot=${ARCHROOT}/powerpc64 --arch=powerpc --target-os=linux --cross-prefix=powerpc64-linux-gnu-
-         --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/powerpc64/usr/lib64:${ARCHROOT}/powerpc64/lib64:${ARCHROOT}/powerpc64/${X11DIR}/lib64
+OPT_ppc64="--enable-cross-compile --sysroot=${ARCHROOT}/ppc64 --arch=powerpc --target-os=linux --cross-prefix=ppc64-linux-gnu-
+         --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/ppc64/usr/lib64:${ARCHROOT}/ppc64/lib64:${ARCHROOT}/ppc64/${X11DIR}/lib64
          --host-cc=/usr/bin/gcc --enable-libv4l2 --enable-libvpx";
 OPT_arm64="--enable-cross-compile --sysroot=${ARCHROOT}/arm64 --arch=arm64 --target-os=linux --cross-prefix=aarch64-linux-gnu-
          --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/arm/usr/lib:${ARCHROOT}/arm/lib:${ARCHROOT}/arm/${X11DIR}/lib

@@ -4,8 +4,8 @@ PREFIX="/usr";
 CONFOPT="--without-ldap --disable-ldapdb --enable-login --with-configdir=/etc/sasl2";
 OPT_arm="ac_cv_header_openssl_des_h=yes";
 OPT_arm64="ac_cv_header_openssl_des_h=yes --with-plugindir=/usr/lib64/sasl2";
-OPT_powerpc="ac_cv_header_openssl_des_h=yes";
-OPT_powerpc64="--with-plugindir=/usr/lib64/sasl2 ac_cv_header_openssl_des_h=yes";
+OPT_ppc="ac_cv_header_openssl_des_h=yes";
+OPT_ppc64="--with-plugindir=/usr/lib64/sasl2 ac_cv_header_openssl_des_h=yes";
 OPT_mips="ac_cv_header_openssl_des_h=yes";
 OPT_mips64="ac_cv_header_openssl_des_h=yes --with-plugindir=/usr/lib64/sasl2";
 OPT_i686="--with-plugindir=/usr/lib/i686/sasl2";
@@ -26,6 +26,6 @@ BUILDDIR="0";
 MLIBDIRLN="libsasl2.so";
 USEMINGW="1";
 case ${barch} in
-  powerpc*|mips64)CHROOTBUILD="1";;
+  ppc*|mips64)CHROOTBUILD="1";;
 esac;
 RPMGROUP="root";

@@ -7,5 +7,5 @@ NOMAKEFLAGS="1";
 ADDCFLAG="-m32";
 ADDLDFLAG="-m elf_i386";
 LDISCC="0";
-DONTBUILD="arm arm64 mips mips64 powerpc powerpc64";
+DONTBUILD="arm arm64 mips mips64 ppc ppc64";
 RPMGROUP="core";

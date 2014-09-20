@@ -18,9 +18,9 @@ OPT_mips="samba_cv_CC_NEGATIVE_ENUM_VALUES=yes ac_cv_file__proc_sys_kernel_core_
           smb_krb5_cv_enctype_to_string_takes_krb5_context_arg=no smb_krb5_cv_enctype_to_string_takes_size_t_arg=yes";
 OPT_mips64="samba_cv_CC_NEGATIVE_ENUM_VALUES=yes ac_cv_file__proc_sys_kernel_core_pattern=yes samba_cv_HAVE_WRFILE_KEYTAB=yes
           smb_krb5_cv_enctype_to_string_takes_krb5_context_arg=no smb_krb5_cv_enctype_to_string_takes_size_t_arg=yes";
-OPT_powerpc="samba_cv_CC_NEGATIVE_ENUM_VALUES=yes ac_cv_file__proc_sys_kernel_core_pattern=yes samba_cv_HAVE_WRFILE_KEYTAB=yes
+OPT_ppc="samba_cv_CC_NEGATIVE_ENUM_VALUES=yes ac_cv_file__proc_sys_kernel_core_pattern=yes samba_cv_HAVE_WRFILE_KEYTAB=yes
           smb_krb5_cv_enctype_to_string_takes_krb5_context_arg=no smb_krb5_cv_enctype_to_string_takes_size_t_arg=yes";
-OPT_powerpc64="samba_cv_CC_NEGATIVE_ENUM_VALUES=yes ac_cv_file__proc_sys_kernel_core_pattern=yes samba_cv_HAVE_WRFILE_KEYTAB=yes
+OPT_ppc64="samba_cv_CC_NEGATIVE_ENUM_VALUES=yes ac_cv_file__proc_sys_kernel_core_pattern=yes samba_cv_HAVE_WRFILE_KEYTAB=yes
           smb_krb5_cv_enctype_to_string_takes_krb5_context_arg=no smb_krb5_cv_enctype_to_string_takes_size_t_arg=yes";
 ADDCFLAG="-I../lib/tdb/include -I../lib/talloc";
 ADDLDFLAG="-L./bin";
@@ -28,6 +28,6 @@ EXTRALIBS="-lcom_err -lnsl -lpthread -ltirpc";
 BUILDDIR="0";
 NOSVNROOT="1";
 case ${barch} in
-  powerpc64|mips64)CHROOTBUILD="1";;
+  ppc64|mips64)CHROOTBUILD="1";;
 esac;
 RPMGROUP="root";

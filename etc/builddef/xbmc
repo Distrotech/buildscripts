@@ -7,5 +7,5 @@ BUILDDIR="0";
 AMVER="1.14";
 ADDPATH="/opt/mysql/bin";
 CHROOTBUILD="1";
-DONTBUILD="powerpc powerpc64 mips mips64";
+DONTBUILD="ppc ppc64 mips mips64";
 RPMGROUP="gui";

@@ -7,5 +7,5 @@ EXTRALIBS="-lIlmCtl -lIlmCtlMath -lIlmCtlSimd -lIlmImfCtl -lIlmThread -lIlmImf -
 ALIAS="openexr";
 CFGPTH="OpenEXR_Viewers";
 CFGBIN="OpenEXR_Viewers/";
-DONTBUILD="arm powerpc powerpc64 mips mips64";
+DONTBUILD="arm ppc ppc64 mips mips64";
 RPMGROUP="gui";

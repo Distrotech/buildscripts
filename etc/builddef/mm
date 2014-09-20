@@ -5,5 +5,5 @@ CONFOPT="";
 BUILDDIR="0";
 GITBRANCH="master";
 CHROOTBUILD="1";
-DONTBUILD="powerpc64";
+DONTBUILD="ppc64";
 RPMGROUP="core";

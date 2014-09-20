@@ -12,7 +12,7 @@ if [ "${barch:0:3}" != "win" ];then
   CONFOPT="--with-yielding_select=yes --disable-bdb --disable-hdb --disable-mdb --disable-overlays
            --disable-static --disable-slapd ac_cv_func_memcmp_working=yes ac_cv_type_socklen_t=yes";
 fi;
-OPT_powerpc="ol_cv_pthread_create_works=yes";
+OPT_ppc="ol_cv_pthread_create_works=yes";
 OPT_cyg32="--disable-bdb --disable-hdb --disable-sql --disable-slp";
 DISTCONF="openldap/ldap.conf openldap/slapd.conf";
 if [ "${barch:0:3}" != "win" ] && [ "${barch:0:3}" != "cyg" ];then

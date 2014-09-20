@@ -3,16 +3,8 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-srv-lease-file=/var/state/dhcp/dhcpd.leases --with-cli-lease-file=/var/state/dhcp/dhclient.leases
          --with-srv6-lease-file=/var/state/dhcp/dhcpd6.leases --with-cli6-lease-file=/var/state/dhcp/dhclient6.leases
-         --with-libtool --with-ldap --with-ldapcrypto ac_cv_file__dev_random=yes";
-OPT_i686="--with-export-dir=${ARCHROOT}/i686/usr/lib/bind9";
-OPT_arm="--with-export-dir=${ARCHROOT}/arm/usr/lib/bind9";
-OPT_arm64="--with-export-dir=${ARCHROOT}/arm64/usr/lib64/bind9";
-OPT_mips="--with-export-dir=${ARCHROOT}/mips/usr/lib/bind9";
-OPT_mips64="--with-export-dir=${ARCHROOT}/mips64/usr/lib64/bind9";
-OPT_powerpc="--with-export-dir=${ARCHROOT}/powerpc/usr/lib/bind9";
-OPT_powerpc64="--with-export-dir=${ARCHROOT}/powerpc64/usr/lib64/bind9";
-OPT_x86_32="--with-export-dir=${ARCHROOT}/x86_32/usr/libx32/bind9";
-OPT_x86_64="--with-export-dir=${ARCHROOT}/x86_64/usr/lib64/bind9";
+         --with-libtool --with-ldap --with-ldapcrypto ac_cv_file__dev_random=yes 
+         --with-export-dir=${ARCHROOT}/${barch}/usr/${B_LIBDIRS}/bind9";
 BUILDDIR="0";
 SYSROOTFIXUP="1";
 ADDCC="0";

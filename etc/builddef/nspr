@@ -5,10 +5,10 @@ CONFOPT="--disable-debug --enable-optimize";
 OPT_x86_64="--enable-64bit";
 OPT_x86_32="--enable-64bit";
 OPT_arm64="--enable-64bit";
-OPT_powerpc64="--enable-64bit";
+OPT_ppc64="--enable-64bit";
 DONTBUILD="cyg32 cyg64";
 NOCCOPT="1";
 case ${barch} in
-  powerpc*|mips*)CHROOTBUILD=1;;
+  ppc*|mips*)CHROOTBUILD=1;;
 esac;
 RPMGROUP="root";

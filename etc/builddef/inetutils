@@ -8,14 +8,14 @@ OPT_arm="--with-ncurses-include-dir=${ARCHROOT}/arm/usr/include";
 OPT_arm64="--with-ncurses-include-dir=${ARCHROOT}/arm64/usr/include";
 OPT_mips="--with-ncurses-include-dir=${ARCHROOT}/mips/usr/include";
 OPT_mips64="--with-ncurses-include-dir=${ARCHROOT}/mips64/usr/include";
-OPT_powerpc="--with-ncurses-include-dir=${ARCHROOT}/powerpc/usr/include";
-OPT_powerpc64="--with-ncurses-include-dir=${ARCHROOT}/powerpc64/usr/include";
+OPT_ppc="--with-ncurses-include-dir=${ARCHROOT}/ppc/usr/include";
+OPT_ppc64="--with-ncurses-include-dir=${ARCHROOT}/ppc64/usr/include";
 OPT_i686="--with-ncurses-include-dir=${ARCHROOT}/i686/usr/include";
 OPT_x86_32="--with-ncurses-include-dir=${ARCHROOT}/x86_32/usr/include";
 OPT_x86_64="--with-ncurses-include-dir=${ARCHROOT}/x86_64/usr/include";
 AMVER="1.14";
 MAKE_J="-j2";
 case ${barch} in
-  powerpc*|mips*)CHROOTBUILD="1";;
+  ppc*|mips*)CHROOTBUILD="1";;
 esac;
 RPMGROUP="root";

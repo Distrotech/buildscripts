@@ -5,5 +5,5 @@ CONFOPT="";
 ALIAS="CTL";
 CFGPTH="OpenEXR_CTL";
 CFGBIN="OpenEXR_CTL/";
-DONTBUILD="arm powerpc powerpc64 mips mips64";
+DONTBUILD="arm ppc ppc64 mips mips64";
 RPMGROUP="gui";

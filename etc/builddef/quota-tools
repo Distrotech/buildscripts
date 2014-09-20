@@ -4,7 +4,7 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 case ${barch} in
-  powerpc*)CHROOTBUILD="1";;
+  ppc*)CHROOTBUILD="1";;
 esac;
 DISTCONF="warnquota.conf";
 RPMGROUP="core";

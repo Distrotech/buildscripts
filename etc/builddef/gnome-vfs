@@ -10,10 +10,10 @@ OPT_mips="ac_cv_func_posix_getpwuid_r=yes
           ac_cv_path_KRB5_CONFIG=${ARCHROOT}/mips/usr/bin/krb5-config";
 OPT_mips64="ac_cv_func_posix_getpwuid_r=yes
           ac_cv_path_KRB5_CONFIG=${ARCHROOT}/mips64/usr/bin/krb5-config";
-OPT_powerpc="ac_cv_func_posix_getpwuid_r=yes
-          ac_cv_path_KRB5_CONFIG=${ARCHROOT}/powerpc/usr/bin/krb5-config";
-OPT_powerpc64="ac_cv_func_posix_getpwuid_r=yes
-          ac_cv_path_KRB5_CONFIG=${ARCHROOT}/powerpc64/usr/bin/krb5-config";
+OPT_ppc="ac_cv_func_posix_getpwuid_r=yes
+          ac_cv_path_KRB5_CONFIG=${ARCHROOT}/ppc/usr/bin/krb5-config";
+OPT_ppc64="ac_cv_func_posix_getpwuid_r=yes
+          ac_cv_path_KRB5_CONFIG=${ARCHROOT}/ppc64/usr/bin/krb5-config";
 OPT_i686="ac_cv_func_posix_getpwuid_r=yes
           ac_cv_path_KRB5_CONFIG=${ARCHROOT}/i686/usr/bin/krb5-config";
 OPT_x86_32="ac_cv_func_posix_getpwuid_r=yes

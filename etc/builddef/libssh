@@ -5,7 +5,7 @@ CONFOPT="-DWITH_GCRYPYT:BOOL=OFF -DZLIB_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/us
          -DOPENSSL_SSL_LIBRARIES:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libssl.so
          -DOPENSSL_CRYPTO_LIBRARIES:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libcrypto.so";
 case ${barch} in
-  mips*|powerpc|arm64)CONFOPT="${CONFOPT} -DZLIB_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include
+  mips*|ppc|arm64)CONFOPT="${CONFOPT} -DZLIB_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include
                 -DOPENSSL_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include";;
 esac;
 FIXUPLIB="1";

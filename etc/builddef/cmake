@@ -10,5 +10,5 @@ NOCCOPT="1";
 ADDPATH="${SRCDIR}/cmake/cmake-2.8.9/build-${barch}/bin";
 QT_VER="4";
 MAKE_J="-j2";
-DONTBUILD="cyg32 cyg64 powerpc64";
+DONTBUILD="cyg32 cyg64 ppc64";
 RPMGROUP="dev";

@@ -4,6 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 GITBRANCH="master";
 case ${barch} in
-  powerpc)DONTBUILD="${barch}";;
+  ppc)DONTBUILD="${barch}";;
 esac;
 RPMGROUP="core";

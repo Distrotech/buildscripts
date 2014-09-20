@@ -11,7 +11,7 @@ OPT_x86_32="--host=x86_64-linux-gnux32";
 MAKEOPTS="CROSSBINPATH= FONT_SOURCE=/usr/share/grubfont/X11/misc/unifont.pcf.gz";
 CLEARFLAGS="1";
 SYSROOTFIXUP="0";
-DONTBUILD="arm arm64 mips mips64 powerpc powerpc64";
+DONTBUILD="arm arm64 mips mips64 ppc ppc64";
 AMVER="1.14";
 EXTRALIBS="-lpthread -lrt -ldl";
 RPMGROUP="core";

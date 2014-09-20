@@ -13,9 +13,9 @@ case ${1} in
        SARCH=mips;;
   mips64)TYPE=linux-mips64
        SARCH=mips;;
-  powerpc)TYPE=linux-ppc
+  ppc)TYPE=linux-ppc
        SARCH=powerpc;;
-  powerpc64)TYPE=linux-ppc64
+  ppc64)TYPE=linux-ppc64
        SARCH=powerpc;;
   x86_64)TYPE=linux-x86_64
       SARCH=${1};;

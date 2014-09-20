@@ -12,6 +12,6 @@ RPMPROVIDES="mono(Microsoft.Build.Utilities.v3.5) mono(Mono.CompilerServices.Sym
  mono(System.Runtime.Serialization.Formatters.Soap) mono(System.Web.WebPages.Deployment) mono(Microsoft.Build.Utilities.v12.0)";
 case ${barch} in
   i686|x86_64)CHROOTBUILD="1";;
-  powerpc*|mips*)DONTBUILD="${barch}";;
+  ppc*|mips*)DONTBUILD="${barch}";;
 esac;
 RPMGROUP="dev";

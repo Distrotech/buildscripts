@@ -3,6 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 case ${barch} in
-  mips64|powerpc*)CHROOTBUILD="1";;
+  mips64|ppc*)CHROOTBUILD="1";;
 esac;
 RPMGROUP="gui";
