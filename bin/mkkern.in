@@ -134,14 +134,14 @@ Summary: Linux ${VERSION}-${KFLAVOR} installed files (dev)
 %description dev
 Distrotech Linux ${VERSION} ${KFLAVOR} installed files (dev)
 
-%package dbg
-Group: Distrotech Linux ${VERSION} ${KFLAVOR}
-Summary: Linux ${VERSION}-${KFLAVOR} installed files (dbg)
-
 EOF
 
 if [ "${HAS_WANPIPE}" == "1" ];then
   cat <<EOF
+%package dbg
+Group: Distrotech Linux ${VERSION} ${KFLAVOR}
+Summary: Linux ${VERSION}-${KFLAVOR} installed files (dbg)
+
 %description dbg
 Distrotech Linux ${VERSION} ${KFLAVOR} installed files (dbg)
 
@@ -239,7 +239,12 @@ build_kernel_rpm() {
     mkdir -p ${YUM_PATH}
   fi;
 
-  for rfile in "" "modules" "firmware" "dahdi" "dev" "wanpipe" "doc" "dbg";do
+  RPMPKGS="modules firmware dahdi dev doc dbg";
+  if [ "${HAS_WANPIPE}" == "1" ];then
+    RPMPKGS="${RPMPKGS} wanpile";
+  fi;
+
+  for rfile in "" ${RPMPKGS};do
     RPM_FILE=${RPMNAME}
     if [ "${rfile}" ];then
       RPM_FILE=${RPM_FILE}-${rfile}
@@ -271,11 +276,15 @@ build_kernel_tar() {
   tar -cJf ${TARBALL}/${2}.tar.xz boot/
   tar -cJf ${TARBALL}/${2}-modules.tar.xz lib/modules
   tar -cJf ${TARBALL}/${2}-firmware.tar.xz lib/firmware
-  tar -cJf ${TARBALL}/${2}-dev.tar.xz usr/include usr/${LIBDIR}/lib*.a usr/${LIBDIR}/*.la
-  tar -cJf ${TARBALL}/${2}-dbg.tar.xz usr/sbin/.dbg usr/${LIBDIR}/.dbg
-  tar -cJf ${TARBALL}/${2}-doc.tar.xz usr/share/doc/wanpipe
-  tar --exclude=usr/sbin/.dbg -cJf ${TARBALL}/${2}-wanpipe.tar.xz usr/${LIBDIR}/libsangoma.so* usr/${LIBDIR}/libstelephony.so* usr/${LIBDIR}/libteletone.so* etc usr/sbin
-  tar -cJf ${TARBALL}/${2}-dahdi.tar.xz usr/share/dahdi)
+  tar -cJf ${TARBALL}/${2}-dahdi.tar.xz usr/share/dahdi
+  if [ "${HAS_WANPIPE}" == "1" ];then
+    tar -cJf ${TARBALL}/${2}-dev.tar.xz usr/include usr/${LIBDIR}/lib*.a usr/${LIBDIR}/*.la
+    tar -cJf ${TARBALL}/${2}-dbg.tar.xz usr/sbin/.dbg usr/${LIBDIR}/.dbg
+    tar -cJf ${TARBALL}/${2}-doc.tar.xz usr/share/doc/wanpipe
+    tar --exclude=usr/sbin/.dbg -cJf ${TARBALL}/${2}-wanpipe.tar.xz usr/${LIBDIR}/libsangoma.so* usr/${LIBDIR}/libstelephony.so* usr/${LIBDIR}/libteletone.so* etc usr/sbin
+   else
+    tar -cJf ${TARBALL}/${2}-dev.tar.xz usr/include
+  fi;)
 }
 
 build_kernel() {
@@ -326,7 +335,7 @@ build_kernel() {
     make ARCH=${KARCH} LINUX_SOURCE=${LINDIR} LINUX=${LINDIR} KVERS=${VSUF} INSTALL_PREFIX=${1} CROSS_COMPILE=${CROSS_COMPILE} misdn-headers install
   fi;
 
-  if [ -d ${SRCDIR}/kernel/wanpipe ];then
+  if [ -d ${SRCDIR}/kernel/wanpipe ] && [ "${HAS_WANPIPE}" == "1" ];then
     cd ${SRCDIR}/kernel/wanpipe
     git clean -x -f -d
     if [ "${ARCH}" == "i686" ];then
