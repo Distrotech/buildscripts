@@ -1,8 +1,7 @@
-VERSION="8.21"
-#VERSION_ppc64="8.22"
+VERSION="8.23"
 VERSEP="-";
 PREFIX="/";
-CONFOPT="FORCE_UNSAFE_CONFIGURE=1 --disable-gcc-warning ac_cv_func___fpending=yes --disable-gcc-warnings";
+CONFOPT="FORCE_UNSAFE_CONFIGURE=1 --disable-gcc-warning ac_cv_func___fpending=yes";
 ADDCFLAG="-std=c99 -I./lib";
 OPT_i686="--enable-no-install-program=arch,hostname,kill,uptime";
 OPT_x86_32="--enable-no-install-program=arch,hostname,factor,kill,uptime";
@@ -18,7 +17,7 @@ MAKEOPTS="NARCH=${NARCH} WERROR_CFLAGS=";
 ADDCC="0";
 STATICOPT="--disable-gcc-warnings LDFLAGS=\"-static -L=/usr/${C_LIBDIRS}\" FORCE_UNSAFE_CONFIGURE=1";
 STATICMOPT="NARCH=${NARCH} pkglibexec_PROGRAMS=";
-AMVER="1.13";
+AMVER="1.14";
 NODIET="1";
 STATICBSTRAP="1";
 if [ "${barch:0:3}" == "cyg" ];then
