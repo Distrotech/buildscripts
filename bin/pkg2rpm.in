@@ -14,8 +14,8 @@ RPMDIR=@SRVDIRYUM@
 
 NARCH=${NARCH:=$( uname -m )}
 case ${NARCH} in
-  ppc|powerpc)NARCH=powerpc;;
-  ppc64|powerpc64)NARCH=powerpc64;;
+  powerpc)NARCH=ppc;;
+  powerpc64)NARCH=ppc64;;
   arm*)NARCH=arm;;
   aarch64)NARCH=arm64;;
 esac;

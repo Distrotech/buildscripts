@@ -59,14 +59,15 @@ fi;
 case ${ARCH} in
   x86_*|i[3-6]86)KARCH="x86";;
   arm64)KARCH=arm64;;
+  ppc|ppc64)KARCH=powerpc;;
   *64)KARCH=${ARCH::-2};;
   *)KARCH=${ARCH};;
 esac;
 
 NARCH=${NARCH:=$( uname -m )}
 case ${NARCH} in
-  ppc|powerpc)NARCH=powerpc;;
-  ppc64|powerpc64)NARCH=powerpc64;;
+  powerpc)NARCH=ppc;;
+  powerpc64)NARCH=ppc64;;
   arm*)NARCH=arm;;
   aarch64)NARCH=arm64;;
 esac;
