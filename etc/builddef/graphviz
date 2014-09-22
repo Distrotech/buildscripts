@@ -1,7 +1,7 @@
-VERSION="2.34"
+VERSION="2.38"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--disable-guile";
+CONFOPT="--disable-guile --disable-lua";
 QT_VER="4";
 BUILDDIR="0";
 AMVER="1.14";
