@@ -2,12 +2,16 @@
 
 NARCH=${NARCH:=$( uname -m )}
 case ${NARCH} in
-  ppc|powerpc)NARCH=powerpc;;
-  ppc64|powerpc64)NARCH=powerpc64;;
+  powerpc)NARCH=ppc;;
+  powerpc64)NARCH=ppc64;;
   arm64|aarch64)NARCH=arm64;;
   arm*)NARCH=arm;;
 esac;
 export NARCH
+
+if [ ! -e /proc/sys/fs/binfmt_misc/register ];then
+  mount -t binfmt_misc none /proc/sys/fs/binfmt_misc/
+fi;
 
 if [ -e /proc/sys/fs/binfmt_misc/${NARCH} ] && [ -x /usr/bin/hybrid/clear ];then
   /usr/bin/hybrid/clear
