@@ -2,8 +2,8 @@ VERSION="1.5.1"
 VERSEP="-";
 PREFIX="/opt/apr";
 CONFOPT="--with-pgsql --with-mysql=/opt/mysql --with-ldap --with-gdbm=yes --with-odbc --with-gdbm=yes --with-berkeley-db=yes
-         --with-apr=${ARCHROOT}/${barch}/${PREFIX}/bin/apr-1-config --with-iconv=${ARCHROOT}/${barch}/${PREFIX} 
-         --with-expat=${ARCHROOT}/${barch}/usr ac_cv_search_crypt=yes";
+         --with-apr=${PREFIX}/bin/apr-1-config --with-iconv=${PREFIX} 
+         --with-expat=/usr ac_cv_search_crypt=yes APRUTIL_LDFLAGS=\"-L=/usr/${C_LIBDIRS} -L=/opt/apr/${B_LIBDIRS}\"";
 SYSROOTFIXUP="1";
 ADDFILTER="./build/rules.mk";
 EXTRALIBS="-lpthread -ldl";
