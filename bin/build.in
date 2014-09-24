@@ -193,7 +193,7 @@ arch_config() {
     i[3-6]86)ARCHSTUB="stubs-32.h";;
     x86_32)ARCHSTUB="stubs-x32.h";;
     x86_64)ARCHSTUB="stubs-64.h";;
-    mips)ARCHSTUB="stubs-o32.h";;
+    mips)ARCHSTUB="stubs-o32_hard.h";;
     *)ARCHSTUB="";;
   esac;
 
@@ -383,6 +383,7 @@ multilib_glibc_sync() {
   case ${1} in
     x86_32)MLIBARCH="i686 x86_64";;
     x86_64)MLIBARCH="i686 x86_32";;
+    mips64)MLIBARCH="mips";;
   esac;
 
   #Seed the archroot with GCC libs if they missing
@@ -2662,7 +2663,7 @@ build_glibc_march() {
            (bootstrap_arch_root ${NARCH}) || return 1
            (bootstrap_arch_root mips mips64) || return 1;
            if [ -d ${ARCHROOT}/${1} ] && [ -e ${STATDIR}/mips/done/glibc ] && \
-              [ ! -e ${ARCHROOT}/${1}/lib/libc_nonshared.a ];then
+              [ ! -e ${ARCHROOT}/${1}/usr/lib/crt1.o ];then
              rm ${STATDIR}/mips/done/glibc
            fi;
            (build_glibc mips mips-linux-gnu) || return 1
@@ -2752,6 +2753,7 @@ build_dependancies() {
     fi;
     pango-querymodules --update-cache) >/dev/null 2>&1
    else
+    chroot ${ARCHROOT}/${1} ldconfig
     chroot ${ARCHROOT}/${1} gdk-pixbuf-query-loaders > ${ARCHROOT}/${1}/usr/${C_LIBDIRS}/gdk-pixbuf-2.0/2.10.0/loaders.cache
   fi;
 
@@ -2920,6 +2922,12 @@ build_dependancies() {
 
   #Asterisk
   build_packages ${1} dahdi-tools libpri libss7 mISDNuser openr2 asterisk asterisk-g72x || return 1
+
+  #Graphviz
+  build_packages ${1} graphviz || return 1
+  if [ ! -e ${ARCHROOT}/${1}/usr/${C_LIBDIRS}/graphviz/config6 ];then
+    chroot ${ARCHROOT}/${1} dot -c
+  fi;
 }
 
 sync_ml_libs() {
