@@ -6,3 +6,4 @@ BUILDDIR="0";
 CHROOTBUILD="1";
 RPMGROUP="obsolete";
 OPT_i686="--without-perl";
+OPT_mips64="--without-perl";
