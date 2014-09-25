@@ -58,6 +58,7 @@ AC_CONFIG_FILES([
   bin/umount-arch
   bin/mkkern
   bin/mkgroups
+  bin/chroot-arch
   etc/yum_repo.conf
   libexec/make_sip
   libexec/make_qt-5

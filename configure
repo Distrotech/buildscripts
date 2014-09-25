@@ -2496,7 +2496,7 @@ fi
 PATCHDIR=${datarootdir}/patches
 KCONFIGDIR=${datarootdir}/config
 
-ac_config_files="$ac_config_files Makefile bin/build bin/mkbuilddef bin/pkg2rpm bin/umount-arch bin/mkkern bin/mkgroups etc/yum_repo.conf libexec/make_sip libexec/make_qt-5 libexec/make_qt-4-bin"
+ac_config_files="$ac_config_files Makefile bin/build bin/mkbuilddef bin/pkg2rpm bin/umount-arch bin/mkkern bin/mkgroups bin/chroot-arch etc/yum_repo.conf libexec/make_sip libexec/make_qt-5 libexec/make_qt-4-bin"
 
 
 
@@ -3233,6 +3233,7 @@ do
     "bin/umount-arch") CONFIG_FILES="$CONFIG_FILES bin/umount-arch" ;;
     "bin/mkkern") CONFIG_FILES="$CONFIG_FILES bin/mkkern" ;;
     "bin/mkgroups") CONFIG_FILES="$CONFIG_FILES bin/mkgroups" ;;
+    "bin/chroot-arch") CONFIG_FILES="$CONFIG_FILES bin/chroot-arch" ;;
     "etc/yum_repo.conf") CONFIG_FILES="$CONFIG_FILES etc/yum_repo.conf" ;;
     "libexec/make_sip") CONFIG_FILES="$CONFIG_FILES libexec/make_sip" ;;
     "libexec/make_qt-5") CONFIG_FILES="$CONFIG_FILES libexec/make_qt-5" ;;

@@ -8,6 +8,7 @@ bin_SCRIPTS = \
 	bin/mkgroups \
 	bin/mkbuilddef \
 	bin/pkg2rpm \
+	bin/chroot-arch \
 	bin/umount-arch
 
 libexec_SCRIPTS	= \

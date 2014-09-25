@@ -1,0 +1,24 @@
+#!/bin/bash
+
+ARCHROOT=@ARCHROOT@
+
+if [ ! "${1}" ] || [ ! -d ${ARCHROOT}/${1} ];then
+  echo "Requires arch $0 <ARCH>"
+  exit 1;
+fi;
+
+unset LIB_PATH LD_LIBRARY_PATH
+
+export NARCH=${1}
+shift
+export RUNBASHRC=1
+
+if [ -e /proc/sys/fs/binfmt_misc/${NARCH} ] && [ -x ${ARCHROOT}/${NARCH}/bin/hybrid/bash ];then
+  if [ "$#" != "0" ];then
+    chroot ${ARCHROOT}/${NARCH} /bin/hybrid/bash -c $@
+   else
+    chroot ${ARCHROOT}/${NARCH} /bin/hybrid/bash
+  fi;
+ else
+  chroot ${ARCHROOT}/${NARCH} $@
+fi;
