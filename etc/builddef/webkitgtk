@@ -1,7 +1,7 @@
 VERSION="2.4.0"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-introspection --enable-accelerated-compositing --enable-web-audio --disable-static";
+CONFOPT="--enable-introspection --enable-accelerated-compositing --enable-web-audio --disable-static LIBXSLT_LIBS=\"-lxml2 -lxslt\"";
 XOPT_x86_32="--disable-jit";
 GTK_LIBS=$(pkg-config gtk+-3.0 --libs)
 GTK2_LIBS=$(pkg-config gtk+-2.0 --libs)
