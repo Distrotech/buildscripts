@@ -24,4 +24,7 @@ fi;
 ADDWITHSYSROOT="1";
 ADDCFLAG="-ffat-lto-objects";
 RPMGROUP="root";
-CHROOTBUILD="1";
+case ${barch} in
+  ppc64)CHROOTBUILD="0";;
+  *)CHROOTBUILD="1";;
+esac;
