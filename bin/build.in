@@ -415,7 +415,11 @@ multilib_glibc_sync() {
         ARCHFILE="";
       fi;
       (cd ${PKGDESTDIR}/${march}/${PNAME}
-      rsync -aR ${SETLIBDIR} usr/${SETLIBDIR} ${ARCHFILE} ${ARCHROOT}/${1}/)
+      if [ "${AMLIBDIR}" ];then
+        rsync -aR ${SETLIBDIR} usr/${SETLIBDIR}/{*.so,*.so.*} usr/${SETLIBDIR}/${AMLIBDIR}/{*.so,*.so.*} ${ARCHFILE} ${ARCHROOT}/${1}/
+       else
+        rsync -aR ${SETLIBDIR} usr/${SETLIBDIR}/{*.so,*.so.*} ${ARCHFILE} ${ARCHROOT}/${1}/
+      fi)
     fi;)
   done
 }
@@ -2259,15 +2263,6 @@ fixup_glibc_link() {
   ln -s -r ${1}/${2}/${3}.${4} ${1}/usr/${2}/${3}
 }
 
-java_hybrid_setup() {
-  if [ -x ${1}/usr/bin/hybrid/${3} ] && [ -h ${1}/usr/${4}/jvm/gcj-jdk/bin/${2} ];then
-    basejdkfile=$(readlink -f ${1}/usr/${4}/jvm/gcj-jdk/bin/${2})
-    if [ "${basejdkfile}" != "${1}/usr/bin/hybrid/${3}" ];then
-      rm ${1}/usr/${4}/jvm/gcj-jdk/bin/${2}
-      ln -sr ${1}/usr/bin/hybrid/${3} ${1}/usr/${4}/jvm/gcj-jdk/bin/${2}
-    fi;
-  fi;
-}
 
 java_hybrid_setup_ln() {
   if [ -x ${1}/usr/bin/hybrid/${3} ] && [ -h ${1}/usr/${4}/jvm/gcj-jdk/bin/${2} ];then
@@ -2288,6 +2283,13 @@ java_hybrid_setup() {
                 "serialver gserialver" "tnameserv gtnameserv";do
     java_hybrid_setup_ln ${TMPJDIR} ${jdkbin} ${B_LIBDIRS}
   done;
+
+  JNIFILE_O=${TMPJDIR}/usr/${B_LIBDIRS}/jvm/gcj-jdk/include/jni.h
+  if [ -e ${JNIFILE_O} ] && [ -h ${JNIFILE_O} ];then
+    JNIFILE_L=$(readlink -f ${JNIFILE_O})
+    rm ${JNIFILE_O}
+    cp ${JNIFILE_L} ${JNIFILE_O}
+  fi;
 }
 
 setup_hybrid_qemu() {
@@ -2589,8 +2591,8 @@ bootstrap_arch_root() {
       onig slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude glib libevent libverto \
       krb5 libtirpc flex readline popt dialog libcap-ng Linux-PAM util-linux bash coreutils sed libunistring \
       libatomic_ops gc texinfo pkg-config gzip tar rsync grep diffutils patch gperf m4 cpio findutils less libxslt gdbm \
-      gawk iana-etc binutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 \
-      file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl which groff tcl8 make libsigsegv || exit 1
+      iana-etc binutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 \
+      file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl which groff tcl8 make libsigsegv gawk || exit 1
 
     if [ ! -e ${STATDIR}/${arch}/done/guile ];then
       rm ${STATDIR}/${arch}/done/make
@@ -2611,7 +2613,12 @@ bootstrap_arch_root() {
         cp ${ARCHROOT}/${NARCH}/root/.cpan/CPAN/MyConfig.pm ${ARCHROOT}/${arch}/root/.cpan/CPAN/MyConfig.pm
       fi;
       (unset LIB_PATH LD_LIBRARY_PATH
-      rm ${ARCHROOT}/${arch}/etc/ld.so.cache
+      if [ -e ${ARCHROOT}/${arch}/etc/ld.so.cache ];then
+        rm ${ARCHROOT}/${arch}/etc/ld.so.cache
+      fi
+      if [ -d ${ARCHROOT}/${arch}/var/hybrid/libexec/gcc/ ];then
+        export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
+      fi;
       chroot ${ARCHROOT}/${arch} cpan -i XML::Parser XML::SAX  DBI Path::Class Try::Tiny DBI NetAddr::IP Net::DNS Test::Requires Convert::ASN1) || return 1
     fi) || return 1;
   done;
