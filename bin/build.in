@@ -17,7 +17,7 @@ NARCH=${NARCH:=$( uname -m )}
 
 DISTRONAME="Distro Solutions"
 
-DEF_JAVA_VER="1.7.0_51";
+DEF_JAVA_VER="1.7.0_65";
 DEF_LINUX_VER="3.16.3";
 DAHDI_VER="2.9.2";
 WANPIPE_VER="7.0.10";
@@ -2803,7 +2803,7 @@ build_dependancies() {
   case ${NARCH} in
     x86_64|x86_32|i[3-6]86)
       case ${1} in
-         x86_64|x86_32|i[3-6]86)build_packages ${1} icedtea7-2.3 icedtea7-2.4 || return 1;;
+         x86_64|x86_32|i[3-6]86)build_packages ${1} icedtea7-2.3 icedtea7-2.5 || return 1;;
       esac;;
   esac;
 
