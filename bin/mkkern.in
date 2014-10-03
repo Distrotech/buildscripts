@@ -294,6 +294,9 @@ build_kernel() {
   fi;
   mkdir -p ${1}/boot
 
+  if [ -d .git ];then
+    git reset
+  fi;
   make ARCH=${KARCH} distclean mrproper && \
   cp ${KCONFIG} .config &&  \
   make ARCH=${KARCH} KCONFIG_CONFIG=${KCONFIG} ${MAKE_J} CROSS_COMPILE=${CROSS_COMPILE} all firmware modules ${KERNELT} && \
