@@ -2263,7 +2263,6 @@ fixup_glibc_link() {
   ln -s -r ${1}/${2}/${3}.${4} ${1}/usr/${2}/${3}
 }
 
-
 java_hybrid_setup_ln() {
   if [ -x ${1}/usr/bin/hybrid/${3} ] && [ -h ${1}/usr/${4}/jvm/gcj-jdk/bin/${2} ];then
     basejdkfile=$(readlink -f ${1}/usr/${4}/jvm/gcj-jdk/bin/${2})
@@ -2810,7 +2809,7 @@ build_dependancies() {
 
   #Build openjdk6 on native
   if [ "${NARCH}" == "${1}" ];then
-    build_packages ${1} icedtea6-1.12 || return 1
+    build_packages ${1} icedtea6-1.13 || return 1
     JAVA_DIR=/usr/lib64/jvm
     for JARSEC in ${JAVA_DIR}/jre-${JAVA_VER}/lib/security/cacerts \
                   ${JAVA_DIR}/jdk-${JAVA_VER}/jre/lib/security/cacerts;do
