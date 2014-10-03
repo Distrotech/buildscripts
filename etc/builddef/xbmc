@@ -1,4 +1,4 @@
-VERSION="12.3"
+VERSION="13.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-external-ffmpeg --enable-external-libraries --disable-rsxs PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
