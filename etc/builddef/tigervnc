@@ -1,30 +1,17 @@
-VERSION="svn"
+VERSION="14100415";
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
-OPT_arm="-DJPEG_LIBRARY=${ARCHROOT}/arm/usr/lib/libjpeg.so -DFONTCONFIG_LIB=${ARCHROOT}/arm/usr/lib/libfontconfig.so 
-         -DX11_LIB_SEARCH_PATH=${ARCHROOT}/arm/usr/X11R7/lib -DX11_SM_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libSM.so
-         -DX11_ICE_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libICE.so -DX11_X11_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libX11.so
-         -DX11_Xext_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libXext.so -DX11_XTest_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libXtst.so
-         -DX11_Xft_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libXft.so -DX11_Xinerama_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libXinerama.so
-         -DX11_Xfixes_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libXfixes.so -DX11_Xcursor_LIB=${ARCHROOT}/arm/usr/X11R7/lib/libXcursor.so";
-OPT_arm64="-DJPEG_LIBRARY=${ARCHROOT}/arm64/usr/lib/libjpeg.so -DFONTCONFIG_LIB=${ARCHROOT}/arm64/usr/lib/libfontconfig.so 
-         -DX11_LIB_SEARCH_PATH=${ARCHROOT}/arm64/usr/X11R7/lib -DX11_SM_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libSM.so
-         -DX11_ICE_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libICE.so -DX11_X11_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libX11.so
-         -DX11_Xext_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libXext.so -DX11_XTest_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libXtst.so
-         -DX11_Xft_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libXft.so -DX11_Xinerama_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libXinerama.so
-         -DX11_Xfixes_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libXfixes.so -DX11_Xcursor_LIB=${ARCHROOT}/arm64/usr/X11R7/lib/libXcursor.so";
-OPT_x86_32="-DJPEG_LIBRARY=${ARCHROOT}/x86_32/usr/libx32/libjpeg.so -DFONTCONFIG_LIB=${ARCHROOT}/x86_32/usr/libx32/libfontconfig.so 
-         -DX11_LIB_SEARCH_PATH=${ARCHROOT}/x86_32/usr/X11R7/libx32 -DX11_SM_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libSM.so
-         -DX11_ICE_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libICE.so -DX11_X11_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libX11.so
-         -DX11_Xext_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libXext.so -DX11_XTest_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libXtst.so
-         -DX11_Xft_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libXft.so -DX11_Xinerama_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libXinerama.so
-         -DX11_Xfixes_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libXfixes.so -DX11_Xcursor_LIB=${ARCHROOT}/x86_32/usr/X11R7/libx32/libXcursor.so";
-OPT_i686="-DJPEG_LIBRARY=${ARCHROOT}/i686/usr/lib/libjpeg.so -DFONTCONFIG_LIB=${ARCHROOT}/i686/usr/lib/libfontconfig.so 
-         -DX11_LIB_SEARCH_PATH=${ARCHROOT}/i686/usr/X11R7/lib -DX11_SM_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libSM.so
-         -DX11_ICE_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libICE.so -DX11_X11_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libX11.so
-         -DX11_Xext_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXext.so -DX11_XTest_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXtst.so
-         -DX11_Xft_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXft.so -DX11_Xinerama_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXinerama.so
-         -DX11_Xfixes_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXfixes.so -DX11_Xcursor_LIB=${ARCHROOT}/i686/usr/X11R7/lib/libXcursor.so";
+CONFOPT="-DJPEG_LIBRARY=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libjpeg.so -DFONTCONFIG_LIB=${ARCHROOT}/${barch}/usr/${B_LIBDIRS}/libfontconfig.so 
+         -DX11_LIB_SEARCH_PATH=${ARCHROOT}/${barch}/opt/Xorg/${B_LIBDIRS} -DX11_SM_LIB=${ARCHROOT}/${barch}/opt/Xorg/${B_LIBDIRS}/libSM.so
+         -DX11_ICE_LIB=${ARCHROOT}/${barch}/opt/Xorg/${B_LIBDIRS}/libICE.so -DX11_X11_LIB=${ARCHROOT}/${barch}/opt/Xorg/${B_LIBDIRS}/libX11.so
+         -DX11_Xext_LIB=${ARCHROOT}/${barch}/opt/Xorg/${B_LIBDIRS}/libXext.so -DX11_XTest_LIB=${ARCHROOT}/${barch}/opt/Xorg/${B_LIBDIRS}/libXtst.so
+         -DX11_Xft_LIB=${ARCHROOT}/${barch}/opt/Xorg/${B_LIBDIRS}/libXft.so -DX11_Xinerama_LIB=${ARCHROOT}/${barch}/opt/Xorg/${B_LIBDIRS}/libXinerama.so
+         -DX11_Xfixes_LIB=${ARCHROOT}/${barch}/opt/Xorg/${B_LIBDIRS}/libXfixes.so -DX11_Xcursor_LIB=${ARCHROOT}/${barch}/opt/Xorg/${B_LIBDIRS}/libXcursor.so
+         -DX11_ICE_INCLUDE_PATH=${ARCHROOT}/${barch}/opt/Xorg/include -DX11_XTest_LIB=${ARCHROOT}/${barch}/opt/Xorg/${B_LIBDIRS}/libXtst.so
+         -DX11_XTest_INCLUDE_PATH=${ARCHROOT}/${barch}/opt/Xorg/include -DX11_Xdamage_LIB=${ARCHROOT}/${barch}/opt/Xorg/${B_LIBDIRS}/libXdamage.so
+         -DFLTK_CONFIG_SCRIPT=${ARCHROOT}/${barch}/usr/bin/fltk-config -DFLTK_BASE_LIBRARY=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libfltk.so
+         -DFLTK_IMAGES_LIBRARY=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libfltk_images.so
+         -DFLTK_MATH_LIBRARY=${ARCHROOT}/${barch}/usr/${B_LIBDIRS}/libm.so";
+#         -DGCRYPT_LIBRARY=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libgcrypt.so -DGPG_ERROR_LIBRARY=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libgpg_error.so
 ADDCFLAG="-fPIC";
 RPMGROUP="gui";
