@@ -20,5 +20,5 @@ if [ "${barch:0:3}" != "win" ] && [ "${barch:0:3}" != "cyg" ];then
   LDISCC="1";
 fi;
 BUILDDIR="0";
-MLIBDIRLN="libz.so";
+MLIBDIRLN="libz.so libz.so.1";
 RPMGROUP="root";
