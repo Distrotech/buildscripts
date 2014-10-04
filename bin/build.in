@@ -384,6 +384,7 @@ multilib_glibc_sync() {
     x86_32)MLIBARCH="i686 x86_64";;
     x86_64)MLIBARCH="i686 x86_32";;
     mips64)MLIBARCH="mips";;
+    *)MLIBARCH="";;
   esac;
 
   #Seed the archroot with GCC libs if they missing
@@ -404,6 +405,10 @@ multilib_glibc_sync() {
    done
   fi;)
 
+  if [ ! "${MLIBARCH}" ];then
+    return 0;
+  fi;
+
   #Sync the multi arch glibc
   for march in ${MLIBARCH};do
     (arch_config ${march}
@@ -419,7 +424,7 @@ multilib_glibc_sync() {
         rsync -aR ${SETLIBDIR} usr/${SETLIBDIR}/{*.so,*.so.*} usr/${SETLIBDIR}/${AMLIBDIR}/{*.so,*.so.*} ${ARCHFILE} ${ARCHROOT}/${1}/
        else
         rsync -aR ${SETLIBDIR} usr/${SETLIBDIR}/{*.so,*.so.*} ${ARCHFILE} ${ARCHROOT}/${1}/
-      fi)
+      fi) 2>/dev/null
     fi;)
   done
 }
