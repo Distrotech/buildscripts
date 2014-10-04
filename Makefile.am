@@ -14,6 +14,7 @@ bin_SCRIPTS = \
 libexec_SCRIPTS	= \
 	libexec/make_apache-ant \
 	libexec/make_boost \
+	libexec/make_busybox \
 	libexec/make_docbook \
 	libexec/make_docbook-4.1.2 \
 	libexec/make_docbook-4.2 \

@@ -1,8 +1,3 @@
 #!/bin/bash
 
-
-make CROSS_COMPILE=${HOST}- CONFIG_PREFIX=${HOST} all install
-
-cd ${HOST}
-mkdir -p ${3}/boot
-tar -cf ${3}/boot/busybox.tgz *
+make ARCH=${1} CROSS_COMPILE=${2}- all install
