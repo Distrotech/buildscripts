@@ -1,9 +1,9 @@
-VERSION="1.9.0"
+VERSION="1.11.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-ADDCFLAG="-I${SRCDIR}/glew/glew${VERSEP}${VERSION}/include";
+ADDCFLAG="-I${SRCDIR}/glew/glew${VERSEP}${VERSION}/include -fPIC";
 ADDLDFLAG="-I${SRCDIR}/glew/glew${VERSEP}${VERSION}/lib";
 LDISCC="1";
 MAKEOPTS="LIBDIR=/usr/${C_LIBDIRS}";
