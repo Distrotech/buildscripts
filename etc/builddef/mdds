@@ -1,5 +1,6 @@
-VERSION="0.8.1"
+VERSION="0.11.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
+RPMGROUP="office";
