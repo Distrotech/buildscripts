@@ -1,8 +1,7 @@
 VERSION="2.30.4"
 VERSEP="-";
 PREFIX="/usr";
-XCONFOPT="--with-x11 enable_gio_sniffing=yes";
-CONFOPTX="--enable-gio-sniffing=yes";
+CONFOPT="--with-x11 enable_gio_sniffing=yes --with-libjasper";
 ADDCC="0";
 NOCCOPT="1";
 AMVER="1.13";

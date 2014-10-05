@@ -1,15 +1,24 @@
-VERSION="4.0.1.2"
+VERSION="4.3.2.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-junit=/usr/share/java/junit-4.11.jar --with-system-hunspell --with-system-cairo --with-system-graphite 
          --with-system-nss  --with-system-zlib --with-system-openssl --with-system-jpeg --with-system-expat 
          --with-system-lcms2 --with-system-libxml --with-system-icu --with-system-openldap --with-system-poppler 
-         --with-system-mysql --with-system-postgresql --with-system-sane --with-system-curl 
-         --with-system-neon --with-system-cppunit --with-system-libpng --with-system-clucene 
-         --with-system-mdds --with-system-orcus --enable-python=system";
+         --with-system-mysql --with-system-postgresql --with-system-sane --with-system-curl
+         --with-system-neon --with-system-cppunit --with-system-libpng --with-system-clucene --with-system-redland
+         --with-system-mdds --enable-python=system --with-system-boost --with-boost
+         --x-includes=${ARCHROOT}/${barch}/opt/Xorg/include --x-libraries=${ARCHROOT}/${barch}/opt/Xorg/${B_LIBDIRS}
+         --with-system-glew --with-boost-libdir=${ARCHROOT}/${barch}/usr/${C_LIBDIRS} --with-system-librevenge
+         --with-system-libmwaw --with-system-libodfgen --with-system-libwps --disable-coinmp";
 OPT_x86_32="--enable-debug";
 BUILDDIR="0";
-EXTRALIBS="-lpthread -lrt -ldl";
-ADDLDFLAG="${EXTRALIBS}";
+#EXTRALIBS="-lpthread -lrt -ldl";
+#ADDLDFLAG="${EXTRALIBS}";
+ADDCFLAG="-I=/usr/include/gtk-2.0 -I=/opt/Xorg/include";
+# -I=/usr/include/liborcus-0.8 -I=/usr/include/libixion-0.8";
 DONTBUILD="x86_32";
-RPMGROUP="gui";
+RPMGROUP="office";
+LDISCC="1";
+AMVER="1.14";
+CLEARFLAGS="1";
+NODIET="1";
