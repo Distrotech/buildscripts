@@ -1,4 +1,4 @@
-VERSION="0.5.1a"
+VERSION="0.8.0-141004"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-boost-libdir=${ARCHROOT}/${barch}/${B_LIBDIRS} --with-boost-system=boost_system";
@@ -6,3 +6,4 @@ EXTRALIBS="-lpthread -lrt -ldl";
 case ${barch} in
   mips*)CHROOTBUILD="1";;
 esac;
+RPMGROUP="office";
