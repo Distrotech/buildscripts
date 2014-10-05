@@ -1,0 +1,5 @@
+VERSION="2.0.14"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+RPMGROUP="office";

@@ -1,0 +1,7 @@
+VERSION="0.9.32"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+RPMGROUP="office";
+GITMODULES="1";
+AUTORECONF="1";
