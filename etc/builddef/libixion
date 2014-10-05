@@ -1,10 +1,11 @@
-VERSION="0.5"
+VERSION="0.8.0-141004"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 EXTRALIBS="-lboost_system";
-AMVER="1.11";
+AMVER="1.14";
 case ${barch} in
   mips*)CHROOTBUILD="1";;
 esac;
+RPMGROUP="office";
