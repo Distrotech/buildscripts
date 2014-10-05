@@ -1,0 +1,15 @@
+VERSION="3.0.2"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--program-suffix=3 M4=m4 JAVAC=ecj";
+MAKEOPTS="BISON=/usr/bin/bison";
+STATICOPT="LDFLAGS=-static";
+STATICMOPT="LDFLAGS=-static";
+AMVER="1.14";
+BUILDDIR="0";
+OPT_cyg32="ac_cv_have_decl___fpending=yes";
+case ${barch} in
+  mips|mips64|ppc64)CHROOTBUILD="1";;
+esac;
+RPMGROUP="dev";
+ALIAS="bison";
