@@ -12,13 +12,10 @@ CONFOPT="--with-junit=/usr/share/java/junit-4.11.jar --with-system-hunspell --wi
          --with-system-libmwaw --with-system-libodfgen --with-system-libwps --disable-coinmp";
 OPT_x86_32="--enable-debug";
 BUILDDIR="0";
-#EXTRALIBS="-lpthread -lrt -ldl";
-#ADDLDFLAG="${EXTRALIBS}";
 ADDCFLAG="-I=/usr/include/gtk-2.0 -I=/opt/Xorg/include";
-# -I=/usr/include/liborcus-0.8 -I=/usr/include/libixion-0.8";
 DONTBUILD="x86_32";
 RPMGROUP="office";
 LDISCC="1";
 AMVER="1.14";
 CLEARFLAGS="1";
-NODIET="1";
+CHROOTBUILD="1";
