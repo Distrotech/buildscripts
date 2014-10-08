@@ -1,0 +1,61 @@
+w#!/bin/bash
+
+unset LD CC CXX AS
+
+export CFLAGS="-I=/usr/include/gtk-3.0 -I=/opt/Xorg/include -I=/usr/include/gdk-pixbuf-2.0";
+export CXXFLAGS=${CFLAGS}
+export LDFLAGS="-L=/usr/${C_LIBDIRS} -L=/opt/Xorg/${B_LIBDIRS} -L=/usr/${C_LIBDIRS}/nss"
+
+CWD=$(pwd)
+XULVER="30.0";
+
+(
+cat <<EOF
+mk_add_options MOZ_MAKE_FLAGS="${MAKE_J} VERBOSE=1"
+#ac_add_options --enable-optimize --disable-debug
+#ac_add_options --disable-tests
+
+mk_add_options MOZ_OBJDIR=${CWD}/build-${1}
+ac_add_options --disable-crashreporter
+ac_add_options --disable-installer
+ac_add_options --disable-updater
+ac_add_options --x-includes=/usr/Xorg/include
+ac_add_options --x-libraries=/opt/Xorg/lib64
+#ac_add_options --enable-calendar
+ac_add_options --enable-application=mail
+ac_add_options --disable-libjpeg-turbo
+ac_add_options --enable-default-toolkit=cairo-gtk3
+ac_add_options --enable-system-ffi
+ac_add_options --with-system-nspr
+ac_add_options --with-system-nss
+ac_add_options --with-pthreads
+ac_add_options --target=x86_64-linux-gnu
+ac_add_options --enable-system-pixman
+ac_add_options --with-system-libevent
+ac_add_options --with-system-libvpx
+ac_add_options --with-system-cairo
+ac_add_options --with-system-bz2
+ac_add_options --with-system-zlib
+ac_add_options --enable-official-branding
+ac_add_options --enable-safe-browsing
+ac_add_options --enable-url-classifier
+ac_add_options --enable-gio
+
+#ac_add_options --with-libxul-sdk=/usr/${C_LIBDIRS}/xulrunner-devel-${XULVER}
+#ac_add_options --with-system-libxul
+
+ac_add_options --prefix=/usr
+ac_add_options --libdir=/usr/${C_LIBDIRS}
+ac_add_options --mandir=/usr/share/man
+ac_add_options --localstatedir=/var
+ac_add_options --infodir=/usr/share/info
+EOF
+) > .mozconfig
+
+#--with-system-jpeg
+
+if [ ! -d /root/.mozbuild ];then
+  mkdir /root/.mozbuild
+fi;
+MOZBUILD_STATE_PATH=/root/.mozbuild ./mozilla/mach build
+#MOZBUILD_STATE_PATH=/root/.mozbuild ./mach build

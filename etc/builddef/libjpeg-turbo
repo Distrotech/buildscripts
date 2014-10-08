@@ -1,0 +1,5 @@
+VERSION="1.3.1"
+VERSEP="-";
+PREFIX="/opt/libjpeg-turbo";
+CONFOPT="";
+RPMGROUP="gui";

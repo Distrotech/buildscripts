@@ -1,0 +1,8 @@
+VERSION="30.0"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+DONTBUILD="x86_32";
+RPMGROUP="gui";
+BUILDDIR=0;
+ALIAS="firefox";

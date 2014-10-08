@@ -1,0 +1,76 @@
+#!/bin/bash
+
+unset LD CC CXX AS
+
+export CFLAGS="-I=/usr/include/gtk-3.0 -I=/opt/Xorg/include -I=/usr/include/gdk-pixbuf-2.0";
+export CXXFLAGS=${CFLAGS}
+export LDFLAGS="-L=/usr/${C_LIBDIRS} -L=/opt/Xorg/${B_LIBDIRS} -L=/usr/${C_LIBDIRS}/nss"
+
+CWD=$(pwd)
+XULVER="30.0";
+
+(
+cat <<EOF
+mk_add_options MOZ_MAKE_FLAGS="${MAKE_J} VERBOSE=1"
+
+mk_add_options MOZ_OBJDIR=${CWD}/build-${1}
+ac_add_options --disable-crashreporter
+ac_add_options --disable-installer
+ac_add_options --disable-updater
+ac_add_options --enable-optimize
+ac_add_options --x-includes=/usr/Xorg/include
+ac_add_options --x-libraries=/opt/Xorg/lib64
+ac_add_options --enable-application=xulrunner
+ac_add_options --disable-libjpeg-turbo
+ac_add_options --enable-default-toolkit=cairo-gtk3
+ac_add_options --enable-system-ffi
+ac_add_options --with-system-nspr
+ac_add_options --with-system-nss
+ac_add_options --with-pthreads
+ac_add_options --target=${HOST}
+ac_add_options --enable-system-pixman
+ac_add_options --with-system-libevent
+ac_add_options --with-system-libvpx
+ac_add_options --with-system-cairo
+ac_add_options --with-system-bz2
+ac_add_options --with-system-zlib
+#ac_add_options --enable-system-sqlite
+#ac_add_options --with-system-jpeg
+#ac_add_options --with-system-png
+ac_add_options --enable-safe-browsing
+ac_add_options --enable-url-classifier
+ac_add_options --enable-gio
+ac_add_options --with-system-icu
+
+ac_add_options --prefix=/usr
+ac_add_options --libdir=/usr/${C_LIBDIRS}
+ac_add_options --mandir=/usr/share/man
+ac_add_options --localstatedir=/var
+ac_add_options --infodir=/usr/share/info
+
+ac_add_options --disable-tests
+ac_add_options --disable-debug
+
+EOF
+) > .mozconfig
+
+if [ ! -d /root/.mozbuild ];then
+  mkdir /root/.mozbuild
+fi;
+MOZBUILD_STATE_PATH=/root/.mozbuild ./mach build
+
+make DESTDIR=${3} -C build-${1} install  && \
+mkdir -pv /usr/${B_LIBDIRS}/mozilla/plugins && \
+rm -rf /usr/${C_LIBDIRS}/xulrunner-${XULVER}/plugins && \
+ln -sr ${3}/usr/${B_LIBDIRS}/mozilla/plugins ${3}/usr/${C_LIBDIRS}/xulrunner-${XULVER}/ && \
+chmod -v 755 /usr/${C_LIBDIRS}/xulrunner-devel-${XULVER}/sdk/bin/xpcshell && \
+rm -rf build-${1}
+
+#for library in libmozalloc.so libmozjs.so libxul.so; do
+#    ln -sfv xulrunner-30.0/$library /usr/lib/$library
+#done
+
+#ln -sfv ../xulrunner-devel-30.0/sdk/bin/run-mozilla.sh \
+#        /usr/lib/xulrunner-30.0
+#ln -sfv ../xulrunner-devel-30.0/sdk/bin/xpcshell \
+#        /usr/lib/xulrunner-30.0
