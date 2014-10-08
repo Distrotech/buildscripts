@@ -1,7 +1,8 @@
-VERSION="10.0.1"
+VERSION="10.3";
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-pic --disable-debug --enable-xa";
+CONFOPT="--with-pic --disable-debug --disable-xa LLVM_LIBDIR=/usr/${C_LIBDIRS} --enable-gles1 --enable-gles2
+         --disable-gallium-egl --with-egl-platforms=drm,x11 --enable-shared --disable-vdpau";
 BUILDDIR="0";
 OPT_arm="--with-dri-drivers=nouveau,r200,radeon,swrast";
 OPT_arm64="--with-dri-drivers=nouveau,r200,radeon,swrast";
@@ -9,16 +10,15 @@ OPT_mips="--with-dri-drivers=nouveau,r200,radeon,swrast";
 OPT_mips64="--with-dri-drivers=nouveau,r200,radeon,swrast";
 OPT_ppc="--with-dri-drivers=nouveau,r200,radeon,swrast";
 OPT_ppc64="--with-dri-drivers=nouveau,r200,radeon,swrast";
-ADDCC="0";
-ADDCFLAG="-I=/usr/include/libdrm -fPIC";
-ADDLDFLAG="-L${SRCDIR}/Mesa/Mesa-${VERSION}/lib";
+ADDCFLAG="-I=/opt/Xorg/include";
+#ADDLDFLAG="-L=/usr/${C_LIBDIRS}";
 MAKEOPTS="HOSTCC_LDFLAGS=-L/usr/${NLIBDIR}"
-LDISCC="1";
 AMVER="1.14";
-AUTORECONF="1";
+#AUTORECONF="1";
 MLIBDIRLN="libGL.so libEGL.so";
 ADDWITHSYSROOT="1";
 case ${barch} in
 	mips*)CHROOTBUILD="1";;
 esac;
 RPMGROUP="root";
+#NOCCOPT="1";
