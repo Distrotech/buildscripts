@@ -1,4 +1,4 @@
-VERSION="4.10.3"
+VERSION="4.10.7"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-debug --enable-optimize";
