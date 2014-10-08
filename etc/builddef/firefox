@@ -1,20 +1,7 @@
-ANT_HOME="/usr/${NLIBDIR}/jvm/apache-ant-1.8.4";
-VERSION="19.0.1"
+VERSION="30.0"
 VERSEP="-";
 PREFIX="/usr";
-STDOPTS="--prefix=/usr --libdir=/usr/${B_LIBDIRS} --mandir=/usr/share/man --localstatedir=/var --infodir=/usr/share/info";
-CONFOPT="--with-branding=browser/branding/official/ --enable-system-hunspell --with-system-nspr --with-system-nss 
-         --with-system-libevent -x-includes=/usr/X11R7/include --x-libraries=/usr/X11R7/${B_LIBDIRS} --disable-crashreporter
-         --with-system-zlib --with-system-bz2 --enable-system-ffi --with-system-libvpx --enable-system-pixman
-         PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
-ADDCFLAG="-I=/usr/X11R7/include";
-ADDLDFLAG="-L=/usr/X11R7/${B_LIBDIRS}";
-NOCCOPT="1";
-CLEARFLAGS="1";
-ADDCC="0";
-OPT_x86_64="--target=x86_64-linux-gnu";
-OPT_x86_32="--target=x86_64-linux-gnux32 --disable-methodjit";
-OPT_i686="--target=i686-linux-gnu";
+CONFOPT="";
 DONTBUILD="x86_32";
-MAKEOPTS="PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
 RPMGROUP="gui";
+BUILDDIR="0";
