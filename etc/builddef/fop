@@ -4,3 +4,4 @@ PREFIX="/opt/fop";
 CONFOPT="";
 BUILDDIR="0";
 RPMGROUP="java";
+export JAVA_HOME=/usr/${B_LIBDIRS}/jvm/jdk-${JAVA6}/;export PATH=${JAVA_HOME}/bin:${PATH}
