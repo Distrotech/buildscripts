@@ -2,7 +2,7 @@ VERSION="10.3";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-pic --disable-debug --disable-xa LLVM_LIBDIR=/usr/${C_LIBDIRS} --enable-gles1 --enable-gles2
-         --disable-gallium-egl --with-egl-platforms=drm,x11 --enable-shared --disable-vdpau";
+         --with-egl-platforms=drm,x11 --enable-shared --disable-vdpau --disable-gallium-egl";
 BUILDDIR="0";
 OPT_arm="--with-dri-drivers=nouveau,r200,radeon,swrast";
 OPT_arm64="--with-dri-drivers=nouveau,r200,radeon,swrast";
