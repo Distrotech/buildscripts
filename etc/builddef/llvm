@@ -26,3 +26,4 @@ NODIET="1";
 FIXUPLIB="1"
 RPMGROUP="root";
 ADDCFLAG="-fno-devirtualize";
+LIBREMOVE="libgtest.so libgtest_main.so";
