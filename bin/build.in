@@ -1626,6 +1626,19 @@ build_project() {
     done;
   fi;
 
+  if [ "${LIBREMOVE}" ];then
+    for del_lib in ${LIBREMOVE};do
+      if [ -e ${DIST_ROOT}/${PREFIX}/${C_LIBDIRS}/${del_lib} ];then
+        rm ${DIST_ROOT}/${PREFIX}/${C_LIBDIRS}/${del_lib}
+      fi;
+      if [ "${C_LIBDIRS}" != "${B_LIBDIRS}" ];then
+        if [ -e ${DIST_ROOT}/${PREFIX}/${B_LIBDIRS}/${del_lib} ];then
+          rm ${DIST_ROOT}/${PREFIX}/${B_LIBDIRS}/${del_lib}
+        fi;
+      fi
+    done;
+  fi;
+
   for pylib in python2.7 python3.3;do
     if [ -d ${DIST_ROOT}/usr/${B_LIBDIRS}/${pylib} ] || [ -d ${DIST_ROOT}/usr/${C_LIBDIRS}/${pylib} ];then
       if [ ! -d ${DIST_ROOT}/usr/lib/${pylib}/ ];then
