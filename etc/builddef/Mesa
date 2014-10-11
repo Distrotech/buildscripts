@@ -1,7 +1,7 @@
 VERSION="10.3";
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-pic --disable-debug --disable-xa LLVM_LIBDIR=/usr/${C_LIBDIRS} --enable-gles1 --enable-gles2
+CONFOPT="--with-pic --disable-debug --disable-xa LLVM_LIBDIR=${ARCHROOT}/${barch}/usr/${C_LIBDIRS} --enable-gles1 --enable-gles2
          --with-egl-platforms=drm,x11 --enable-shared --disable-vdpau --disable-gallium-egl";
 BUILDDIR="0";
 OPT_arm="--with-dri-drivers=nouveau,r200,radeon,swrast";
