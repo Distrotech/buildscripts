@@ -2872,6 +2872,12 @@ build_dependancies() {
   #Libre Office
   build_packages ${1} bison3 mdds libixion liborcus raptor rasqal librdf librevenge libpwd libmwaw libodfgen libwps || return 1
 
+  #Rebuild and reinstall bison
+  if [ -e ${STATDIR}/${1}/done/bison ] && [ ! -e ${ARCHROOT}/${1}/usr/bin/bison ];then
+    rm ${STATDIR}/${1}/done/bison
+    build_packages ${1} bison || return 1
+  fi;
+
   #Gnoem (Base)
   build_packages ${1} shared-mime-info gnome-common itstool gsettings-desktop-schemas gnome-desktop-3 \
     icon-naming-utils gnome-icon-theme gnome-icon-theme-symbolic gnome-icon-theme-extras gnome-themes-standard \
