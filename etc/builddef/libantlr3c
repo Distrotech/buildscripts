@@ -1,0 +1,6 @@
+VERSION="3.4"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+RPMGROUP="gui";
+BUILDDIR="0";
