@@ -1,4 +1,4 @@
-VERSION="3.1.0"
+VERSION="3.2.0"
 VERSEP="-";
 PREFIX="/mingw";
 CONFOPT="";
@@ -10,3 +10,5 @@ fi;
 CFGPTH="mingw-w64-libraries/winpthreads";
 CFGBIN="winpthreads/";
 RPMGROUP="dev";
+NOCCOPT="1";
+SYSROOTFIXUP="0";
