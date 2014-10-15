@@ -159,11 +159,6 @@ EOF
 }
 
 build_squashfs_img() {
-  IMGDIR=$(mktemp -d -p /root ${3}-img-${1}.XXXXXXXXXXX)
-  if [ ! "${IMGDIR}" ] || [ ! -d ${IMGDIR} ];then
-    return 1
-  fi;
-
   case ${1} in
     x86)ARCH="i686";
       LIBDIR="lib";;
@@ -173,18 +168,26 @@ build_squashfs_img() {
       LIBDIR="lib64";;
   esac;
 
-  /usr/libexec/distrotech/instpkg ${ARCH} ${IMGDIR} ${3}
+  IMGTMPDIR=${4}/tmp
 
-  ls -d ${IMGDIR}/opt/*/${LIBDIR} |awk -v MNT=${IMGDIR} '{printf "%s\n",substr($1,length(MNT)+1)}' > ${IMGDIR}/etc/ld.so.conf.d/opt-${3}.conf
+  mkdir -p ${IMGTMPDIR}/tmp
+  /usr/libexec/distrotech/instpkg ${ARCH} ${IMGTMPDIR} ${3}
 
-  chroot ${IMGDIR} /sbin/ldconfig > /dev/null 2>&1
-  (Make_Bootetc ${IMGDIR})
+  ls -d ${IMGTMPDIR}/opt/*/${LIBDIR} |awk -v MNT=${IMGTMPDIR} '{printf "%s\n",substr($1,length(MNT)+1)}' > ${IMGTMPDIR}/etc/ld.so.conf.d/opt-${3}.conf
 
-  mksquashfs ${IMGDIR}/* ${2}/${3}.img -comp xz
-  rm -rf ${IMGDIR}
+  chroot ${IMGTMPDIR} /sbin/ldconfig > /dev/null 2>&1
+  (Make_Bootetc ${IMGTMPDIR})
+
+  mksquashfs ${IMGTMPDIR}/* ${2}/${3}.img -comp xz
+  rm -rf ${IMGTMPDIR}/tmp
 }
 
 add_kernel() {
+  IMGDIR=$(mktemp -d -p /root tmpimgdir.XXXXXXXXXXX)
+  if [ ! "${IMGDIR}" ] || [ ! -d ${IMGDIR} ];then
+    return 1
+  fi;
+
   for kernbits in x86 x86_64 x86_x32;do
     case ${kernbits} in
       x86)ARCH="i686";;
@@ -199,14 +202,15 @@ add_kernel() {
       cp ${SYSROOT}/${ARCH}/boot/vmlinuz-${2}-${kernbits}-${KSUF} ${1}/boot/${kernbits}/vmlinuz
       mkinitrd bootimg ${1}/boot/${kernbits}/initrd.img ${SYSROOT}/${ARCH}/  ${2}-${kernbits}-${KSUF}
       if [ ! -e  ${1}/boot/${kernbits}/root.img ];then
-        build_squashfs_img ${kernbits} ${1}/boot/${kernbits} root
+        build_squashfs_img ${kernbits} ${1}/boot/${kernbits} root ${IMGDIR}
       fi;
       if [ ! -e  ${1}/boot/${kernbits}/buildroot.img ];then
-        build_squashfs_img ${kernbits} ${1}/boot/${kernbits} buildroot
+        build_squashfs_img ${kernbits} ${1}/boot/${kernbits} buildroot ${IMGDIR}
       fi;
       syslinux_cfg_arch ${kernbits} > ${1}/boot/${kernbits}/syslinux.cfg
     fi;
   done;
+  rm -rf ${IMGDIR}
 }
 
 config_installer() {
