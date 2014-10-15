@@ -20,7 +20,7 @@ AMVER="1.14";
 CLEARFLAGS="1";
 ADDLDFLAG="-L${ARCHROOT}/${barch}/usr/${C_LIBDIRS}";
 MAKE_J="-j2";
-if [ "${barch}" == "win64" ];then
-  MAKEOPTS="GMP_LDFLAGS=-no-undefined LIBGMP_LDFLAGS=-Wl,.libs/libgmp-3.dll.def";
-fi;
+#if [ "${barch}" == "win64" ];then
+#  MAKEOPTS="GMP_LDFLAGS=-no-undefined LIBGMP_LDFLAGS=-Wl,.libs/libgmp-3.dll.def";
+#fi;
 RPMGROUP="root";
