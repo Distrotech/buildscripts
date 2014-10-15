@@ -10,8 +10,8 @@ ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/openjpeg-1.5 -I=/usr/include
 CHROOTBUILD="1";
 OPT_cyg32="--enable-introspection=no";
 OPT_cyg64="--enable-introspection=no";
-OPT_win32="--enable-introspection=no ac_cv_func_strcat_s=no";
-OPT_win64="--enable-introspection=no ac_cv_func_strcat_s=no";
+OPT_win32="--enable-introspection=no ac_cv_func_strcat_s=yes";
+OPT_win64="--enable-introspection=no ac_cv_func_strcat_s=yes";
 USEMINGW="1";
 RPMOBSOLETE="xpdf";
 RPMGROUP="core";
