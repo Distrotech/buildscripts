@@ -2905,7 +2905,8 @@ build_dependancies() {
     gtk-engines libunique pidgin || return 1
 
   #Linphone
-  build_packages ${1} libsrtp oRTP spandsp mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk libosip2 exosip linphone || return 1
+  build_packages ${1} libsrtp oRTP spandsp mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk libosip2 exosip \
+    antlr3 libantlr3c belle-sip linphone || return 1
 
   #Other bits
   build_packages ${1} alsa-oss alsa-plugins alsa-tools alsa-utils TiMidity calamaris dirac netatalk mod_perl \
@@ -3090,14 +3091,14 @@ windows_build_toolchain() {
   build_packages ${1} mingw-w64-gendef mingw-w64-genidl mingw-w64-genpeimg mingw-w64-widl || return 1
 
 #ecj with sysroot ??
-  build_packages ${1} evil zlib regex libtool gmp mpfr mpc isl cloog gcc binutils libunistring icu \
-    make libiconv xz openssl libxml2 libxslt gettext libffi pcre glib libcroco c-ares curl cyrus-sasl \
+  build_packages ${1} evil zlib regex libtool gmp mpfr mpc isl cloog gcc binutils libiconv libunistring icu \
+    make gettext xz openssl libxml2 libxslt libffi pcre glib libcroco c-ares curl cyrus-sasl \
     unixODBC openldap libidn libpng jbigkit tiff jpeg freetype expat fontconfig libtasn1 p11-kit nettle \
     libgpg-error libgcrypt gnutls libvpx gd lcms2 pixman cairo poppler graphite2 harfbuzz pango atk \
     gdk-pixbuf gtk+ SDL wxWidgets dtsapplib sqlite-autoconf dtsguiapp leafpad libsoup libosip2 \
     exosip libsrtp oRTP spandsp libogg libvorbis opencore-amr vo-amrwbenc opus speex libilbc-webrtc \
     gsm libtheora x264 ffmpeg mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk \
-    gsettings-desktop-schemas glib-networking linphone || return 1
+    gsettings-desktop-schemas glib-networking libantlr3c belle-sip linphone || return 1
 }
 
 bootstrap_toolchain() {
