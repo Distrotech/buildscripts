@@ -1,4 +1,4 @@
-VERSION="2.9.0"
+VERSION="2.10.0"
 XVERSION_win32="2.8.2";
 XVERSION_win64="2.8.2";
 VERSEP="-";
