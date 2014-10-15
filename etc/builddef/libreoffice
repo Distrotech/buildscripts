@@ -19,3 +19,5 @@ LDISCC="1";
 AMVER="1.14";
 CLEARFLAGS="1";
 CHROOTBUILD="1";
+RPMPROVIDES_base="rtld(GNU_HASH)";
+RPMPROVIDES_libs="libfbembed.so.2.5()${ARCH_BITS}";

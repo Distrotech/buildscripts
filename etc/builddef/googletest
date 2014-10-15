@@ -7,3 +7,4 @@ case ${barch} in
         mips*)CHROOTBUILD="1";;
 esac;
 RPMGROUP="dev";
+RPMPROVIDES_libs="libgtest.so()${ARCH_BITS}";
