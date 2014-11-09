@@ -2,15 +2,15 @@ VERSION="2.24"
 VERSEP="-";
 PREFIX="/";
 if [ "${BUILDPROJECT}" == "util-linux" ];then
-  CONFOPT="--enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 
-           --enable-vipw --enable-newgrp --enable-chfn-chsh --enable-write --enable-socket-activation
-           --with-selinux --without-udev --with-slang --enable-static-programs=mount";
+  CONFOPT="--enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw --disable-nologin
+           --disable-vipw --disable-newgrp --disable-chfn-chsh --enable-write --enable-socket-activation
+           --with-selinux --without-udev --with-slang --enable-static-programs=mount --disable-su --disable-login";
   RPMOBSOLETE="util-linux-static";
  else
   CONFOPT="--disable-shared --enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 
-           --enable-vipw --enable-newgrp --enable-chfn-chsh --enable-write --enable-socket-activation --disable-chfn-chsh
+           --disable-vipw --disable-newgrp --disable-chfn-chsh --enable-write --enable-socket-activation --disable-chfn-chsh
            --without-selinux --without-udev --without-slang --disable-login --disable-su --disable-runuser --without-ncurses
-           --without-slang LDFLAGS=\"-static -L=/usr/${C_LIBDIRS}\"";
+           --without-slang --disable-nologin LDFLAGS=\"-static -L=/usr/${C_LIBDIRS}\"";
   MAKEOPTS="LDFLAGS=\"-all-static -L=/usr/${C_LIBDIRS}\"";
   NOINST="1";
   ALIAS="util-linux";

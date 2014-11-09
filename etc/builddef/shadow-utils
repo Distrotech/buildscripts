@@ -1,0 +1,7 @@
+VERSION="4.2.2"
+VERSEP="-";
+PREFIX="/usr";
+STDOPTS="--with-libpam --enable-man";
+CONFOPT="";
+RPMGROUP="root";
+BUILDDIR="0";

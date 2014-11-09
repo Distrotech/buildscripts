@@ -6,7 +6,7 @@ BUILDDIR="0";
 FIXUPLIB="1";
 MLIBDIRLN="libcrypto.so libssl.so"
 USEMINGW="1";
-MANREMOVE="man3/threads.3 man3/err.3 man3/rand.3";
+MANREMOVE="man3/threads.3 man3/err.3 man3/rand.3 man1/passwd.1";
 case ${barch} in
 	mips)ADDCFLAG="-fPIC";;
 esac;
