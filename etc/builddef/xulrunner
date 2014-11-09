@@ -6,3 +6,4 @@ DONTBUILD="x86_32";
 RPMGROUP="gui";
 BUILDDIR=0;
 ALIAS="firefox";
+CHROOTBUILD="1";
