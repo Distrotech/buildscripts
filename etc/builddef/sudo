@@ -1,7 +1,7 @@
 VERSION="1.8.6p3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--with-pam";
 BUILDDIR="0";
 GITBRANCH="master";
 CHROOTBUILD="1";
