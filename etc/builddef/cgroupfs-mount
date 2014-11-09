@@ -1,0 +1,7 @@
+VERSION="git"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+RPMGROUP="root";
+BUILDDIR="0";
+GITBRANCH="master";
