@@ -6,3 +6,4 @@ BUILDDIR="0";
 MAKEALL="install";
 MAKEITARGETS="install-wrapper";
 RPMGROUP="core";
+RPMPROVIDES_base="perl(config_parse.pl) perl(majordomo.pl) perl(majordomo_version.pl) perl(shlock.pl)";
