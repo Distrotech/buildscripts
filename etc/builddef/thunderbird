@@ -2,7 +2,7 @@ VERSION="31.1.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-DONTBUILD="x86_32";
+DONTBUILD="x86_32 ${barch}";
 MAKEOPTS="PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
 RPMGROUP="gui";
 BUILDDIR=0;
