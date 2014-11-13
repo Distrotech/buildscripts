@@ -13,5 +13,5 @@ RPMPROVIDES="perl(AnyEvent::BDB) perl(BDB) perl(Cocoa::EventLoop) perl(Event::Li
 	perl(XML::SAX::PurePerl::EncodingDetect) perl(XML::SAX::PurePerl::XMLDecl) perl(YAML::Tiny) perl(common::sense) \
 	perl(Mac::BuildTools) perl(Mac::InternetConfig) perl(VMS::Filespec) perl(VMS::Stdio) perl(Your::Module::Here) \
         perl(unicore::Name) perl(Tk::LabRadio) perl(Tk::Dialog) perl(Tk::NoteBook) perl(the) perl(Crypt::OpenSSL::X509) \
-        perl(Net::SSLeay)";
+        perl(Net::SSLeay) perl(IO::Socket::IP) perl(Struct::Dumb)";
 RPMGROUP="root";
