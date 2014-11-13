@@ -15,5 +15,7 @@ MLIBDIRLN="libc.a libc.so libc_nonshared.a libm.so libm.a libdl.so libdl.a
            libcrypt.so libcrypt.a libutil.a libutil.so libthread_db.so";
 DONTBUILD="cyg32 cyg64";
 RPMPROVIDES_libs="libc.so.6(GLIBC_2.2.5)${ARCH_BITS} libpthread.so.0(GLIBC_2.2.5)${ARCH_BITS}
-	libm.so.6(GLIBC_2.2.5)${ARCH_BITS}"
+	libm.so.6(GLIBC_2.2.5)${ARCH_BITS} libc.so.6(GLIBC_2.0)${ARCH_BITS} libc.so.6(GLIBC_2.2)${ARCH_BITS}
+        libdl.so.2(GLIBC_2.0)${ARCH_BITS} libdl.so.2(GLIBC_2.2)${ARCH_BITS}
+        libpthread.so.0(GLIBC_2.0)${ARCH_BITS} libpthread.so.0(GLIBC_2.2)${ARCH_BITS}";
 RPMGROUP="root";
