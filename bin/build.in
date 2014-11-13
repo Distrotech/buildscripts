@@ -2059,12 +2059,18 @@ build_gcc_bootstrap() {
     CFLAGS="-fPIC -O2";
     CXXFLAGS="-fPIC -O2";
     SDIROPT=-shared
+    CXXFLAGS="-I=/usr/include -O2"
     if [ "${TMLIBDIR}" ];then
-      LDFLAGS="-L${ARCHROOT}/${TARCH}/${TLIBDIR}/${TMLIBDIR} -L${ARCHROOT}/${TARCH}/usr/${TLIBDIR}/${TMLIBDIR}";
+      LDFLAGS="-L${ARCHROOT}/${3}/${TLIBDIR}/${TMLIBDIR} -L${ARCHROOT}/${3}/usr/${TLIBDIR}/${TMLIBDIR}";
      else
-      LDFLAGS="-L${ARCHROOT}/${TARCH}/${TLIBDIR} -L${ARCHROOT}/${TARCH}/usr/${TLIBDIR}";
+      LDFLAGS="-L${ARCHROOT}/${3}/${TLIBDIR} -L${ARCHROOT}/${3}/usr/${TLIBDIR}";
     fi;
-    LDFLAGS="${LDFLAGS} -L${ARCHROOT}/${1}/usr/${C_LIBDIRS}";
+#    if [ "${TMLIBDIR}" ];then
+#      LDFLAGS="-L${ARCHROOT}/${TARCH}/${TLIBDIR}/${TMLIBDIR} -L${ARCHROOT}/${TARCH}/usr/${TLIBDIR}/${TMLIBDIR}";
+#     else
+#      LDFLAGS="-L${ARCHROOT}/${TARCH}/${TLIBDIR} -L${ARCHROOT}/${TARCH}/usr/${TLIBDIR}";
+#    fi;
+    LDFLAGS="-L${ARCHROOT}/${1}/usr/${C_LIBDIRS} ${LDFLAGS}";
    elif [ ! "${4}" ] || [ "${4}" == "null" ];then
     MARCH=BOOTOPT_${1}
     CONFOPT="${NULLOPT} ${SYSROOT} CC=${THOST}-gcc CXX=${THOST}-g++ --with-gmp-lib=${ARCHROOT}/${3}/${TAPRE}/${TLIBDIR}/${TMLIBDIR}"
