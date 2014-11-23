@@ -1,7 +1,7 @@
-VERSION="1.0.2"
+VERSION="1.0.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--disable-unicode";
+CONFOPT="--enable-unicode";
 ADDCC="0";
 BUILDDIR="0";
 AMVER="1.14";
