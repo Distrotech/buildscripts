@@ -1,4 +1,4 @@
-VERSION="17"
+VERSION="20"
 VERSEP="-";
 PREFIX="/";
 CONFOPT="--with-zlib --with-xz --enable-shared";
