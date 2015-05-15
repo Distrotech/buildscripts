@@ -10,6 +10,7 @@ bin_SCRIPTS = \
 	bin/pkg2rpm \
 	bin/chroot-arch \
 	bin/umount-arch \
+	bin/wine \
 	bin/binfmt.sh
 
 libexec_SCRIPTS	= \

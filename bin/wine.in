@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ "`file $1  |grep x86-64`" ];then
+  /usr/bin/wine64 $@
+ else
+  I686_PTH=@ARCHROOT@/i686
+  LD_LIBRARY_PATH=${I686_PTH}:/lib:${I686_PTH}:/usr/lib:${I686_PTH}/opt/Xorg
+  WINEPREFIX=~/.wine32 ${I686_PTH}/usr/bin/wine $@
+fi;
