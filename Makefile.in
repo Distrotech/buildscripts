@@ -257,7 +257,8 @@ bin_SCRIPTS = \
 	bin/mkbuilddef \
 	bin/pkg2rpm \
 	bin/chroot-arch \
-	bin/umount-arch
+	bin/umount-arch \
+	bin/binfmt.sh
 
 libexec_SCRIPTS = \
 	libexec/make_apache-ant \
