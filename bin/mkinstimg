@@ -47,6 +47,18 @@ EOF
     mkdir etc/ifconf
   fi;
 
+  for dfile in netsentry-version group passwd;do
+    if [ -e etc/distrotech/${dfile}.dist ];then
+      cp etc/distrotech/${dfile}.dist etc/${dfile}
+    fi;
+  done;
+
+  (cat <<_EOF_
+root:\$6\$V.R4jtD.\$d/e4hk86v8LwHr4AWUz0wus2g8QBslNfukkqmOX2tGZPo4SBpMLCZdPJc1ByobXm8YCojBfUCPfXLlLGWIZCp/:16569::::::
+admin:\$6\$V.R4jtD.\$d/e4hk86v8LwHr4AWUz0wus2g8QBslNfukkqmOX2tGZPo4SBpMLCZdPJc1ByobXm8YCojBfUCPfXLlLGWIZCp/:16569::::::
+_EOF_
+) > etc/shadow
+
   (cat <<_EOF_
 #!/bin/bash
 
@@ -168,7 +180,7 @@ build_squashfs_img() {
       LIBDIR="lib64";;
   esac;
 
-  IMGTMPDIR=${4}/tmp
+  IMGTMPDIR=${4}/tmp-${ARCH}
 
   mkdir -p ${IMGTMPDIR}/tmp
   /usr/libexec/distrotech/instpkg ${ARCH} ${IMGTMPDIR} ${3}
@@ -176,10 +188,13 @@ build_squashfs_img() {
   ls -d ${IMGTMPDIR}/opt/*/${LIBDIR} |awk -v MNT=${IMGTMPDIR} '{printf "%s\n",substr($1,length(MNT)+1)}' > ${IMGTMPDIR}/etc/ld.so.conf.d/opt-${3}.conf
 
   chroot ${IMGTMPDIR} /sbin/ldconfig > /dev/null 2>&1
-  (Make_Bootetc ${IMGTMPDIR})
+
+  if [ "${3}" == "root" ];then
+      (Make_Bootetc ${IMGTMPDIR})
+  fi;
 
   mksquashfs ${IMGTMPDIR}/* ${2}/${3}.img -comp xz
-  rm -rf ${IMGTMPDIR}/tmp
+  rm -rf ${IMGTMPDIR}
 }
 
 add_kernel() {
