@@ -5,6 +5,6 @@ CONFOPT="";
 BUILDDIR="0";
 FIXUPLIB="1";
 DONTBUILD="cyg32 cyg64";
-RPMPROVIDES_libs="libcap.so()${ARCH_BITS}";
+RPMPROVIDES_libs="libcap.so()${ARCH_BITS} libcap.so.2()${ARCH_BITS}";
 MLIBDIRLN="libcap.so";
 RPMGROUP="root";
