@@ -240,9 +240,9 @@ build_kernel_rpm() {
     mkdir -p ${YUM_PATH}
   fi;
 
-  RPMPKGS="modules firmware dahdi dev doc dbg";
+  RPMPKGS="modules firmware dahdi dev";
   if [ "${HAS_WANPIPE}" == "1" ];then
-    RPMPKGS="${RPMPKGS} wanpile";
+    RPMPKGS="${RPMPKGS} doc dbg wanpipe";
   fi;
 
   for rfile in "" ${RPMPKGS};do
