@@ -180,6 +180,14 @@ build_squashfs_img() {
       LIBDIR="lib64";;
   esac;
 
+  if [ -e /etc/rpm/platform ];then
+    rm /etc/rpm/platform
+  fi;
+
+  if [ -e /etc/rpm/platform.${ARCH} ];then
+    ln -s -r /etc/rpm/platform.${ARCH} /etc/rpm/platform
+  fi
+
   IMGTMPDIR=${4}/tmp-${ARCH}
 
   mkdir -p ${IMGTMPDIR}/tmp
@@ -193,7 +201,14 @@ build_squashfs_img() {
       (Make_Bootetc ${IMGTMPDIR})
   fi;
 
+  yum -y --installroot=${IMGTMPDIR} clean all
+
   mksquashfs ${IMGTMPDIR}/* ${2}/${3}.img -comp xz
+
+  if [ -e /etc/rpm/platform ];then
+    rm /etc/rpm/platform
+  fi;
+
   rm -rf ${IMGTMPDIR}
 }
 
@@ -279,7 +294,7 @@ build_installer() {
   syslinux -i -d boot/syslinux ${INSTDEV}
 
   umount ${3}
-  dd if=/usr/share/syslinux/mbr.bin of=${1} conv=notrunc
+  dd if=/usr/share/syslinux/mbr.bin of=${1} conv=notrunc bs=512b count=1
 
   if [ ! -b ${1} ];then
     losetup -d ${FLOOP}
