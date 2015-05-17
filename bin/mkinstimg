@@ -3,6 +3,8 @@
 BRAND="Distrotech Solutions";
 SYSROOT=/var/opt/dtsbuild/sysroot
 KSUF="dts";
+DTSSRVDIR=/srv/opt/dtsbuild
+
 
 Make_Bootetc() {
   cd ${1}
@@ -109,7 +111,7 @@ _EOF_
 }
 
 image_create() {
-  qemu-img create ${1} 16G
+  qemu-img create ${1} 20G
   parted -s ${1} mklabel msdos
   parted -s ${1} "mkpart primary 1 -1"
   parted ${1} set 1 boot on
@@ -190,7 +192,9 @@ build_squashfs_img() {
 
   IMGTMPDIR=${4}/tmp-${ARCH}
 
-  mkdir -p ${IMGTMPDIR}/tmp
+  if [ ! -d ${IMGTMPDIR}/tmp ];then
+    mkdir -p ${IMGTMPDIR}/tmp
+  fi;
   /usr/libexec/distrotech/instpkg ${ARCH} ${IMGTMPDIR} ${3}
 
   ls -d ${IMGTMPDIR}/opt/*/${LIBDIR} |awk -v MNT=${IMGTMPDIR} '{printf "%s\n",substr($1,length(MNT)+1)}' > ${IMGTMPDIR}/etc/ld.so.conf.d/opt-${3}.conf
@@ -198,7 +202,10 @@ build_squashfs_img() {
   chroot ${IMGTMPDIR} /sbin/ldconfig > /dev/null 2>&1
 
   if [ "${3}" == "root" ];then
-      (Make_Bootetc ${IMGTMPDIR})
+    if [ -x ${SYSROOT}/${ARCH}/sbin/modprobe.static ];then
+      rsync -a ${SYSROOT}/${ARCH}/sbin/modprobe.static ${IMGTMPDIR}/sbin/
+    fi;
+    (Make_Bootetc ${IMGTMPDIR})
   fi;
 
   yum -y --installroot=${IMGTMPDIR} clean all
@@ -238,13 +245,16 @@ add_kernel() {
         build_squashfs_img ${kernbits} ${1}/boot/${kernbits} buildroot ${IMGDIR}
       fi;
       syslinux_cfg_arch ${kernbits} > ${1}/boot/${kernbits}/syslinux.cfg
+      if [ -d ${DTSSRVDIR}/yum/${ARCH} ];then
+        rsync --modify-window=1 --exclude="${ARCH}/*/*/*-dbg-*.${ARCH}.rpm" --delete -a ${DTSSRVDIR}/yum/${ARCH} ${1}/repo
+      fi;
     fi;
   done;
   rm -rf ${IMGDIR}
 }
 
 config_installer() {
-  if [ ! -d ${1}/syslinux ];then
+  if [ ! -d ${1}/boot/syslinux ];then
     mkdir -p ${1}/boot/syslinux
   fi;
 
@@ -257,6 +267,15 @@ config_installer() {
 
   add_kernel ${1} ${2}
   syslinux_cfg ${1} > ${1}/boot/syslinux/syslinux.cfg
+
+  if [ ! -d ${1}/repo/repodata ];then
+    mkdir -p ${1}/repo/repodata
+    cp ${DTSSRVDIR}/yum/repodata/*groups.xml ${1}/repo/repodata/groups.xml
+    createrepo -g repodata/groups.xml ${1}/repo
+   else
+    cp ${DTSSRVDIR}/yum/repodata/*groups.xml ${1}/repo/repodata/groups.xml
+    createrepo -g repodata/groups.xml --update ${1}/repo
+  fi;
 
   if [ -e /boot/grub/background.jpg ];then
     cp /boot/grub/background.jpg ${1}/boot/syslinux/
@@ -286,7 +305,7 @@ build_installer() {
     exit 1
   fi;
 
-  dosfsck -a ${INSTDEV}
+  dosfsck -a ${INSTDEV} >/dev/null 2>&1
 
   mount ${INSTDEV} ${3}
 
