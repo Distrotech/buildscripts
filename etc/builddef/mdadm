@@ -1,6 +1,7 @@
-VERSION="3.2.6"
+VERSION="3.3.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 RPMGROUP="core";
+MAKEOPTS="LDFLAGS=-static";
