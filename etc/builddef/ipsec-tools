@@ -1,13 +1,12 @@
-VERSION="0.8.0"
+VERSION="0.8.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-natt --enable-dpd --enable-stats --enable-frag --enable-hybrid --with-kernel-headers=/usr/include
          --enable-adminport --with-libpam --enable-security-context=no";
+MAKEOPTS="LEXLIB=-lfl";
 SYSCONFPRE="racoon";
-EXTRALIBS="-lrt";
 AMVER="1.12";
 NOSVNROOT="1";
-GITBRANCH="master";
 case ${barch} in
   mips64)CHROOTBUILD="1";;
 esac;
