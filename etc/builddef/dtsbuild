@@ -6,3 +6,6 @@ ALIAS="buildscripts";
 GITBRANCH="master";
 BUILDDIR="0";
 RPMGROUP="dev";
+if [ "${NARCH}" == "${barch}" ];then
+  NOINST="1";
+fi;
