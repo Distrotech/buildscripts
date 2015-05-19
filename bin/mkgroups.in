@@ -62,4 +62,7 @@ if [ -d ${PKGLIST_PTH} ];then
     createrepo -g repodata/groups.xml ${RPMDIR}
   fi;
   rm -rf ${PKGLIST_PTH}
+  if [ -d /var/spool/samba/ftp/repo ];then
+    rsync -aP --delete ${RPMDIR}/ /var/spool/samba/ftp/repo/
+  fi;
 fi;
