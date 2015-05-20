@@ -301,7 +301,7 @@ build_kernel() {
   cp ${KCONFIG} .config &&  \
   make ARCH=${KARCH} KCONFIG_CONFIG=${KCONFIG} ${MAKE_J} CROSS_COMPILE=${CROSS_COMPILE} all firmware modules ${KERNELT} && \
   make ARCH=${KARCH} KCONFIG_CONFIG=${KCONFIG} INSTALL_MOD_PATH=${1} INSTALL_PATH=${1}/boot INSTALL_HDR_PATH=${1}/usr \
-       CROSS_COMPILE=${CROSS_COMPILE} headers_install install modules_install firmware_install headers_install_all || exit 1
+       CROSS_COMPILE=${CROSS_COMPILE} headers_install install modules_install firmware_install || exit 1
 
   if [ -e ${1}/usr/include/scsi/scsi.h ];then
     rm ${1}/usr/include/scsi/scsi.h
