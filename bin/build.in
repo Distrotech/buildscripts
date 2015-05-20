@@ -3406,7 +3406,7 @@ build_linux_headers() {
     fi;
     ln -s ${SRCDIR}/linux/linux-${LINUX_VER} ${LINSRCDIR}/kernel/linux
     cd ${SRCDIR}/linux/linux-${LINUX_VER}
-    make INSTALL_HDR_PATH=${KERN_HEADERS}/usr headers_install_all
+    make INSTALL_HDR_PATH=${KERN_HEADERS}/usr ARCH=${KARCH} archheaders headers_install distclean
     if [ -e ${KERN_HEADERS}/usr/include/asm ];then
         rm -rf ${KERN_HEADERS}/usr/include/asm
     fi;
