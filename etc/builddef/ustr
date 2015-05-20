@@ -5,6 +5,6 @@ CONFOPT="";
 BUILDDIR="0";
 ADDCFLAG="-fPIC";
 FIXUPLIB="1";
-MAKEOPTS="all-shared";
+MAKEALL="all-shared";
 DONTBUILD="cyg32 cyg64";
 RPMGROUP="root";
