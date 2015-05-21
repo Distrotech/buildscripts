@@ -318,10 +318,10 @@ build_kernel() {
     mv ${1}/boot/System.map ${1}/boot/System.map-${VSUF}
   fi;
 
-  if [ -d ${1}/usr/include/asm ];then
-    rm -rf ${1}/usr/include/asm
-    ln -s -r ${1}/usr/include/asm-${KARCH} ${1}/usr/include/asm
-  fi;
+#  if [ -h ${1}/usr/include/asm ] && [ -d ${1}/usr/include/asm-${KARCH} ];then
+#    rm -rf ${1}/usr/include/asm
+#    ln -s -r ${1}/usr/include/asm-${KARCH} ${1}/usr/include/asm
+#  fi;
 
   if [ -d ${SRCDIR}/kernel/dahdi ];then
     cd ${SRCDIR}/kernel/dahdi

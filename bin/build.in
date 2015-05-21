@@ -486,7 +486,7 @@ check_create_arch() {
   if [ ! -d ${ARCHROOT}/${1}/usr/include/asm ];then
     if [ -d ${ARCHROOT}/${1} ] && [ -d ${HDIR} ];then
       rsync -a ${HDIR}/ ${ARCHROOT}/${1}/
-      if [ ! -e ${ARCHROOT}/${1}/usr/include/asm ];then
+      if [ ! -e ${ARCHROOT}/${1}/usr/include/asm ] && [ -d ${ARCHROOT}/${1}/usr/include/asm-${KARCH} ];then
         ln -sr ${ARCHROOT}/${1}/usr/include/asm-${KARCH} ${ARCHROOT}/${1}/usr/include/asm
       fi;
     fi;
@@ -1889,7 +1889,7 @@ build_glibc() {
   if [ ! -d  /usr/${2}/include ];then
     mkdir -p /usr/${2}/include
     tar -C /usr/${2}/include --strip-components=2 -xf ${TOOLPKG}/${1}/kernel-headers.tar.xz
-    if [ ! -e /usr/${2}/include/asm ];then
+    if [ ! -e /usr/${2}/include/asm ] && [ -d /usr/${2}/include/asm-${KARCH} ];then
       ln -s asm-${KARCH} /usr/${2}/include/asm
     fi;
   fi;
@@ -3310,7 +3310,7 @@ build_toolchain_dir() {
     tar --exclude=*/.dbg/* -C ${BUILDROOTDIR} -xJf ${TOOLPKG}/${1}/kernel-headers.tar.xz;
   fi;
 
-  if [ ! -e ${BUILDROOTDIR}/usr/include/asm ];then
+  if [ ! -e ${BUILDROOTDIR}/usr/include/asm ] && [ -d ${BUILDROOTDIR}/usr/include/asm-${LINARCH} ];then
     ln -s asm-${LINARCH} ${BUILDROOTDIR}/usr/include/asm
   fi;
 
@@ -3407,10 +3407,10 @@ build_linux_headers() {
     ln -s ${SRCDIR}/linux/linux-${LINUX_VER} ${LINSRCDIR}/kernel/linux
     cd ${SRCDIR}/linux/linux-${LINUX_VER}
     make INSTALL_HDR_PATH=${KERN_HEADERS}/usr ARCH=${KARCH} archheaders headers_install distclean
-    if [ -e ${KERN_HEADERS}/usr/include/asm ];then
-        rm -rf ${KERN_HEADERS}/usr/include/asm
+    if [ -h ${KERN_HEADERS}/usr/include/asm ] && [ -d ${KERN_HEADERS}/usr/include/asm-${KARCH} ];then
+        rm ${KERN_HEADERS}/usr/include/asm
     fi;
-    if [ ! -e ${KERN_HEADERS}/usr/include/asm ];then
+    if [ ! -e ${KERN_HEADERS}/usr/include/asm ] && [ -d ${KERN_HEADERS}/usr/include/asm-${KARCH} ];then
       ln -sr ${KERN_HEADERS}/usr/include/asm-${KARCH} ${KERN_HEADERS}/usr/include/asm
     fi;
     ) || return 1
@@ -3470,8 +3470,8 @@ build_linux_headers() {
         if [ ! -d ${ARCHROOT}/${1}/usr/include ];then
           mkdir -p ${ARCHROOT}/${1}/usr/include
         fi;
-        if [ -e ${ARCHROOT}/${1}/usr/include/asm ];then
-          rm -rf ${ARCHROOT}/${1}/usr/include/asm
+        if [ -h ${ARCHROOT}/${1}/usr/include/asm ] && [ -e ${HDIR}/usr/include/asm ];then
+          rm ${ARCHROOT}/${1}/usr/include/asm
         fi;
         rsync -ap ${HDIR}/usr/include/ ${ARCHROOT}/${1}/usr/include/ >/dev/null
       fi;
