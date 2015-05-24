@@ -1,5 +1,5 @@
-VERSION="5.18.2"
-RPMVERSION="5.018002";
+VERSION="5.22.0-RC2"
+RPMVERSION="5.022000";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
@@ -13,7 +13,12 @@ OPT_ppc="-Dcc=/usr/bin/ppc-linux-gnu-gcc -A ldflags=-L=/usr/lib";
 DONTBUILD="cyg32 cyg64";
 CHROOTBUILD="1";
 RPMEPOCH="1";
-RPMPROVIDES="perl(getopts.pl) perl(-F) perl(-f)";
+RPMPROVIDES="perl(getopts.pl) perl(-F) perl(-f) \
+  perl(Locale::Codes::Country_Codes) perl(Locale::Codes::Country_Retired) perl(Locale::Codes::Currency_Codes) \
+  perl(Locale::Codes::Currency_Retired) perl(Locale::Codes::LangExt_Codes) perl(Locale::Codes::LangExt_Retired) \
+  perl(Locale::Codes::LangFam_Codes) perl(Locale::Codes::LangFam_Retired) perl(Locale::Codes::Language_Codes) \
+  perl(Locale::Codes::Language_Retired) perl(Locale::Codes::LangVar_Codes) perl(Locale::Codes::LangVar_Retired) \
+  perl(Locale::Codes::Script_Codes) perl(Locale::Codes::Script_Retired)";
 MANREMOVE="man3/Digest::MD5.3 man3/List::Util.3 man3/List::Util::XS.3 man3/Scalar::Util.3 \
            man3/Test::Builder.3 man3/Test::Builder::Module.3 man3/Test::Builder::Tester.3 \
            man3/Test::Builder::Tester::Color.3 man3/Test::More.3 man3/Test::Simple.3 \
