@@ -1,5 +1,4 @@
-VERSION="20140226";
-VERSION_x86_32="1.2.0";
+VERSION="1.4.0";
 VERSEP="-";
 if [ "${barch:0:3}" == "win" ];then
   PREFIX="/mingw";
@@ -16,7 +15,7 @@ OPT_ppc="--target=ppc32-linux-gcc";
 OPT_ppc64="--target=ppc64-linux-gcc";
 OPT_i686="--target=x86-linux-gcc --as=yasm";
 OPT_x86_64="--target=x86_64-linux-gcc --as=yasm";
-OPT_x86_32="--target=x86_64-linux-gcc --as=yasm --extra-cflags=-mx32";
+OPT_x86_32="--target=x86_64-linux-gcc --as=yasm --extra-cflags=-mx32 --disable-vp9";
 OPT_cyg32="--target=i686-w64-mingw32";
 OPT_win32="--target=x86-win32-gcc --as=yasm";
 OPT_win64="--target=x86_64-win64-gcc --as=yasm";
