@@ -1,8 +1,7 @@
-VERSION="0.5.0"
+VERSION="0.6.0"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
-BUILDDIR="0";
+CONFOPT="-DLOCALE_DIR:FILEPATH=/usr/share/locale";
 CFGPTH="libvisual-plugins";
 CFGBIN="libvisual-plugins/";
 AMVER="1.14";

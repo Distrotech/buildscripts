@@ -1,8 +1,7 @@
-VERSION="0.5.0"
+VERSION="0.6.0"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
-BUILDDIR="0";
+CONFOPT="-DPNG_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libpng.so";
 AMVER="1.14";
 CFGPTH="libvisual";
 CFGBIN="libvisual/";
