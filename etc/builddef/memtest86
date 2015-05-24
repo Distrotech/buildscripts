@@ -4,7 +4,7 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 NOMAKEFLAGS="1";
-ADDCFLAG="-m32";
+ADDCFLAG="-m32 -std=gnu89";
 ADDLDFLAG="-m elf_i386";
 LDISCC="0";
 DONTBUILD="arm arm64 mips mips64 ppc ppc64";

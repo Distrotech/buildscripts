@@ -1,8 +1,8 @@
-VERSION="2.1.0"
+VERSION="2.1.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-ADDCFLAG="-I=/usr/include/freetype2";
+ADDCFLAG="-I=/usr/include/freetype2 -std=gnu89";
 OPT_cyg32="--without-vpx";
 OPT_cyg64="--without-vpx";
 OPT_win32="--without-vpx";
@@ -12,3 +12,4 @@ EXTRALIBS="-lz -llzma";
 NOCCOPT="1";
 CLEARFLAGS="1";
 RPMGROUP="root";
+

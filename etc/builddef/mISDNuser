@@ -8,3 +8,4 @@ NOMAKEFLAGS="1";
 FIXUPLIB="1";
 RPMPROVIDES_libs="libmISDN.so()${ARCH_BITS} libisdnnet-1.so()${ARCH_BITS} libsuppserv-1.so()${ARCH_BITS}";
 RPMGROUP="core";
+ADDCFLAG="-std=gnu89";
