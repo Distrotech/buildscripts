@@ -53,6 +53,5 @@ OPT_ppc64="glib_cv_stack_grows=no glib_cv_uscore=no ac_cv_func_posix_getpwuid_r=
             glib_cv_monotonic_clock=no ac_cv_func_nonposix_getpwuid_r=no ac_cv_func_printf_unix98=no  
             ac_cv_func_vsnprintf_c99=yes";
 ADDWITHSYSROOT="1";
-ADDCFLAG="-I=${PREFIX}/lib/libffi-3.0.13/include";
 COREBUILD="1";
 RPMGROUP="root";
