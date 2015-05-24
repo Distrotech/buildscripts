@@ -1,7 +1,8 @@
-VERSION="0.3.10"
+VERSION="0.3.13"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 USEMINGW="1";
 DONTBUILD="cyg32 cyg64";
 RPMGROUP="root";
+ADDCFLAG="-std=gnu89";
