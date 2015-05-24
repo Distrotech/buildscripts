@@ -1,6 +1,7 @@
-VERSION="6.18.01"
+VERSION="6.19"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-GITBRANCH="master";
 RPMGROUP="core";
+MAKEOPTS="CC=clang";
+CHROOTBUILD="1";
