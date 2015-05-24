@@ -10,6 +10,7 @@ for acpp in ${ARCHT};do
   touch /usr/bin/${acpp}-g++
 done
 
+cp tools/build/example/user-config.jam ~/
 sh ./bootstrap.sh
 
 ./b2 gcc-${1}
@@ -24,6 +25,10 @@ if true;then
   rsync -avP stage/lib/ ${3}/usr/${C_LIBDIRS}/
   rsync -avP boost ${3}/usr/include/
 fi;
+
+if [ -e ~/user-config.jam ];then
+  rm ~/user-config.jam
+fi
 
 for acpp in ${ARCHT};do
   if [ ! -s /usr/bin/${acpp}-g++ ];then
