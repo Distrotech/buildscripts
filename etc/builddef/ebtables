@@ -5,6 +5,5 @@ CONFOPT="";
 BUILDDIR="0";
 NOMAKEFLAGS="1";
 FIXUPLIB="1";
-CFGPTH="userspace/ebtables2";
-CFGBIN="ebtables2/";
 RPMGROUP="core";
+GITBRANCH="master";
