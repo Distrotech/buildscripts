@@ -1,4 +1,4 @@
-VERSION="0.24.3"
+VERSION="0.32.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-xpdf-headers --enable-libcurl --enable-zlib --enable-cairo-output";

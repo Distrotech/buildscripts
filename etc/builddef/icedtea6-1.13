@@ -1,4 +1,4 @@
-VERSION="4";
+VERSION="7";
 VERSEP=".";
 PREFIX="/usr";
 CONFOPT="--with-jdk-home=/usr/${B_LIBDIRS}/jvm/gcj-jdk";

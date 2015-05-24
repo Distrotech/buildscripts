@@ -1,4 +1,4 @@
-VERSION="0.8.0-141004"
+VERSION="0.9.0-150228"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-boost-libdir=${ARCHROOT}/${barch}/${B_LIBDIRS} --with-boost-system=boost_system";

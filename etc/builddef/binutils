@@ -1,4 +1,4 @@
-VERSION="2.24";
+VERSION="2.25";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-werror --enable-lto --enable-64-bit-bfd --enable-initfini-array";
