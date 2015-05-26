@@ -1,4 +1,4 @@
-VERSION="1.7.7"
+VERSION="1.9.0-rc1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-swig --with-ssl --with-apxs=${ARCHROOT}/${barch}/opt/apache2/bin/apxs --with-apr=${ARCHROOT}/${barch}/opt/apr
