@@ -13,7 +13,10 @@ done
 cp tools/build/example/user-config.jam ~/
 sh ./bootstrap.sh
 
-./b2 gcc-${1}
+case ${1} in
+  x86_32)./b2 abi=x32 gcc-${1};;
+  *)./b2 gcc-${1};;
+esac;
 
 if true;then
   if [ ! -d ${3}/usr/${B_LIBDIRS} ];then
