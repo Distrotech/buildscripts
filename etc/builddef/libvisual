@@ -1,8 +1,11 @@
 VERSION="0.6.0"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="-DPNG_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libpng.so";
+CONFOPT="-DPNG_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libpng.so
+  -DZLIB_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libz.so
+  -DPNG_PNG_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include";
 AMVER="1.14";
 CFGPTH="libvisual";
 CFGBIN="libvisual/";
 RPMGROUP="core";
+CHROOTBUILD="1";
