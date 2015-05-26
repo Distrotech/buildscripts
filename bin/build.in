@@ -17,7 +17,7 @@ NARCH=${NARCH:=$( uname -m )}
 
 DISTRONAME="Distro Solutions"
 
-DEF_JAVA_VER="1.7.0_65";
+DEF_JAVA_VER="1.7.0_79";
 DEF_LINUX_VER="3.19.8";
 DAHDI_VER="2.10.1";
 WANPIPE_VER="7.0.14";
@@ -27,7 +27,7 @@ PYVER=2;
 
 GCC_OPT="-O2 ";
 
-JAVA6_VER="1.6.0_32";
+JAVA6_VER="1.6.0_35";
 JAVA_VER="${DEF_JAVA_VER}";
 QT_VER="${DEF_QT_VER}";
 
@@ -483,7 +483,7 @@ check_create_arch() {
   fi;
 
   #Sync kernel files
-  if [ ! -d ${ARCHROOT}/${1}/usr/include/asm ];then
+  if [ ! -e ${ARCHROOT}/${1}/usr/include/asm ];then
     if [ -d ${ARCHROOT}/${1} ] && [ -d ${HDIR} ];then
       rsync -a ${HDIR}/ ${ARCHROOT}/${1}/
       if [ ! -e ${ARCHROOT}/${1}/usr/include/asm ] && [ -d ${ARCHROOT}/${1}/usr/include/asm-${KARCH} ];then
@@ -1371,9 +1371,9 @@ build_project() {
   fi;
 
   CFLAGS="${GCC_OPT}${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=${ARCHPREFIX}/include/dbus-1.0 -I=/opt/xfce/include -I=/opt/apr/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include -I=${ARCHPREFIX}/include/security";
-  if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
-    CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
-  fi
+#  if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
+#    CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
+#  fi
   if [ "${NEWARCH:0:3}" == "cyg" ];then
     CFLAGS="${CFLAGS} -I/usr/${HOST}/include";
   fi;
@@ -2612,7 +2612,14 @@ bootstrap_arch_root() {
     build_packages ${arch} dtsbuild libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat xz libxml2 freetype \
       fontconfig jpeg jbigkit tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac ncurses ncursesw \
       onig slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude glib libevent libverto \
-      krb5 libtirpc flex readline popt dialog libcap-ng Linux-PAM util-linux bash coreutils sed libunistring \
+      krb5 libtirpc flex readline popt dialog libcap-ng Linux-PAM || exit 1
+
+    if [ ! -e ${STATDIR}/${arch}/done/util-linux ];then
+      build_packages ${arch} util-linux-boot || exit 1
+      rsync -avP ${PKGDESTDIR}/${arch}/util-linux-boot/ ${ARCHROOT}/${arch}/
+    fi;
+
+    build_packages ${arch} systemd util-linux bash coreutils sed libunistring \
       libatomic_ops gc texinfo pkg-config gzip tar rsync grep diffutils patch gperf m4 cpio findutils less libxslt gdbm \
       iana-etc binutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 \
       file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl which groff tcl8 make libsigsegv gawk || exit 1
@@ -2754,7 +2761,7 @@ build_dependancies() {
 
   if [ "${1}" != "${NARCH}" ];then
     build_packages ${1} gobject-introspection libdaemon avahi-nogui talloc tevent libevent libverto krb5-static krb5 libpaper cups ghostscript \
-      gs-fonts ijs libspectre libdrm llvm libvdpau Mesa LVM2 cryptsetup kmod systemd libgusb mtdev || return 1
+      gs-fonts ijs libspectre libdrm llvm libvdpau setuptools mako Mesa LVM2 cryptsetup kmod systemd libgusb mtdev || return 1
     if [ ! -e ${STATDIR}/${1}/done/Xorg ] && [ -e ${STATDIR}/${1}/fail/Xorg ];then
       (unset CLEANOPT;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
     fi;
@@ -2762,7 +2769,7 @@ build_dependancies() {
     if [ ! -e ${STATDIR}/${1}/done/Xorg ] && [ -e ${STATDIR}/${1}/fail/Xorg ];then
       (unset CLEANOPT;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
     fi;
-    build_packages ${1}  setuptools mozjs mozjs-17 polkit libmicrohttpd cryptsetup systemd db bash-completion colord || return 1
+    build_packages ${1}  mozjs mozjs-17 polkit libmicrohttpd cryptsetup systemd db bash-completion colord || return 1
   fi;
 
   build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala-bootstrap || return 1
@@ -2773,7 +2780,7 @@ build_dependancies() {
   fi;
 
   build_packages ${1} vala libdrm intltool llvm talloc tevent libevent libverto krb5-static krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
-    module-init-tools libvdpau Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh LVM2 cryptsetup systemd || return 1
+    module-init-tools libvdpau setuptools mako Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh LVM2 cryptsetup systemd || return 1
 
   if [ "${NARCH}" == "${1}" ];then
     (if [ "${MLIBDIR}" ];then
@@ -2817,7 +2824,7 @@ build_dependancies() {
 
   build_packages ${1} Xorg poppler poppler-data qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
     txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib docutils dbus-python mozjs mozjs-17 polkit GConf libbonobo \
-    libatomic_ops gc guile autogen libmad Xaw3d gv rtmpdump polkit-gnome icmake yodl swig setuptools M2Crypto wireless-regdb crda || return 1
+    libatomic_ops gc guile autogen libmad Xaw3d gv rtmpdump polkit-gnome icmake yodl swig M2Crypto wireless-regdb crda || return 1
 
   if [ "${NARCH}" != "${1}" ];then
     build_packages ${1} rhino junit antlr4 apache-ant ecj antlr2 || return 1
@@ -3459,8 +3466,7 @@ build_linux_headers() {
     if [ ! -d ${HDIR}/usr/include ] || [ ! -f ${TOOLPKG}/${1}/kernel-headers.tar.xz ] || \
        [ ${KERN_HEADERS}/usr/include/linux -nt ${HDIR}/usr/include/linux ];then
       rsync -a --include=asm-${KARCH} --include=asm-generic --exclude=.install --exclude=..install.cmd \
-                --exclude=.check --exclude=..check.cmd \
-                --exclude=asm* ${KERN_HEADERS}/usr/include/ ${HDIR}/usr/include/
+                --exclude=.check --exclude=..check.cmd ${KERN_HEADERS}/usr/include/ ${HDIR}/usr/include/
 
       if [ -d ${HDIR}/usr/include/linux ];then
         touch ${HDIR}/usr/include/linux
