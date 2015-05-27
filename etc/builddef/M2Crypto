@@ -1,4 +1,4 @@
-VERSION="0.22.3"
+VERSION="git"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
@@ -6,3 +6,4 @@ BUILDDIR="0";
 FIXUPLIB="1";
 CHROOTBUILD="1";
 RPMGROUP="core";
+GITBRANCH="distrotech-M2Crypto";
