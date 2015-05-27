@@ -8,3 +8,4 @@ AMVER="1.14";
 FIXUPLIB="1";
 CLEARFLAGS="1";
 RPMGROUP="gui";
+DONTBUILD="${barch}";
