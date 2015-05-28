@@ -6,7 +6,5 @@ CFGPTH="libvisual-plugins";
 CFGBIN="libvisual-plugins/";
 AMVER="1.14";
 ALIAS="libvisual";
-case ${barch} in
-  mips64|ppc64)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";
 RPMGROUP="core";
