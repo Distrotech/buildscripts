@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/opt/libjpeg-turbo";
 CONFOPT="";
 RPMGROUP="gui";
+DONTBUILD="x86_32";
