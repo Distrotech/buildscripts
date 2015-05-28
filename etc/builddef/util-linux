@@ -5,9 +5,17 @@ if [ "${BUILDPROJECT}" == "util-linux" ];then
   CONFOPT="--enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw --disable-nologin
            --disable-vipw --disable-newgrp --disable-chfn-chsh --enable-write --enable-socket-activation
            --with-selinux --without-udev --with-ncurses --enable-static-programs=mount --disable-su --disable-login";
+  RPMOBSOLETE="util-linux-static util-linux-boot";
+ elif [ "${BUILDPROJECT}" == "util-linux-boot" ];then
+  CONFOPT="--enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 
+           --disable-vipw --disable-newgrp --disable-chfn-chsh --enable-write --enable-socket-activation --disable-chfn-chsh
+           --without-selinux --without-udev --without-slang --disable-login --disable-su --disable-runuser --without-ncurses
+           --without-slang --disable-nologin --disable-pylibmount --without-systemd";
+  NOINST="1";
+  ALIAS="util-linux";
   RPMOBSOLETE="util-linux-static";
  else
-  CONFOPT="--disable-shared --enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 
+  CONFOPT="--disable-shared --enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw
            --disable-vipw --disable-newgrp --disable-chfn-chsh --enable-write --enable-socket-activation --disable-chfn-chsh
            --without-selinux --without-udev --without-slang --disable-login --disable-su --disable-runuser --without-ncurses
            --without-slang --disable-nologin --disable-pylibmount --without-systemd LDFLAGS=\"-static -L=/usr/${C_LIBDIRS}\"";
