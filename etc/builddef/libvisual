@@ -9,3 +9,4 @@ CFGPTH="libvisual";
 CFGBIN="libvisual/";
 RPMGROUP="core";
 CHROOTBUILD="1";
+FIXUPLIB="1";
