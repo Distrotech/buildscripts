@@ -3,5 +3,9 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 RPMGROUP="core";
-MAKEOPTS="CC=clang";
-CHROOTBUILD="1";
+if [ "${barch}" != "x86_32" ];then
+  MAKEOPTS="CC=clang";
+  CHROOTBUILD="1";
+ else
+  NOINST="1";
+fi;
