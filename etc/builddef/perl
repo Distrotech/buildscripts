@@ -1,4 +1,5 @@
 VERSION="5.22.0-RC2"
+PERLLIBVER="5.22.0";
 RPMVERSION="5.022000";
 VERSEP="-";
 PREFIX="/usr";
@@ -23,5 +24,11 @@ MANREMOVE="man3/Digest::MD5.3 man3/List::Util.3 man3/List::Util::XS.3 man3/Scala
            man3/Test::Builder.3 man3/Test::Builder::Module.3 man3/Test::Builder::Tester.3 \
            man3/Test::Builder::Tester::Color.3 man3/Test::More.3 man3/Test::Simple.3 \
            man3/Test::Tutorial.3 man3/Text::Soundex.3 man3/CPAN::Meta::YAML.3 \
-           man3/Parse::CPAN::Meta.3 man3/DB_File.3";
+           man3/Parse::CPAN::Meta.3 man3/DB_File.3 man3/Locale::Codes.3 man3/Locale::Codes::API.3 \
+           man3/Locale::Codes::Changes.3 man3/Locale::Codes::Constants.3 man3/Locale::Codes::Country.3 \
+           man3/Locale::Codes::Currency.3 man3/Locale::Codes::LangExt.3 man3/Locale::Codes::LangFam.3 \
+           man3/Locale::Codes::LangFam_Retired.3 man3/Locale::Codes::LangVar.3 man3/Locale::Codes::Language.3 \
+           man3/Locale::Codes::Script.3 man3/Locale::Country.3 man3/Locale::Currency.3 man3/Locale::Language.3 \
+           man3/Locale::Script.3 man3/Test::Builder::IO::Scalar.3 man3/Test::Tester.3 man3/Test::Tester::Capture.3 \
+           man3/Test::Tester::CaptureRunner.3 man3/Test::use::ok.3 man3/ok.3";
 RPMGROUP="root";
