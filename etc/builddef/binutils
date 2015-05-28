@@ -14,3 +14,4 @@ COREBUILD="1";
 NOSYSROOTLT="1";
 INFOREMOVE="configure.info";
 RPMGROUP="dev";
+RPMOBSOLETE="gdb";
