@@ -16,6 +16,7 @@ fi;
 #Initialise modules and configure
 if [ "${4}" ] || [ ! -e Makefile ];then
   if [ -e .gitmodules ];then
+    git submodule foreach --recursive "git reset --hard"
     git submodule foreach --recursive "git clean -dfx"
     git submodule deinit -f .
    else
@@ -23,6 +24,7 @@ if [ "${4}" ] || [ ! -e Makefile ];then
   fi;
   if [ -x ./init-repository ];then
     ./init-repository
+    git submodule deinit -f qtwebengine
     ./configure ${CONFOPT} -xplatform ${QT_SPEC} -platform ${QT_SPEC} || exit 1
    else
     ./configure ${CONFOPT} -xplatform ${QT_SPEC} -platform ${QT_HOSTSPEC} || exit 1
