@@ -1,4 +1,4 @@
-VERSION="1.0.7"
+VERSION="2.1.4"
 VERSEP="-";
 NOCCOPT="1";
 BUILDDIR="0";
@@ -25,15 +25,11 @@ OPT_win32="--enable-cross-compile --sysroot=${ARCHROOT}/${barch} --arch=x86 --ta
           --host-cc=/usr/bin/gcc";
 OPT_win64="--enable-cross-compile --sysroot=${ARCHROOT}/${barch} --arch=x86_64 --target-os=mingw32 --cross-prefix=${HOST}- 
           --host-cc=/usr/bin/gcc";
-OPT_i686="--enable-cross-compile --sysroot=${ARCHROOT}/i686 --arch=i686 --target-os=linux --cross-prefix=i686-linux-gnu- 
-          --cpu=i686 --extra-cflags=-m32 --extra-ldflags=-m32 --host-cc=/usr/bin/gcc
-          --enable-libopencv --enable-frei0r --enable-libv4l2 --enable-libvpx";
+OPT_i686="--enable-libopencv --enable-frei0r --enable-libv4l2 --enable-libvpx";
 OPT_arm="--enable-cross-compile --sysroot=${ARCHROOT}/arm --arch=arm --target-os=linux --cross-prefix=arm-linux-gnueabi-
          --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/arm/usr/lib:${ARCHROOT}/arm/lib:${ARCHROOT}/arm/${X11DIR}/lib
          --host-cc=/usr/bin/gcc --enable-libv4l2 --disable-asm --enable-libvpx";
-OPT_x86_32="--enable-cross-compile --sysroot=${ARCHROOT}/x86_32 --arch=x86_64 --target-os=linux 
-          --cross-prefix=x86_64-linux-gnux32- --extra-cflags=-mx32 --extra-ldflags=-mx32
-          --host-cc=/usr/bin/gcc --disable-asm --enable-libvpx
+OPT_x86_32="--disable-asm --enable-libvpx
           --enable-libopencv --enable-frei0r --enable-libv4l2";
 OPT_x86_64="--sysroot=${ARCHROOT}/x86_64 --enable-libopencv --enable-frei0r --enable-libv4l2 --enable-libvpx";
 OPT_mips="--enable-cross-compile --sysroot=${ARCHROOT}/mips --arch=mips --target-os=linux --cross-prefix=mips-linux-gnu-
@@ -59,4 +55,5 @@ FIXUPLIB="1";
 LDISCC="1";
 ADDCC="0";
 RPMGROUP="core";
-DONTBUILD="${barch}";
+ALIAS="ffmpeg";
+CHROOTBUILD="1";
