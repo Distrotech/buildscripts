@@ -15,3 +15,5 @@ NOSYSROOTLT="1";
 INFOREMOVE="configure.info";
 RPMGROUP="dev";
 RPMOBSOLETE="gdb";
+RPMOBSOLETE_locale="octeon-binutils-cross";
+RPMOBSOLETE_doc="octeon-binutils-cross";
