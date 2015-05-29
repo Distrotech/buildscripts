@@ -1601,7 +1601,7 @@ build_project() {
   #Move perllocal.pod to directory
   (ORIGPROJ=${BUILDPROJECT}
    get_pkg_name perl ${ORIGARCH}
-   PERLDIR=${DIST_ROOT}/usr/lib/perl5/${VERSION}/${HOST}-thread-multi
+   PERLDIR=${DIST_ROOT}/usr/lib/perl5/${PERLLIBVER}/${HOST}-thread-multi
    if [ -e ${PERLDIR}/perllocal.pod ];then
      if [ ! -d ${PERLDIR}/perllocal.pod.d ];then
        mkdir ${PERLDIR}/perllocal.pod.d
@@ -2198,7 +2198,7 @@ build_gcc_bootstrap() {
   fi;
   cp ${ARCHROOT}/${1}/usr/bin/libtool ${2}/libstdc++-v3
   make ${MAKE_J} LDFLAGS="${LDFLAGS}" LDFLAGS_FOR_TARGET="${LDFLAGS_FOR_TARGET}" || \
-    make LDFLAGS="${LDFLAGS}" LDFLAGS_FOR_TARGET="${LDFLAGS_FOR_TARGET}" || return 1
+    make LDFLAGS="${LDFLAGS}" LDFLAGS_FOR_TARGET="${LDFLAGS_FOR_TARGET}" || make ${MAKE_J} || return 1
   make DESTDIR=${GCCBOOTDEST} install || return 1
 
   #Setup some missing bits
@@ -2649,7 +2649,7 @@ bootstrap_arch_root() {
       if [ -d ${ARCHROOT}/${arch}/var/hybrid/libexec/gcc/ ];then
         export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
       fi;
-      chroot ${ARCHROOT}/${arch} cpan -i XML::Parser XML::SAX  DBI Path::Class Try::Tiny DBI NetAddr::IP Net::DNS Test::Requires Convert::ASN1) || return 1
+      chroot ${ARCHROOT}/${arch} cpan -i XML::Parser XML::SAX  DBI Path::Class Try::Tiny DBI NetAddr::IP Net::DNS Test::Requires Convert::ASN1 Encode::Detect) || return 1
     fi) || return 1;
   done;
 }
@@ -2765,14 +2765,14 @@ build_dependancies() {
     if [ ! -e ${STATDIR}/${1}/done/Xorg ] && [ -e ${STATDIR}/${1}/fail/Xorg ];then
       (unset CLEANOPT;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
     fi;
-    build_packages ${1} cairo poppler atk gdk-pixbuf || return 1
+    build_packages ${1} cairo openjpeg1 poppler atk jasper gdk-pixbuf || return 1
     if [ ! -e ${STATDIR}/${1}/done/Xorg ] && [ -e ${STATDIR}/${1}/fail/Xorg ];then
       (unset CLEANOPT;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
     fi;
     build_packages ${1}  mozjs mozjs-17 polkit libmicrohttpd cryptsetup systemd db bash-completion colord || return 1
   fi;
 
-  build_packages ${1} cairo gobject-introspection icu cmake openjpeg openjpeg1 graphite2 kelbt ragel harfbuzz pango vala-bootstrap || return 1
+  build_packages ${1} cairo gobject-introspection icu cmake openjpeg graphite2 kelbt ragel harfbuzz pango vala-bootstrap || return 1
 
   if [ ! -e ${STATDIR}/${1}/done/vala ];then
      (get_pkg_name vala-bootstrap
@@ -2780,7 +2780,7 @@ build_dependancies() {
   fi;
 
   build_packages ${1} vala libdrm intltool llvm talloc tevent libevent libverto krb5-static krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
-    module-init-tools libvdpau setuptools mako Mesa glu glw glew mtdev fontforge atk gdk-pixbuf librsvg libssh LVM2 cryptsetup systemd || return 1
+    module-init-tools libvdpau setuptools mako Mesa glu glw glew mtdev fontforge atk jasper gdk-pixbuf librsvg libssh LVM2 cryptsetup systemd || return 1
 
   if [ "${NARCH}" == "${1}" ];then
     (if [ "${MLIBDIR}" ];then
@@ -2822,7 +2822,7 @@ build_dependancies() {
     build_packages ${1} gtk3 || return 1
   fi;
 
-  build_packages ${1} Xorg poppler poppler-data qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
+  build_packages ${1} Xorg openjpeg1 poppler poppler-data qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
     txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib docutils dbus-python mozjs mozjs-17 polkit GConf libbonobo \
     libatomic_ops gc guile autogen libmad Xaw3d gv rtmpdump polkit-gnome icmake yodl swig M2Crypto wireless-regdb crda || return 1
 
@@ -3107,7 +3107,7 @@ windows_build_toolchain() {
   build_packages ${1} evil zlib regex libtool gmp mpfr mpc isl cloog gcc binutils libiconv libunistring icu \
     make gettext xz openssl libxml2 libxslt libffi pcre glib libcroco c-ares curl cyrus-sasl \
     unixODBC openldap libidn libpng jbigkit tiff jpeg freetype expat fontconfig libtasn1 p11-kit nettle \
-    libgpg-error libgcrypt gnutls libvpx gd lcms2 pixman cairo poppler graphite2 harfbuzz pango atk \
+    libgpg-error libgcrypt gnutls libvpx gd lcms2 pixman cairo openjpeg1 poppler graphite2 harfbuzz pango atk \
     gdk-pixbuf gtk+ SDL wxWidgets dtsapplib sqlite-autoconf dtsguiapp leafpad libsoup libosip2 \
     exosip libsrtp oRTP spandsp libogg libvorbis opencore-amr vo-amrwbenc opus speex libilbc-webrtc \
     gsm libtheora x264 ffmpeg mediastreamer2 bcg729 msamr libilbc msilbc msx264 mssilk \
