@@ -114,7 +114,7 @@ image_create() {
   qemu-img create ${1} 20G
   parted -s ${1} mklabel msdos
   parted -s ${1} "mkpart primary 1 -1"
-  parted ${1} set 1 boot on
+  parted -s ${1} set 1 boot on
 }
 
 syslinux_cfg() {
@@ -310,7 +310,7 @@ build_installer() {
   mount ${INSTDEV} ${3}
 
   config_installer ${3} ${2}
-  syslinux -i -d boot/syslinux ${INSTDEV}
+  syslinux -f -i -d boot/syslinux ${INSTDEV}
 
   umount ${3}
   dd if=/usr/share/syslinux/mbr.bin of=${1} conv=notrunc bs=512b count=1
