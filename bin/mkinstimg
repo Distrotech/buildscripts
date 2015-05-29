@@ -268,12 +268,13 @@ config_installer() {
   add_kernel ${1} ${2}
   syslinux_cfg ${1} > ${1}/boot/syslinux/syslinux.cfg
 
+  YUM_GRP_FILE=$(ls -t ${DTSSRVDIR}/yum/repodata/*-groups.xml |head -1)
   if [ ! -d ${1}/repo/repodata ];then
     mkdir -p ${1}/repo/repodata
-    cp ${DTSSRVDIR}/yum/repodata/*groups.xml ${1}/repo/repodata/groups.xml
+    cp ${YUM_GRP_FILE} ${1}/repo/repodata/groups.xml
     createrepo -g repodata/groups.xml ${1}/repo
    else
-    cp ${DTSSRVDIR}/yum/repodata/*groups.xml ${1}/repo/repodata/groups.xml
+    cp ${YUM_GRP_FILE} ${1}/repo/repodata/groups.xml
     createrepo -g repodata/groups.xml --update ${1}/repo
   fi;
 
@@ -310,9 +311,10 @@ build_installer() {
   mount ${INSTDEV} ${3}
 
   config_installer ${3} ${2}
-  syslinux -f -i -d boot/syslinux ${INSTDEV}
 
   umount ${3}
+
+  syslinux -f -i -d boot/syslinux ${INSTDEV}
   dd if=/usr/share/syslinux/mbr.bin of=${1} conv=notrunc bs=512b count=1
 
   if [ ! -b ${1} ];then
