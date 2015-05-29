@@ -174,18 +174,21 @@ pkg2rpm() {
 
     if [ "${RPMOBSOLETE}" ];then
       RPM_OBSOLETE="Obsoletes: ${RPMOBSOLETE}${xpkg}";
+    fi;
+
+    if [ "${xpkg}" ];then
+      RPM_SUB_OBSOLETE=RPMOBSOLETE_${xpkg:1}
      else
-      if [ "${xpkg}" ];then
-        RPM_SUB_OBSOLETE=RPMOBSOLETE_${xpkg:1}
-       else
-        RPM_SUB_OBSOLETE=RPMOBSOLETE_base
-      fi;
-      if [ "${!RPM_SUB_OBSOLETE}" ];then
+      RPM_SUB_OBSOLETE=RPMOBSOLETE_base
+    fi;
+
+    if [ "${!RPM_SUB_OBSOLETE}" ];then
+      if [ ! "${RPM_OBSOLETE}" ];then
         RPM_OBSOLETE="Obsoletes:";
-	for rpm_sub_ob in ${!RPM_SUB_OBSOLETE};do
-          RPM_OBSOLETE="${RPM_OBSOLETE} ${rpm_sub_ob}${xpkg}";
-        done;
       fi;
+      for rpm_sub_ob in ${!RPM_SUB_OBSOLETE};do
+        RPM_OBSOLETE="${RPM_OBSOLETE} ${rpm_sub_ob}${xpkg}";
+      done;
       eval ${RPM_SUB_OBSOLETE}=""
     fi;
 
