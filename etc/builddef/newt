@@ -4,3 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 RPMGROUP="core";
+case ${barch} in
+  arm)CHROOTBUILD="1";;
+esac
