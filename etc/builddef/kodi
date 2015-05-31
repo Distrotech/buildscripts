@@ -1,4 +1,4 @@
-VERSION="13.2"
+VERSION="14.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-external-ffmpeg --enable-external-libraries --disable-rsxs PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
@@ -9,3 +9,6 @@ ADDPATH="/opt/mysql/bin";
 CHROOTBUILD="1";
 DONTBUILD="ppc ppc64 mips mips64";
 RPMGROUP="gui";
+ALIAS="xbmc";
+GITREPO="xbmc";
+GITBRANCH="distrotech-${ALIAS}-${VERSION}";
