@@ -12,6 +12,6 @@ ADDLDFLAG="-L=/usr/${C_LIBDIRS}";
 CONFOPT="--enable-compat-libs ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes
          --with-pamlibdir=/usr/${C_LIBDIRS}/security INTLTOOL_PERL=/usr/bin/perl";
 case ${barch} in
-  mips*|i686|x86_32|x86_64|arm*)CHROOTBUILD="1";;
+  mips*|i686|x86_32|x86_64|arm)CHROOTBUILD="1";;
 esac;
 RPMGROUP="root";
