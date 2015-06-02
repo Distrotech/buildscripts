@@ -8,6 +8,6 @@ OPT_i686="CFG_FAULT=fault-linux-i386.h";
 AMVER="1.12";
 DONTBUILD="cyg32 cyg64";
 case ${barch} in
-  mips*|arm64|x86_32)CHROOTBUILD="1";;
+  mips*|x86_32)CHROOTBUILD="1";;
 esac;
 RPMGROUP="root";
