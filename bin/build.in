@@ -2621,7 +2621,19 @@ bootstrap_arch_root() {
       rsync -avP ${PKGDESTDIR}/${arch}/util-linux-boot/ ${ARCHROOT}/${arch}/
     fi;
 
-    build_packages ${arch} systemd util-linux bash coreutils sed libunistring \
+    build_packages ${arch} libcap libnfnetlink iptables dbus || exit 1
+
+    if [ ! -e ${STATDIR}/${arch}/fail/Xorg ] && [ ! -e ${STATDIR}/${arch}/done/Xorg ];then
+      (CLEANOPT=distclean
+      build_project Xorg ${arch}) || touch ${STATDIR}/${arch}/fail/Xorg
+      if [ "${arch}" == "${NARCH}" ];then
+        /sbin/ldconfig >/dev/null 2>&1
+      fi;
+     elif [ ! -e ${STATDIR}/${arch}/done/Xorg ] && [ -e ${STATDIR}/${arch}/fail/Xorg ];then
+      (unset CLEANOPT;build_project Xorg ${arch}) || touch ${STATDIR}/${arch}/fail/Xorg
+    fi;
+
+    build_packages ${arch} libxkbcommon c-ares curl LVM2 cryptsetup systemd bash coreutils sed libunistring \
       libatomic_ops gc texinfo pkg-config gzip tar rsync grep diffutils patch gperf m4 cpio findutils less libxslt gdbm \
       iana-etc binutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 \
       file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl which groff tcl8 make libsigsegv gawk || exit 1
