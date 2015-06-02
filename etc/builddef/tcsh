@@ -2,10 +2,5 @@ VERSION="6.19"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+ADDCFLAG="-fno-builtin";
 RPMGROUP="core";
-if [ "${barch}" != "x86_32" ];then
-  MAKEOPTS="CC=clang";
-  CHROOTBUILD="1";
- else
-  NOINST="1";
-fi;
