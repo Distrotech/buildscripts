@@ -132,6 +132,8 @@ done;
 
 if [ "${CLEANOPT}" ];then
   BOOTCLEAN=${CLEANOPT};
+ elif [ "${NOCLEAN}" ] && [ "${NOCLEAN}" == "1" ];then
+  BOOTCLEAN="noclean";
 fi;
 
 if [ ! "${BOOTSTRAP}" ] && [ "${1}" == "bootstrap" ];then
@@ -2834,7 +2836,7 @@ build_dependancies() {
   case ${NARCH} in
     x86_64|x86_32|i[3-6]86)
       case ${1} in
-         x86_64|x86_32|i[3-6]86)build_packages ${1} icedtea7-2.3 icedtea7-2.5 || return 1;;
+         x86_64|i[3-6]86)build_packages ${1} icedtea7-2.3 icedtea7-2.5 || return 1;;
       esac;;
   esac;
 
