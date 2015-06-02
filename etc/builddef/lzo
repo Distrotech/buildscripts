@@ -1,5 +1,6 @@
-VERSION="2.06"
+VERSION="2.09"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 RPMGROUP="root";
+ADDCFLAG="-std=gnu89 -fgnu89-inline";
