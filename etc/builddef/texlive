@@ -11,6 +11,7 @@ STDOPTS="--prefix=${PREFIX} --includedir=/usr/include --libdir=/usr/${C_LIBDIRS}
 OPT_x86_32="--disable-luajittex";
 OPT_arm64="--disable-luajittex";
 OPT_mips64="--disable-luajittex";
+OPT_ppc64="--disable-luajittex";
 case ${BUILDPROJECT} in
   texlive-boot)
     if [ "${BUILD}" == "${HOST}" ] && [ -x ${ARCHROOT}/${barch}/usr/bin/clisp ];then
