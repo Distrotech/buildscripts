@@ -8,8 +8,8 @@ if [ "${barch}" != "win64" ];then
 fi;
 ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/cairo";
 case ${barch} in
-  ppc64)CHROOTBUILD="0";;
   *)CHROOTBUILD="1";;
 esac;
 ADDCXXFLAG="-std=gnu++0x";
 RPMGROUP="root";
+SYSROOTFIXUP="0";

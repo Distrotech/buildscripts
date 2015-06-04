@@ -15,6 +15,6 @@ AUTORECONF="1";
 AMVER="1.13";
 RPMOBSOLETE="schroedinger";
 case ${barch} in
-        mips*)CHROOTBUILD="1";;
+        ppc64|mips*)CHROOTBUILD="1";;
 esac;
 RPMGROUP="core";

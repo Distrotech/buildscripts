@@ -5,7 +5,7 @@ CONFOPT="--with-boost=${ARCHROOT}/${barch}/usr boost_cv_lib_unit_test_framework=
 CLEARFLAGS="1";
 EXTRALIBS="-L=/usr/${B_LIBDIRS} -lboost_unit_test_framework -lpthread -lrt -ldl";
 case ${barch} in
-        mips*)CHROOTBUILD="1";;
+        ppc64|mips*)CHROOTBUILD="1";;
 esac;
 RPMGROUP="gui";
 ADDCC="0";

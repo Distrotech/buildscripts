@@ -4,6 +4,6 @@ PREFIX="/usr";
 CONFOPT="--with-boost-libdir=${ARCHROOT}/${barch}/${B_LIBDIRS} --with-boost-system=boost_system";
 EXTRALIBS="-lpthread -lrt -ldl";
 case ${barch} in
-  mips*|x86_32)CHROOTBUILD="1";;
+  ppc64|mips*|x86_32)CHROOTBUILD="1";;
 esac;
 RPMGROUP="office";
