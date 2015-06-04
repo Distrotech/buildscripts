@@ -22,3 +22,4 @@ case ${barch} in
 esac;
 RPMGROUP="root";
 #NOCCOPT="1";
+SYSROOTFIXUP="0";
