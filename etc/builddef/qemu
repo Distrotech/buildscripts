@@ -17,3 +17,4 @@ RPMGROUP="dev";
 if [ -e /proc/sys/fs/binfmt_misc/${barch} ];then
   NOINST="1";
 fi;
+FIXUPLIB="1";
