@@ -27,25 +27,13 @@ OPT_win64="--enable-cross-compile --sysroot=${ARCHROOT}/${barch} --arch=x86_64 -
           --host-cc=/usr/bin/gcc";
 OPT_i686="--enable-libopencv --enable-frei0r --enable-libv4l2 --enable-libvpx";
 OPT_arm="--enable-libv4l2 --disable-asm --enable-libvpx";
-OPT_x86_32="--disable-asm --enable-libvpx
-          --enable-libopencv --enable-frei0r --enable-libv4l2";
+OPT_x86_32="--disable-asm --enable-libvpx --enable-libopencv --enable-frei0r --enable-libv4l2";
 OPT_x86_64="--sysroot=${ARCHROOT}/x86_64 --enable-libopencv --enable-frei0r --enable-libv4l2 --enable-libvpx";
-OPT_mips="--enable-cross-compile --sysroot=${ARCHROOT}/mips --arch=mips --target-os=linux --cross-prefix=mips-linux-gnu-
-         --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}mips/usr/lib:${ARCHROOT}/mips/lib:${ARCHROOT}/mips/${X11DIR}/lib
-         --host-cc=/usr/bin/gcc --enable-libv4l2 --enable-libvpx";
-OPT_mips64="--enable-cross-compile --sysroot=${ARCHROOT}/mips64 --arch=mips64 --target-os=linux --cross-prefix=mips64-linux-gnuabi64-
-         --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/mips64/usr/lib64:${ARCHROOT}/mips64/lib64:${ARCHROOT}/mips64/${X11DIR}/lib644
-         --host-cc=/usr/bin/gcc --disable-mips32r2 --disable-mipsdspr1 --disable-mipsdspr2 --extra-cxxflags=-fpermissive
-         --enable-libv4l2 --enable-libvpx";
-OPT_ppc="--enable-cross-compile --sysroot=${ARCHROOT}/ppc --arch=powerpc --target-os=linux --cross-prefix=ppc-linux-gnu-
-         --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/ppc/usr/lib:${ARCHROOT}/ppc/lib:${ARCHROOT}/ppc/${X11DIR}/lib
-         --host-cc=/usr/bin/gcc --enable-libv4l2 --enable-libvpx";
-OPT_ppc64="--enable-cross-compile --sysroot=${ARCHROOT}/ppc64 --arch=powerpc --target-os=linux --cross-prefix=ppc64-linux-gnu-
-         --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/ppc64/usr/lib64:${ARCHROOT}/ppc64/lib64:${ARCHROOT}/ppc64/${X11DIR}/lib64
-         --host-cc=/usr/bin/gcc --enable-libv4l2 --enable-libvpx";
-OPT_arm64="--enable-cross-compile --sysroot=${ARCHROOT}/arm64 --arch=arm64 --target-os=linux --cross-prefix=aarch64-linux-gnu-
-         --extra-ldflags=-Wl,--rpath-link=${ARCHROOT}/arm/usr/lib:${ARCHROOT}/arm/lib:${ARCHROOT}/arm/${X11DIR}/lib
-         --host-cc=/usr/bin/gcc --disable-asm --enable-libvpx";
+OPT_mips="--enable-libv4l2 --enable-libvpx";
+OPT_mips64="--disable-mips32r2 --disable-mipsdspr1 --disable-mipsdspr2 --enable-libv4l2 --enable-libvpx";
+OPT_ppc="--enable-libv4l2 --enable-libvpx";
+OPT_ppc64="--enable-libv4l2 --enable-libvpx";
+OPT_arm64="--disable-asm --enable-libvpx";
 ADDCFLAG="-fPIC -I=/usr/include/openjpeg-1.5";
 XADDLDFLAG="-L../libavutil -lavutil";
 NOTCONF="--enable-libilbc";
