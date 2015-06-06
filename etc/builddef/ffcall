@@ -4,7 +4,5 @@ PREFIX="/usr";
 CONFOPT="";
 GITBRANCH="master";
 DONTBUILD="arm64 mips";
-case ${barch} in
-        ppc64|i[3-6]86|x86_32|x86_64)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";
 RPMGROUP="dev";

@@ -4,7 +4,7 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 case ${barch} in
-        mips*)CHROOTBUILD="1";;
+        ppc64|mips*)CHROOTBUILD="1";;
 esac;
 RPMGROUP="dev";
 RPMPROVIDES_libs="libgtest.so()${ARCH_BITS}";

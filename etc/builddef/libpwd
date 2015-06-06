@@ -4,5 +4,5 @@ PREFIX="/usr";
 CONFOPT="";
 RPMGROUP="office";
 case ${barch} in
-  ppc64)CHROOTBUILD="1";;
+  mips64|ppc64)CHROOTBUILD="1";;
 esac
