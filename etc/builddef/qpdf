@@ -1,9 +1,10 @@
 VERSION="5.1.2"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--enable-doc-maintenance
-         --with-docbook-xsl=/usr/share/xml/docbook/xsl-stylesheets-1.78.0
-         --with-docbookx-dtd=/usr/share/xml/docbook/xml-dtd-4.5/docbookx.dtd";
+#CONFOPT="--enable-doc-maintenance
+#         --with-docbook-xsl=/usr/share/xml/docbook/xsl-stylesheets-1.78.0
+#         --with-docbookx-dtd=/usr/share/xml/docbook/xml-dtd-4.5/docbookx.dtd
+#         ac_cv_file__dev_urandom=yes";
 BUILDDIR="0";
 CHROOTBUILD="1";
 RPMGROUP="core";
