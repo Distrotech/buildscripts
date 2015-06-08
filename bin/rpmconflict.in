@@ -1,0 +1,18 @@
+#!/bin/bash
+
+YUMDIR=@SRVDIR@/yum
+
+if [ ! "${1}" ] || [ ! -d ${YUMDIR}/${1} ];then
+  exit
+fi;
+
+case ${1} in
+  x86_32)EXTRA=" ${YUMDIR}/x86_64/linux-intel-dts/linux-intel-dts-*/linux-intel-dts-lib-*";;
+esac
+
+ARCH=${1}
+
+(rpm -Uv --ignorearch --test --root /root/${ARCH}-rpmtest ${YUMDIR}/${ARCH}/*/*/*${EXTRA} 2>&1)  |grep -vE "(package.*is already installed|^warning)"
+if [ -d /root/${ARCH}-rpmtest ];then
+  rm -rf /root/${ARCH}-rpmtest
+fi;

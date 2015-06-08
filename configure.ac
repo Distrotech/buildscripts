@@ -60,6 +60,7 @@ AC_CONFIG_FILES([
   bin/mkgroups
   bin/chroot-arch
   bin/wine
+  bin/rpmconflict
   etc/yum_repo.conf
   libexec/make_sip
   libexec/make_qt-5

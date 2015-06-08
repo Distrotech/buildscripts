@@ -25,3 +25,4 @@
 /bin/chroot-arch
 /dts-install
 /bin/wine
+/bin/rpmconflict
