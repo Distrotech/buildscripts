@@ -159,6 +159,13 @@ Summary: Linux ${VERSION}-${KFLAVOR} installed files (wanpipe)
 
 %description wanpipe
 Distrotech Linux ${VERSION} ${KFLAVOR} installed files (wanpipe)
+
+%package lib
+Group: Distrotech Linux ${VERSION} ${KFLAVOR}
+Summary: Linux ${VERSION}-${KFLAVOR} installed files (lib)
+
+%description lib
+Distrotech Linux ${VERSION} ${KFLAVOR} installed files (lib)
 EOF
   fi;
 
@@ -192,11 +199,13 @@ if [ "${HAS_WANPIPE}" == "1" ];then
 /usr/share/doc/wanpipe
 
 %files wanpipe
+/etc
+/usr/sbin
+
+%files lib
 /usr/${LIBDIR}/libsangoma.so*
 /usr/${LIBDIR}/libstelephony.so*
 /usr/${LIBDIR}/libteletone.so*
-/etc
-/usr/sbin
 
 EOF
   fi;
@@ -242,7 +251,7 @@ build_kernel_rpm() {
 
   RPMPKGS="modules firmware dahdi dev";
   if [ "${HAS_WANPIPE}" == "1" ];then
-    RPMPKGS="${RPMPKGS} doc dbg wanpipe";
+    RPMPKGS="${RPMPKGS} doc dbg wanpipe lib";
   fi;
 
   for rfile in "" ${RPMPKGS};do
@@ -282,7 +291,8 @@ build_kernel_tar() {
     tar -cJf ${TARBALL}/${2}-dev.tar.xz usr/include usr/${LIBDIR}/lib*.a usr/${LIBDIR}/*.la
     tar -cJf ${TARBALL}/${2}-dbg.tar.xz usr/sbin/.dbg usr/${LIBDIR}/.dbg
     tar -cJf ${TARBALL}/${2}-doc.tar.xz usr/share/doc/wanpipe
-    tar --exclude=usr/sbin/.dbg -cJf ${TARBALL}/${2}-wanpipe.tar.xz usr/${LIBDIR}/libsangoma.so* usr/${LIBDIR}/libstelephony.so* usr/${LIBDIR}/libteletone.so* etc usr/sbin
+    tar -cJf ${TARBALL}/${2}-lib.tar.xz usr/${LIBDIR}/libsangoma.so* usr/${LIBDIR}/libstelephony.so* usr/${LIBDIR}/libteletone.so*
+    tar --exclude=usr/sbin/.dbg -cJf ${TARBALL}/${2}-wanpipe.tar.xz etc usr/sbin
    else
     tar -cJf ${TARBALL}/${2}-dev.tar.xz usr/include
   fi;)
@@ -347,7 +357,7 @@ build_kernel() {
      else
       SETARCH="";
     fi;
-    CROSS_COMPILE=${CROSS_COMPILE} CC=${HOST}gcc CXX=${HOST}g++ ${SETARCH}./Setup install --protocol=DEF,TDM,TDMV,BRI \
+    KEVER=${CONFIG_LOCALVERSION} CROSS_COMPILE=${CROSS_COMPILE} CC=${HOST}gcc CXX=${HOST}g++ ${SETARCH}./Setup install --protocol=DEF,TDM,TDMV,BRI \
       --with-asterisk=${SRCDIR}/asterisk/asterisk-${ASTVER}/ --zaptel-path=${SRCDIR}/kernel/dahdi  --silent --no_woomera \
       --with-linux=${LINDIR} --builddir=${1} --usr-cc="${HOST}gcc"
     rsync -a ${1}/usr/local/ ${1}/usr/
