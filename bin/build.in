@@ -2663,7 +2663,7 @@ bootstrap_arch_root() {
       if [ -d ${ARCHROOT}/${arch}/var/hybrid/libexec/gcc/ ];then
         export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
       fi;
-      chroot ${ARCHROOT}/${arch} cpan -i XML::Parser XML::SAX  DBI Path::Class Try::Tiny DBI NetAddr::IP Net::DNS Test::Requires Convert::ASN1 Encode::Detect) || return 1
+      chroot ${ARCHROOT}/${arch} cpan -Ti XML::Parser XML::SAX  DBI Path::Class Try::Tiny DBI NetAddr::IP Net::DNS Test::Requires Convert::ASN1 Encode::Detect Parse::Pidl) || return 1
     fi) || return 1;
   done;
 }
@@ -2836,7 +2836,7 @@ build_dependancies() {
     build_packages ${1} gtk3 || return 1
   fi;
 
-  build_packages ${1} Xorg openjpeg1 poppler poppler-data qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
+  build_packages ${1} Xorg openjpeg1 poppler poppler-data fop qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
     txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib docutils dbus-python mozjs mozjs-17 polkit GConf libbonobo \
     libatomic_ops gc guile autogen libmad Xaw3d gv rtmpdump polkit-gnome icmake yodl swig M2Crypto wireless-regdb crda || return 1
 
@@ -2897,7 +2897,7 @@ build_dependancies() {
     libdvdnav MPlayer boost clucene-core libzip iso-codes ffcall || return 1
 
   #Libre Office
-  build_packages ${1} bison3 mdds libixion liborcus raptor rasqal librdf librevenge libpwd libmwaw libodfgen libwps || return 1
+  build_packages ${1} bison3 mdds libixion liborcus raptor rasqal librdf cppunit librevenge libpwd libmwaw libodfgen libwps || return 1
 
   #Rebuild and reinstall bison
   if [ -e ${STATDIR}/${1}/done/bison ] && [ ! -e ${ARCHROOT}/${1}/usr/bin/bison ];then
@@ -2937,7 +2937,7 @@ build_dependancies() {
 
   #Other bits
   build_packages ${1} alsa-oss alsa-plugins alsa-tools alsa-utils TiMidity calamaris dirac netatalk mod_perl \
-    mod_python nut omniORB dtc qemu wxWidgets taglib xerces-c maven jhylafax admin_console forrest fop lua || return 1
+    mod_python nut omniORB dtc qemu wxWidgets taglib xerces-c maven jhylafax admin_console forrest lua || return 1
 
   #XFCE
   build_packages ${1} xfce4-dev-tools libxfce4util xfconf libxfce4ui garcon exo xfce4-panel tumbler \
@@ -2987,7 +2987,7 @@ build_dependancies() {
   #Graphviz
   build_packages ${1} graphviz || return 1
   if [ ! -e ${ARCHROOT}/${1}/usr/${C_LIBDIRS}/graphviz/config6 ];then
-    chroot ${ARCHROOT}/${1} dot -c
+    chroot ${ARCHROOT}/${1} dot -c || true
   fi;
 }
 
@@ -3427,7 +3427,7 @@ build_linux_headers() {
     fi;
     ln -s ${SRCDIR}/linux/linux-${LINUX_VER} ${LINSRCDIR}/kernel/linux
     cd ${SRCDIR}/linux/linux-${LINUX_VER}
-    make INSTALL_HDR_PATH=${KERN_HEADERS}/usr ARCH=${KARCH} archheaders headers_install distclean
+    make INSTALL_HDR_PATH=${KERN_HEADERS}/usr ARCH=${KARCH} headers_install distclean
     if [ -h ${KERN_HEADERS}/usr/include/asm ] && [ -d ${KERN_HEADERS}/usr/include/asm-${KARCH} ];then
         rm ${KERN_HEADERS}/usr/include/asm
     fi;
