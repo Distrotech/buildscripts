@@ -381,6 +381,7 @@ build_kernel() {
         fi;
       done;
     done) >/dev/null 2>&1
+    find ${1}/lib/modules/${VSUF}/kernel -type f |grep -v "\.gz" |awk '{printf "gzip %s\n",$1}' |sh
   fi;
 
   depmod -b ${1} -ae -F ${1}/boot/System.map-${VSUF} ${VSUF}
