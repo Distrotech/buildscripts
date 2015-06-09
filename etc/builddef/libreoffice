@@ -1,4 +1,4 @@
-VERSION="4.3.2.2"
+VERSION="4.4.3.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-junit=/usr/share/java/junit-4.11.jar --with-system-hunspell --with-system-cairo --with-system-graphite 
@@ -13,7 +13,7 @@ CONFOPT="--with-junit=/usr/share/java/junit-4.11.jar --with-system-hunspell --wi
 OPT_x86_32="--enable-debug";
 BUILDDIR="0";
 ADDCFLAG="-I=/usr/include/gtk-2.0 -I=/opt/Xorg/include";
-DONTBUILD="x86_32";
+DONTBUILD="x86_32 arm arm64 mips mips64 ppc ppc64";
 RPMGROUP="office";
 LDISCC="1";
 AMVER="1.14";
