@@ -10,3 +10,4 @@ ADDCFLAG="-I=/usr/include/freetype2 -I../../../tcl8/tcl8.5.12/generic -I../../..
 EXTRALIBS="-lxcb -lXau -lXdmcp";
 GITBRANCH="master";
 RPMGROUP="root";
+MLIBDIRLN="libtk8.5.so";

@@ -8,3 +8,4 @@ BUILDDIR="0";
 GITBRANCH="master";
 DONTBUILD="cyg32 cyg64";
 RPMGROUP="root";
+MLIBDIRLN="libtcl8.5.so";
