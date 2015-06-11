@@ -29,7 +29,11 @@ generate_groups() {
   printf "<!DOCTYPE comps PUBLIC \"-//Red Hat, Inc.//DTD Comps info//EN\" \"comps.dtd\"><comps>";
 
   for pkglist in `ls ${PKGLIST_PTH}/`;do
-    for xpkg in "" "-dev" "-doc" "-libs" "-dbg" "-locale" "-conf";do
+    SUBPKG="-dev -doc -libs -dbg -locale -conf"
+    if [ "${pkglist}" == "java" ];then
+      SUBPKG+=" -jre -jdk";
+    fi;
+    for xpkg in "" ${SUBPKG};do
       printf "<group>";
       printf "<id>%s%s</id>" ${pkglist} ${xpkg};
       printf "<default>False</default>";
