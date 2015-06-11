@@ -1,6 +1,6 @@
-VERSION="0.97.8"
+VERSION="0.98.7"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--with-dbdir=/usr/share/clamav";
 DISTCONF="freshclam.conf clamd.conf";
 RPMGROUP="core";
