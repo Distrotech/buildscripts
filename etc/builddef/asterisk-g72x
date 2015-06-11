@@ -2,6 +2,9 @@ VERSION="1.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-itu";
+OPT_x86_64="--enable-opteron-sse3";
+OPT_x86_32="--enable-opteron-sse3";
+OPT_i686="--enable-core2";
 BUILDDIR="0";
 MAKEOPTS="moddir=/usr/${C_LIBDIRS}/asterisk/modules-10"
 CLEARFLAGS="1";

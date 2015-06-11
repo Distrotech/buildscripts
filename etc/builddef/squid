@@ -3,7 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-pthreads --enable-icmp --enable-useragent-log --enable-referer-log --enable-htcp --enable-linux-netfilter --disable-ident-lookups 
          --enable-auth-basic=NCSA,PAM --enable-ssl --enable-snmp --enable-underscores --disable-hostname-checks 
-         --datadir=/usr/share/squid --enable-external-acl-helpers=unix_group --localstatedir=/var --with-logdir=/var/log";
+         --datadir=/usr/share/squid --enable-external-acl-helpers=unix_group --localstatedir=/var --with-logdir=/var/log squid_cv_check_marchnative=no";
 SYSCONFPRE="squid";
 OPT_arm="squid_cv_broken_heimdal_krb5_h=no";
 OPT_arm64="squid_cv_broken_heimdal_krb5_h=no";
