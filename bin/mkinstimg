@@ -275,7 +275,7 @@ config_installer() {
     createrepo -g repodata/groups.xml ${1}/repo
    else
     cp ${YUM_GRP_FILE} ${1}/repo/repodata/groups.xml
-    createrepo -g repodata/groups.xml --update ${1}/repo
+    createrepo -g repodata/groups.xml --skip-stat --update ${1}/repo
   fi;
 
   if [ -e /boot/grub/background.jpg ];then
