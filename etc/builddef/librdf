@@ -2,5 +2,5 @@ VERSION="1.0.17"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-RPMGROUP="librdf";
+RPMGROUP="office";
 ADDCFLAG="-I=/opt/mysql/include";
