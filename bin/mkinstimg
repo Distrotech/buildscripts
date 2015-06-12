@@ -30,10 +30,11 @@ EOF
   if [ -e etc/inittab ];then
     sed -i -e "s/^.*agetty.*//" etc/inittab
     (cat <<EOF
-c1:345:respawn:/sbin/agetty -nl /usr/libexec/shell 38400 tty2 linux
-c2:345:respawn:/sbin/agetty -nl /usr/libexec/shell 38400 tty3 linux
-c3:345:respawn:/sbin/agetty 38400 tty8 linux
-c4:345:respawn:/sbin/agetty 38400 tty9 linux
+c1:345:respawn:/sbin/agetty -nl /usr/libexec/distrotech/sysconfig 38400 tty2 linux
+c2:345:respawn:/sbin/agetty -nl /usr/libexec/shell 38400 tty2 linux
+c3:345:respawn:/sbin/agetty -nl /usr/libexec/shell 38400 tty3 linux
+c4:345:respawn:/sbin/agetty 38400 tty8 linux
+c5:345:respawn:/sbin/agetty 38400 tty9 linux
 EOF
 ) >> etc/inittab
   fi;
