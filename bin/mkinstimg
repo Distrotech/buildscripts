@@ -205,11 +205,11 @@ build_squashfs_img() {
   fi;
   /usr/libexec/distrotech/instpkg ${ARCH} ${IMGTMPDIR} ${3}
 
-  ls -d ${IMGTMPDIR}/opt/*/${LIBDIR} |awk -v MNT=${IMGTMPDIR} '{printf "%s\n",substr($1,length(MNT)+1)}' > ${IMGTMPDIR}/etc/ld.so.conf.d/opt-${3}.conf
+  ls -d ${IMGTMPDIR}/opt/*/${LIBDIR} |awk -v MNT=${IMGTMPDIR} '{printf "%s\n",substr($1,length(MNT)+1)}' > ${IMGTMPDIR}/etc/ld.so.conf.d/opt-${3:1}.conf
 
   chroot ${IMGTMPDIR} /sbin/ldconfig > /dev/null 2>&1
 
-  if [ "${3}" == "root" ];then
+  if [ "${3:1}" == "root" ];then
     if [ -x ${SYSROOT}/${ARCH}/sbin/modprobe.static ];then
       rsync -a ${SYSROOT}/${ARCH}/sbin/modprobe.static ${IMGTMPDIR}/sbin/
     fi;
@@ -218,7 +218,7 @@ build_squashfs_img() {
 
   yum -y --installroot=${IMGTMPDIR} clean all
 
-  mksquashfs ${IMGTMPDIR}/* ${2}/${3}.img -comp xz
+  mksquashfs ${IMGTMPDIR}/* ${2}/${3:1}.img -comp xz
 
   if [ -e /etc/rpm/platform ];then
     rm /etc/rpm/platform
