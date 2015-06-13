@@ -176,7 +176,7 @@ LABEL build
   APPEND ro root=/dev/loop0 nomodeset dts_opt=buildroot squashimg=/boot/${1}/root.img buildimg=/boot/${1}/buildroot.img S
 LABEL Main Menu
   MENU LABEL Return To Main Menu
-  CONFIG /boot/syslinux.cfg
+  CONFIG /boot/syslinux/syslinux.cfg
 EOF
 }
 
@@ -247,10 +247,10 @@ add_kernel() {
       cp ${SYSROOT}/${ARCH}/boot/vmlinuz-${2}-${kernbits}-${KSUF} ${1}/boot/${kernbits}/vmlinuz
       mkinitrd bootimg ${1}/boot/${kernbits}/initrd.img ${SYSROOT}/${ARCH}/  ${2}-${kernbits}-${KSUF}
       if [ ! -e  ${1}/boot/${kernbits}/root.img ];then
-        build_squashfs_img ${kernbits} ${1}/boot/${kernbits} root ${IMGDIR}
+        build_squashfs_img ${kernbits} ${1}/boot/${kernbits} @root ${IMGDIR}
       fi;
       if [ ! -e  ${1}/boot/${kernbits}/buildroot.img ];then
-        build_squashfs_img ${kernbits} ${1}/boot/${kernbits} buildroot ${IMGDIR}
+        build_squashfs_img ${kernbits} ${1}/boot/${kernbits} @buildroot ${IMGDIR}
       fi;
       syslinux_cfg_arch ${kernbits} > ${1}/boot/${kernbits}/syslinux.cfg
       if [ -d ${DTSSRVDIR}/yum/${ARCH} ];then
