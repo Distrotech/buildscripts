@@ -340,7 +340,6 @@ build_kernel() {
     make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} clean
     make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} CROSS_COMPILE=${CROSS_COMPILE} ${MAKE_J} all && \
     make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} DESTDIR=${1} CROSS_COMPILE=${CROSS_COMPILE} install || exit 1
-    make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} clean
   fi;
 
   if [ -d ${SRCDIR}/kernel/mISDN ];then
@@ -382,6 +381,12 @@ build_kernel() {
       done;
     done) >/dev/null 2>&1
     find ${1}/lib/modules/${VSUF}/kernel -type f |grep -v "\.gz" |awk '{printf "gzip %s\n",$1}' |sh
+  fi;
+
+  #Clean DAHDI it needs to be uncleaned to build wanpipe
+  if [ -d ${SRCDIR}/kernel/dahdi ];then
+    cd ${SRCDIR}/kernel/dahdi
+    make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} clean
   fi;
 
   depmod -b ${1} -ae -F ${1}/boot/System.map-${VSUF} ${VSUF}
