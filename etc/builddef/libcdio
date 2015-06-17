@@ -6,3 +6,4 @@ case ${barch} in
         mips*|ppc64)CHROOTBUILD="1";;
 esac;
 RPMGROUP="core";
+EXTRALIBS="-ltinfo";

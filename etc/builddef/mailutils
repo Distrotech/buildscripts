@@ -6,7 +6,7 @@ case ${barch} in
   mips)OPT_mips="--without-guile";;
   *)CONFOPT="${CONFOPT} --with-guile";;
 esac;
-EXTRALIBS="-lncursesw";
+EXTRALIBS="-lncursesw -ltinfow";
 case ${barch} in
   arm)CHROOTBUILD="0";;
   *)CHROOTBUILD="1";;

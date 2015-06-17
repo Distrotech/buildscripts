@@ -1,7 +1,7 @@
 VERSION="5.9"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-gpm --enable-widec --with-shared --enable-ext-colors --enable-ext-mouse --enable-overwrite --without-ada";
+CONFOPT="--with-gpm --enable-widec --with-shared --enable-ext-colors --enable-ext-mouse --enable-overwrite --without-ada --with-termlib --with-ticlib";
 ALIAS="ncurses";
 ADDCC="0";
 GITBRANCH="master";

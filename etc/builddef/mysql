@@ -1,9 +1,10 @@
 VERSION="5.5.28"
 VERSEP="-";
 PREFIX="/opt/mysql";
-CONFOPT="-DINSTALL_MANDIR=/opt/share/man -DMYSQL_DATADIR=/var/opt/mysql";
-CONFOPTX="-DSTACK_DIRECTION=1 -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libncurses.so 
-         -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libncurses.so
+CONFOPT="-DINSTALL_MANDIR=/opt/share/man -DMYSQL_DATADIR=/var/opt/mysql
+         -DCURSES_NCURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libncurses.so
+         -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libtinfo.so";
+CONFOPTX="-DSTACK_DIRECTION=1 
          -DCMAKE_CROSSCOMPILING:BOOL=ON -DCURSES_INCLUDE_PATH:FILEPATH=${ARCHROOT}/${barch}/usr/include/ncurses";
 FIXUPLIB="1";
 NODIET="1";
