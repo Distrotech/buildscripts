@@ -5,3 +5,4 @@ CONFOPT="";
 ADDCFLAG="-I../../include";
 MAKE_J="";
 RPMGROUP="core";
+EXTRALIBS="-ltinfow";

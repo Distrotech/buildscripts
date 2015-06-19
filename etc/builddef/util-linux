@@ -4,13 +4,14 @@ PREFIX="/";
 if [ "${BUILDPROJECT}" == "util-linux" ];then
   CONFOPT="--enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw --disable-nologin
            --disable-vipw --disable-newgrp --disable-chfn-chsh --enable-write --enable-socket-activation
-           --with-selinux --without-udev --with-ncurses --enable-static-programs=mount --disable-su --disable-login";
+           --with-selinux --without-udev --enable-static-programs=mount --disable-su --disable-login";
   RPMOBSOLETE="util-linux-static util-linux-boot";
+  MAKEOPTS="NCURSES_LIBS=\"-lncursesw -ltinfow\"";
  elif [ "${BUILDPROJECT}" == "util-linux-boot" ];then
   CONFOPT="--enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw 
            --disable-vipw --disable-newgrp --disable-chfn-chsh --enable-write --enable-socket-activation --disable-chfn-chsh
            --without-selinux --without-udev --without-slang --disable-login --disable-su --disable-runuser --without-ncurses
-           --without-slang --disable-nologin --disable-pylibmount --without-systemd";
+           --without-slang --disable-nologin --disable-pylibmount --disable-more --without-systemd";
   NOINST="1";
   ALIAS="util-linux";
   RPMOBSOLETE="util-linux-static";
@@ -18,7 +19,7 @@ if [ "${BUILDPROJECT}" == "util-linux" ];then
   CONFOPT="--disable-shared --enable-ddate --enable-arch --enable-last --enable-line --enable-mesg --enable-raw
            --disable-vipw --disable-newgrp --disable-chfn-chsh --enable-write --enable-socket-activation --disable-chfn-chsh
            --without-selinux --without-udev --without-slang --disable-login --disable-su --disable-runuser --without-ncurses
-           --without-slang --disable-nologin --disable-pylibmount --without-systemd LDFLAGS=\"-static -L=/usr/${C_LIBDIRS}\"";
+           --without-slang --disable-nologin --disable-pylibmount --disable-more --without-systemd LDFLAGS=\"-static -L=/usr/${C_LIBDIRS}\"";
   MAKEOPTS="LDFLAGS=\"-all-static -L=/usr/${C_LIBDIRS}\"";
   NOINST="1";
   ALIAS="util-linux";

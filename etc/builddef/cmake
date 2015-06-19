@@ -2,10 +2,17 @@ VERSION="2.8.11.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="-DQT_QMAKE_EXECUTABLE:PATH=/opt/qt-4/bin/qmake BUILD_TESTING:BOOL=OFF -DSTACK_DIRECTION=1
-        -DBUILD_QtDialog:BOOL=OFF -DNCURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libncurses.so
-        -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libtinfo.so -DBUILD_TESTING:BOOL=OFF
-        -DCURSES_INCLUDE_PATH:FILEPATH=${ARCHROOT}/${barch}/usr/include/ncurses";
-CONFOPTX="-DCMAKE_CROSSCOMPILING=TRUE";
+        -DCURSES_NCURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libncurses.so
+        -DCURSES_EXTRA_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libncurses.so
+        -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libtinfo.so 
+        -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libtinfo.so 
+        -DCURSES_INCLUDE_PATH:FILEPATH=${ARCHROOT}/${barch}/usr/include/ncurses
+        -DBUILD_QtDialog:BOOL=OFF -DBUILD_TESTING:BOOL=OFF";
+CONFOPTX="-DCMAKE_CROSSCOMPILING=TRUE
+        -DCURSES_NCURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libncurses.so
+        -DCURSES_EXTRA_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libncurses.so
+        -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libtinfo.so
+        -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libtinfo.so";
 NOCCOPT="1";
 ADDPATH="${SRCDIR}/cmake/cmake-2.8.9/build-${barch}/bin";
 QT_VER="4";
