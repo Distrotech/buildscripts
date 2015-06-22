@@ -904,7 +904,7 @@ cmake_cross_build() {
 
   if [ "${2}" == "${NARCH}" ];then
     #Cmake bootstrap process special case
-    if [ "${PROJECT}" == "cmake" ];then
+    if [ "${PROJECT}" == "cmake" ] && [ ! -x /usr/bin/cmake ];then
       (../bootstrap --prefix=/usr --mandir=share && make ${MAKE_J} && make install) || return 1
     fi;
     eval cmake -DCMAKE_INSTALL_PREFIX:PATH=${PREFIX} -DCMAKE_STANDARD_LIBRARIES=\"${EXTRALIBS}\" \
