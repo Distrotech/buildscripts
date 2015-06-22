@@ -2663,7 +2663,7 @@ bootstrap_arch_root() {
       if [ -d ${ARCHROOT}/${arch}/var/hybrid/libexec/gcc/ ];then
         export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
       fi;
-      chroot ${ARCHROOT}/${arch} cpan -Ti XML::Parser XML::SAX  DBI Path::Class Try::Tiny DBI NetAddr::IP Net::DNS Test::Requires Convert::ASN1 Encode::Detect Parse::Pidl) || return 1
+      chroot ${ARCHROOT}/${arch} cpan -Ti XML::Parser XML::SAX  DBI Path::Class Try::Tiny DBI NetAddr::IP Net::DNS Test::Requires Convert::ASN1 Encode::Detect Parse::Pidl Locale::Codes) || return 1
     fi) || return 1;
   done;
 }
