@@ -65,6 +65,7 @@ if [ -d ${PKGLIST_PTH} ];then
     generate_groups |xmllint --format  - > ${RPMDIR}/repodata/groups.xml
     createrepo -g repodata/groups.xml ${RPMDIR}
   fi;
+  yum clean metadata
   rm -rf ${PKGLIST_PTH}
   if [ -d /var/spool/samba/ftp/repo ];then
     rsync -aP --delete ${RPMDIR}/ /var/spool/samba/ftp/repo/

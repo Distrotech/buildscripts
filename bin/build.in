@@ -1423,7 +1423,7 @@ build_project() {
   export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH} ${BASE_LIBPATH} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=/opt/xfce/include";
 
   if [ "${BOOTSTRAP}" == "0" ];then
-    if [ ! -d /usr/bin/hybrid ] || [ ! -e /proc/sys/fs/binfmt_misc/${ORIGARCH} ];then
+    if [ ! -d /usr/bin/hybrid ] || [ ! -e /proc/sys/fs/binfmt_misc/${NARCH} ];then
       CC="/usr/bin/${HOST}-gcc";
       CXX="/usr/bin/${HOST}-g++"
       LD="/usr/bin/${HOST}-ld"
@@ -2072,7 +2072,7 @@ build_gcc_bootstrap() {
 #     else
 #      LDFLAGS="-L${ARCHROOT}/${TARCH}/${TLIBDIR} -L${ARCHROOT}/${TARCH}/usr/${TLIBDIR}";
 #    fi;
-    LDFLAGS="-L${ARCHROOT}/${1}/usr/${C_LIBDIRS} ${LDFLAGS}";
+    LDFLAGS="-L${ARCHROOT}/${3}/usr/${TLIBDIR} ${LDFLAGS}";
    elif [ ! "${4}" ] || [ "${4}" == "null" ];then
     MARCH=BOOTOPT_${1}
     CONFOPT="${NULLOPT} ${SYSROOT} CC=${THOST}-gcc CXX=${THOST}-g++ --with-gmp-lib=${ARCHROOT}/${3}/${TAPRE}/${TLIBDIR}/${TMLIBDIR}"
@@ -2089,11 +2089,6 @@ build_gcc_bootstrap() {
     LANGOPT=${!GCCLANG}
     CFLAGS="-I=/usr/include -O2"
     CXXFLAGS="-I=/usr/include -O2"
-    if [ "${TMLIBDIR}" ];then
-      LDFLAGS="-L${ARCHROOT}/${3}/${TLIBDIR}/${TMLIBDIR} -L${ARCHROOT}/${3}/usr/${TLIBDIR}/${TMLIBDIR}";
-     else
-      LDFLAGS="-L${ARCHROOT}/${3}/${TLIBDIR} -L${ARCHROOT}/${3}/usr/${TLIBDIR}";
-    fi;
 
     export CFLAGS CXXFLAGS
     CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${TLIBDIR}/jvm/gcj-jdk-${1} --enable-cxx-flags=-I=/usr/include LIBS=-lstdc++
@@ -2165,7 +2160,7 @@ build_gcc_bootstrap() {
   fi;
   PREFIX="/usr";
 
-  LDFLAGS_FOR_TARGET="-L${ARCHROOT}/${1}/${TPREFIX}/${C_LIBDIRS} -L${BUILDDIR}/${TPREFIX}/${TLIBDIR} -L${TPREFIX}/${TLIBDIR}"
+  LDFLAGS_FOR_TARGET="-L${BUILDDIR}/${TPREFIX}/${TLIBDIR} -L${TPREFIX}/${TLIBDIR} -L${ARCHROOT}/${1}/${TPREFIX}/${C_LIBDIRS}";
   if [ "${1}" == "${NARCH}" ] && [ ! -x /usr/${2}/bin/ld ];then
     LDFLAGS_FOR_TARGET="${LDFLAGS_FOR_TARGET} -B${BUILDDIR}/usr/${2}/bin";
   fi;
