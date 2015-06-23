@@ -239,7 +239,7 @@ arch_config() {
     mips64)QTSPEC=linux-mips-g++-64;;
     arm)QTSPEC=linux-arm-gnueabi-g++;;
     arm64)QTSPEC=linux-aarch64-gnu-g++;;
-    armv6)QTSPEC=linux-armv6-gnu-g++;;
+    armv6)QTSPEC=linux-armv6-gnueabi-g++;;
     ppc)QTSPEC=linux-ppc-g++;;
     ppc64)QTSPEC=linux-ppc-g++-64;;
     x86_64)QTSPEC=linux-g++-64;;
