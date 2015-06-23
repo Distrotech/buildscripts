@@ -16,6 +16,7 @@ NARCH=${NARCH:=$( uname -m )}
 case ${NARCH} in
   powerpc)NARCH=ppc;;
   powerpc64)NARCH=ppc64;;
+  armv6*)NARCH=armv6;;
   arm*)NARCH=arm;;
   aarch64)NARCH=arm64;;
 esac;
@@ -201,14 +202,14 @@ pkg2rpm() {
     fi
     orig_release=${release}
 
-    RPM_FILE=${rpmname}-${RVERSION}-${release}.${1}.rpm;
+    RPM_FILE=${rpmname}-${RVERSION}-${release}.${3}.rpm;
     if [ ! -e ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ] || [ ${pfile} -nt ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
       export AUTODEP RPMINTDEPS RPMPROVIDES RPMEPOCH RPM_OBSOLETE RPMREMOVE
       let release++
       if [ -e ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
         rm ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
       fi;
-      RPM_FILE=${rpmname}-${RVERSION}-${release}.${1}.rpm;
+      RPM_FILE=${rpmname}-${RVERSION}-${release}.${3}.rpm;
 
       RPMSPECDIR=${RPMBROOT}/SPECS/
       if [ ! -d ${RPMSPECDIR} ];then
@@ -282,13 +283,13 @@ pkg2rpm() {
 
       if [ -d ${RPMROOTDIR} ] && [ "`ls -A ${RPMROOTDIR}`" ];then
         (cd ${RPMROOTDIR}
-        mkrpmspec ${1} ${VERSION} ${release} ${rpmname} ${git} ${pfile} ${RVERSION} ${RPMGROUP}${xpkg} > ${RPMSPECFILE})
-        rpmbuild -bb --target=${1} --buildroot ${RPMROOTDIR} ${RPMSPECFILE}
+        mkrpmspec ${3} ${VERSION} ${release} ${rpmname} ${git} ${pfile} ${RVERSION} ${RPMGROUP}${xpkg} > ${RPMSPECFILE})
+        rpmbuild -bb --target=${3} --buildroot ${RPMROOTDIR} ${RPMSPECFILE}
         if [ -e ${RPMSPECFILE} ];then
           rm ${RPMSPECFILE}
         fi
-        if [ -e ${RPMBROOT}/RPMS/${1}/${RPM_FILE} ];then
-          mv ${RPMBROOT}/RPMS/${1}/${RPM_FILE} ${RPMDIR}/${1}/${2}/${PNAME}/
+        if [ -e ${RPMBROOT}/RPMS/${3}/${RPM_FILE} ];then
+          mv ${RPMBROOT}/RPMS/${3}/${RPM_FILE} ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
         fi;
       fi;
       if [ -d ${RPMROOTDIR} ];then
@@ -310,6 +311,13 @@ pkg_rpm_arch() {
     return 1;
   fi;
 
+  case ${1} in
+    arm)RPMARCH="armv7l";;
+    armv6)RPMARCH="armv6l";;
+    arm64)RPMARCH="aarch64";;
+    *)RPMARCH=${1};;
+  esac;
+
   if [ "${1}" == "${NARCH}" ];then
      RPMROOT="/";
    else
@@ -321,13 +329,13 @@ pkg_rpm_arch() {
   export RPMROOT
 
   if [ "${2}" ];then
-    (pkg2rpm ${1} ${2})
+    (pkg2rpm ${1} ${2} ${RPMARCH})
    else
     for pkg in `ls ${DEFDIR}` gcc-shared;do
       if [ ! -e ${STATDIR}/${1}/done/${pkg} ];then
         continue;
       fi;
-      (pkg2rpm ${1} ${pkg})
+      (pkg2rpm ${1} ${pkg} ${RPMARCH})
     done;
   fi;
 
