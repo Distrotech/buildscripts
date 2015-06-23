@@ -64,8 +64,8 @@ export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:${DESTDIR}${PREFIX}/${B_LIBDIRS}/pkgco
 export DPATH=${DESTDIR}${PREFIX}
 export MAKEFLAGS=${MAKE_J}
 
-export ACLOCAL="aclocal-1.11";
-export AUTOMAKE="automake-1.11";
+export ACLOCAL="aclocal-1.14";
+export AUTOMAKE="automake-1.14";
 
 #export LD_LIBRARY_PATH=/usr/${B_LIBDIRS}:/${B_LIBDIRS}:${SYSROOT}/${B_LIBDIRS}:${SYSROOT}/usr/${B_LIBDIRS}:${SYSROOT}/${PREFIX}/${B_LIBDIRS}
 
@@ -113,7 +113,7 @@ fi;
 
 export CC_FOR_BUILD=gcc
 export CXX_FOR_BUILD=g++
-export CFLAGS="${CFLAGS} -I=/usr/${B_LIBDIRS}/glib-2.0/include -I${DESTDIR}/${PREFIX}/include"
+export CFLAGS="${CFLAGS} -I=/usr/${B_LIBDIRS}/glib-2.0/include -I${DESTDIR}/${PREFIX}/include -I=/usr/include/pixman-1"
 export LDFLAGS="${LDFLAGS} -L${DESTDIR}/${PREFIX}/${B_LIBDIRS}"
 TRPREFIX=$(echo ${PREFIX} |tr '/' '_')
 CONFFLAGS="--host=${2} --build=${BUILD} --with-sysroot --libdir=${PREFIX}/${B_LIBDIRS} --disable-selective-werror ${ARCHOPT}
