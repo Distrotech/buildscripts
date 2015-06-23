@@ -10,3 +10,5 @@ MAKE_J="";
 ADDCC="0";
 RPMGROUP="java";
 DONTBUILD="arm64";
+AMVER="1.14";
+AUTORECONF="1";

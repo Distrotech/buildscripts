@@ -12,7 +12,7 @@ OPT_x86_64="--enable-introspection=no";
 OPT_x86_32="--enable-introspection=no";
 OPT_i686="--enable-introspection=no";
 ADDCC="0";
-ADDCFLAG="-I=/usr/include/glib-2.0 -I/usr/include/gio-unix-2.0 -I=/include/gudev-1.0 -I=/usr/include/polkit-1";
+ADDCFLAG="-I=/usr/include/glib-2.0 -I/usr/include/gio-unix-2.0 -I=/include/gudev-1.0 -I=/usr/include/polkit-1 -I=/usr/include/gusb-1";
 if [ "${HASGIR}" == "no" ];then
   DONTBUILD="${barch}";
 fi;

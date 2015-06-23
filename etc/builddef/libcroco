@@ -8,3 +8,5 @@ if [ "${barch:0:3}" == "win" ];then
 fi
 ADDCFLAG="-I=${PREFIX}/include/libxml2";
 RPMGROUP="core";
+AMVER="1.14";
+AUTORECONF="1";

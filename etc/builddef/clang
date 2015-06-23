@@ -11,3 +11,6 @@ FIXUPLIB="1";
 ADDCFLAG="-I=/usr/include/libxml2";
 DONTBUILD="mips64 ppc ppc64";
 RPMGROUP="dev";
+case ${barch} in
+  arm*|i686|x86_32)CHROOTBUILD="1";;
+esac;

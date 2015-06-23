@@ -8,3 +8,4 @@ PREFIX="/usr";
 BUILDDIR="0";
 CHROOTBUILD="1";
 RPMGROUP="core";
+AMVER="1.14";

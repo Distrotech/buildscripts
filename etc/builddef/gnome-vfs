@@ -1,22 +1,9 @@
 VERSION="2.24.4"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
-OPT_arm="ac_cv_func_posix_getpwuid_r=yes
-          ac_cv_path_KRB5_CONFIG=${ARCHROOT}/arm/usr/bin/krb5-config";
-OPT_arm64="ac_cv_func_posix_getpwuid_r=yes
-          ac_cv_path_KRB5_CONFIG=${ARCHROOT}/arm64/usr/bin/krb5-config";
-OPT_mips="ac_cv_func_posix_getpwuid_r=yes
-          ac_cv_path_KRB5_CONFIG=${ARCHROOT}/mips/usr/bin/krb5-config";
-OPT_mips64="ac_cv_func_posix_getpwuid_r=yes
-          ac_cv_path_KRB5_CONFIG=${ARCHROOT}/mips64/usr/bin/krb5-config";
-OPT_ppc="ac_cv_func_posix_getpwuid_r=yes
-          ac_cv_path_KRB5_CONFIG=${ARCHROOT}/ppc/usr/bin/krb5-config";
-OPT_ppc64="ac_cv_func_posix_getpwuid_r=yes
-          ac_cv_path_KRB5_CONFIG=${ARCHROOT}/ppc64/usr/bin/krb5-config";
-OPT_i686="ac_cv_func_posix_getpwuid_r=yes
-          ac_cv_path_KRB5_CONFIG=${ARCHROOT}/i686/usr/bin/krb5-config";
-OPT_x86_32="ac_cv_func_posix_getpwuid_r=yes
-          ac_cv_path_KRB5_CONFIG=${ARCHROOT}/x86_32/usr/bin/krb5-config";
+CONFOPT="ac_cv_func_posix_getpwuid_r=yes
+         ac_cv_path_KRB5_CONFIG=${ARCHROOT}/${barch}/usr/bin/krb5-config";
 ADDCFLAG="-I=/usr/include/libxml2 -I=/usr/include/gconf/2";
 RPMGROUP="root";
+AMVER="1.14";
+AUTORECONF="1";

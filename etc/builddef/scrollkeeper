@@ -3,7 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-AMVER="1.11";
+AMVER="1.14";
 AUTORECONF="1";
 DONTBUILD="cyg32 cyg64";
 GITBRANCH="master";
@@ -11,3 +11,4 @@ case ${barch} in
   ppc*|mips*)CHROOTBUILD=1;;
 esac;
 RPMGROUP="core";
+

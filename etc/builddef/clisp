@@ -4,6 +4,7 @@ PREFIX="/usr";
 STDOPTS="--prefix=${PREFIX} --mandir=/usr/share/man FORCE_UNSAFE_CONFIGURE=1 --libdir=/usr/${C_LIBDIRS} --srcdir=../ --with-libsigsegv-prefix=/usr";
 XCONFOPT="--with-module=gdbm  --with-module=pcre --with-module=postgresql --with-module=rawsock  --with-module=zlib";
 DONTBUILD="x86_32";
+OPT_i686="CFLAGS=-falign-functions=4";
 NOCCOPT="1";
 ADDCC="0";
 SYSROOTFIXUP="0";

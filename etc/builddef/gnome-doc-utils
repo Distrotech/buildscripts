@@ -7,3 +7,5 @@ case ${barch} in
   *)CHROOTBUILD="1";;
 esac;
 RPMGROUP="gui";
+AMVER="1.14";
+AUTORECONF="1";

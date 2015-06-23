@@ -4,3 +4,5 @@ PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-I=/usr/include/orbit-2.0/ -I=/usr/include/libxml2";
 RPMGROUP="gui";
+AUTORECONF="1";
+AMVER="1.14";

@@ -4,3 +4,5 @@ PREFIX="/usr";
 CONFOPT="";
 GITBRANCH="master";
 RPMGROUP="root";
+AMVER="1.14";
+AUTORECONF="1";

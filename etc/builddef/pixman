@@ -1,8 +1,11 @@
-VERSION="0.32.4"
+VERSION="0.32.6"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-gtk";
-if [ "${barch:0:3}" != "win" ];then
-  DONTBUILD="${barch}";
-fi;
+#if [ "${barch:0:3}" != "win" ];then
+#  DONTBUILD="${barch}";
+#fi;
 RPMGROUP="gui";
+case ${barch} in
+  arm|i686|x86_32)CHROOTBUILD="1";;
+esac;

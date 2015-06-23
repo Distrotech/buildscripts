@@ -8,6 +8,7 @@ SYSROOTFIXUP="1";
 OPT_x86_32="--with-python=${ARCHROOT}/x86_32/usr/bin/python ac_cv_fread_reads_directories=no \
             ac_cv_snprintf_returns_bogus=no";
 OPT_arm="ac_cv_fread_reads_directories=no ac_cv_snprintf_returns_bogus=no";
+OPT_armv6=${OPT_arm};
 OPT_arm64="ac_cv_fread_reads_directories=no ac_cv_snprintf_returns_bogus=no";
 OPT_mips="ac_cv_fread_reads_directories=no ac_cv_snprintf_returns_bogus=no";
 OPT_mips64="ac_cv_fread_reads_directories=no ac_cv_snprintf_returns_bogus=no";

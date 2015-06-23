@@ -7,3 +7,5 @@ case ${barch} in
   ppc64|mips64)CHROOTBUILD="1";;
 esac;
 RPMGROUP="dev";
+AMVER="1.14";
+AUTORECONF="1";
