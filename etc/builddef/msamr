@@ -5,3 +5,6 @@ CONFOPT="";
 AMVER="1.13";
 ADDCFLAG="-I=/usr/include/opencore-amrnb -I=/usr/include/opencore-amrwb";
 RPMGROUP="gui";
+case ${barch} in
+  arm|armv6|i686|x86_32)CHROOTBUILD="1";;
+esac

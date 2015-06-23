@@ -5,6 +5,6 @@ CONFOPT="";
 ADDCFLAG="-std=gnu99";
 EXTRALIBS="-lm";
 case ${barch} in
-        mips*|ppc64)CHROOTBUILD="1";;
+        i686|x86_32|arm|armv6|mips*|ppc64)CHROOTBUILD="1";;
 esac;
 RPMGROUP="core";

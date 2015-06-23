@@ -4,3 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/harfbuzz/";
 RPMGROUP="core";
+case ${barch} in
+  arm|armv6|x86_32|i686)CHROOTBUILD="1";;
+esac;

@@ -4,3 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 ADDLDFLAG="-L=/usr/${C_LIBDIRS}/ilbc";
 RPMGROUP="gui";
+case ${barch} in
+  arm|armv6|i686|x86_32)CHROOTBUILD="1";;
+esac

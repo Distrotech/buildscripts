@@ -4,3 +4,7 @@ PREFIX="/usr";
 CONFOPT="--with-dbdir=/usr/share/clamav";
 DISTCONF="freshclam.conf clamd.conf";
 RPMGROUP="core";
+case ${barch} in
+  arm|armv6|ppc*|i686)CHROOTBUILD="1";;
+  x86_32)DONTBUILD="${barch}";;
+esac;

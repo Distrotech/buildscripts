@@ -6,7 +6,8 @@ SYSROOTFIXUP="0";
 CLEARFLAGS="1";
 NOSYSROOTLT="1";
 case ${barch} in
-  ppc*)CHROOTBUILD="1";;
+  x86_32|arm|armv6|i686|ppc*)CHROOTBUILD="1";;
 esac;
 RPMGROUP="dev";
 DONTBUILD="arm64 mips";
+EXTRALIBS="-L${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/ -ltinfo -lncurses";

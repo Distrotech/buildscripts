@@ -13,6 +13,7 @@ if [ "${barch:0:3}" != "win" ];then
 fi;
 AMVER="1.14";
 case ${barch} in
-        mips*)CHROOTBUILD="1";;
+        arm|armv6|i686|x86_32|mips*)CHROOTBUILD="1";;
 esac;
 RPMGROUP="gui";
+DONTBUILD="ppc64 mips64";

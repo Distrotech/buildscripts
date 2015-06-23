@@ -6,6 +6,6 @@ if [ "${HASGIR}" == "no" ];then
   DONTBUILD="${barch}";
 fi;
 case ${barch} in
-  ppc*|mips64)CHROOTBUILD="1";;
+  arm|armv6|i686|x86_32|ppc*|mips64)CHROOTBUILD="1";;
 esac;
 RPMGROUP="gui";

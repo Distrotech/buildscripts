@@ -5,3 +5,6 @@ CONFOPT="";
 GITBRANCH="master";
 DONTBUILD="mips64 mips";
 RPMGROUP="core";
+case ${barch} in
+  arm|armv6|i686|x86_32)CHROOTBUILD="1";;
+esac;

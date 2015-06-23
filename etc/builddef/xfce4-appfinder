@@ -4,3 +4,6 @@ PREFIX="/opt/xfce";
 CONFOPT="--datarootdir=/usr/share --enable-maintainer-mode";
 NOMLIBDIR="1";
 RPMGROUP="gui";
+case ${barch} in
+  arm|armv6|i686|x86_32)CHROOTBUILD="1";;
+esac;

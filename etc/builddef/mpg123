@@ -6,3 +6,6 @@ BUILDDIR="0";
 ADDCFLAG="-I=/usr/include/SDL/ -D_FILE_OFFSET_BITS=64";
 OPT_x86_32="--with-cpu=x86-64 --disable-lfs-alias";
 RPMGROUP="core";
+case ${barch} in
+  arm|armv6|i686|x86_32)CHROOTBUILD="1";;
+esac;

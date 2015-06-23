@@ -5,6 +5,6 @@ CONFOPT="";
 BUILDDIR="0";
 GITBRANCH="master";
 case ${barch} in
-        i686|x86_32|x86_64|mips*|ppc64|arm64)CHROOTBUILD="1";;
+        i686|x86_32|x86_64|mips*|ppc*|arm64)CHROOTBUILD="1";;
 esac;
 RPMGROUP="core";
