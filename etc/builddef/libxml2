@@ -3,21 +3,11 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 SYSROOTFIXUP="1";
-OPT_i686="--with-python=${ARCHROOT}/i686/usr/";
-OPT_x86_32="--with-python=${ARCHROOT}/x86_32/usr/";
-OPT_x86_64="--with-python=${ARCHROOT}/x86_64/usr/";
-OPT_mips="--with-python=${ARCHROOT}/mips/usr/";
-OPT_mips64="--with-python=${ARCHROOT}/mips64/usr/";
-OPT_arm="--with-python=${ARCHROOT}/arm/usr/";
-OPT_arm64="--with-python=${ARCHROOT}/arm64/usr/";
-OPT_ppc="--with-python=${ARCHROOT}/ppc/usr/";
-OPT_ppc64="--with-python=${ARCHROOT}/ppc64/usr/";
-OPT_win32="--without-python";
-OPT_win64="--without-python";
-OPT_cyg32="--without-python";
-OPT_cyg64="--without-python";
-#if [ "${barch:0:3}" == "cyg" ];then
+if [ -x ${ARCHROOT}/${barch}/usr/bin/python ];then
+  CONFOPT="--with-python=${ARCHROOT}/${barch}/usr";
+ else
+  CONFOPT="--without-python";
+fi;
 EXTRALIBS="-L=/usr/${C_LIBDIRS} -lz"
-#fi;
 ADDCFLAG="-I=/usr/include/python2.7"
 RPMGROUP="root";

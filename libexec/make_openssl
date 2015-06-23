@@ -1,7 +1,7 @@
 #!/bin/bash
 
 case ${1} in
-  arm)TYPE=linux-armv4
+  arm|armv6)TYPE=linux-armv4
       SARCH=arm;;
   arm64)TYPE=linux-aarch64
       SARCH=arm64;;

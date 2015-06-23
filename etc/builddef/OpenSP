@@ -5,6 +5,6 @@ CONFOPT="";
 AMVER="1.9";
 GITBRANCH="master";
 case ${barch} in
-	mips64|arm64|ppc64)CHROOTBUILD="1";;
+  armv6|mips64|arm64|ppc64)CHROOTBUILD="1";;
 esac;
 RPMGROUP="core";

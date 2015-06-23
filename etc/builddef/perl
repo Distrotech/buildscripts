@@ -10,6 +10,7 @@ NOCCOPT="1";
 OPT_x86_32="--sysroot=${ARCHROOT}/x86_32 -A append:cc=-mx32";
 OPT_i686="-Dcc=i686-linux-gnu-gcc -A append:cc=--sysroot=${ARCHROOT}/i686";
 OPT_arm="-Dcc=/usr/bin/arm-linux-gnueabi-gcc -A ldflags=-L=/usr/lib -A append:libswanted=' gcc_s'";
+OPT_armv6="-Dcc=/usr/bin/armv6-linux-gnueabi-gcc -A ldflags=-L=/usr/lib -A append:libswanted=' gcc_s'";
 OPT_ppc="-Dcc=/usr/bin/ppc-linux-gnu-gcc -A ldflags=-L=/usr/lib";
 DONTBUILD="cyg32 cyg64";
 CHROOTBUILD="1";

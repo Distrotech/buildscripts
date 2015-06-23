@@ -4,16 +4,21 @@ NARCH=${NARCH:=$( uname -m )}
 case ${NARCH} in
   powerpc)NARCH=ppc;;
   powerpc64)NARCH=ppc64;;
-  arm64|aarch64)NARCH=arm64;;
-  arm*)NARCH=arm;;
+  aarch64)NARCH=arm64;;
+  armv7l)NARCH=arm;;
+  armv6l|armv6)NARCH=armv6;
+         SYSARCH=arm;
 esac;
+if [ ! "${SYSARCH}" ];then
+  SYSARCH=${NARCH}
+fi
 export NARCH
 
 if [ ! -e /proc/sys/fs/binfmt_misc/register ];then
   mount -t binfmt_misc none /proc/sys/fs/binfmt_misc/
 fi;
 
-if [ -e /proc/sys/fs/binfmt_misc/${NARCH} ] && [ -x /usr/bin/hybrid/clear ];then
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ] && [ -x /usr/bin/hybrid/clear ];then
   /usr/bin/hybrid/clear
  elif [ -x /usr/bin/clear ];then
   /usr/bin/clear
@@ -68,7 +73,7 @@ for libpth in /usr /opt/Xorg /opt/qt-5 /opt/qt-4 /opt/xfce /opt/apr /opt/mysql /
   fi;
 done;
 
-if [ -e /proc/sys/fs/binfmt_misc/${NARCH} ];then
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin/hybrid:/usr/bin:/sbin:/bin/hybrid:/bin:/opt/apache2/bin:/opt/Xorg/bin:/opt/xfce/bin
   export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
   export GIT_EXEC_PATH=/var/hybrid/git-core

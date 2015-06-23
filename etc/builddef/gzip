@@ -1,7 +1,8 @@
-VERSION="1.5"
+VERSION="1.6"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
+CONFOPTX="gl_cv_func_memchr_works=yes";
 STATICMOPT="LDFLAGS=-static";
 AMVER="1.12";
 COREBUILD="1";

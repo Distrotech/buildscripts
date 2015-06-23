@@ -1,8 +1,9 @@
 #!/bin/bash
 
-DRVFILT="|(driver/xf86-video-v4l)|(driver/xf86-video-xgixp)|(driver/xf86-video-cirrus)|(driver/xf86-video-s3virge)|(driver/xf86-video-siliconmotion)|(driver/xf86-video-voodoo)|(driver/xf86-video-rendition)";
+DRVFILT="|(driver/xf86-video-v4l)|(driver/xf86-video-xgixp)|(driver/xf86-video-cirrus)|(driver/xf86-video-s3virge)|(driver/xf86-video-siliconmotion)|(driver/xf86-video-voodoo)|(driver/xf86-video-rendition)|(pixman)";
 
 FILTER_arm="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)|(driver/xf86-video-r128)${DRVFILT}";
+FILTER_armv6=${FILTER_arm};
 FILTER_arm64="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)(driver/xf86-video-r128)${DRVFILT}";
 #|(data/cursors)|(font/)";
 FILTER_mips="${DRVFILT}|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)|(driver/xf86-video-r128)";

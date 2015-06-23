@@ -37,10 +37,15 @@ case ${NARCH} in
   ppc64|powerpc64)QT_VER="4";
       NARCH=ppc64;;
   arm64|aarch64)NARCH=arm64;;
+  armv6)NARCH=armv6;
+        SYSARCH="arm";;
   arm*)NARCH=arm;
       JAVA_VER="1.7.0_25";;
 esac;
-export NARCH GCC_OPT
+if [ ! "${SYSARCH}" ];then
+  SYSARCH=${NARCH}
+fi;
+export NARCH GCC_OPT SYSARCH
 
 ANT_VER="1.9.2";
 M2_VER="3.1.1";
@@ -51,7 +56,7 @@ export TEX=tex
 #Cleanup the enviroment
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 unset JAVA_HOME ANT_HOME M2_HOME QTDIR
-if [ -e /proc/sys/fs/binfmt_misc/${NARCH} ];then
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
   export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
   export GIT_EXEC_PATH=/var/hybrid/git-core
   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin/hybrid:/usr/bin:/sbin:/bin/hybrid:/bin:${X11DIR}/bin:/opt/xfce/bin:${GCC_EXEC_PREFIX}
@@ -172,6 +177,7 @@ arch_config() {
   #Set build tupple
   case ${1} in
     arm64)TUPPLE=aarch64-linux-gnu;;
+    armv6)TUPPLE=armv6-linux-gnueabi;;
     arm)TUPPLE=arm-linux-gnueabi;;
     mips64)TUPPLE=mips64-linux-gnuabi64;;
     x86_32)TUPPLE=x86_64-linux-gnux32;;
@@ -209,6 +215,7 @@ arch_config() {
   case ${1} in
     x86_*|i[3-6]86)LINARCH="x86";;
     arm64)LINARCH=arm64;;
+    armv6)LINARCH=arm;;
     ppc|ppc64)LINARCH="powerpc";;
     *64)LINARCH=${1::-2};;
     *)LINARCH=${1};
@@ -219,7 +226,7 @@ arch_config() {
     x86_64)LDNAME=ld-linux-x86-64.so.2;;
     x86_32)LDNAME=ld-linux-x32.so.2;;
     i[3-6]86)LDNAME=ld-linux.so.2;;
-    arm)LDNAME=ld-linux-armhf.so.3;;
+    arm|armv6)LDNAME=ld-linux-armhf.so.3;;
     arm64)LDNAME=ld-linux-aarch64.so.1;;
     ppc|mips*)LDNAME=ld.so.1;;
     ppc64)LDNAME=ld64.so.1;;
@@ -232,6 +239,7 @@ arch_config() {
     mips64)QTSPEC=linux-mips-g++-64;;
     arm)QTSPEC=linux-arm-gnueabi-g++;;
     arm64)QTSPEC=linux-aarch64-gnu-g++;;
+    armv6)QTSPEC=linux-armv6-gnu-g++;;
     ppc)QTSPEC=linux-ppc-g++;;
     ppc64)QTSPEC=linux-ppc-g++-64;;
     x86_64)QTSPEC=linux-g++-64;;
@@ -246,12 +254,16 @@ arch_config() {
   esac;
 
   case ${1} in
-    arm)AQCPU=arm;;
+    arm|armv6)AQCPU=arm;;
     arm64)AQCPU=aarch64;;
     mips)AQCPU=mips;;
     mips64)AQCPU=mips64;;
     ppc)AQCPU=ppc;;
     ppc64)AQCPU=ppc64;;
+  esac;
+
+  case ${1} in
+    armv6)AQEMU_CPU="arm1176";;
   esac;
 }
 
@@ -441,9 +453,10 @@ check_create_arch() {
   B_LIBDIRS=${SETLIBDIR}
   MLIBDIR=${AMLIBDIR}
   QCPU=${AQCPU}
+  QEMUCPU=${AQEMU_CPU}
   HASGIR=${AHASGIR}
   LINUX_VER=${LIN_VER}
-  unset TUPPLE SETLIBDIR LINARCH AQCPU AHASGIR LIN_VER
+  unset TUPPLE SETLIBDIR LINARCH AQCPU AHASGIR LIN_VER AQEMU_CPU
 
   if [ "${MLIBDIR}" ];then
     C_LIBDIRS="${B_LIBDIRS}/${MLIBDIR}"
@@ -1240,7 +1253,10 @@ build_project() {
       else
        BUILDSCR=build;
      fi;
-     ${SETARCH} /usr/bin/env -i - SHELL=${SHELL} TERM=${TERM} NARCH=${NEWARCH} CLEANOPT=${BOOTCLEAN} RUNBASHRC=1 chroot ${ARCHROOT}/${NEWARCH} ${SCRIPTDIR}/${BUILDSCR} ${NEWARCH} + ${BUILDPROJECT})
+     if [ "${QEMUCPU}" ];then
+       SETQCPU="QEMU_CPU=${QEMUCPU} "
+     fi;
+     ${SETARCH} /usr/bin/env -i - ${SETQCPU}SHELL=${SHELL} TERM=${TERM} NARCH=${NEWARCH} CLEANOPT=${BOOTCLEAN} RUNBASHRC=1 chroot ${ARCHROOT}/${NEWARCH} ${SCRIPTDIR}/${BUILDSCR} ${NEWARCH} + ${BUILDPROJECT})
     if [ -e ${STATDIR}/${ORIGARCH}/fail/${PROJECT} ];then
       return 1
      else
@@ -1372,7 +1388,7 @@ build_project() {
     ARCHPREFIX="/usr";
   fi;
 
-  CFLAGS="${GCC_OPT}${ADDCFLAG} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=/opt/xfce/include -I=/opt/apr/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include -I=${ARCHPREFIX}/include/security";
+  CFLAGS="${GCC_OPT}${ADDCFLAG} -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/include/glib-2.0 -I=${ARCHPREFIX}/include/gtk-3.0 -I=${ARCHPREFIX}/include/gtk-2.0 -I=/opt/xfce/include -I=/opt/apr/include -I=${ARCHPREFIX}/${C_LIBDIRS}/glib-2.0/include -I=${ARCHPREFIX}/${B_LIBDIRS}/libffi-3.0.13/include -I=${ARCHPREFIX}/include/security";
 #  if [ "${JAVA_HOME}" ] && [ -d ${JAVA_HOME}/include ];then
 #    CFLAGS="${CFLAGS} -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux";
 #  fi
@@ -1420,10 +1436,10 @@ build_project() {
     ln -s -r ${PKGDESTDIR}/${ORIGARCH}/Xorg-git/opt/Xorg ${ARCHROOT}/${ORIGARCH}/opt/Xorg
   fi;
 
-  export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH} ${BASE_LIBPATH} -I=/include -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=/opt/xfce/include";
+  export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH} ${BASE_LIBPATH} -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=/opt/xfce/include";
 
   if [ "${BOOTSTRAP}" == "0" ];then
-    if [ ! -d /usr/bin/hybrid ] || [ ! -e /proc/sys/fs/binfmt_misc/${NARCH} ];then
+    if [ ! -d /usr/bin/hybrid ] || [ ! -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
       CC="/usr/bin/${HOST}-gcc";
       CXX="/usr/bin/${HOST}-g++"
       LD="/usr/bin/${HOST}-ld"
@@ -2757,7 +2773,7 @@ build_dependancies() {
     automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 findutils || return 1
 
   build_packages ${1} util-linux nano rsync grep less gzip tar pkg-config cpio iana-etc xmlto xmltoman giflib freetype \
-    fontconfig fonttools lcms2 jpeg libpng jbigkit tiff libmng OpenSP c-ares curl asciidoc git || return 1
+    fontconfig fonttools lcms2 jpeg libpng jbigkit tiff libmng OpenSP c-ares curl asciidoc git pixman || return 1
 
   #This will fail due to Mesa so dont bail only do it on first pass use build_project directly
   if [ ! -e ${STATDIR}/${1}/fail/Xorg ] && [ ! -e ${STATDIR}/${1}/done/Xorg ];then

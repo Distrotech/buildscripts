@@ -8,6 +8,7 @@ fi;
 CONFOPT="--enable-vp8 --enable-pic --enable-shared --enable-static --disable-unit-tests";
 STDOPTS="--prefix=${PREFIX}";
 OPT_arm="--target=armv7-linux-gcc --extra-cflags=-mhard-float";
+OPT_armv6="--target=armv6-linux-gcc --extra-cflags=-mhard-float";
 OPT_arm64="--target=generic-gnu";
 OPT_mips="--target=mips32-linux-gcc";
 OPT_mips64="--target=mips32-linux-gcc";
