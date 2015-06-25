@@ -4,6 +4,4 @@ PREFIX="/usr";
 CONFOPT="ac_cv_func_memcmp_working=yes";
 GITBRANCH="master";
 RPMGROUP="root";
-case ${barch} in
-  arm|armv6)CHROOTBUILD="1";;
-esac
+BUILDDIR="0";
