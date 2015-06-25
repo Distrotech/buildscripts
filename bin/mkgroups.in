@@ -56,18 +56,32 @@ generate_groups() {
 }
 
 PKGLIST_PTH=$( mktemp -p /tmp -d yumrpmpgklist.XXXXXXXXXXX)
-if [ -d ${PKGLIST_PTH} ];then
-  if [ -d ${RPMDIR}/repodata ];then
-    generate_groups |xmllint --format  - > ${RPMDIR}/repodata/groups.xml
-    createrepo -g repodata/groups.xml --update ${RPMDIR}
-   else
-    mkdir -p ${RPMDIR}/repodata
-    generate_groups |xmllint --format  - > ${RPMDIR}/repodata/groups.xml
-    createrepo -g repodata/groups.xml ${RPMDIR}
-  fi;
+GROUP_FILE=$( mktemp -p /tmp yum_groups_XXXXXXXXXXX.xml)
+
+if [ -d ${PKGLIST_PTH} ] && [ -f ${GROUP_FILE} ];then
+  generate_groups |xmllint --format  - > ${GROUP_FILE}
+  for RPM_MAN in "" "intel/" "intel/i686/" "intel/x86_32/" "intel/x86_64/" \
+                 "arm/" "arm/arm/" "arm/armv6/" "arm/arm64/" \
+                 "ppc/" "ppc/ppc/" "ppc/ppc64/" "mips/" "mips/mips/" "mips/mips64/";do
+    if [ -d ${RPMDIR}/${RPM_MAN}repodata ];then
+      cp ${GROUP_FILE} ${RPMDIR}/${RPM_MAN}repodata/groups.xml
+      createrepo -g repodata/groups.xml --update ${RPMDIR}/${RPM_MAN}
+     else
+      mkdir -p ${RPMDIR}/${RPM_MAN}repodata
+      cp ${GROUP_FILE} ${RPMDIR}/${RPM_MAN}repodata/groups.xml
+      createrepo -g repodata/groups.xml ${RPMDIR}/${RPM_MAN}
+    fi;
+  done;
   yum clean metadata
-  rm -rf ${PKGLIST_PTH}
   if [ -d /var/spool/samba/ftp/repo ];then
     rsync -aP --delete ${RPMDIR}/ /var/spool/samba/ftp/repo/
   fi;
+fi;
+
+if [ -d ${PKGLIST_PTH} ];then
+  rm -rf ${PKGLIST_PTH}
+fi;
+
+if [ -f ${GROUP_FILE} ];then
+  rm ${GROUP_FILE}
 fi;

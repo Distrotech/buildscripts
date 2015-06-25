@@ -1,6 +1,14 @@
 #!/bin/bash
 
-YUMDIR=@SRVDIR@/yum
+#Set ARCH group for repo root dir
+case ${1} in
+  arm|armv6|arm64)RPM_MAN="arm";;
+  i686|x86_32|x86_64)RPM_MAN="intel";;
+  mips|mips64)RPM_MAN="mips";;
+  ppc|ppc64)RPM_MAN="ppc";;
+esac;
+
+YUMDIR=@SRVDIR@/yum/${RPM_MAN}
 
 if [ ! "${1}" ] || [ ! -d ${YUMDIR}/${1} ];then
   exit

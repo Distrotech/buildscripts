@@ -103,8 +103,8 @@ pkg2rpm() {
 
   PNAME=${BUILDPROJECT}${VERSEP}${VERSION}${VERADD}
 
-  if [ ! -d ${RPMDIR}/${1}/${2}/${PNAME} ];then
-    mkdir -p ${RPMDIR}/${1}/${2}/${PNAME}
+  if [ ! -d ${RPMDIR}/${4}/${1}/${2}/${PNAME} ];then
+    mkdir -p ${RPMDIR}/${4}/${1}/${2}/${PNAME}
   fi;
 
   if [ ! "${RPMGROUP}" ];then
@@ -203,11 +203,11 @@ pkg2rpm() {
     orig_release=${release}
 
     RPM_FILE=${rpmname}-${RVERSION}-${release}.${3}.rpm;
-    if [ ! -e ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ] || [ ${pfile} -nt ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
+    if [ ! -e ${RPMDIR}/${4}/${1}/${2}/${PNAME}/${RPM_FILE} ] || [ ${pfile} -nt ${RPMDIR}/${4}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
       export AUTODEP RPMINTDEPS RPMPROVIDES RPMEPOCH RPM_OBSOLETE RPMREMOVE
       let release++
-      if [ -e ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
-        rm ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
+      if [ -e ${RPMDIR}/${4}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
+        rm ${RPMDIR}/${4}/${1}/${2}/${PNAME}/${RPM_FILE}
       fi;
       RPM_FILE=${rpmname}-${RVERSION}-${release}.${3}.rpm;
 
@@ -289,7 +289,7 @@ pkg2rpm() {
           rm ${RPMSPECFILE}
         fi
         if [ -e ${RPMBROOT}/RPMS/${3}/${RPM_FILE} ];then
-          mv ${RPMBROOT}/RPMS/${3}/${RPM_FILE} ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
+          mv ${RPMBROOT}/RPMS/${3}/${RPM_FILE} ${RPMDIR}/${4}/${1}/${2}/${PNAME}/${RPM_FILE}
         fi;
       fi;
       if [ -d ${RPMROOTDIR} ];then
@@ -297,10 +297,10 @@ pkg2rpm() {
       fi;
     fi;
 
-    if [ ! "${RPMIVER}" ] && [ -e ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
-      rpm -ivh --force --nodeps --justdb --ignorearch --root=${RPMROOT} ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
-     elif [ ${release} != ${orig_release} ] && [ -e ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
-      rpm -Uvh --force --nodeps --justdb --ignorearch --root=${RPMROOT} ${RPMDIR}/${1}/${2}/${PNAME}/${RPM_FILE}
+    if [ ! "${RPMIVER}" ] && [ -e ${RPMDIR}/${4}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
+      rpm -ivh --force --nodeps --justdb --ignorearch --root=${RPMROOT} ${RPMDIR}/${4}/${1}/${2}/${PNAME}/${RPM_FILE}
+     elif [ ${release} != ${orig_release} ] && [ -e ${RPMDIR}/${4}/${1}/${2}/${PNAME}/${RPM_FILE} ];then
+      rpm -Uvh --force --nodeps --justdb --ignorearch --root=${RPMROOT} ${RPMDIR}/${4}/${1}/${2}/${PNAME}/${RPM_FILE}
     fi;
     unset SRPMPROVIDES RPM_OBSOLETE
   done;
@@ -311,11 +311,21 @@ pkg_rpm_arch() {
     return 1;
   fi;
 
+  #Set the RPM ARCH
   case ${1} in
     arm)RPMARCH="armv7l";;
     armv6)RPMARCH="armv6l";;
     arm64)RPMARCH="aarch64";;
+    mips)RPMARCH="mips32";;
     *)RPMARCH=${1};;
+  esac;
+
+  #Set ARCH group for repo root dir
+  case ${1} in
+    arm|armv6|arm64)RPM_MAN="arm";;
+    i686|x86_32|x86_64)RPM_MAN="intel";;
+    mips|mips64)RPM_MAN="mips";;
+    ppc|ppc64)RPM_MAN="ppc";;
   esac;
 
   if [ "${1}" == "${NARCH}" ];then
@@ -329,13 +339,13 @@ pkg_rpm_arch() {
   export RPMROOT
 
   if [ "${2}" ];then
-    (pkg2rpm ${1} ${2} ${RPMARCH})
+    (pkg2rpm ${1} ${2} ${RPMARCH} ${RPM_MAN})
    else
     for pkg in `ls ${DEFDIR}` gcc-shared;do
       if [ ! -e ${STATDIR}/${1}/done/${pkg} ];then
         continue;
       fi;
-      (pkg2rpm ${1} ${pkg} ${RPMARCH})
+      (pkg2rpm ${1} ${pkg} ${RPMARCH} ${RPM_MAN})
     done;
   fi;
 
