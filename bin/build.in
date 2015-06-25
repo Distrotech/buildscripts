@@ -117,19 +117,18 @@ ARCHLIST="";
 CLEANOPT="";
 MAKE_J="-j${CPUNO}"
 
-while (( $# > 1 ));do
+while (( $# >= 1 ));do
   case ${1} in
     clean|distclean)CLEANOPT=${1};;
     noclean)NOCLEAN=1;;
     nonet)NO_INTERNET=1;;
+    bootstrap)BOOTSTRAP=1;;
+    buildall)ALLARCH="1";;
     -)shift;
       break;;
-    bootstrap)BOOTSTRAP=1
-      shift;;
     +)shift;
       export NOBOOTSTRAP=1
       break;;
-    buildall)ALLARCH="1";;
     *)if [[ ${1} =~ ${ARCHMPAT} ]] && [ -d ${ARCHROOT}/${1} ];then
         ARCHLIST="${ARCHLIST} ${1}"
       fi;;
@@ -148,7 +147,7 @@ if [ ! "${BOOTSTRAP}" ] && [ "${1}" == "bootstrap" ];then
  elif [ ! "${BOOTSTRAP}" ];then
   BOOTSTRAP=0;
 fi;
-export BOOTSTRAP
+export BOOTSTRAP NO_INTERNET
 
 #Is last man standing a arch ??
 if [ "${1}" ] && [[ ${1} =~ ${ARCHMPAT} ]] && [ ! -e ${DEFDIR}/${1} ];then
