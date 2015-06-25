@@ -7,3 +7,4 @@ ADDCFLAG="-I=/opt/mysql/include -std=gnu89";
 BUILDDIR="0";
 MAKEITARGETS="samples";
 RPMGROUP="core";
+AMVER="1.14";

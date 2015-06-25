@@ -7,6 +7,7 @@ ADDLDFLAG="-L=/usr/lib/perl5/5.22.0/${HOST}-thread-multi/CORE";
 CHROOTBUILD="1";
 OPT_arm64="--disable-mono";
 OPT_arm="--disable-mono";
+OPT_armv6=${OPT_arm};
 OPT_x86_32="--disable-mono";
 OPT_ppc="--disable-mono";
 OPT_ppc64="--disable-mono";

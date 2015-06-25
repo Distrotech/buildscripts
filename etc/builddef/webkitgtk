@@ -20,3 +20,4 @@ CHROOTBUILD="1";
 #We need schemas compiled we also chrooted so torture it
 /usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas > /dev/null 2>&1
 RPMGROUP="gui";
+AUTORECONF="1";

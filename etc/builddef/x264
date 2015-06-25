@@ -4,6 +4,7 @@ PREFIX="/usr";
 CONFOPT="--enable-shared --enable-pic";
 OPT_x86_32="--disable-asm --extra-cflags=-mx32 --extra-ldflags=-mx32";
 OPT_arm="--disable-asm";
+OPT_armv6=${OPT_arm};
 MAKETARGETS="lib-shared";
 ADDCC="0";
 NOCCOPT="1";

@@ -4,6 +4,7 @@ PREFIX="/usr";
 CONFOPT="--disable-csharp --disable-doc";
 OPT_x86_32="--disable-java";
 OPT_arm="--disable-java";
+OPT_armv6=${OPT_arm};
 OPT_mips="--disable-java";
 OPT_ppc="--disable-java";
 OPT_ppc64="--disable-java";
@@ -14,3 +15,5 @@ case ${barch} in
   *)CHROOTBUILD="1";;
 esac;
 RPMGROUP="core";
+AMVER="1.14";
+AUTORECONF="1";

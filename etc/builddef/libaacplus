@@ -1,16 +1,8 @@
 VERSION="2.0.2"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="ac_cv_file__bin_bash=/bin/bash";
 BUILDDIR="0";
-OPT_arm="ac_cv_file__bin_bash=/bin/bash";
-OPT_arm64="ac_cv_file__bin_bash=/bin/bash";
-OPT_mips="ac_cv_file__bin_bash=/bin/bash";
-OPT_mips64="ac_cv_file__bin_bash=/bin/bash";
-OPT_ppc="ac_cv_file__bin_bash=/bin/bash";
-OPT_ppc64="ac_cv_file__bin_bash=/bin/bash";
-OPT_i686="ac_cv_file__bin_bash=/bin/bash";
-OPT_x86_32="ac_cv_file__bin_bash=/bin/bash";
 MAKE_J="";
 GITBRANCH="master";
 AMVER="1.14";

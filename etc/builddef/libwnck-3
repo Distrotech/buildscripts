@@ -10,3 +10,5 @@ CHROOTBUILD="1";
 RPMOBSOLETE_base="libwnck";
 RPMOBSOLETE_dbg="libwnck";
 RPMGROUP="gui";
+AMVER="1.14";
+AUTORECONF="1";

@@ -1,16 +1,8 @@
 VERSION="2.17.4"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="mr_cv_long_long_format_specifier=%lld";
 BUILDDIR="0";
 EXTRALIBS="-lpng16";
-OPT_arm="mr_cv_long_long_format_specifier=%lld";
-OPT_arm64="mr_cv_long_long_format_specifier=%lld";
-OPT_mips="mr_cv_long_long_format_specifier=%lld";
-OPT_mips64="mr_cv_long_long_format_specifier=%lld";
-OPT_ppc="mr_cv_long_long_format_specifier=%lld";
-OPT_ppc64="mr_cv_long_long_format_specifier=%lld";
-OPT_i686="mr_cv_long_long_format_specifier=%lld";
-OPT_x86_32="mr_cv_long_long_format_specifier=%lld";
 GITBRANCH="master";
 RPMGROUP="core";

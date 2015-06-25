@@ -1,15 +1,9 @@
 VERSION="0.93.1"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
-BUILDDIR="0";
-OPT_arm="ac_cv_func_memcmp_working=yes";
-OPT_arm64="ac_cv_func_memcmp_working=yes";
-OPT_mips="ac_cv_func_memcmp_working=yes";
-OPT_mips64="ac_cv_func_memcmp_working=yes";
-OPT_ppc="ac_cv_func_memcmp_working=yes";
-OPT_ppc64="ac_cv_func_memcmp_working=yes";
-OPT_i686="ac_cv_func_memcmp_working=yes";
-OPT_x86_32="ac_cv_func_memcmp_working=yes";
+CONFOPT="ac_cv_func_memcmp_working=yes";
 GITBRANCH="master";
 RPMGROUP="root";
+case ${barch} in
+  arm|armv6)CHROOTBUILD="1";;
+esac

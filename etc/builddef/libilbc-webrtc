@@ -6,3 +6,4 @@ CONFOPT="--includedir=/usr/include${LIBDIRPRE}";
 AUTORECONF="1";
 GITBRANCH="master";
 RPMGROUP="core";
+AMVER="1.14";

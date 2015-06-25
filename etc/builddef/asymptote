@@ -13,3 +13,4 @@ if [ "${barch}" != "${NARCH}" ];then
   MAKEOPTS="ASY=\"asy -dir ../base -config \\\"\\\" -render=0\"";
 fi;
 RPMGROUP="gui";
+AMVER="1.14";
