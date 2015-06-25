@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 RPMGROUP="java";
+NEEDS_NET="1";

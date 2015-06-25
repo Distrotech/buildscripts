@@ -6,3 +6,4 @@ RPMGROUP="core";
 case ${barch} in
   i686|x86_32)CHROOTBUILD="1";;
 esac;
+NEEDS_NET="1";

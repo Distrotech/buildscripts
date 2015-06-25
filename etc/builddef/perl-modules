@@ -15,4 +15,4 @@ RPMPROVIDES="perl(AnyEvent::BDB) perl(BDB) perl(Cocoa::EventLoop) perl(Event::Li
         perl(unicore::Name) perl(Tk::LabRadio) perl(Tk::Dialog) perl(Tk::NoteBook) perl(the) perl(Crypt::OpenSSL::X509) \
         perl(Net::SSLeay) perl(IO::Socket::IP) perl(Struct::Dumb) perl(Coro) perl(Coro::Handle) perl(Coro::Select)";
 RPMGROUP="root";
-
+NEEDS_NET="1";

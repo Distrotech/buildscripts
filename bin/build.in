@@ -9,6 +9,7 @@ fi;
 shopt -s extglob
 
 GITURL=${GITURL:=git://github.com/Distrotech}
+NO_INTERNET=${NO_INTERNET:=0}
 
 CPUNO=$(lscpu  |awk '/^CPU\(s\)/ {print $2}')
 
@@ -120,6 +121,7 @@ while (( $# > 1 ));do
   case ${1} in
     clean|distclean)CLEANOPT=${1};;
     noclean)NOCLEAN=1;;
+    nonet)NO_INTERNET=1;;
     -)shift;
       break;;
     bootstrap)BOOTSTRAP=1
@@ -1137,8 +1139,13 @@ build_project() {
   export C_LIBDIRS
 
   . ${DEFDIR}/${BUILDPROJECT}
+
   DONTBUILDPAT=${DONTBUILD// /|}
   if [ "${DONTBUILD}" ] && [[ ${barch} =~ ${DONTBUILDPAT} ]];then
+    return 0;
+  fi;
+
+  if [ "${NEEDS_NET}" ] && [ "${NEEDS_NET}" == "1" ] && [ "${NO_INTERNET}" == "1" ];then
     return 0;
   fi;
 
@@ -2674,7 +2681,10 @@ bootstrap_arch_root() {
       if [ -d ${ARCHROOT}/${arch}/var/hybrid/libexec/gcc/ ];then
         export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
       fi;
-      chroot ${ARCHROOT}/${arch} cpan -Ti XML::Parser XML::SAX  DBI Path::Class Try::Tiny DBI NetAddr::IP Net::DNS Test::Requires Convert::ASN1 Encode::Detect Parse::Pidl Locale::Codes) || return 1
+      if [ "${NO_INTERNET}" == "0" ];then
+        chroot ${ARCHROOT}/${arch} cpan -Ti XML::Parser XML::SAX  DBI Path::Class Try::Tiny DBI NetAddr::IP Net::DNS Test::Requires Convert::ASN1 Encode::Detect Parse::Pidl Locale::Codes
+      fi;
+      ) || return 1
     fi) || return 1;
   done;
 }
