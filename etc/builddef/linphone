@@ -16,4 +16,4 @@ case ${barch} in
         arm|armv6|i686|x86_32|mips*)CHROOTBUILD="1";;
 esac;
 RPMGROUP="gui";
-DONTBUILD="ppc64 mips64";
+#DONTBUILD="ppc64 mips64";
