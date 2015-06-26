@@ -8,5 +8,6 @@ CHROOTBUILD="1";
 INFOREMOVE="info.info.gz";
 case ${barch} in
   ppc64)CHROOTBUILD="1";;
+  ppc)DONTBUILD="${barch}";;
 esac;
 RPMGROUP="gui";
