@@ -63,6 +63,7 @@ if [ -d ${PKGLIST_PTH} ] && [ -f ${GROUP_FILE} ];then
   for RPM_MAN in "" "intel/" "intel/i686/" "intel/x86_32/" "intel/x86_64/" \
                  "arm/" "arm/arm/" "arm/armv6/" "arm/arm64/" \
                  "ppc/" "ppc/ppc/" "ppc/ppc64/" "mips/" "mips/mips/" "mips/mips64/";do
+    echo "${RPM_MAN}repodata"
     if [ -d ${RPMDIR}/${RPM_MAN}repodata ];then
       cp ${GROUP_FILE} ${RPMDIR}/${RPM_MAN}repodata/groups.xml
       createrepo -g repodata/groups.xml --update ${RPMDIR}/${RPM_MAN}
@@ -71,6 +72,7 @@ if [ -d ${PKGLIST_PTH} ] && [ -f ${GROUP_FILE} ];then
       cp ${GROUP_FILE} ${RPMDIR}/${RPM_MAN}repodata/groups.xml
       createrepo -g repodata/groups.xml ${RPMDIR}/${RPM_MAN}
     fi;
+    echo
   done;
   yum clean metadata
   if [ -d /var/spool/samba/ftp/repo ];then
