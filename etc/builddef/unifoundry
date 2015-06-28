@@ -8,3 +8,6 @@ MAKEOPTS="USRDIR=/usr";
 CHROOTBUILD="1";
 RPMOBSOLETE_doc="grub-fonts";
 RPMGROUP="dev";
+case ${barch} in
+  armv6)unset QEMU_CPU;;
+esac;
