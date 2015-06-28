@@ -10,6 +10,7 @@ shopt -s extglob
 
 GITURL=${GITURL:=git://github.com/Distrotech}
 NO_INTERNET=${NO_INTERNET:=0}
+SRC_ONLY=${SRC_ONLY:=0}
 
 CPUNO=$(lscpu  |awk '/^CPU\(s\)/ {print $2}')
 
@@ -109,7 +110,7 @@ export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA_VER JAVA6_VER M2_VER QT_VER
 
 #Parse cmdline opts
 #Adding a arch here may require you adding tupple/kernel arch/libdirs and bellow in arch_config
-ALLARCHLIST="i686 arm x86_64 x86_32 mips mips64 ppc ppc64 win32 win64 cyg32 cyg64";
+ALLARCHLIST="i686 x86_64 x86_32 arm armv6 arm64 mips mips64 ppc ppc64 win32 win64 cyg32 cyg64";
 ARCHMPAT=${ALLARCHLIST// /|}
 ALLARCH="0";
 
@@ -124,6 +125,7 @@ while (( $# >= 1 ));do
     nonet)NO_INTERNET=1;;
     bootstrap)BOOTSTRAP=1;;
     buildall)ALLARCH="1";;
+    buildsrc)SRC_ONLY="1";;
     -)shift;
       break;;
     +)shift;
@@ -147,7 +149,7 @@ if [ ! "${BOOTSTRAP}" ] && [ "${1}" == "bootstrap" ];then
  elif [ ! "${BOOTSTRAP}" ];then
   BOOTSTRAP=0;
 fi;
-export BOOTSTRAP NO_INTERNET
+export BOOTSTRAP NO_INTERNET SRC_ONLY
 
 #Is last man standing a arch ??
 if [ "${1}" ] && [[ ${1} =~ ${ARCHMPAT} ]] && [ ! -e ${DEFDIR}/${1} ];then
@@ -1121,6 +1123,36 @@ autoconf_cross_build() {
   fi;
 }
 
+stage_project_src() {
+  if [ ! -d ${PKGDESTDIR}/src/${1} ];then
+    mkdir -p ${PKGDESTDIR}/src/${1}
+  fi;
+
+  if [ ! -d ${PKGDESTDIR}/src/${1}/${2} ] && [ "${1}" != "Xorg" ];then
+    git clone --depth=1 file:///${SRCDIR}/${3} ${PKGDESTDIR}/src/${1}/${2}
+    if [ -f ${SRCDIR}/${3}/.gitmodules ];then
+      (export SRC_DEST_DIR=${PKGDESTDIR}/src/${1}/${2};cd ${SRCDIR}/${3};git submodule foreach 'git clone --depth=1 file://$(pwd) ${SRC_DEST_DIR}/$path')
+    fi;
+   elif [ ! -d ${PKGDESTDIR}/src/${1}/${2} ] && [ "${1}" == "Xorg" ];then
+    (export SRC_DEST_DIR=${PKGDESTDIR}/src/${1}/${2};cd ${SRCDIR}/${3};find . -name .git |awk '{printf "dirname %s\n",$0}' |sh |awk '{printf "git clone --depth=1 file://\$(pwd)/%s \${SRC_DEST_DIR}/%s\n",$1,$1}' |sh)
+#   elif [ -d ${PKGDESTDIR}/src/${1}/${2} ];then
+#    (cd ${PKGDESTDIR}/src/${1}/${2};git pull file:///${SRCDIR}/${3})
+  fi;
+
+  if [ -d ${PKGDESTDIR}/src/${1}/${2} ];then
+    if [ ! -d ${PKGDISTDIR}/src/${1} ];then
+      mkdir -p ${PKGDISTDIR}/src/${1}
+    fi;
+    if [ ! -d ${STATDIR}/src/${1} ];then
+      mkdir -p ${STATDIR}/src/${1}
+    fi;
+    if [ ! -f ${PKGDISTDIR}/src/${1}/${2}.tar.xz ] || [ ! -f ${STATDIR}/src/${1}/${2} ] || ! md5sum -c ${STATDIR}/src/${1}/${2} > /dev/null;then
+      (cd ${PKGDESTDIR}/src/${1};tar --exclude=.git -cJf ${PKGDISTDIR}/src/${1}/${2}.tar.xz ${2})
+      md5sum -b ${PKGDISTDIR}/src/${1}/${2}.tar.xz > ${STATDIR}/src/${1}/${2}
+    fi;
+  fi;
+}
+
 build_project() {
   BUILDPROJECT=${1}
   shift;
@@ -1227,6 +1259,11 @@ build_project() {
   if [ "${PSOURCEDIR}" ] && [ ! -d ${SRCDIR}/${PSOURCEDIR} ];then
     echo "No Such Project"
     return 1
+  fi;
+
+  stage_project_src ${BUILDPROJECT} ${PKG} ${PSOURCEDIR}
+  if [ "${SRC_ONLY}" ] && [ "${SRC_ONLY}" == "1" ];then
+    return 0;
   fi;
 
   if [ ! "${GITCLEAN}" ];then
@@ -2289,7 +2326,9 @@ build_packages() {
   shift
 
   for pkg in $@;do
-    if [ ! -e ${STATDIR}/${DARCH}/done/${pkg} ] || [ ${DEFDIR}/${pkg} -nt ${STATDIR}/${DARCH}/done/${pkg} ] || \
+    if [ "${SRC_ONLY}" ] && [ "${SRC_ONLY}" == "1" ];then
+      (build_project ${pkg} ${DARCH})
+     elif [ ! -e ${STATDIR}/${DARCH}/done/${pkg} ] || [ ${DEFDIR}/${pkg} -nt ${STATDIR}/${DARCH}/done/${pkg} ] || \
        !  md5sum -c ${STATDIR}/${DARCH}/done/${pkg} >/dev/null 2>&1;then
       #If we fail on 1st pass rebuild with no clean opt's
       if ! (CLEANOPT=${BOOTCLEAN};build_project ${pkg} ${DARCH});then
