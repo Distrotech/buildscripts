@@ -14,7 +14,7 @@ COREBUILD="1";
 DONTBUILD="mips64";
 RPMPROVIDES_libs="libcacard.so.0()${ARCH_BITS}";
 RPMGROUP="dev";
-if [ -e /proc/sys/fs/binfmt_misc/${barch} ];then
+if [ -e /proc/sys/fs/binfmt_misc/${barch} ] || [ "${barch}" == "armv6" ];then
   NOINST="1";
 fi;
 FIXUPLIB="1";
