@@ -1,61 +1,30 @@
 #!/bin/bash
 
+NARCH=${NARCH:=$( uname -m )}
+
 BRAND="Distrotech Solutions";
 SYSROOT=/var/opt/dtsbuild/sysroot
 KSUF="dts";
 DTSSRVDIR=/srv/opt/dtsbuild
 KERNEL_VER="3.19.8";
+IMG_OUTPUT_DIR=${DTSSRVDIR}/install
 
-Make_Bootetc() {
+unset LD_LIBRARY_PATH
+
+Root_Config() {
   cd ${1}
 
-  rm etc/blkid.* > /dev/null 2>&1
-
-  (cat <<EOF
-hosts:  	files dns
-passwd:		files
-shadow:		files
-group:		files
-EOF
-) > etc/nsswitch.conf
-
-  echo "*.*                                       /dev/tty5" > etc/syslog.conf
-  echo "telnet          stream  tcp     nowait  root    /usr/sbin/in.telnetd" > etc/inetd.conf
-
-  if [ -e etc/sshd_config ];then
-    sed -i -e "s/^\(PasswordAuthentication\).*/\1 yes/" \
-           -e "s/^\(UsePAM\).*/\1 no/" etc/sshd_config
-  fi;
-
-  if [ -e etc/inittab ];then
-    sed -i -e "s/^.*agetty.*//" etc/inittab
-    (cat <<EOF
-c1:345:respawn:/sbin/agetty -nl /usr/libexec/distrotech/sysconfig 38400 tty1 linux
-c2:345:respawn:/sbin/agetty -nl /usr/libexec/shell 38400 tty2 linux
-c3:345:respawn:/sbin/agetty -nl /usr/libexec/shell 38400 tty3 linux
-c4:345:respawn:/sbin/agetty 38400 tty8 linux
-c5:345:respawn:/sbin/agetty 38400 tty9 linux
-EOF
-) >> etc/inittab
-  fi;
-
-  if [ -e etc/nscd.conf ];then
-    sed -i -e "s/\(suggested-size.*\)20011/\1211/" etc/nscd.conf
-  fi;
-
-  if [ -e etc/localtime ];then
-    rm etc/localtime
-  fi;
-  ln -s ../usr/share/zoneinfo/Africa/Johannesburg etc/localtime
-
-  for todel in HOSTNAME openssl/ca.conf ifconf/* mtab* ppp/ip-up;do
-    rm etc/${todel} > /dev/null 2>&1
+  for todel in etc/HOSTNAME etc/openssl/ca.conf etc/ifconf/* etc/mtab* \
+               etc/ppp/ip-up etc/blkid.* root/.bash_history etc/localtime;do
+    rm ${todel} > /dev/null 2>&1
   done
-  ln -s /proc/self/mounts etc/mtab
 
-  if [ ! -d etc/ifconf ];then
-    mkdir etc/ifconf
-  fi;
+  for mketcdir in etc/ppp etc/ifconf;do
+    mkdir ${mketcdir}
+  done;
+
+  ln -s /proc/self/mounts etc/mtab
+  ln -s -r usr/share/zoneinfo/Africa/Johannesburg etc/localtime
 
   for dfile in netsentry-version group passwd;do
     if [ -e etc/distrotech/${dfile}.dist ];then
@@ -68,6 +37,14 @@ root:\$6\$V.R4jtD.\$d/e4hk86v8LwHr4AWUz0wus2g8QBslNfukkqmOX2tGZPo4SBpMLCZdPJc1By
 admin:\$6\$V.R4jtD.\$d/e4hk86v8LwHr4AWUz0wus2g8QBslNfukkqmOX2tGZPo4SBpMLCZdPJc1ByobXm8YCojBfUCPfXLlLGWIZCp/:16569::::::
 _EOF_
 ) > etc/shadow
+
+  (cat <<EOF
+hosts:  	files dns
+passwd:		files
+shadow:		files
+group:		files
+EOF
+) > etc/nsswitch.conf
 
   (cat <<_EOF_
 #!/bin/bash
@@ -92,9 +69,6 @@ _EOF_
 ) > etc/ifconf/pppup.ppp3g
   chmod 755 etc/ifconf/pppup.ppp3g
 
-  if [ ! -d etc/ppp ];then
-    mkdir etc/ppp
-  fi;
   (cat <<_EOF_
 #!/bin/bash
 
@@ -113,235 +87,247 @@ cp /tmp/resolv.conf /etc/resolv.conf
 _EOF_
 ) > etc/ppp/ip-up
   chmod 755 etc/ppp/ip-up
-  touch etc/.install
-
-  rm root/.bash_history > /dev/null 2>&1
 }
 
-image_create() {
-  qemu-img create ${1} 20G
-  parted -s ${1} mklabel msdos
-  parted -s ${1} "mkpart primary 1 -1"
-  parted -s ${1} set 1 boot on
+Root_Post_Install() {
+  INST_PATH=${1}/etc/distrotech/install
+  if [ ! -d ${INST_PATH} ];then
+    mkdir -p ${INST_PATH}
+  fi;
+
+  ${1}/sbin/ldconfig -r ${1} > /dev/null 2>&1
+  rm ${1}/etc/ld.so.cache
+
+  echo "*.*                                       /dev/tty5" > ${INST_PATH}/syslog.conf
+  echo "telnet          stream  tcp     nowait  root    /usr/sbin/in.telnetd" > ${INST_PATH}/inetd.conf
+
+  if [ -e ${1}/etc/sshd_config ];then
+    sed -e "s/^\(PasswordAuthentication\).*/\1 yes/" \
+           -e "s/^\(UsePAM\).*/\1 no/" ${1}/etc/sshd_config > ${INST_PATH}/sshd_config
+  fi;
+
+  if [ -e ${1}/etc/inittab ];then
+    (sed -e "s/^.*agetty.*//" ${1}/etc/inittab
+    cat <<EOF
+c1:345:respawn:/sbin/agetty -nl /usr/libexec/distrotech/sysconfig 38400 tty1 linux
+c2:345:respawn:/sbin/agetty -nl /usr/libexec/shell 38400 tty2 linux
+c3:345:respawn:/sbin/agetty -nl /usr/libexec/shell 38400 tty3 linux
+c4:345:respawn:/sbin/agetty 38400 tty8 linux
+c5:345:respawn:/sbin/agetty 38400 tty9 linux
+EOF
+) > ${INST_PATH}/inittab
+  fi;
+
+  if [ -e ${1}/etc/nscd.conf ];then
+    sed -e "s/\(suggested-size.*\)20011/\1211/" ${1}/etc/nscd.conf > ${INST_PATH}/nscd.conf
+  fi;
+
+  touch ${INST_PATH}/.install
+  (Root_Config ${1})
 }
 
-syslinux_cfg() {
-  cat <<EOF
-DEFAULT vesamenu.c32
-TIMEOUT 150
-ONTIMEOUT x86_64
-PROMPT 0
-NOESCAPE 1
-MENU TITLE ${BRAND}
-MENU BACKGROUND background.jpg
-
-EOF
-
-  for kernbits in x86_64 x86_x32 x86;do
-    if [ -e ${1}/boot/${kernbits}/syslinux.cfg ];then
-      cat <<EOF
-LABEL ${kernbits}
-  MENU LABEL Install options for ${kernbits}
-  CONFIG /boot/${kernbits}/syslinux.cfg
-
-EOF
+setup_root_img() {
+  for dir in sbin root proc sys dev tmp initrd media media/isofs media/install run run/udev;do
+    if [ ! -d ${2}/${dir} ];then
+      mkdir -p ${2}/${dir}
     fi;
-  done;
+  done
+  chmod 1777 ${2}/tmp
+
+  if [ -x ${SYSROOT}/${1}/sbin/modprobe.static ];then
+    rsync -a ${SYSROOT}/${1}/sbin/modprobe.static ${2}/sbin/
+  fi;
 }
 
-syslinux_cfg_arch() {
-  cat <<EOF
-DEFAULT /boot/syslinux/vesamenu.c32
-TIMEOUT 50
-ONTIMEOUT install
-PROMPT 0
-NOESCAPE 1
-MENU TITLE ${BRAND}
-MENU BACKGROUND /boot/syslinux/background.jpg
-
-LABEL install
-  MENU LABEL ${BRAND} ${1} (Install)
-  KERNEL /boot/${1}/vmlinuz
-  INITRD /boot/${1}/initrd.img
-  APPEND ro root=/dev/loop0 nomodeset dts_opt=squashfs squashimg=/boot/${1}/root.img quiet
-LABEL rescue
-  MENU LABEL ${BRAND} ${1} (Rescue)
-  KERNEL /boot/${1}/vmlinuz
-  INITRD /boot/${1}/initrd.img
-  APPEND ro root=/dev/loop0 nomodeset dts_opt=squashfs squashimg=/boot/${1}/root.img S
-LABEL build
-  MENU LABEL ${BRAND} ${1} (Build)
-  KERNEL /boot/${1}/vmlinuz
-  INITRD /boot/${1}/initrd.img
-  APPEND ro root=/dev/loop0 nomodeset dts_opt=buildroot squashimg=/boot/${1}/root.img buildimg=/boot/${1}/buildroot.img S
-LABEL Main Menu
-  MENU LABEL Return To Main Menu
-  CONFIG /boot/syslinux/syslinux.cfg
-EOF
+fixup_glibc_link() {
+  if [ -h ${1}/usr/${2}/${3} ];then
+    rm ${1}/usr/${2}/${3}
+  fi;
+  ln -s -r ${1}/${2}/${3}.${4} ${1}/usr/${2}/${3}
 }
 
-build_squashfs_img() {
+fixup_qemu_narch() {
+  QARCH=${3}
+
   case ${1} in
-    x86)ARCH="i686";
-      LIBDIR="lib";;
-    x86_x32)ARCH="x86_32";
-      LIBDIR="libx32";;
-    x86_64)ARCH="x86_64";
-      LIBDIR="lib64";;
+    x86_64)NLIBDIR="lib64";
+           NLDNAME="ld-linux-x86-64.so.2";
+           NMLIBDIR="x86_64";;
+    x86_32)NLIBDIR="libx32";
+           NLDNAME="ld-linux-x32.so.2";
+           NMLIBDIR="i686";;
+    i686)NLIBDIR="lib";
+           NLDNAME="ld-linux.so.2";
+           NMLIBDIR="i686";;
+    *)return 1;;
   esac;
 
-  if [ -e /etc/rpm/platform ];then
-    rm /etc/rpm/platform
-  fi;
-
-  if [ -e /etc/rpm/platform.${ARCH} ];then
-    ln -s -r /etc/rpm/platform.${ARCH} /etc/rpm/platform
-  fi
-
-  IMGTMPDIR=${4}/tmp-${ARCH}
-
-  if [ ! -d ${IMGTMPDIR}/tmp ];then
-    mkdir -p ${IMGTMPDIR}/tmp
-  fi;
-  /usr/libexec/distrotech/instpkg ${ARCH} ${IMGTMPDIR} ${3}
-
-  ls -d ${IMGTMPDIR}/opt/*/${LIBDIR} |awk -v MNT=${IMGTMPDIR} '{printf "%s\n",substr($1,length(MNT)+1)}' > ${IMGTMPDIR}/etc/ld.so.conf.d/opt-${3:1}.conf
-
-  chroot ${IMGTMPDIR} /sbin/ldconfig > /dev/null 2>&1
-
-  if [ "${3:1}" == "root" ];then
-    if [ -x ${SYSROOT}/${ARCH}/sbin/modprobe.static ];then
-      rsync -a ${SYSROOT}/${ARCH}/sbin/modprobe.static ${IMGTMPDIR}/sbin/
+  for pth in ${2}/${QARCH} ${2}/${QARCH}/usr;do
+    if [ -e ${pth}/${NLIBDIR} ];then
+      mv ${pth}/${NLIBDIR}/ ${pth}/${NLIBDIR}-tmp
+      mkdir -p ${pth}/${NLIBDIR}/${NMLIBDIR}
+      mv ${pth}/${NLIBDIR}-tmp/${NMLIBDIR} ${pth}/${NLIBDIR}/
     fi;
-    (Make_Bootetc ${IMGTMPDIR})
-  fi;
+    if [ ! -d ${pth}/${NLIBDIR}/${NMLIBDIR} ];then
+      mkdir -p ${pth}/${NLIBDIR}/${NMLIBDIR}
+    fi;
+    if [ -e ${pth}/${NLIBDIR}-tmp ];then
+      mv ${pth}/${NLIBDIR}-tmp/* ${pth}/${NLIBDIR}/${NMLIBDIR}
+      rm -rf ${pth}/${NLIBDIR}-tmp
+    fi;
+  done
 
-  yum -y --installroot=${IMGTMPDIR} clean all
+  ln -sr ${2}/${QARCH}/${NLIBDIR}/${NMLIBDIR}/${NLDNAME} ${2}/${QARCH}/${NLIBDIR}/
 
-  mksquashfs ${IMGTMPDIR}/* ${2}/${3:1}.img -comp xz
+  for fixln in "libanl.so 1" "libBrokenLocale.so 1" "libcidn.so 1" "libcrypt.so 1" "libdl.so 2" \
+               "libm.so 6" "libnsl.so 1" "libnss_compat.so 2" "libnss_db.so 2" "libnss_dns.so 2" \
+               "libnss_files.so 2" "libnss_hesiod.so 2" "libnss_nisplus.so 2" "libnss_nis.so 2" \
+               "libresolv.so 2" "librt.so 1" "libthread_db.so 1" "libutil.so 1";do
+    fixup_glibc_link ${2}/${QARCH} ${NLIBDIR}/${NMLIBDIR} ${fixln}
+  done
 
-  if [ -e /etc/rpm/platform ];then
-    rm /etc/rpm/platform
-  fi;
+  ln -sr ${2}/${QARCH}/${NLIBDIR}/${NMLIBDIR} ${2}/${QARCH}/${NLIBDIR}/${NMLIBDIR}/${NMLIBDIR}
+  ln -sr ${2}/${QARCH}/usr/${NLIBDIR}/${NMLIBDIR} ${2}/${QARCH}/usr/${NLIBDIR}/${NMLIBDIR}/${NMLIBDIR}
 
-  rm -rf ${IMGTMPDIR}
+  mkdir ${2}/${QARCH}/etc
+  (echo "/${NLIBDIR}/${NMLIBDIR}";echo "/usr/${NLIBDIR}/${NMLIBDIR}") > ${2}/${QARCH}/etc/ld.so.conf
+  chroot ${2}/${QARCH} /sbin/ldconfig
+  rm -rf ${2}/${QARCH}/etc
 }
 
-add_kernel() {
+install_group_aufs() {
+  mount ${IMG_OUTPUT_DIR}/${NARCH}/images/qemu.img ${3}/${1}/qemu-narch
+
+  case ${2} in
+    qemu)AUFS_MOUNT="${3}/${1}/qemu=rw+moo:${3}/${1}/qemu-narch=rr";
+      TO_MOUNT="";;
+    @root)AUFS_MOUNT="${3}/${1}/root=rw+moo:${3}/${1}/qemu-narch=rr";
+      setup_root_img ${1} ${3}/${1}/root
+      TO_MOUNT="";;
+    @core)AUFS_MOUNT="${3}/${1}/core=rw+moo:${3}/${1}/root=rr:${3}/${1}/qemu-narch=rr";
+      mount ${IMG_OUTPUT_DIR}/${1}/images/root.img ${3}/${1}/root;;
+    @buildroot)AUFS_MOUNT="${3}/${1}/buildroot=rw+moo:${3}/${1}/core=rr:${3}/${1}/root=rr:${3}/${1}/qemu-narch=rr";
+      mount ${IMG_OUTPUT_DIR}/${1}/images/root.img ${3}/${1}/root;
+      mount ${IMG_OUTPUT_DIR}/${1}/images/core.img ${3}/${1}/core;;
+  esac;
+
+  mount -t aufs -o br:${AUFS_MOUNT} aufs-${1}-root ${3}/${1}/aufs
+
+  if [ ! -d ${3}/${1}/aufs/tmp ];then
+    mkdir -p ${3}/${1}/aufs/tmp
+  fi;
+
+  if [ ${1} == "arm64" ] && [ ! -e ${3}/${1}/aufs/lib/ld-linux-aarch64.so.1 ];then
+    mkdir -p ${3}/${1}/aufs/lib
+    ln -sr  ${3}/${1}/aufs/lib64/ld-2.21.so ${3}/${1}/aufs/lib64/ld-linux-aarch64.so.1
+    ln -sr ${3}/${1}/aufs/lib64/ld-linux-aarch64.so.1 ${3}/${1}/aufs/lib
+  fi;
+
+  /usr/libexec/distrotech/instpkg ${1} ${3}/${1}/aufs ${2}
+}
+
+umount_aufs() {
+  if [ ${2} == "qemu" ];then
+    rm -rf ${3}/${1}/qemu/var/lib/yum ${3}/${1}/qemu/var/lib/rpm
+    if [ "${1}" == "i686" ] || [ "${1}" == "x86_32" ] || [ "${1}" == "x86_64" ];then
+      for mlib_arch in i686 x86_32 x86_64;do
+        fixup_qemu_narch ${mlib_arch} ${3}/${1} qemu > /dev/null 2>&1
+      done;
+    fi;
+   else
+    rpm --rebuilddb --root ${3}/${1}/aufs
+  fi;
+
+  umount ${3}/${1}/aufs ${3}/${1}/qemu-narch
+
+  case ${2} in
+    root)Root_Post_Install ${3}/${1}/root;;
+    core)umount ${3}/${1}/root;;
+    buildroot)umount ${3}/${1}/root ${3}/${1}/core;;
+  esac;
+
+  rm -rf ${3}/${1}/${2}/var/cache/yum
+  mksquashfs ${3}/${1}/${2}/* ${IMG_OUTPUT_DIR}/${1}/images/${2}.img -comp xz
+}
+
+create_images_squashfs() {
   IMGDIR=$(mktemp -d -p /root tmpimgdir.XXXXXXXXXXX)
+  KERN_VER=${1}
+  shift
+
   if [ ! "${IMGDIR}" ] || [ ! -d ${IMGDIR} ];then
     return 1
   fi;
 
-  for kernbits in x86 x86_64 x86_x32;do
-    case ${kernbits} in
-      x86)ARCH="i686";;
-      x86_x32)ARCH="x86_32";;
-      *)ARCH=${kernbits};;
+  for ARCH in $@;do
+    case ${ARCH} in
+      i686)kernbits="x86";;
+      x86_32)kernbits="x86_x32";;
+      *)kernbits=${ARCH};;
     esac;
 
-    if [ -e ${SYSROOT}/${ARCH}/boot/vmlinuz-${2}-${kernbits}-${KSUF} ];then
-      if [ ! -d ${1}/boot/${kernbits} ];then
-        mkdir -p ${1}/boot/${kernbits}
+    if [ ! -d ${IMG_OUTPUT_DIR}/${ARCH}/images ];then
+      mkdir -p ${IMG_OUTPUT_DIR}/${ARCH}/images
+    fi;
+
+    if [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/images/root.img ] || [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/images/core.img ] || \
+       [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/images/buildroot.img ];then
+      for boot_img in root core buildroot qemu;do
+        if [ -e ${IMG_OUTPUT_DIR}/${ARCH}/images/${boot_img}.img ];then
+          rm ${IMG_OUTPUT_DIR}/${ARCH}/images/${boot_img}.img
+        fi;
+      done
+      if [ -e ${SYSROOT}/${ARCH}/boot/vmlinuz-${KERN_VER}-${kernbits}-${KSUF} ];then
+        cp ${SYSROOT}/${ARCH}/boot/vmlinuz-${KERN_VER}-${kernbits}-${KSUF} ${IMG_OUTPUT_DIR}/${ARCH}/vmlinuz
+        mkinitrd bootimg ${IMG_OUTPUT_DIR}/${ARCH}/initrd.img ${SYSROOT}/${ARCH}/ ${KERN_VER}-${kernbits}-${KSUF}
       fi;
-      cp ${SYSROOT}/${ARCH}/boot/vmlinuz-${2}-${kernbits}-${KSUF} ${1}/boot/${kernbits}/vmlinuz
-      mkinitrd bootimg ${1}/boot/${kernbits}/initrd.img ${SYSROOT}/${ARCH}/  ${2}-${kernbits}-${KSUF}
-      if [ ! -e  ${1}/boot/${kernbits}/root.img ];then
-        build_squashfs_img ${kernbits} ${1}/boot/${kernbits} @root ${IMGDIR}
+     else
+      continue;
+    fi;
+
+    for aufs_dir in qemu root buildroot core aufs qemu-narch;do
+      mkdir -p ${IMGDIR}/${ARCH}/${aufs_dir}
+    done
+
+    if [ "${NARCH}" == "i686" ] || [ "${NARCH}" == "x86_32" ] || [ "${NARCH}" == "x86_64" ];then
+      if [ ! -f ${IMG_OUTPUT_DIR}/${NARCH}/images/qemu.img ];then
+        /usr/libexec/distrotech/instpkg ${NARCH} ${IMGDIR}/${ARCH}/qemu-narch qemu glibc
+        rm -rf ${IMGDIR}/${ARCH}/qemu-narch/var/cache/yum ${IMGDIR}/${ARCH}/qemu-narch/var/lib/yum ${IMGDIR}/${ARCH}/qemu-narch/var/lib/rpm
+
+        for mlib_arch in i686 x86_32 x86_64;do
+          fixup_qemu_narch ${mlib_arch} ${IMGDIR}/${ARCH} qemu-narch > /dev/null 2>&1
+        done;
+        mksquashfs ${IMGDIR}/${ARCH}/qemu-narch/* ${IMG_OUTPUT_DIR}/${NARCH}/images/qemu.img -comp xz
       fi;
-      if [ ! -e  ${1}/boot/${kernbits}/buildroot.img ];then
-        build_squashfs_img ${kernbits} ${1}/boot/${kernbits} @buildroot ${IMGDIR}
-      fi;
-      syslinux_cfg_arch ${kernbits} > ${1}/boot/${kernbits}/syslinux.cfg
-      if [ -d ${DTSSRVDIR}/yum/${ARCH} ];then
-        rsync --modify-window=1 --exclude="${ARCH}/*/*/*-dbg-*.${ARCH}.rpm" --delete -a ${DTSSRVDIR}/yum/${ARCH} ${1}/repo
-      fi;
+     else
+      break;
+    fi;
+
+    if [ ! -f ${IMG_OUTPUT_DIR}/${ARCH}/images/qemu.img ];then
+      install_group_aufs ${ARCH} qemu ${IMGDIR}
+      umount_aufs ${ARCH} qemu ${IMGDIR}
+    fi;
+
+    if [ ! -f ${IMG_OUTPUT_DIR}/${NARCH}/images/qemu.img ];then
+      continue
+    fi;
+
+    if [ ! -e  ${IMG_OUTPUT_DIR}/${ARCH}/images/root.img ];then
+      install_group_aufs ${ARCH} @root ${IMGDIR}
+      umount_aufs ${ARCH} root ${IMGDIR}
+    fi;
+
+    if [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/images/core.img ] && [ -e ${IMG_OUTPUT_DIR}/${ARCH}/images/root.img ];then
+      install_group_aufs ${ARCH} @core ${IMGDIR}
+      umount_aufs ${ARCH} core ${IMGDIR}
+    fi;
+
+    if [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/images/buildroot.img ] && [ -e ${IMG_OUTPUT_DIR}/${ARCH}/images/core.img ] &&  [ -e ${IMG_OUTPUT_DIR}/${ARCH}/images/root.img ];then
+      install_group_aufs ${ARCH} @buildroot ${IMGDIR}
+      umount_aufs ${ARCH} buildroot ${IMGDIR}
     fi;
   done;
   rm -rf ${IMGDIR}
 }
 
-config_installer() {
-  if [ ! -d ${1}/boot/syslinux ];then
-    mkdir -p ${1}/boot/syslinux
-  fi;
-
-  for slinfile in vesamenu.c32 libcom32.c32 libutil.c32;do
-    if [ -e /usr/share/syslinux/${slinfile} ];then
-      cp /usr/share/syslinux/${slinfile} ${1}/boot/syslinux
-    fi;
-  done
-#  cp /usr/share/syslinux/*.{c32,com,exe} ${1}/boot/syslinux
-
-  add_kernel ${1} ${2}
-  syslinux_cfg ${1} > ${1}/boot/syslinux/syslinux.cfg
-
-  YUM_GRP_FILE=$(ls -t ${DTSSRVDIR}/yum/repodata/*-groups.xml |head -1)
-  if [ ! -d ${1}/repo/repodata ];then
-    mkdir -p ${1}/repo/repodata
-    cp ${YUM_GRP_FILE} ${1}/repo/repodata/groups.xml
-    createrepo -g repodata/groups.xml ${1}/repo
-   else
-    cp ${YUM_GRP_FILE} ${1}/repo/repodata/groups.xml
-    createrepo -g repodata/groups.xml --skip-stat --update ${1}/repo
-  fi;
-
-  if [ -e /boot/grub/background.jpg ];then
-    cp /boot/grub/background.jpg ${1}/boot/syslinux/
-  fi;
-}
-
-build_installer() {
-  if [ ! -b ${1} ] && [ ! -e ${1} ];then
-    image_create ${1}
-    FLOOP=$(losetup -f)
-    if [ ! "${FLOOP}" ];then
-      exit 1;
-    fi;
-    losetup ${FLOOP} ${1}
-    INSTDEV=${FLOOP}p1
-    mkdosfs -F 32 -n DTS_INSTALL ${INSTDEV}
-   elif [ -b ${1} ];then
-    INSTDEV=${1}1
-   elif [ -e ${1} ];then
-    FLOOP=$(losetup -f)
-    if [ ! "${FLOOP}" ];then
-      exit 1;
-    fi;
-    losetup ${FLOOP} ${1}
-    INSTDEV=${FLOOP}p1
-   else
-    exit 1
-  fi;
-
-  dosfsck -a ${INSTDEV} >/dev/null 2>&1
-
-  mount ${INSTDEV} ${3}
-
-  config_installer ${3} ${2}
-
-  umount ${3}
-
-  syslinux -f -i -d boot/syslinux ${INSTDEV}
-  dd if=/usr/share/syslinux/mbr.bin of=${1} conv=notrunc bs=512b count=1
-
-  if [ ! -b ${1} ];then
-    losetup -d ${FLOOP}
-  fi;
-}
-
-
-TMPDIR=$(mktemp -d -p /tmp mkinstmnt.XXXXXXXXXXX)
-if [ ! "${TMPDIR}" ] || [ ! -d ${TMPDIR} ];then
-  exit 1
-fi;
-
-if [ "${1}" ];then
-  INST_DEV="${1}"
- else
-  INST_DEV="dts-install";
-fi;
-
-build_installer ${INST_DEV} ${KERNEL_VER} ${TMPDIR}
-
-rm -rf ${TMPDIR}
+create_images_squashfs ${KERNEL_VER} x86_64 i686 x86_32 arm armv6 arm64 ppc ppc64 mips mips64
