@@ -740,9 +740,10 @@ tar_package() {
          ! -regex "\.\/opt\/[a-zA-Z0-9\-\_]+\/include\/.*" -and ! -regex "\.\/usr\/X11R7\/include\/.*" -and \
          ! -regex ".*\/${B_LIBDIRS}\/.*" -and ! -regex "\.\/etc" -and \
          ! -regex "${dbginfo}" -and ! -regex "${dbginfo}\/.*" -and ! -regex "${sharedoc}" -and \
-         ! -regex "${manpages}" -and ! -regex "${infopages}" -and ! -regex "\.\/usr\/${B_LIBDIRS}\/locale\/.*" \
+         ! -regex "${manpages}" -and ! -regex "${infopages}" -and ! -regex "\.\/usr\/${B_LIBDIRS}\/locale\/.*" -and \
          ! -regex ".*\/include" -and ! -regex ".*\/share\/doc" -and ! -regex ".*\/share\/man" -and \
-         ! -regex ".*\/share\/info" -and ! -regex "${allloc}" -or -regex "${myloc}" |\
+         ! -regex ".*\/share\/info" -and ! -regex "${allloc}" -and ! -regex "\.\/var\/lib\/asterisk\/sounds\/.*" -and \
+         ! -regex "\.\/var\/lib\/asterisk\/moh\/.*" -or -regex "${myloc}" |\
        cpio -ov -H ustar |xz -9 > ${pkgpre}.tar.xz
 
   #try limit it to pkgs with include dirs / libdirs this is not fool proof ie /opt/....
@@ -754,6 +755,7 @@ tar_package() {
            ! -regex "\.\/usr\/${B_LIBDIRS}\/gcc.*" -and ! -regex "\.\/usr\/${B_LIBDIRS}\/locale\/.*" -and \
            ! -regex "\.\/usr\/${B_LIBDIRS}\/thunderbird-devel-.*" -and \
            ! -regex "\.\/usr\/${B_LIBDIRS}\/firefox-devel-.*" -and ! -regex "\.\/usr\/${B_LIBDIRS}\/locale\/.*" -and \
+           ! -regex "\.\/var\/lib\/asterisk\/sounds\/.*" -and ! -regex "\.\/var\/lib\/asterisk\/moh\/.*" -and \
            -regex ".*\/${B_LIBDIRS}\/.*" |\
          cpio -ov -H ustar |xz -9 > ${pkgpre}-libs.tar.xz
     find . -regex "\.\/include\/.*" -or -regex "\.\/usr\/include\/.*" -or \
@@ -784,6 +786,23 @@ tar_package() {
      [ -d share/man ] || [ -d share/doc ] || [ -d share/info ] || [ -d opt ];then
     find . -regex "${sharedoc}" -or -regex "${manpages}" -or -regex "${infopages}" |\
          cpio -ov -H ustar |xz -9 > ${pkgpre}-doc.tar.xz
+  fi;
+
+  if [ -d "var/lib/asterisk/sounds" ];then
+    for ast_lang in en en_AU es fr ru;do
+      for ast_codec in g729 gsm alaw ulaw g722 siren7 siren14 sln16;do
+        find . -regex "\.\/var\/lib\/asterisk\/sounds\/${ast_lang}\/.*\.${ast_codec}" |\
+         cpio -ov -H ustar |xz -9 > ${pkgpre}-sounds_${ast_lang}_${ast_codec}.tar.xz
+      done
+    done;
+  fi;
+
+  if [ -d "var/lib/asterisk/moh" ];then
+    for ast_codec in g729 gsm alaw ulaw g722 siren7 siren14 sln16 wav;do
+      find . -regex "\.\/var\/lib\/asterisk\/moh\/.*\.${ast_codec}" -or \
+             -regex "\.\/var\/lib\/asterisk\/moh\/.*-${ast_codec}" |\
+        cpio -ov -H ustar |xz -9 > ${pkgpre}-moh_${ast_codec}.tar.xz
+    done;
   fi;
 
   if [ -d etc ];then
