@@ -330,4 +330,8 @@ create_images_squashfs() {
   rm -rf ${IMGDIR}
 }
 
-create_images_squashfs ${KERNEL_VER} x86_64 i686 x86_32 arm armv6 arm64 ppc ppc64 mips mips64
+if [ "$#" != "0" ];then
+  create_images_squashfs ${KERNEL_VER} $@
+ else
+  create_images_squashfs ${KERNEL_VER} x86_64 i686 x86_32 arm armv6 arm64 ppc ppc64 mips mips64
+fi;
