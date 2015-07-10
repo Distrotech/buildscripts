@@ -1,4 +1,4 @@
-VERSION="9.9.2"
+VERSION="9.10.2-P2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-static=no --enable-exportlib --with-libtool --with-dlz-ldap --enable-epoll=yes --with-gost=no
