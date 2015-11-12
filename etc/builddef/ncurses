@@ -4,5 +4,5 @@ PREFIX="/usr";
 CONFOPT="--with-gpm --with-shared --disable-widec --without-progs --disable-overwrite --without-manpages --without-ada --with-termlib --with-ticlib";
 ADDCC="0";
 GITBRANCH="master";
-MLIBDIRLN="libncurses.so";
+MLIBDIRLN="libncurses.so libtinfo.so";
 RPMGROUP="root";

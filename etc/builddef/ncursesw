@@ -6,5 +6,5 @@ ALIAS="ncurses";
 ADDCC="0";
 GITBRANCH="master";
 GITREPO="ncurses";
-MLIBDIRLN="libncursesw.so";
+MLIBDIRLN="libncursesw.so libtinfow.so";
 RPMGROUP="root";
