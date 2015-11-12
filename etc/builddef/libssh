@@ -1,12 +1,14 @@
-VERSION="0.6.3";
+VERSION="0.7.1";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="-DWITH_GCRYPYT:BOOL=OFF -DZLIB_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libz.so
          -DOPENSSL_SSL_LIBRARIES:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libssl.so
-         -DOPENSSL_CRYPTO_LIBRARIES:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libcrypto.so";
+         -DOPENSSL_CRYPTO_LIBRARIES:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libcrypto.so
+         -DOPENSSL_CRYPTO_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libcrypto.so";
 case ${barch} in
   mips*|ppc|arm64)CONFOPT="${CONFOPT} -DZLIB_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include
                 -DOPENSSL_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include";;
+  i686)CHROOTBUILD="1";;
 esac;
 FIXUPLIB="1";
 RPMGROUP="core";
