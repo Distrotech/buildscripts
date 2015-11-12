@@ -4,7 +4,7 @@ DRVFILT="|(driver/xf86-video-v4l)|(driver/xf86-video-xgixp)|(driver/xf86-video-c
 
 FILTER_arm="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)|(driver/xf86-video-r128)${DRVFILT}";
 FILTER_armv6=${FILTER_arm};
-FILTER_arm64="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)(driver/xf86-video-r128)${DRVFILT}";
+FILTER_arm64="|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)|(driver/xf86-video-r128)|(driver/xf86-video-intel)${DRVFILT}";
 #|(data/cursors)|(font/)";
 FILTER_mips="${DRVFILT}|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)|(driver/xf86-video-r128)";
 FILTER_mips64="${DRVFILT}|(driver/xf86-input-vmmouse)|(driver/xf86-video-intel)|(libevdev)|(driver/xf86-input-synaptics)|(driver/xf86-input-evdev)";
