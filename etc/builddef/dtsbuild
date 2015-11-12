@@ -9,3 +9,20 @@ RPMGROUP="dev";
 if [ "${NARCH}" == "${barch}" ];then
   NOINST="1";
 fi;
+if [ "${barch}" == "armv6" ];then
+  RPMPROVIDES_base="/usr/bin/php perl(CGI) perl(Crypt::PasswdMD5) perl(DBI) perl(Date::Parse) perl(LWP) \
+    perl(Net::LDAP) perl(Net::LDAPS) perl(NetAddr::IP) perl(URI::Escape) perl(DBI) perl(Net::LDAPS) \
+    perl(XML::SAX::ParserFactory) perl(URI::Escape) perl(URI::URL) perl(URI::file) perl(DBI) perl(DBI) \
+    perl(Error) perl(Error) perl(YAML::Any) perl(XML::Simple) perl(DBI) perl(LWP::UserAgent) \
+    perl(Net::DNS::Resolver) perl(Sys::SigAction) perl(Archive::Zip) perl(Convert::BinHex) perl(DBI) \
+    perl(Filesys::Df) perl(HTML::Entities) perl(HTML::Parser) perl(HTML::TokeParser) perl(MIME::Decoder) \
+    perl(MIME::Decoder::BinHex) perl(MIME::Decoder::UU) perl(MIME::Head) perl(MIME::Parser) perl(MIME::Tools) \
+    perl(MIME::WordDecoder) perl(Net::CIDR) perl(OLE::Storage_Lite) perl(Sys::SigAction) perl(BSD::Resource) \
+    perl(Data::Flow) perl(IPC::Run3) perl(Module::Build) perl(DBI) perl(Term::ReadKey) perl(Tk) perl(DBI) \
+    perl(Frontier::RPC2) perl(Authen::SASL) perl(Net::LDAP) perl(WWW::Curl::Easy) perl(Mac::BuildTools) \
+    perl(Mac::InternetConfig) perl(VMS::Filespec) perl(VMS::Stdio) perl(unicore::Name) perl(Mail::Sendmail) \
+    perl(Module::ScanDeps::DataFeed) perl(Crypt::OpenSSL::X509) perl(DBI) perl(Locale::gettext_xs) \
+    perl(Date::Format) perl(Date::Parse) perl(File::HomeDir) perl(File::Which) perl(HTML::FormatText) \
+    perl(HTML::TreeBuilder) perl(Tk) perl(Tk::Dialog) perl(Tk::NoteBook) perl(WWW::Mechanize) perl(YAML::Tiny) \
+    perl(XML::Parser)";
+fi;
