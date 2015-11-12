@@ -1,10 +1,10 @@
-VERSION="20131111"
+VERSION="20151031"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 NOCCOPT="1";
 BUILDDIR="0";
-ADDCFLAG="-fpermissive";
+ADDCFLAG="-fpermissive -std=gnu89";
 CHROOTBUILD="1";
 RPMGROUP="gui";
 MAKEALL="everything";
