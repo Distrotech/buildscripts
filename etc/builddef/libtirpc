@@ -1,7 +1,7 @@
 VERSION="0.3.2"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="ac_cv_func_getrpcbyname=no ac_cv_func_setrpcent=no ac_cv_func_endrpcent=no ac_cv_func_getrpcent=no";
 BUILDDIR="0";
 DONTBUILD="cyg32 cyg64";
 AUTORECONF="1";
