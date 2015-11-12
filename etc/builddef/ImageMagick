@@ -9,6 +9,6 @@ OPT_ppc64="--without-openexr";
 OPT_mips="--without-openexr";
 OPT_mips64="--without-openexr";
 case ${barch} in
-        arm|armv6|x86_32|i686|mips*|ppc64)CHROOTBUILD="1";;
+        arm*|x86_32|i686|mips*|ppc64)CHROOTBUILD="1";;
 esac;
 RPMGROUP="gui";

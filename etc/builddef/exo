@@ -7,6 +7,6 @@ ADDCFLAG="-I=/opt/xfce/include/xfce4 -I=/usr/include/cairo -I=/usr/include/pango
 NOMLIBDIR="1";
 SYSLAYOUT="1";
 case ${barch} in
-  arm|armv6|i686|x86_32|ppc*|mips64)CHROOTBUILD=1;;
+  arm*|i686|x86_32|ppc*|mips64)CHROOTBUILD=1;;
 esac;
 RPMGROUP="gui";

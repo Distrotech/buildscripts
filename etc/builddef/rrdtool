@@ -15,5 +15,5 @@ OPT_x86_32="rd_cv_ieee_works=yes";
 RPMPROVIDES="perl(RRDp) perl(RRDs)";
 RPMGROUP="core";
 case ${barch} in
-  arm|armv6|i686|x86_32)CHROOTBUILD="1";;
+  arm*|i686|x86_32)CHROOTBUILD="1";;
 esac;

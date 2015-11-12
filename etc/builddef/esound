@@ -5,7 +5,7 @@ CONFOPT="";
 EXTRALIBS="-lasound -lm -lpthread -ldl";
 RPMGROUP="core";
 case ${barch} in
-  arm|armv6|i686|x86_32)CHROOTBUILD="1";;
+  arm*|i686|x86_32)CHROOTBUILD="1";;
 esac;
 AMVER="1.14";
 AUTORECONF="1";
