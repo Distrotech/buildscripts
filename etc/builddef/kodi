@@ -1,4 +1,4 @@
-VERSION="14.2"
+VERSION="15.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-external-ffmpeg --enable-external-libraries --disable-rsxs PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
@@ -12,3 +12,4 @@ RPMGROUP="gui";
 ALIAS="xbmc";
 GITREPO="xbmc";
 GITBRANCH="distrotech-${ALIAS}-${VERSION}";
+ADDWITHSYSROOT="1";
