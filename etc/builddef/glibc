@@ -1,8 +1,8 @@
-VERSION="2.21";
+VERSION="2.22";
 VERSEP="-";
 PREFIX="/usr";
 case ${barch} in
-  mips*)CONFOPT="--enable-add-ons --enable-static-nss";;
+  mips*|i686)CONFOPT="--enable-add-ons --enable-static-nss";;
   *)CONFOPT="--enable-add-ons --enable-multi-arch --enable-static-nss";;
 esac;
 CONFOPT="${CONFOPT} --with-headers=${ARCHROOT}/${barch}/usr/include";
