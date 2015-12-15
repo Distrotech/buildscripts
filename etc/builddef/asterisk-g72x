@@ -1,11 +1,11 @@
-VERSION="1.1"
+VERSION="1.3"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-itu";
+CONFOPT="--with-itu --with-bcg729 --with-asterisk130 --disable-static";
 OPT_x86_64="--enable-opteron-sse3";
 OPT_x86_32="--enable-opteron-sse3";
 OPT_i686="--enable-core2";
 BUILDDIR="0";
-MAKEOPTS="moddir=/usr/${C_LIBDIRS}/asterisk/modules-10"
+MAKEOPTS="moddir=/usr/${C_LIBDIRS}/asterisk/modules-13"
 CLEARFLAGS="1";
 RPMGROUP="core";

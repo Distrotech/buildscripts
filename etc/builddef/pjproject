@@ -1,0 +1,9 @@
+VERSION="2.4"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="--enable-shared --with-external-speex --with-external-srtp --with-external-gsm --disable-sound	--disable-resample --disable-video --disable-opencore-amr";
+ADDCFLAG="-DPJ_HAS_IPV6=1";
+BUILDDIR="0";
+NOCCOPT="1";
+ADDCC="0";
+LDISCC="1";

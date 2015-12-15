@@ -789,7 +789,7 @@ tar_package() {
   fi;
 
   if [ -d "var/lib/asterisk/sounds" ];then
-    for ast_lang in en en_AU es fr ru;do
+    for ast_lang in en en_AU en_GB es fr it ja ru sv;do
       for ast_codec in g729 gsm alaw ulaw g722 siren7 siren14 sln16;do
         find . -regex "\.\/var\/lib\/asterisk\/sounds\/${ast_lang}\/.*\.${ast_codec}" |\
          cpio -ov -H ustar |xz -9 > ${pkgpre}-sounds_${ast_lang}_${ast_codec}.tar.xz
