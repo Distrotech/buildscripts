@@ -1,11 +1,11 @@
-VERSION="13.6.0"
+VERSION="13.7.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-dahdi --with-spandsp --with-ssl --with-openr2 --with-ss7 --without-h323 --with-sqlite3";
 ADDLDFLAG="-L=/opt/mysql/${B_LIBDIRS}";
 ADDCFLAG="-I=/opt/mysql/include -O2";
 BUILDDIR="0";
-MAKEITARGETS="samples";
+MAKEITARGETS="installdirs samples progdocs";
 RPMGROUP="core";
 AMVER="1.14";
 ALIAS="asterisk-git"
