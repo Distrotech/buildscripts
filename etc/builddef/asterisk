@@ -2,7 +2,7 @@ VERSION="13.7.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-dahdi --with-spandsp --with-ssl --with-openr2 --with-ss7 --without-h323 --with-sqlite3";
-ADDLDFLAG="-L=/opt/mysql/${B_LIBDIRS}";
+ADDLDFLAG="-L=/opt/mysql/${B_LIBDIRS} -L=/usr/${C_LIBDIRS}/ilbc-webrtc";
 ADDCFLAG="-I=/opt/mysql/include -O2";
 BUILDDIR="0";
 MAKEITARGETS="installdirs samples progdocs";
@@ -10,3 +10,4 @@ RPMGROUP="core";
 AMVER="1.14";
 ALIAS="asterisk-git"
 export ASTCFLAGS="-O2"
+GITMODULES="1";
