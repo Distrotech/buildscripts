@@ -12,10 +12,11 @@ RPMDIR=${DTSSRVDIR}/yum
 PKGURL=http://github.com/Distrotech
 RPMBROOT=/root/rpmbuild
 
-ASTVER="10.12.4";
+ASTVER="13.7.0";
 
 ARCH=${1}
-LINDIR=${ARCHROOT}/${ARCH}/${SRCDIR}/kernel/linux
+KSRCDIR=${ARCHROOT}/${ARCH}/${SRCDIR}
+LINDIR=${KSRCDIR}/kernel/linux
 
 if [ ! -d ${LINDIR} ];then
   exit 1;
@@ -23,11 +24,17 @@ fi;
 
 cd ${LINDIR}
 VERSION=$(make kernelversion)
+RVERSION=$(echo ${VERSION} |tr "-" "~")
 
 case ${ARCH} in
-  i[3-6]86|x86_64|x86_32)KFLAVOR="intel-dts";;
+  i[3-6]86|x86_64|x86_32)KCPU="intel";
+    KFLAVOR="${KCPU}-dts";;
   mips64)KFLAVOR="cavium-octeon";
+    KCPU="mips";
     KERNELT=vmlinux.64;;
+  arm*)KCPU="arm";;
+  mips*)KCPU="mips";;
+  ppc*)KCPU="ppc";;
 esac;
 
 KCONFIG=${KCONFIGDIR}/${ARCH}-${KFLAVOR}-${VERSION};
@@ -89,7 +96,7 @@ build_kernel_rpm_spec() {
 cat <<EOF
 Name: ${2}
 Epoch: 0
-Version: ${VERSION}
+Version: ${RVERSION}
 Release: ${release}
 Summary: Linux ${VERSION}-${KFLAVOR} installed files
 Group: Distrotech Linux ${VERSION} ${KFLAVOR}
@@ -213,10 +220,10 @@ EOF
 
 build_kernel_rpm() {
   RPMNAME=linux-${KFLAVOR}
-  if [ ! -d ${RPMDIR}/${ARCH}/${RPMNAME}/${2} ];then
-    mkdir -p ${RPMDIR}/${ARCH}/${RPMNAME}/${2}
+  if [ ! -d ${RPMDIR}/${KCPU}/${ARCH}/${RPMNAME}/${2} ];then
+    mkdir -p ${RPMDIR}/${KCPU}/${ARCH}/${RPMNAME}/${2}
    else
-    rm ${RPMDIR}/${ARCH}/${RPMNAME}/${2}/*
+    rm ${RPMDIR}/${KCPU}/${ARCH}/${RPMNAME}/${2}/*
   fi;
 
   if [ "${ARCH}" == "${NARCH}" ];then
@@ -243,7 +250,7 @@ build_kernel_rpm() {
   rm /tmp/kern.spec
 
   RPM_PATH=${RPMBROOT}/RPMS/${ARCH}/
-  YUM_PATH=${RPMDIR}/${ARCH}/${RPMNAME}/${2}
+  YUM_PATH=${RPMDIR}/${KCPU}/${ARCH}/${RPMNAME}/${2}
 
   if [ ! -d ${YUM_PATH} ];then
     mkdir -p ${YUM_PATH}
@@ -259,7 +266,7 @@ build_kernel_rpm() {
     if [ "${rfile}" ];then
       RPM_FILE=${RPM_FILE}-${rfile}
     fi;
-    RPM_FILE=${RPM_FILE}-${VERSION}-${release}.${ARCH}.rpm
+    RPM_FILE=${RPM_FILE}-${RVERSION}-${release}.${ARCH}.rpm
 
     YUM_FILE=${YUM_PATH}/${RPM_FILE}
     if [ -e ${RPM_PATH}/${RPM_FILE} ];then
@@ -333,8 +340,8 @@ build_kernel() {
 #    ln -s -r ${1}/usr/include/asm-${KARCH} ${1}/usr/include/asm
 #  fi;
 
-  if [ -d ${SRCDIR}/kernel/dahdi ];then
-    cd ${SRCDIR}/kernel/dahdi
+  if [ -d ${KSRCDIR}/kernel/dahdi ];then
+    cd ${KSRCDIR}/kernel/dahdi
 
     mkdir -p ${1}/etc/udev/rules.d/
     make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} clean
@@ -342,14 +349,14 @@ build_kernel() {
     make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} DESTDIR=${1} CROSS_COMPILE=${CROSS_COMPILE} install || exit 1
   fi;
 
-  if [ -d ${SRCDIR}/kernel/mISDN ];then
-    cd ${SRCDIR}/kernel/mISDN
+  if [ -d ${KSRCDIR}/kernel/mISDN ];then
+    cd ${KSRCDIR}/kernel/mISDN
     make ARCH=${KARCH} LINUX_SOURCE=${LINDIR} LINUX=${LINDIR} KVERS=${VSUF} INSTALL_PREFIX=${1} CROSS_COMPILE=${CROSS_COMPILE} clean all
     make ARCH=${KARCH} LINUX_SOURCE=${LINDIR} LINUX=${LINDIR} KVERS=${VSUF} INSTALL_PREFIX=${1} CROSS_COMPILE=${CROSS_COMPILE} misdn-headers install
   fi;
 
-  if [ -d ${SRCDIR}/kernel/wanpipe ] && [ "${HAS_WANPIPE}" == "1" ];then
-    cd ${SRCDIR}/kernel/wanpipe
+  if [ -d ${KSRCDIR}/kernel/wanpipe ] && [ "${HAS_WANPIPE}" == "1" ];then
+    cd ${KSRCDIR}/kernel/wanpipe
     git clean -x -f -d
     if [ "${ARCH}" == "i686" ];then
       SETARCH="setarch i686 ";
@@ -357,7 +364,7 @@ build_kernel() {
       SETARCH="";
     fi;
     KEVER=${CONFIG_LOCALVERSION} CROSS_COMPILE=${CROSS_COMPILE} CC=${HOST}gcc CXX=${HOST}g++ ${SETARCH}./Setup install --protocol=DEF,TDM,TDMV,BRI \
-      --with-asterisk=${SRCDIR}/asterisk/asterisk-${ASTVER}/ --zaptel-path=${SRCDIR}/kernel/dahdi  --silent --no_woomera \
+      --with-asterisk=${SRCDIR}/asterisk-git/asterisk-git-${ASTVER}/ --zaptel-path=${KSRCDIR}/kernel/dahdi  --silent --no_woomera \
       --with-linux=${LINDIR} --builddir=${1} --usr-cc="${HOST}gcc"
     rsync -a ${1}/usr/local/ ${1}/usr/
     rm -rf ${1}/usr/local ${1}/var
@@ -384,8 +391,8 @@ build_kernel() {
   fi;
 
   #Clean DAHDI it needs to be uncleaned to build wanpipe
-  if [ -d ${SRCDIR}/kernel/dahdi ];then
-    cd ${SRCDIR}/kernel/dahdi
+  if [ -d ${KSRCDIR}/kernel/dahdi ];then
+    cd ${KSRCDIR}/kernel/dahdi
     make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} clean
   fi;
 
