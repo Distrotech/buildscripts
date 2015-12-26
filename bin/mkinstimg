@@ -6,7 +6,7 @@ BRAND="Distrotech Solutions";
 SYSROOT=/var/opt/dtsbuild/sysroot
 KSUF="dts";
 DTSSRVDIR=/srv/opt/dtsbuild
-KERNEL_VER="3.19.8";
+KERNEL_VER="4.4.0-rc6";
 IMG_OUTPUT_DIR=${DTSSRVDIR}/install
 
 unset LD_LIBRARY_PATH
@@ -270,6 +270,16 @@ create_images_squashfs() {
       mkdir -p ${IMG_OUTPUT_DIR}/${ARCH}/images
     fi;
 
+    if [ -e ${SYSROOT}/${ARCH}/boot/vmlinuz-${KERN_VER}-${kernbits}-${KSUF} ];then
+      if [ ${SYSROOT}/${ARCH}/boot/vmlinuz-${KERN_VER}-${kernbits}-${KSUF} -nt ${IMG_OUTPUT_DIR}/${ARCH}/vmlinuz ];then
+        cp ${SYSROOT}/${ARCH}/boot/vmlinuz-${KERN_VER}-${kernbits}-${KSUF} ${IMG_OUTPUT_DIR}/${ARCH}/vmlinuz
+        rm ${IMG_OUTPUT_DIR}/${ARCH}/initrd.img
+      fi;
+      if [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/initrd.img ] || [ /usr/sbin/mkinitrd -nt ${IMG_OUTPUT_DIR}/${ARCH}/initrd.img ];then
+        mkinitrd bootimg ${IMG_OUTPUT_DIR}/${ARCH}/initrd.img ${SYSROOT}/${ARCH}/ ${KERN_VER}-${kernbits}-${KSUF}
+      fi;
+    fi;
+
     if [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/images/root.img ] || [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/images/core.img ] || \
        [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/images/buildroot.img ];then
       for boot_img in root core buildroot qemu;do
@@ -277,10 +287,6 @@ create_images_squashfs() {
           rm ${IMG_OUTPUT_DIR}/${ARCH}/images/${boot_img}.img
         fi;
       done
-      if [ -e ${SYSROOT}/${ARCH}/boot/vmlinuz-${KERN_VER}-${kernbits}-${KSUF} ];then
-        cp ${SYSROOT}/${ARCH}/boot/vmlinuz-${KERN_VER}-${kernbits}-${KSUF} ${IMG_OUTPUT_DIR}/${ARCH}/vmlinuz
-        mkinitrd bootimg ${IMG_OUTPUT_DIR}/${ARCH}/initrd.img ${SYSROOT}/${ARCH}/ ${KERN_VER}-${kernbits}-${KSUF}
-      fi;
      else
       continue;
     fi;
