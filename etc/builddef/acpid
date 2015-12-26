@@ -1,7 +1,7 @@
-VERSION="2.0.19"
+VERSION="2.0.25"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes";
 BUILDDIR="0";
-ADDCFLAG='-W -Wall -Werror -Wundef -Wshadow -D_GNU_SOURCE -O2';
+ADDCFLAG='-W -Wall -Werror -Wno-sign-compare -Wundef -Wshadow -D_GNU_SOURCE -O2';
 RPMGROUP="root";
