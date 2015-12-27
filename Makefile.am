@@ -12,7 +12,8 @@ bin_SCRIPTS = \
 	bin/umount-arch \
 	bin/wine \
 	bin/binfmt.sh \
-	bin/rpmconflict
+	bin/rpmconflict \
+	bin/mkinstimg
 
 libexec_SCRIPTS	= \
 	libexec/make_apache-ant \
