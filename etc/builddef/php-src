@@ -1,11 +1,11 @@
-VERSION="5.4.20"
+VERSION="7.0.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-static=no --with-config-file-path=/etc/php --with-openssl=shared --enable-dbase=shared
-         --enable-ftp=shared --with-mysql=shared,${ARCHROOT}/${barch}/opt/mysql --with-zlib=shared --enable-safe-mode --with-bz2=shared 
+         --enable-ftp=shared --with-mysqli=shared,mysqlnd --with-mysqli=shared,mysqlnd --with-pdo-mysql=shared,mysqlnd  --with-zlib=shared --enable-safe-mode --with-bz2=shared 
          --with-mod_charset=shared --enable-calendar=shared --with-db5=shared --with-png-dir=shared,${ARCHROOT}/${barch}/usr 
          --with-gd=shared --with-jpeg-dir=shared,${ARCHROOT}/${barch}/usr --with-freetype-dir=shared,${ARCHROOT}/${barch}/usr --with-openssl=shared 
-         --enable-oauth --localstatedir=/var --enable-bcmath=shared --with-ncurses=shared --with-gdbm=shared 
+         --localstatedir=/var --enable-bcmath=shared --with-ncurses=shared --with-gdbm=shared 
          --with-ndbm=shared --with-ldap=shared,${ARCHROOT}/${barch}/usr --with-imap-ssl --with-pic
          --with-gettext=shared --with-mcal=shared,${ARCHROOT}/${barch}/usr -with-curl=shared --with-pear=shared --with-mhash=shared 
          --enable-mbstring --with-mbstrings --with-pgsql=shared --with-mcrypt --with-jpeg-dir=shared 
@@ -13,7 +13,7 @@ CONFOPT="--enable-static=no --with-config-file-path=/etc/php --with-openssl=shar
          --with-ldap-sasl=${ARCHROOT}/${barch}/usr --with-rrd=shared,${ARCHROOT}/${barch}/usr --with-pdo-sqlite=shared,${ARCHROOT}/${barch}/usr 
          --with-unixODBC=${ARCHROOT}/${barch}/usr --enable-sockets=shared --enable-pcntl=shared --with-dom=shared --with-iconv=shared 
          --enable-zip --enable-intl --enable-mbregex --with-imap=shared,${ARCHROOT}/${barch}/usr FREETYPE2_DIR=${ARCHROOT}/${barch}/usr
-         --with-apxs2=${ARCHROOT}/${barch}/opt/apache2/bin/apxs";
+         --with-apxs2=${ARCHROOT}/${barch}/opt/apache2/bin/apxs --with-regex";
 CLEARFLAGS="1";
 ADDCFLAG="-fPIC -I=/usr/include/sasl -I=/opt/mysql/include -I=/usr/include/freetype2";
 ADDLDFLAG="-L=/usr/${B_LIBDIRS} -L=/${B_LIBDIRS} -L=/usr/${C_LIBDIRS}";
