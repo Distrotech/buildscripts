@@ -3060,7 +3060,7 @@ build_dependancies() {
   build_packages ${1} elfutils libdwarf rpm pysqlite yum-metadata-parser pycurl urlgrabber yum deltarpm createrepo || return 1
 
   #Asterisk
-  build_packages ${1} dahdi-tools libpri libss7 mISDNuser openr2 asterisk asterisk-g72x || return 1
+  build_packages ${1} dahdi-tools libpri libss7 mISDNuser openr2 jansson asterisk asterisk-g72x || return 1
 
   #Graphviz
   build_packages ${1} graphviz || return 1
