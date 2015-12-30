@@ -3,7 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
-MAKEOPTS="ARCH=${barch}";
+MAKEOPTS="ARCH=${barch} LIBDIR=${B_LIBDIRS}";
 CHROOTBUILD="1";
 DONTBUILD="cyg32 cyg64";
 RPMPROVIDES="perl(AnyEvent::BDB) perl(BDB) perl(Cocoa::EventLoop) perl(Event::Lib) perl(FLTK) perl(Glib) perl(HTTP::GHTTP) \
