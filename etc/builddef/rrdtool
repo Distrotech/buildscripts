@@ -1,9 +1,10 @@
 VERSION="1.4.7"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--disable-ruby --disable-lua --disable-python --enable-perl-site-install";
+CONFOPT="--disable-ruby --disable-lua --disable-python --enable-perl-site-install PERLCC=gcc PERLLD=gcc";
 BUILDDIR="0";
 ADDCFLAG="-I=/usr/include/cairo -I=/usr/include/pango-1.0";
+NOCCOPT="1";
 OPT_arm="rd_cv_ieee_works=yes";
 OPT_arm64="rd_cv_ieee_works=yes";
 OPT_mips="rd_cv_ieee_works=yes";
@@ -14,6 +15,5 @@ OPT_i686="rd_cv_ieee_works=yes";
 OPT_x86_32="rd_cv_ieee_works=yes";
 RPMPROVIDES="perl(RRDp) perl(RRDs)";
 RPMGROUP="core";
-case ${barch} in
-  arm*|i686|x86_32)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";
+ADDCC="0";
