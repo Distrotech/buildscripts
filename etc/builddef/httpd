@@ -1,4 +1,4 @@
-VERSION="2.2.23"
+VERSION="2.2.31"
 VERSEP="-";
 PREFIX="/opt/apache2";
 SYSCONFPRE="httpd";
@@ -17,7 +17,6 @@ OPT_mips="ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
 OPT_mips64="ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
 OPT_ppc="ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
 OPT_ppc64="ap_cv_void_ptr_lt_long=no BUILDCC=gcc";
-GITBRANCH="master";
 DISTCONF="httpd/httpd.conf";
 SYSLAYOUT="1";
 CHROOTBUILD="1";
