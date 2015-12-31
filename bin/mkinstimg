@@ -246,6 +246,12 @@ umount_aufs() {
     buildroot)umount ${3}/${1}/root ${3}/${1}/core;;
   esac;
 
+  if [ "${2}" != "qemu" ];then
+    if [ ! -d ${IMG_OUTPUT_DIR}/${1}/repo/${2} ];then
+      mkdir -p ${IMG_OUTPUT_DIR}/${1}/repo/${2}
+    fi;
+    rsync -a ${3}/${1}/${2}/var/cache/yum/*/packages/*.rpm  ${IMG_OUTPUT_DIR}/${1}/repo/${2}/
+  fi;
   rm -rf ${3}/${1}/${2}/var/cache/yum
   mksquashfs ${3}/${1}/${2}/* ${IMG_OUTPUT_DIR}/${1}/images/${2}.img -comp xz
 }
@@ -266,6 +272,13 @@ create_images_squashfs() {
       *)kernbits=${ARCH};;
     esac;
 
+    case ${ARCH} in
+      i686|x86_32|x86_64)YUMDIR="/intel/${ARCH}";;
+      arm*)YUMDIR="/arm/${ARCH}";;
+      ppc*)YUMDIR="/ppc/${ARCH}";;
+      mips*)YUMDIR="/mips/${ARCH}";;
+    esac;
+
     if [ ! -d ${IMG_OUTPUT_DIR}/${ARCH}/images ];then
       mkdir -p ${IMG_OUTPUT_DIR}/${ARCH}/images
     fi;
@@ -282,6 +295,9 @@ create_images_squashfs() {
 
     if [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/images/root.img ] || [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/images/core.img ] || \
        [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/images/buildroot.img ];then
+      if [ -d ${IMG_OUTPUT_DIR}/${ARCH}/repo ];then
+        rm -rf ${IMG_OUTPUT_DIR}/${ARCH}/repo
+      fi;
       for boot_img in root core buildroot qemu;do
         if [ -e ${IMG_OUTPUT_DIR}/${ARCH}/images/${boot_img}.img ];then
           rm ${IMG_OUTPUT_DIR}/${ARCH}/images/${boot_img}.img
@@ -332,7 +348,16 @@ create_images_squashfs() {
       install_group_aufs ${ARCH} @buildroot ${IMGDIR}
       umount_aufs ${ARCH} buildroot ${IMGDIR}
     fi;
+
+    if [ ! -d ${IMG_OUTPUT_DIR}/${ARCH}/repo/repodata ];then
+      mkdir -p ${IMG_OUTPUT_DIR}/${ARCH}/repo/repodata
+    fi;
+
+    cp ${DTSSRVDIR}/yum/${YUMDIR}/repodata/*-groups.xml.gz ${IMG_OUTPUT_DIR}/${ARCH}/repo/repodata/groups.xml.gz
+    gunzip -f ${IMG_OUTPUT_DIR}/${ARCH}/repo/repodata/groups.xml.gz
+    createrepo -g repodata/groups.xml --update  ${IMG_OUTPUT_DIR}/${ARCH}/repo
   done;
+
   rm -rf ${IMGDIR}
 }
 
