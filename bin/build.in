@@ -2059,6 +2059,11 @@ build_bootstrap_binutils() {
 
   rsync -aP ${DIST_ROOT}/ /
 
+  if [ ! -d ${ARCHROOT}/${1}/var/hybrid/libexec/${2} ];then
+    mkdir -p ${ARCHROOT}/${1}/var/hybrid/libexec/${2}/
+  fi;
+  rsync -a ${DIST_ROOT}/usr/${2}/ ${ARCHROOT}/${1}/var/hybrid/${2}/
+
   MULTIARCH=MARCH_${NARCH}
   NATIVE=${!MULTIARCH}
   if [ "${NATIVE}" ];then
@@ -2067,7 +2072,7 @@ build_bootstrap_binutils() {
       *)echo rsync -a ${DIST_ROOT}/ ${ARCHROOT}/${1}/;;
     esac;
    else
-    rsync -a ${DIST_ROOT}/ ${ARCHROOT}/${1}/;
+    rsync -a ${DIST_ROOT}/ ${ARCHROOT}/${1}/
   fi;
   tar_package ${DIST_ROOT} ${TOOLPKG}/${NARCH}/${1} ${BINUTILS} > /dev/null 2>&1
 }
@@ -2316,6 +2321,14 @@ build_gcc_bootstrap() {
           if [ -e ${STATDIR}/${1}/done/libtool ];then
             rm ${STATDIR}/${1}/done/libtool
           fi;
+
+          GCCVER=$(${2}-gcc --version |head -1 |sed -e "s/.* (GCC) \(.*\)/\1/")
+           if [ ! -d ${ARCHROOT}/${1}/var/hybrid/libexec/gcc/${2} ];then
+            mkdir -p ${ARCHROOT}/${1}/var/hybrid/libexec/gcc/${2}/
+          fi;
+          rsync -a ${GCCBOOTDEST}/usr/${USELIBDIR}/gcc/${2}/${GCCVER}/ ${ARCHROOT}/${1}/var/hybrid/libexec/gcc/${2}/${GCCVER}/
+          rsync -a ${GCCBOOTDEST}/usr/${2}/ ${ARCHROOT}/${1}/var/hybrid/${2}/
+
           MULTIARCH=MARCH_${NARCH}
           NATIVE=${!MULTIARCH}
           if [ "${NATIVE}" ];then
