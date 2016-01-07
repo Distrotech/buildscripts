@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#
+# ARM v7
+ #  vexpress / bcm2709
+# ARM v6
+#  versatile / bcmrpi
+#
+
 SRCDIR=@SRCDIR@
 ARCHROOT=@ARCHROOT@
 DTSSRVDIR=@SRVDIR@
@@ -15,6 +22,8 @@ RPMBROOT=/root/rpmbuild
 ASTVER="13.7.0";
 
 ARCH=${1}
+KCPU=${2}
+
 KSRCDIR=${ARCHROOT}/${ARCH}/${SRCDIR}
 LINDIR=${KSRCDIR}/kernel/linux
 
@@ -28,11 +37,18 @@ RVERSION=$(echo ${VERSION} |tr "-" "~")
 
 case ${ARCH} in
   i[3-6]86|x86_64|x86_32)KCPU="intel";
+    HWMAN="intel";
     KFLAVOR="${KCPU}-dts";;
   mips64)KFLAVOR="cavium-octeon";
+    HWMAN="mips";
     KCPU="mips";
     KERNELT=vmlinux.64;;
-  arm*)KCPU="arm";;
+  arm)KCPU=${KCPU:=bcm2709}
+    HWMAN="arm";
+    KFLAVOR="${KCPU}-dts";;
+  armv6)KCPU=${KCPU:=bcmrpi}
+    HWMAN="arm";
+    KFLAVOR="${KCPU}-dts";;
   mips*)KCPU="mips";;
   ppc*)KCPU="ppc";;
 esac;
@@ -52,6 +68,7 @@ export KERNELT DESTDIR MAKE_J KFLAVOR VERSION ARCH KCONFIG ASTVER
 case ${ARCH} in
   arm64)CROSS_COMPILE=aarch64-linux-gnu-;;
   arm)CROSS_COMPILE=arm-linux-gnueabi-;;
+  armv6)CROSS_COMPILE=armv6-linux-gnueabi-;;
   mips64)CROSS_COMPILE=mips64-octeon-linux-gnu-;;
   x86_32)CROSS_COMPILE=x86_64-linux-gnu-;;
   *)CROSS_COMPILE=${ARCH}-linux-gnu-;;
@@ -66,6 +83,7 @@ fi;
 case ${ARCH} in
   x86_*|i[3-6]86)KARCH="x86";;
   arm64)KARCH=arm64;;
+  arm|armv6)KARCH=arm;;
   ppc|ppc64)KARCH=powerpc;;
   *64)KARCH=${ARCH::-2};;
   *)KARCH=${ARCH};;
@@ -75,6 +93,7 @@ NARCH=${NARCH:=$( uname -m )}
 case ${NARCH} in
   powerpc)NARCH=ppc;;
   powerpc64)NARCH=ppc64;;
+  armv6l)NARCH=armv6;;
   arm*)NARCH=arm;;
   aarch64)NARCH=arm64;;
 esac;
@@ -105,7 +124,7 @@ BuildRoot: ${1}
 URL: ${PKGURL}/linux
 AutoReqProv: 1
 
-%define _arch ${ARCH}
+%define _arch ${3}
 %global __strip /bin/true
 
 %description
@@ -173,8 +192,21 @@ Summary: Linux ${VERSION}-${KFLAVOR} installed files (lib)
 
 %description lib
 Distrotech Linux ${VERSION} ${KFLAVOR} installed files (lib)
+
 EOF
   fi;
+
+if [ -d ${1}/overlays ];then
+  cat <<EOF
+%package dtb
+Group: Distrotech Linux ${VERSION} ${KFLAVOR}
+Summary: Linux ${VERSION}-${KFLAVOR} device tree/overlay files (dtb)
+
+%description dtb
+Distrotech Linux ${VERSION} ${KFLAVOR} device tree/overlay files (dtb)
+
+EOF
+fi;
 
   cat <<EOF
 %files
@@ -215,15 +247,32 @@ if [ "${HAS_WANPIPE}" == "1" ];then
 /usr/${LIBDIR}/libteletone.so*
 
 EOF
-  fi;
+fi;
+
+if [ -d ${1}/overlays ];then
+  cat <<EOF
+%files dtb
+/*.dtb
+/overlays
+EOF
+fi;
 }
 
 build_kernel_rpm() {
+  #Set the RPM ARCH
+  case ${ARCH} in
+    arm)RPMARCH="armv7l";;
+    armv6)RPMARCH="armv6l";;
+    arm64)RPMARCH="aarch64";;
+    mips)RPMARCH="mips32";;
+    *)RPMARCH=${ARCH};;
+  esac;
+
   RPMNAME=linux-${KFLAVOR}
-  if [ ! -d ${RPMDIR}/${KCPU}/${ARCH}/${RPMNAME}/${2} ];then
-    mkdir -p ${RPMDIR}/${KCPU}/${ARCH}/${RPMNAME}/${2}
+  if [ ! -d ${RPMDIR}/${HWMAN}/${ARCH}/${RPMNAME}/${2} ];then
+    mkdir -p ${RPMDIR}/${HWMAN}/${ARCH}/${RPMNAME}/${2}
    else
-    rm ${RPMDIR}/${KCPU}/${ARCH}/${RPMNAME}/${2}/*
+    rm ${RPMDIR}/${HWMAN}/${ARCH}/${RPMNAME}/${2}/*
   fi;
 
   if [ "${ARCH}" == "${NARCH}" ];then
@@ -245,12 +294,12 @@ build_kernel_rpm() {
     mkdir -p ${RPMBROOT}/RPMS
   fi;
 
-  build_kernel_rpm_spec ${1} ${RPMNAME} > /tmp/kern.spec
-  rpmbuild -bb /tmp/kern.spec --target=${ARCH} --buildroot ${1}
+  build_kernel_rpm_spec ${1} ${RPMNAME} ${RPMARCH} > /tmp/kern.spec
+  rpmbuild -bb /tmp/kern.spec --target=${RPMARCH} --buildroot ${1}
   rm /tmp/kern.spec
 
-  RPM_PATH=${RPMBROOT}/RPMS/${ARCH}/
-  YUM_PATH=${RPMDIR}/${KCPU}/${ARCH}/${RPMNAME}/${2}
+  RPM_PATH=${RPMBROOT}/RPMS/${RPMARCH}/
+  YUM_PATH=${RPMDIR}/${HWMAN}/${ARCH}/${RPMNAME}/${2}
 
   if [ ! -d ${YUM_PATH} ];then
     mkdir -p ${YUM_PATH}
@@ -260,15 +309,19 @@ build_kernel_rpm() {
   if [ "${HAS_WANPIPE}" == "1" ];then
     RPMPKGS="${RPMPKGS} doc dbg wanpipe lib";
   fi;
+  if [ -d ${1}/overlays ];then
+    RPMPKGS="${RPMPKGS} dtb";
+  fi;
 
   for rfile in "" ${RPMPKGS};do
     RPM_FILE=${RPMNAME}
     if [ "${rfile}" ];then
       RPM_FILE=${RPM_FILE}-${rfile}
     fi;
-    RPM_FILE=${RPM_FILE}-${RVERSION}-${release}.${ARCH}.rpm
 
+    RPM_FILE=${RPM_FILE}-${RVERSION}-${release}.${RPMARCH}.rpm
     YUM_FILE=${YUM_PATH}/${RPM_FILE}
+
     if [ -e ${RPM_PATH}/${RPM_FILE} ];then
       mv ${RPM_PATH}/${RPM_FILE} ${YUM_FILE}
     fi;
@@ -302,7 +355,44 @@ build_kernel_tar() {
     tar --exclude=usr/sbin/.dbg -cJf ${TARBALL}/${2}-wanpipe.tar.xz etc usr/sbin
    else
     tar -cJf ${TARBALL}/${2}-dev.tar.xz usr/include
-  fi;)
+  fi;
+  if [ -d overlays  ];then
+    tar -cJf ${TARBALL}/${2}-dtb.tar.xz *.dtb overlays
+  fi)
+}
+
+install_pi2() {
+  make ARCH=${KARCH} CROSS_COMPILE=${CROSS_COMPILE} dtbs
+  ./scripts/mkknlimg arch/${KARCH}/boot/zImage ${1}/boot/vmlinuz-${2}
+echo "BOO PI";
+  exit 1
+}
+
+install_versatile() {
+  make ARCH=${KARCH} CROSS_COMPILE=${CROSS_COMPILE} dtbs
+  cp arch/arm/boot/zImage ${1}/boot/vmlinuz-${2}
+
+  cp arch/arm/boot/dts/*.dtb ${1}/
+
+  if [ ! -d ${1}/overlays ];then
+    mkdir -p ${1}/overlays
+  fi;
+  cp arch/arm/boot/dts/overlays/*.dtb* ${1}/overlays
+  cp arch/arm/boot/dts/overlays/README ${1}/overlays
+}
+
+install_arm() {
+  case ${KCPU} in
+    bcm2709)install_pi2 ${1} ${2};;
+    versatile)install_versatile ${1} ${2};;
+  esac;
+}
+
+install_intel() {
+  make ARCH=${KARCH} KCONFIG_CONFIG=${KCONFIG} INSTALL_MOD_PATH=${1} INSTALL_PATH=${1}/boot INSTALL_HDR_PATH=${1}/usr  CROSS_COMPILE=${CROSS_COMPILE} install || exit 1;
+  if [ -e ${1}/boot/vmlinuz ];then
+    mv ${1}/boot/vmlinuz ${1}/boot/vmlinuz-${2}
+  fi;
 }
 
 build_kernel() {
@@ -318,21 +408,22 @@ build_kernel() {
   cp ${KCONFIG} .config &&  \
   make ARCH=${KARCH} KCONFIG_CONFIG=${KCONFIG} ${MAKE_J} CROSS_COMPILE=${CROSS_COMPILE} all firmware modules ${KERNELT} && \
   make ARCH=${KARCH} KCONFIG_CONFIG=${KCONFIG} INSTALL_MOD_PATH=${1} INSTALL_PATH=${1}/boot INSTALL_HDR_PATH=${1}/usr \
-       CROSS_COMPILE=${CROSS_COMPILE} headers_install install modules_install firmware_install || exit 1
+       CROSS_COMPILE=${CROSS_COMPILE} headers_install modules_install firmware_install || exit 1
+
+  eval `grep CONFIG_LOCALVERSION ${KCONFIG}`
+  VSUF="${VERSION}${CONFIG_LOCALVERSION}";
+
+  case ${ARCH} in
+    arm|armv6)install_arm ${1} ${VSUF} ||exit 1;;
+    i686|x86_32|x86_64)install_intel ${1} ${2} ||exit 1;;
+  esac;
 
   if [ -e ${1}/usr/include/scsi/scsi.h ];then
     rm ${1}/usr/include/scsi/scsi.h
   fi;
 
-  eval `grep CONFIG_LOCALVERSION ${KCONFIG}`
-  VSUF="${VERSION}${CONFIG_LOCALVERSION}";
-
-  if [ -e ${1}/boot/vmlinuz ];then
-    mv ${1}/boot/vmlinuz ${1}/boot/vmlinuz-${VSUF}
-  fi;
-
-  if [ -e ${1}/boot/System.map ];then
-    mv ${1}/boot/System.map ${1}/boot/System.map-${VSUF}
+  if [ -e System.map ];then
+    cp System.map ${1}/boot/System.map-${VSUF}
   fi;
 
 #  if [ -h ${1}/usr/include/asm ] && [ -d ${1}/usr/include/asm-${KARCH} ];then
@@ -349,11 +440,11 @@ build_kernel() {
     make ARCH=${KARCH} KSRC=${LINDIR} KVERS=${VSUF} DESTDIR=${1} CROSS_COMPILE=${CROSS_COMPILE} install || exit 1
   fi;
 
-  if [ -d ${KSRCDIR}/kernel/mISDN ];then
-    cd ${KSRCDIR}/kernel/mISDN
-    make ARCH=${KARCH} LINUX_SOURCE=${LINDIR} LINUX=${LINDIR} KVERS=${VSUF} INSTALL_PREFIX=${1} CROSS_COMPILE=${CROSS_COMPILE} clean all
-    make ARCH=${KARCH} LINUX_SOURCE=${LINDIR} LINUX=${LINDIR} KVERS=${VSUF} INSTALL_PREFIX=${1} CROSS_COMPILE=${CROSS_COMPILE} misdn-headers install
-  fi;
+#  if [ -d ${KSRCDIR}/kernel/mISDN ];then
+#    cd ${KSRCDIR}/kernel/mISDN
+#    make ARCH=${KARCH} LINUX_SOURCE=${LINDIR} LINUX=${LINDIR} KVERS=${VSUF} INSTALL_PREFIX=${1} CROSS_COMPILE=${CROSS_COMPILE} clean all
+#    make ARCH=${KARCH} LINUX_SOURCE=${LINDIR} LINUX=${LINDIR} KVERS=${VSUF} INSTALL_PREFIX=${1} CROSS_COMPILE=${CROSS_COMPILE} misdn-headers install
+#  fi;
 
   if [ -d ${KSRCDIR}/kernel/wanpipe ] && [ "${HAS_WANPIPE}" == "1" ];then
     cd ${KSRCDIR}/kernel/wanpipe
