@@ -20,7 +20,7 @@ NARCH=${NARCH:=$( uname -m )}
 DISTRONAME="Distro Solutions"
 
 DEF_JAVA_VER="1.7.0_79";
-DEF_LINUX_VER="4.4-rc6";
+DEF_LINUX_VER="4.4-rc8";
 DAHDI_VER="2.11.0";
 WANPIPE_VER="7.0.15";
 DEF_QT_VER="5";
@@ -2062,7 +2062,11 @@ build_bootstrap_binutils() {
   if [ ! -d ${ARCHROOT}/${1}/var/hybrid/libexec/${2} ];then
     mkdir -p ${ARCHROOT}/${1}/var/hybrid/libexec/${2}/
   fi;
+  if [ ! -d ${ARCHROOT}/${1}/usr/bin/hybrid ];then
+    mkdir -p ${ARCHROOT}/${1}/usr/bin/hybrid
+  fi;
   rsync -a ${DIST_ROOT}/usr/${2}/ ${ARCHROOT}/${1}/var/hybrid/${2}/
+  rsync -a ${DIST_ROOT}/usr/bin/ ${ARCHROOT}/${1}/usr/bin/hybrid/
 
   MULTIARCH=MARCH_${NARCH}
   NATIVE=${!MULTIARCH}
@@ -2326,7 +2330,12 @@ build_gcc_bootstrap() {
            if [ ! -d ${ARCHROOT}/${1}/var/hybrid/libexec/gcc/${2} ];then
             mkdir -p ${ARCHROOT}/${1}/var/hybrid/libexec/gcc/${2}/
           fi;
+           if [ ! -d ${ARCHROOT}/${1}/usr/bin/hybrid ];then
+            mkdir -p ${ARCHROOT}/${1}/usr/bin/hybrid
+          fi;
           rsync -a ${GCCBOOTDEST}/usr/${USELIBDIR}/gcc/${2}/${GCCVER}/ ${ARCHROOT}/${1}/var/hybrid/libexec/gcc/${2}/${GCCVER}/
+          rsync -a ${GCCBOOTDEST}/usr/libexec/gcc/${2}/${GCCVER}/ ${ARCHROOT}/${1}/var/hybrid/libexec/gcc/${2}/${GCCVER}/
+          rsync -a ${GCCBOOTDEST}/usr/bin/ ${ARCHROOT}/${1}/usr/bin/hybrid/
           rsync -a ${GCCBOOTDEST}/usr/${2}/ ${ARCHROOT}/${1}/var/hybrid/${2}/
 
           MULTIARCH=MARCH_${NARCH}
@@ -3513,6 +3522,7 @@ build_linux_headers() {
   if [ ! -d ${SRCDIR}/linux/linux-${LINUX_VER} ] || [ ! -e ${KERN_HEADERS}/usr/include/linux/version.h ];then
     echo "Linux Headers"
     (git_load_pkg linux -${LINUX_VER} distrotech-linux-${LINUX_VER} linux || exit 1
+    git tag -f distrotech-linux-${LINUX_VER} -a -m distrotech-linux-${LINUX_VER}
     if [ -e ${LINSRCDIR}/kernel/linux ];then
       rm ${LINSRCDIR}/kernel/linux
     fi;
