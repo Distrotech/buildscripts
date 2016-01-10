@@ -4,7 +4,5 @@ PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-std=gnu99";
 EXTRALIBS="-lm";
-case ${barch} in
-        i686|x86_32|arm*|mips*|ppc64)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";
 RPMGROUP="core";

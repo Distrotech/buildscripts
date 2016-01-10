@@ -4,8 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 EXTRALIBS="-lasound -lm -lpthread -ldl";
 RPMGROUP="core";
-case ${barch} in
-  arm*|i686|x86_32)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";
 AMVER="1.14";
 AUTORECONF="1";

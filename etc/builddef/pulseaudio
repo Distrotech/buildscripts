@@ -25,6 +25,4 @@ ADDCFLAG="-I=/usr/include/json -I=/usr/include/cairo -I=/usr/include/orc-0.4 -I=
           -I=/usr/include/pango-1.0 -I=/usr/include/gdk-pixbuf-2.0 -I=/usr/include/atk-1.0";
 ADDLDFLAG="-shared-libgcc";
 RPMGROUP="root";
-case ${barch} in
-  arm*|i686|x86_32)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";

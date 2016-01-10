@@ -6,6 +6,4 @@ AMVER="1.13";
 ADDLDFLAG="-shared-libgcc";
 BUILDDIR="0";
 RPMGROUP="root";
-case ${barch} in
-  arm*|i686|x86_32)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";

@@ -1,7 +1,11 @@
 VERSION="2.0.7"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="ac_cv_header_signal_h=yes ac_cv_stacksetup_sigaltstack=\"guessed:(skaddr),(sksize)\" ac_cv_stacksetup_sigstack=\"guessed:(skaddr),(sksize)\"";
+CONFOPT="";
+#CONFOPT="ac_cv_header_signal_h=yes ac_cv_stacksetup_sigaltstack=\"guessed:(skaddr),(sksize)\" ac_cv_stacksetup_sigstack=\"guessed:(skaddr),(sksize)\"";
+OPT_arm="ac_cv_header_signal_h=yes ac_cv_stacksetup_sigaltstack=\"guessed:(skaddr),(sksize)\" ac_cv_stacksetup_sigstack=\"guessed:(skaddr),(sksize)\"";
+OPT_armv6="${OPT_arm}";
+OPT_ppc="--with-mctx-mth=mcsc";
 GITBRANCH="master";
 SYSROOTFIXUP="0";
 NOCCOPT="1";

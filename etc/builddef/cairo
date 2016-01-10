@@ -24,6 +24,6 @@ fi;
 ADDWITHSYSROOT="1";
 RPMGROUP="root";
 case ${barch} in
-  ppc|ppc64)CHROOTBUILD="0";;
+  ppc64)CHROOTBUILD="0";;
   *)CHROOTBUILD="1";;
 esac;

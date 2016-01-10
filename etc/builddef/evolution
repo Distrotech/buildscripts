@@ -3,7 +3,5 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-krb5 --with-openldap --enable-contact-maps";
 RPMGROUP="gui";
-case ${barch} in
-  arm*|i686|x86_32)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";
 NEEDS_NET="1";

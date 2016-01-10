@@ -2,7 +2,5 @@ VERSION="3.0.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-gtk2 --enable-gtk3";
-case ${barch} in
-  i686|x86_32|ppc64|mips64|arm*)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";
 RPMGROUP="gui";

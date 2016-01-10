@@ -4,6 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 ADDLDFLAG="-shared-libgcc";
 RPMGROUP="core";
-case ${barch} in
-  arm*|i686|x86_32)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";

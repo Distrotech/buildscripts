@@ -1,7 +1,8 @@
 VERSION="13.7.0"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--with-dahdi --with-spandsp --with-ssl --with-openr2 --with-ss7 --without-h323 --with-sqlite3";
+CONFOPT="--with-dahdi --with-spandsp --with-ssl --with-openr2 --with-ss7 --without-h323 --with-sqlite3 --with-mysqlclient=${ARCHROOT}/${barch}/opt/mysql --with-net-snmp=${ARCHROOT}/${barch}/usr
+         ac_cv_path_CONFIG_NETSNMP=${ARCHROOT}/${barch}/usr/bin/net-snmp-config";
 ADDLDFLAG="-L=/opt/mysql/${B_LIBDIRS} -L=/usr/${C_LIBDIRS}/ilbc-webrtc";
 ADDCFLAG="-I=/opt/mysql/include -O2";
 BUILDDIR="0";

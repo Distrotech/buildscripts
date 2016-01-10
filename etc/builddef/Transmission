@@ -5,6 +5,4 @@ CONFOPT="";
 NOCCOPT="1";
 CLEARFLAGS="1";
 RPMGROUP="gui";
-case ${barch} in
-  arm*|i686|x86_32)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";
