@@ -196,7 +196,7 @@ Distrotech Linux ${VERSION} ${KFLAVOR} installed files (lib)
 EOF
   fi;
 
-if [ -d ${1}/overlays ];then
+if [ -d ${1}/boot/dtb-${4} ];then
   cat <<EOF
 %package dtb
 Group: Distrotech Linux ${VERSION} ${KFLAVOR}
@@ -249,11 +249,10 @@ if [ "${HAS_WANPIPE}" == "1" ];then
 EOF
 fi;
 
-if [ -d ${1}/overlays ];then
+if [ -d ${1}/boot/dtb-${4} ];then
   cat <<EOF
 %files dtb
-/*.dtb
-/overlays
+/boot/dtb-${4}
 EOF
 fi;
 }
@@ -294,23 +293,23 @@ build_kernel_rpm() {
     mkdir -p ${RPMBROOT}/RPMS
   fi;
 
-  build_kernel_rpm_spec ${1} ${RPMNAME} ${RPMARCH} > /tmp/kern.spec
-  rpmbuild -bb /tmp/kern.spec --target=${RPMARCH} --buildroot ${1}
-  rm /tmp/kern.spec
+  RPMPKGS="modules firmware dahdi dev";
+  if [ "${HAS_WANPIPE}" == "1" ];then
+    RPMPKGS="${RPMPKGS} doc dbg wanpipe lib";
+  fi;
+  if [ -d ${1}/boot/dtb-${3} ];then
+    RPMPKGS="${RPMPKGS} dtb";
+  fi;
+
+  build_kernel_rpm_spec ${1} ${RPMNAME} ${RPMARCH} ${3} > /tmp/kern-${3}.spec
+  rpmbuild -bb /tmp/kern-${3}.spec --target=${RPMARCH} --buildroot ${1}
+  rm /tmp/kern-${3}.spec
 
   RPM_PATH=${RPMBROOT}/RPMS/${RPMARCH}/
   YUM_PATH=${RPMDIR}/${HWMAN}/${ARCH}/${RPMNAME}/${2}
 
   if [ ! -d ${YUM_PATH} ];then
     mkdir -p ${YUM_PATH}
-  fi;
-
-  RPMPKGS="modules firmware dahdi dev";
-  if [ "${HAS_WANPIPE}" == "1" ];then
-    RPMPKGS="${RPMPKGS} doc dbg wanpipe lib";
-  fi;
-  if [ -d ${1}/overlays ];then
-    RPMPKGS="${RPMPKGS} dtb";
   fi;
 
   for rfile in "" ${RPMPKGS};do
@@ -356,35 +355,43 @@ build_kernel_tar() {
    else
     tar -cJf ${TARBALL}/${2}-dev.tar.xz usr/include
   fi;
-  if [ -d overlays  ];then
-    tar -cJf ${TARBALL}/${2}-dtb.tar.xz *.dtb overlays
+  if [ -d boot/dtb-${3}  ];then
+    tar -cJf ${TARBALL}/${2}-dtb.tar.xz boot/dtb-${3}
   fi)
+}
+
+install_dtb() {
+  if [ ! -d ${1}/boot/dtb-${2} ];then
+    mkdir -p ${1}/boot/dtb-${2}
+  fi;
+
+  cp arch/arm/boot/dts/*.dtb ${1}/boot/dtb-${2}/
+
+  if [ ! -d ${1}/boot/dtb-${2}/overlays ];then
+    mkdir -p ${1}/boot/dtb-${2}/overlays
+  fi;
+  cp arch/arm/boot/dts/overlays/*.dtb* ${1}/boot/dtb-${2}/overlays
+  cp arch/arm/boot/dts/overlays/README ${1}/boot/dtb-${2}/overlays
 }
 
 install_pi2() {
   make ARCH=${KARCH} CROSS_COMPILE=${CROSS_COMPILE} dtbs
   ./scripts/mkknlimg arch/${KARCH}/boot/zImage ${1}/boot/vmlinuz-${2}
-echo "BOO PI";
-  exit 1
+
+  install_dtb ${1} ${2}
 }
 
-install_versatile() {
+install_qemu() {
   make ARCH=${KARCH} CROSS_COMPILE=${CROSS_COMPILE} dtbs
   cp arch/arm/boot/zImage ${1}/boot/vmlinuz-${2}
 
-  cp arch/arm/boot/dts/*.dtb ${1}/
-
-  if [ ! -d ${1}/overlays ];then
-    mkdir -p ${1}/overlays
-  fi;
-  cp arch/arm/boot/dts/overlays/*.dtb* ${1}/overlays
-  cp arch/arm/boot/dts/overlays/README ${1}/overlays
+  install_dtb ${1} ${2}
 }
 
 install_arm() {
   case ${KCPU} in
     bcm2709)install_pi2 ${1} ${2};;
-    versatile)install_versatile ${1} ${2};;
+    versatile|multi)install_qemu ${1} ${2};;
   esac;
 }
 
@@ -495,8 +502,8 @@ build_kernel() {
     fi;
   done;
 
-  build_kernel_tar ${1} ${2}
-  build_kernel_rpm ${1} ${2}
+  build_kernel_tar ${1} ${2} ${VSUF}
+  build_kernel_rpm ${1} ${2} ${VSUF}
 }
 
 PNAME=linux-${KFLAVOR}-${VERSION}
