@@ -173,7 +173,7 @@ unset CFLAGS LDFLAGS CPPFLAGS
 arch_config() {
   #Set linux version
   case ${1} in
-    mips64)LIN_VER="2.6.32";;
+#    mips64)LIN_VER="2.6.32";;
     *)LIN_VER=${DEF_LINUX_VER};;
   esac;
 
