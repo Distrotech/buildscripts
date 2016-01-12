@@ -2,7 +2,5 @@ VERSION="3.10.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-case ${barch} in
-  arm*|i686|x86_32|ppc*|mips64)CHROOTBUILD="1";;
-esac;
+CHROOTBUILD="1";
 RPMGROUP="gui";
