@@ -6,7 +6,7 @@ BRAND="Distrotech Solutions";
 SYSROOT=/var/opt/dtsbuild/sysroot
 KSUF="dts";
 DTSSRVDIR=/srv/opt/dtsbuild
-KERNEL_VER="4.4.0-rc6";
+KERNEL_VER="4.4.0";
 IMG_OUTPUT_DIR=${DTSSRVDIR}/install
 
 unset LD_LIBRARY_PATH

@@ -20,7 +20,7 @@ NARCH=${NARCH:=$( uname -m )}
 DISTRONAME="Distro Solutions"
 
 DEF_JAVA_VER="1.7.0_79";
-DEF_LINUX_VER="4.4-rc8";
+DEF_LINUX_VER="4.4.0";
 DAHDI_VER="2.11.0";
 WANPIPE_VER="7.0.15";
 DEF_QT_VER="5";
