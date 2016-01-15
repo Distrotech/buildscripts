@@ -1,6 +1,19 @@
 #!/bin/bash
 
+NARCH=$(uname -m)
+
+case ${NARCH} in
+  arm*)ARCH="arm";;
+  *)ARCH=${NARCH};;
+esac
+
+echo ${ARCH}
+
 config_binfmt() {
+  if [ "${1}" == "${ARCH}" ];then
+    return;
+  fi;
+
   if [ -e /proc/sys/fs/binfmt_misc/${1} ];then
     echo -1 > /proc/sys/fs/binfmt_misc/${1}
   fi;
