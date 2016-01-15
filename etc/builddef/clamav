@@ -6,5 +6,5 @@ DISTCONF="freshclam.conf clamd.conf";
 RPMGROUP="core";
 case ${barch} in
   arm*|ppc*|i686)CHROOTBUILD="1";;
-  mips|x86_32)DONTBUILD="${barch}";;
+  mips|x86_32|mips64)DONTBUILD="${barch}";;
 esac;
