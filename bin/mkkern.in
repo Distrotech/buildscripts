@@ -422,7 +422,7 @@ build_kernel() {
 
   case ${ARCH} in
     arm|armv6)install_arm ${1} ${VSUF} ||exit 1;;
-    i686|x86_32|x86_64)install_intel ${1} ${2} ||exit 1;;
+    i686|x86_32|x86_64)install_intel ${1} ${VSUF} ||exit 1;;
   esac;
 
   if [ -e ${1}/usr/include/scsi/scsi.h ];then
