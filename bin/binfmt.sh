@@ -7,8 +7,6 @@ case ${NARCH} in
   *)ARCH=${NARCH};;
 esac
 
-echo ${ARCH}
-
 config_binfmt() {
   if [ "${1}" == "${ARCH}" ];then
     return;
