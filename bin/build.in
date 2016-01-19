@@ -3082,7 +3082,7 @@ build_dependancies() {
   build_packages ${1} elfutils libdwarf rpm pysqlite yum-metadata-parser pycurl urlgrabber yum deltarpm createrepo || return 1
 
   #Asterisk
-  build_packages ${1} dahdi-tools libpri libss7 mISDNuser openr2 jansson pjproject asterisk asterisk-g72x || return 1
+  build_packages ${1} dahdi-tools libpri libss7 openr2 jansson pjproject asterisk asterisk-g72x || return 1
 
   #Graphviz
   build_packages ${1} graphviz || return 1
@@ -3547,21 +3547,6 @@ build_linux_headers() {
     ln -s ${SRCDIR}/dahdi-linux/dahdi-linux-${DAHDI_VER} ${LINSRCDIR}/kernel/dahdi
     cd ${SRCDIR}/dahdi-linux/dahdi-linux-${DAHDI_VER}
     make DESTDIR=${KERN_HEADERS} install-include
-    if [ -d ${KERN_HEADERS}/usr/include/linux ];then
-      touch ${KERN_HEADERS}/usr/include/linux
-    fi;
-    ) || return 1
-  fi;
-
-  if [ ! -d ${SRCDIR}/mISDN/mISDN-master ] || [ ! -d ${KERN_HEADERS}/usr/include/mISDN ];then
-    echo "mISDN driver headers"
-    (git_load_pkg mISDN -master master mISDN || exit 1
-    if [ -e ${LINSRCDIR}/kernel/mISDN ];then
-      rm ${LINSRCDIR}/kernel/mISDN
-    fi;
-    ln -s ${SRCDIR}/mISDN/mISDN-master ${LINSRCDIR}/kernel/mISDN
-    cd ${SRCDIR}/mISDN/mISDN-master
-    make INSTALL_PREFIX=${KERN_HEADERS} misdn-headers
     if [ -d ${KERN_HEADERS}/usr/include/linux ];then
       touch ${KERN_HEADERS}/usr/include/linux
     fi;
