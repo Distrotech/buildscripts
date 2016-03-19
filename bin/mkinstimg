@@ -293,6 +293,14 @@ create_images_squashfs() {
       fi;
     fi;
 
+    if [ ! -d ${IMG_OUTPUT_DIR}/${ARCH}/tar ];then
+      mkdir -p ${IMG_OUTPUT_DIR}/${ARCH}/tar
+    fi;
+
+    if [ -e ${SYSROOT}/${ARCH}/var/lib/pgsql/pgdata.tar.xz ] && [ ${SYSROOT}/${ARCH}/var/lib/pgsql/pgdata.tar.xz -nt ${IMG_OUTPUT_DIR}/${ARCH}/tar/pgdata.tar.xz ];then
+      cp ${SYSROOT}/${ARCH}/var/lib/pgsql/pgdata.tar.xz ${IMG_OUTPUT_DIR}/${ARCH}/tar
+    fi;
+
     if [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/images/root.img ] || [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/images/core.img ] || \
        [ ! -e ${IMG_OUTPUT_DIR}/${ARCH}/images/buildroot.img ];then
       if [ -d ${IMG_OUTPUT_DIR}/${ARCH}/repo ];then
