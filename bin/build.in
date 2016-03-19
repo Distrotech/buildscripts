@@ -19,7 +19,7 @@ NARCH=${NARCH:=$( uname -m )}
 
 DISTRONAME="Distro Solutions"
 
-DEF_JAVA_VER="1.7.0_79";
+DEF_JAVA_VER="1.7.0_95";
 DEF_LINUX_VER="4.4.0";
 DAHDI_VER="2.11.0";
 WANPIPE_VER="7.0.15";
@@ -29,7 +29,7 @@ PYVER=2;
 
 GCC_OPT="-O2 ";
 
-JAVA6_VER="1.6.0_35";
+JAVA6_VER="1.6.0_38";
 JAVA_VER="${DEF_JAVA_VER}";
 QT_VER="${DEF_QT_VER}";
 
@@ -40,6 +40,8 @@ case ${NARCH} in
       NARCH=ppc64;;
   arm64|aarch64)NARCH=arm64;;
   armv6)NARCH=armv6;
+        SYSARCH="arm";;
+  armv5)NARCH=armv5;
         SYSARCH="arm";;
   arm*)NARCH=arm;
       JAVA_VER="1.7.0_25";;
@@ -110,7 +112,7 @@ export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA_VER JAVA6_VER M2_VER QT_VER
 
 #Parse cmdline opts
 #Adding a arch here may require you adding tupple/kernel arch/libdirs and bellow in arch_config
-ALLARCHLIST="i686 x86_64 x86_32 arm armv6 arm64 mips mips64 ppc ppc64 win32 win64 cyg32 cyg64";
+ALLARCHLIST="i686 x86_64 x86_32 arm armv5 armv6 arm64 mips mips64 ppc ppc64 win32 win64 cyg32 cyg64";
 ARCHMPAT=${ALLARCHLIST// /|}
 ALLARCH="0";
 
@@ -180,6 +182,7 @@ arch_config() {
   #Set build tupple
   case ${1} in
     arm64)TUPPLE=aarch64-linux-gnu;;
+    armv5)TUPPLE=armv5-linux-gnueabi;;
     armv6)TUPPLE=armv6-linux-gnueabi;;
     arm)TUPPLE=arm-linux-gnueabi;;
     mips64)TUPPLE=mips64-linux-gnuabi64;;
@@ -218,6 +221,7 @@ arch_config() {
   case ${1} in
     x86_*|i[3-6]86)LINARCH="x86";;
     arm64)LINARCH=arm64;;
+    armv5)LINARCH=arm;;
     armv6)LINARCH=arm;;
     ppc|ppc64)LINARCH="powerpc";;
     *64)LINARCH=${1::-2};;
@@ -230,6 +234,7 @@ arch_config() {
     x86_32)LDNAME=ld-linux-x32.so.2;;
     i[3-6]86)LDNAME=ld-linux.so.2;;
     arm|armv6)LDNAME=ld-linux-armhf.so.3;;
+    armv5)LDNAME=ld-linux.so.3;;
     arm64)LDNAME=ld-linux-aarch64.so.1;;
     ppc|mips*)LDNAME=ld.so.1;;
     ppc64)LDNAME=ld64.so.1;;
@@ -242,6 +247,7 @@ arch_config() {
     mips64)QTSPEC=linux-mips-g++-64;;
     arm)QTSPEC=linux-arm-gnueabi-g++;;
     arm64)QTSPEC=linux-aarch64-gnu-g++;;
+    armv5)QTSPEC=linux-armv5-gnueabi-g++;;
     armv6)QTSPEC=linux-armv6-gnueabi-g++;;
     ppc)QTSPEC=linux-ppc-g++;;
     ppc64)QTSPEC=linux-ppc-g++-64;;
@@ -257,7 +263,9 @@ arch_config() {
   esac;
 
   case ${1} in
-    arm|armv6)AQCPU=arm;;
+    armv5)AQCPU=armv5;;
+    armv6)AQCPU=armv6;;
+    arm)AQCPU=arm;;
     arm64)AQCPU=aarch64;;
     mips)AQCPU=mips;;
     mips64)AQCPU=mips64;;
@@ -267,6 +275,13 @@ arch_config() {
 
   case ${1} in
     armv6)AQEMU_CPU="arm1176";;
+    armv5)AQEMU_CPU="arm926";;
+  esac;
+
+  case ${1} in
+    armv*)AQEMU_LD="$1";
+          AQARCH="arm";;
+    *)AQARCH="${AQCPU}";;
   esac;
 }
 
@@ -456,10 +471,12 @@ check_create_arch() {
   B_LIBDIRS=${SETLIBDIR}
   MLIBDIR=${AMLIBDIR}
   QCPU=${AQCPU}
+  QARCH=${AQARCH}
   QEMUCPU=${AQEMU_CPU}
+  QEMU_LD=${AQEMU_LD}
   HASGIR=${AHASGIR}
   LINUX_VER=${LIN_VER}
-  unset TUPPLE SETLIBDIR LINARCH AQCPU AHASGIR LIN_VER AQEMU_CPU
+  unset TUPPLE SETLIBDIR LINARCH AQCPU AQEMU_LD AHASGIR LIN_VER AQEMU_CPU QEMU_CPU QEMU_LD_PREFIX
 
   if [ "${MLIBDIR}" ];then
     C_LIBDIRS="${B_LIBDIRS}/${MLIBDIR}"
@@ -467,7 +484,15 @@ check_create_arch() {
     C_LIBDIRS=${B_LIBDIRS}
   fi;
 
-  export B_LIBDIRS HOST KARCH QCPU QT_SPEC MLIBDIR HASGIR
+  export B_LIBDIRS HOST KARCH QCPU QT_SPEC MLIBDIR HASGIR QEMU_LD
+
+  if [ "${QEMUCPU}" ];then
+    export QEMU_CPU=${QEMUCPU}
+  fi;
+
+  if [ "${QEMU_LD}" ];then
+    export QEMU_LD_PREFIX=/usr/gnemul/qemu-${QEMU_LD}
+  fi;
 
   if [ ! -d ${ARCHROOT} ];then
     mkdir -p ${ARCHROOT}
@@ -1318,7 +1343,11 @@ build_project() {
      if [ "${QEMUCPU}" ];then
        SETQCPU="QEMU_CPU=${QEMUCPU} "
      fi;
-     ${SETARCH} /usr/bin/env -i - ${SETQCPU}SHELL=${SHELL} TERM=${TERM} NARCH=${NEWARCH} CLEANOPT=${BOOTCLEAN} RUNBASHRC=1 chroot ${ARCHROOT}/${NEWARCH} ${SCRIPTDIR}/${BUILDSCR} ${NEWARCH} + ${BUILDPROJECT})
+
+     if [ "${QEMU_LD}" ];then
+       SETQARCH=" QEMU_LD_PREFIX=/usr/gnemul/qemu-${QEMU_LD} ";
+     fi;
+    ${SETARCH} /usr/bin/env -i - ${SETQCPU}${SETQARCH}SHELL=${SHELL} TERM=${TERM} NARCH=${NEWARCH} CLEANOPT=${BOOTCLEAN} RUNBASHRC=1 chroot ${ARCHROOT}/${NEWARCH} ${SCRIPTDIR}/${BUILDSCR} ${NEWARCH} + ${BUILDPROJECT})
     if [ -e ${STATDIR}/${ORIGARCH}/fail/${PROJECT} ];then
       return 1
      else
@@ -2607,8 +2636,8 @@ setup_hybrid_boot() {
     fi;
   done
 
-  if [ -e /usr/bin/qemu-${QCPU} ];then
-    cp /usr/bin/qemu-${QCPU} ${TMPDIR}/usr/bin
+  if [ -e /usr/bin/qemu-${QARCH} ];then
+    cp /usr/bin/qemu-${QARCH} ${TMPDIR}/usr/bin
   fi;
 
   rm -rf ${TMPDIR}/usr/{share,libexec} ${TMPDIR}/usr/${B_LIBDIRS}/jvm*
@@ -3755,7 +3784,6 @@ for barch in ${ARCHLIST};do
   case ${barch} in
     ppc|powerpc)QT_VER="4";;
     ppc64|powerpc64)QT_VER="4";;
-    arm*)JAVA_VER="1.7.0_25";;
   esac;
 
   #ensure the tool chain is in place unless not bootstraping
