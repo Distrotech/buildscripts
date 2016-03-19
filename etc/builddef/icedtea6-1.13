@@ -1,9 +1,9 @@
-VERSION="7";
+VERSION="10";
 VERSEP=".";
 PREFIX="/usr";
 CONFOPT="--with-jdk-home=/usr/${B_LIBDIRS}/jvm/gcj-jdk";
-OPT_arm="--enable-zero";
-DONTBUILD="arm arm64 mips mips64 ppc ppc64 x86_32";
+OPT_arm="--disable-zero";
+DONTBUILD="arm64 mips mips64 ppc ppc64 x86_32";
 NOCCOPT="1";
 NOCROSS="1";
 AMVER="1.14";
@@ -14,3 +14,4 @@ CHROOTBUILD="1";
 GITCLEAN="0";
 RPMGROUP="java";
 NEEDS_NET="1";
+#BUILDDIR="0";
