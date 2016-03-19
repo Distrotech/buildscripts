@@ -1,10 +1,16 @@
 VERSION="3.11"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="ac_cv_linux_kernel_pppoe=yes rpppoe_cv_pack_bitfields=rev";
+CONFOPT="ac_cv_linux_kernel_pppoe=yes rpppoe_cv_pack_bitfields=rev --enable-plugin=${SRCDIR}/ppp/ppp-2.4.5";
 BUILDDIR="0";
 CFGPTH="/src/";
 CFGBIN="/src/";
 GITBRANCH="master";
 DISTCONF="ppp/pppoe-server-options";
+MAKETARGETS="rp-pppoe.so";
+MAKEITARGETS="PLUGIN_DIR=/usr/lib/pppd/2.4.5/";
 RPMGROUP="root";
+if [ ! -d plugin ];then
+  mkdir plugin
+fi;
+CHROOTBUILD="1";
