@@ -5,3 +5,4 @@ CONFOPT="--with-krb5 --with-openldap --enable-contact-maps";
 RPMGROUP="gui";
 CHROOTBUILD="1";
 NEEDS_NET="1";
+DONTBUILD="armv5";

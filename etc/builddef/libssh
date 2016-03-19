@@ -8,7 +8,7 @@ CONFOPT="-DWITH_GCRYPYT:BOOL=OFF -DZLIB_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/us
 case ${barch} in
   mips*|ppc|arm64)CONFOPT="${CONFOPT} -DZLIB_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include
                 -DOPENSSL_INCLUDE_DIR:FILEPATH=${ARCHROOT}/${barch}/usr/include";;
-  i686)CHROOTBUILD="1";;
+  armv5|i686)CHROOTBUILD="1";;
 esac;
 FIXUPLIB="1";
 RPMGROUP="core";

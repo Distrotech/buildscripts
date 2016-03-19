@@ -5,6 +5,7 @@ CONFOPT="--disable-csharp --disable-doc";
 OPT_x86_32="--disable-java";
 OPT_arm="--disable-java";
 OPT_armv6=${OPT_arm};
+OPT_armv5=${OPT_arm};
 OPT_mips="--disable-java";
 OPT_ppc="--disable-java";
 OPT_ppc64="--disable-java";

@@ -11,6 +11,7 @@ OPT_ppc="--host=ppc-linux-gnu --enable-shared --enable-pic";
 OPT_ppc64="--host=ppc64-linux-gnu --enable-shared --enable-pic";
 OPT_arm="--host=arm-linux-gnueabi --enable-shared --enable-pic";
 OPT_armv6=${OPT_arm};
+OPT_armv5=${OPT_arm};
 OPT_arm64="--host=aarch64-linux-gnu --enable-shared --enable-pic";
 BUILDDIR="0";
 ADDCFLAG="-O0 -fPIC";

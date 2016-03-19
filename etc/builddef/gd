@@ -3,6 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 ADDCFLAG="-I=/usr/include/freetype2 -std=gnu89";
+OPT_armv5="--without-vpx";
 OPT_cyg32="--without-vpx";
 OPT_cyg64="--without-vpx";
 OPT_win32="--without-vpx";

@@ -4,7 +4,7 @@ PREFIX="/usr";
 case ${barch} in
   i686)LLVM_TARGET="x86";;
   x86_32|x86_64)LLVM_TARGET="x86_64";;
-  arm|armv6)LLVM_TARGET="ARM";;
+  arm|armv6|armv5)LLVM_TARGET="ARM";;
   arm64)LLVM_TARGET="AArch64";;
   mips)LLVM_TARGET="Mips";;
   mips64)LLVM_TARGET="Mips64";;

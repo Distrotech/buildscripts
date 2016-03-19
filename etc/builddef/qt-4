@@ -9,6 +9,7 @@ OPT_ppc64="-arch powerpc";
 OPT_mips="-arch mips";
 OPT_mips64="-arch mips";
 OPT_armv6=${OPT_arm};
+OPT_armv5=${OPT_arm};
 QT_VER="4";
 NOCCOPT="1";
 BUILDDIR="0";

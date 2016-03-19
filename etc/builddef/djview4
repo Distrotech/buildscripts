@@ -4,6 +4,7 @@ PREFIX="/usr";
 CONFOPT="--disable-silent-rules QMAKE=${ARCHROOT}/${barch}/opt/qt-4/bin/qmake QTDIR=${ARCHROOT}/${barch}/opt/qt-4 MOC=${ARCHROOT}/${barch}/opt/qt-4/bin/moc";
 OPT_arm="QMAKESPEC=linux-arm-gnueabi-g++";
 OPT_armv6="QMAKESPEC=linux-armv6-gnueabi-g++";
+OPT_armv5="QMAKESPEC=linux-armv5-gnueabi-g++";
 OPT_arm64="QMAKESPEC=linux-aarch64-gnu-g++";
 OPT_ppc="QMAKESPEC=linux-ppc-g++";
 OPT_i686="QMAKESPEC=linux-g++-32";

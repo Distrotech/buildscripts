@@ -8,5 +8,5 @@ ADDCC="0";
 CLEARFLAGS="1";
 RPMGROUP="core";
 case ${barch} in
-  arm|armv6|i686|x86_32)CHROOTBUILD="1";;
+  arm|armv5|armv6|i686|x86_32)CHROOTBUILD="1";;
 esac;

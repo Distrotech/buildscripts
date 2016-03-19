@@ -9,5 +9,5 @@ CHROOTBUILD="1";
 RPMOBSOLETE_doc="grub-fonts";
 RPMGROUP="dev";
 case ${barch} in
-  armv6)unset QEMU_CPU;;
+  armv6|armv5)unset QEMU_CPU;;
 esac;

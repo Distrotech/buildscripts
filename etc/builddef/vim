@@ -6,6 +6,7 @@ BUILDDIR="0";
 OPT_arm="ac_cv_small_wchar_t=yes vim_cv_toupper_broken=no vim_cv_tty_group=world vim_cv_terminfo=yes
          vim_cv_getcwd_broken=no vim_cv_stat_ignores_slash=no vim_cv_memmove_handles_overlap=yes";
 OPT_armv6=${OPT_arm};
+OPT_armv5=${OPT_arm};
 OPT_arm64="ac_cv_small_wchar_t=yes vim_cv_toupper_broken=no vim_cv_tty_group=world vim_cv_terminfo=yes
          vim_cv_getcwd_broken=no vim_cv_stat_ignores_slash=no vim_cv_memmove_handles_overlap=yes";
 OPT_mips="ac_cv_small_wchar_t=yes vim_cv_toupper_broken=no vim_cv_tty_group=world vim_cv_terminfo=yes

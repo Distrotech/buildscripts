@@ -1,4 +1,4 @@
-VERSION="4.0.3"
+VERSION="4.0.7"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-pthreads --enable-icmp --enable-useragent-log --enable-referer-log --enable-htcp --enable-linux-netfilter --disable-ident-lookups 

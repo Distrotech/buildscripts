@@ -9,3 +9,4 @@ case ${barch} in
   ppc*)CHROOTBUILD="1";;
 esac;
 RPMGROUP="gui";
+DONTBUILD="armv5";

@@ -28,6 +28,7 @@ OPT_win64="--enable-cross-compile --sysroot=${ARCHROOT}/${barch} --arch=x86_64 -
 OPT_i686="--enable-libopencv --enable-frei0r --enable-libv4l2 --enable-libvpx";
 OPT_arm="--enable-libv4l2 --disable-asm --enable-libvpx";
 OPT_armv6=${OPT_arm};
+OPT_armv5=${OPT_arm};
 OPT_x86_32="--disable-asm --enable-libvpx --enable-libopencv --enable-frei0r --enable-libv4l2";
 OPT_x86_64="--sysroot=${ARCHROOT}/x86_64 --enable-libopencv --enable-frei0r --enable-libv4l2 --enable-libvpx";
 OPT_mips="--enable-libv4l2 --enable-libvpx";

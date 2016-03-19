@@ -28,6 +28,7 @@ OPT_arm="ac_cv_alignof_CORBA_octet=1 ac_cv_alignof_CORBA_boolean=1 ac_cv_alignof
          ac_cv_alignof_CORBA_long_double=4 ac_cv_alignof_CORBA_struct=1 ac_cv_alignof_CORBA_pointer=4 
          --with-idl-compiler=${SRCDIR}/ORBit2/ORBit2-${VERSION}/build-x86_64/src/idl-compiler/orbit-idl-2";
 OPT_armv6=${OPT_arm};
+OPT_armv5=${OPT_arm};
 OPT_i686="ac_cv_alignof_CORBA_octet=1 ac_cv_alignof_CORBA_boolean=1 ac_cv_alignof_CORBA_char=1 
           ac_cv_alignof_CORBA_wchar=2 ac_cv_alignof_CORBA_short=2 ac_cv_alignof_CORBA_long=4 
           ac_cv_alignof_CORBA_long_long=4  ac_cv_alignof_CORBA_float=4 ac_cv_alignof_CORBA_double=4 

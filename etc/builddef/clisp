@@ -13,6 +13,6 @@ GITBRANCH="master";
 if [ -e /proc/sys/fs/binfmt_misc/${barch} ];then
   DONTBUILD="${barch}";
  else
-  DONTBUILD="ppc64 ppc x86_32 arm armv6";
+  DONTBUILD="ppc64 ppc x86_32 arm armv6 armv5";
 fi
 RPMGROUP="dev";

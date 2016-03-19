@@ -9,6 +9,7 @@ CONFOPT="--enable-vp8 --enable-pic --enable-shared --enable-static --disable-uni
 STDOPTS="--prefix=${PREFIX}";
 OPT_arm="--target=armv7-linux-gcc --extra-cflags=-mhard-float";
 OPT_armv6="--target=armv6-linux-gcc --extra-cflags=-mhard-float";
+OPT_armv5="--target=armv5-linux-gcc --extra-cflags=-mhard-float";
 OPT_arm64="--target=generic-gnu";
 OPT_mips="--target=mips32-linux-gcc";
 OPT_mips64="--target=mips32-linux-gcc";
@@ -25,5 +26,5 @@ NOCCOPT="1";
 ADDCC="0";
 LDISCC="1";
 CLEARFLAGS="1";
-DONTBUILD="cyg32 cyg64";
+DONTBUILD="cyg32 cyg64 armv5";
 RPMGROUP="root";

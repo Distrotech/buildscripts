@@ -24,6 +24,7 @@ CFGPTH="src";
 CFGBIN="src/";
 OPT_arm="krb5_cv_attr_constructor_destructor=yes,yes ac_cv_func_regcomp=yes ac_cv_printf_positional=yes";
 OPT_armv6=${OPT_arm}
+OPT_armv5=${OPT_arm}
 OPT_arm64="krb5_cv_attr_constructor_destructor=yes,yes ac_cv_func_regcomp=yes ac_cv_printf_positional=yes";
 OPT_mips="krb5_cv_attr_constructor_destructor=yes,yes ac_cv_func_regcomp=yes ac_cv_printf_positional=yes";
 OPT_mips64="krb5_cv_attr_constructor_destructor=yes,yes ac_cv_func_regcomp=yes ac_cv_printf_positional=yes";

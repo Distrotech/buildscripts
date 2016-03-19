@@ -10,6 +10,7 @@ OPT_mips="--enable-no-install-program=arch,hostname,factor,kill,uptime,groups";
 OPT_mips64="--enable-no-install-program=arch,hostname,kill,uptime,groups";
 OPT_arm="--enable-no-install-program=arch,hostname,kill,uptime,groups";
 OPT_armv6="--enable-no-install-program=arch,hostname,kill,uptime,groups";
+OPT_armv5="--enable-no-install-program=arch,hostname,kill,uptime,groups";
 OPT_arm64="--enable-no-install-program=arch,hostname,factor,kill,uptime,groups";
 OPT_ppc="--enable-no-install-program=arch,hostname,factor,kill,uptime,groups";
 OPT_ppc64="--enable-no-install-program=arch,hostname,kill,uptime,groups ac_cv_header_sys_socket_h=yes ac_cv_type_socklen_t=yes";

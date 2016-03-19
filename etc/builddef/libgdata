@@ -11,3 +11,4 @@ if [ "${HASGIR}" == "no" ];then
   CONFOPT="${CONFOPT} --disable-goa";
 fi;
 RPMGROUP="gui";
+DONTBUILD="armv5";
