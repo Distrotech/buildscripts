@@ -1,0 +1,26 @@
+VERSION="4"
+VERSEP=".";
+PREFIX="/usr";
+CONFOPT="--with-jdk-home=${JAVA_HOME}";
+CONFOPTX="--disable-bootstrap";
+OPT_x86_32="--enable-zero";
+OPT_arm="--enable-zero";
+NOCCOPT="1";
+NOCROSS="1";
+AMVER="1.14";
+JAVA_VER="1.7.0_95";
+ADDCFLAG="-I=${X11DIR}/include -I${JAVA_HOME}/include"
+ADDLDFLAG="-Wl,--rpath-link=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}:${ARCHROOT}/${barch}/usr/${B_LIBDIRS}";
+ADDCC="0";
+case ${NARCH} in
+  x86_32|x86_64|i686)
+    case ${barch} in
+      x86_64|i686)CHROOTBUILD="1";;
+      x86_32|arm64)CHROOTBUILD="0";;
+      *)DONTBUILD="${barch}";;
+    esac;;
+  *)DONTBUILD="${barch}";;
+esac;
+GITCLEAN="0";
+RPMGROUP="java";
+NEEDS_NET="1";
