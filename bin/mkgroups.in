@@ -61,7 +61,7 @@ GROUP_FILE=$( mktemp -p /tmp yum_groups_XXXXXXXXXXX.xml)
 if [ -d ${PKGLIST_PTH} ] && [ -f ${GROUP_FILE} ];then
   generate_groups |xmllint --format  - > ${GROUP_FILE}
   for RPM_MAN in "" "intel/" "intel/i686/" "intel/x86_32/" "intel/x86_64/" \
-                 "arm/" "arm/arm/" "arm/armv6/" "arm/arm64/" \
+                 "arm/" "arm/arm/" "arm/armv6/" "arm/armv5/" "arm/arm64/" \
                  "ppc/" "ppc/ppc/" "ppc/ppc64/" "mips/" "mips/mips/" "mips/mips64/";do
     echo "${RPM_MAN}repodata"
     if [ -d ${RPMDIR}/${RPM_MAN}repodata ];then

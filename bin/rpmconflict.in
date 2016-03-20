@@ -2,7 +2,7 @@
 
 #Set ARCH group for repo root dir
 case ${1} in
-  arm|armv6|arm64)RPM_MAN="arm";;
+  arm|armv6|armv5|arm64)RPM_MAN="arm";;
   i686|x86_32|x86_64)RPM_MAN="intel";;
   mips|mips64)RPM_MAN="mips";;
   ppc|ppc64)RPM_MAN="ppc";;

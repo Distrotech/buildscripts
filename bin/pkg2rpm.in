@@ -17,6 +17,7 @@ case ${NARCH} in
   powerpc)NARCH=ppc;;
   powerpc64)NARCH=ppc64;;
   armv6*)NARCH=armv6;;
+  armv5*)NARCH=armv5;;
   arm*)NARCH=arm;;
   aarch64)NARCH=arm64;;
 esac;
@@ -315,6 +316,7 @@ pkg_rpm_arch() {
   case ${1} in
     arm)RPMARCH="armv7l";;
     armv6)RPMARCH="armv6l";;
+    armv5)RPMARCH="armv5tel";;
     arm64)RPMARCH="aarch64";;
     mips)RPMARCH="mips32";;
     *)RPMARCH=${1};;
@@ -322,7 +324,7 @@ pkg_rpm_arch() {
 
   #Set ARCH group for repo root dir
   case ${1} in
-    arm|armv6|arm64)RPM_MAN="arm";;
+    arm|armv6|arm64|armv5)RPM_MAN="arm";;
     i686|x86_32|x86_64)RPM_MAN="intel";;
     mips|mips64)RPM_MAN="mips";;
     ppc|ppc64)RPM_MAN="ppc";;

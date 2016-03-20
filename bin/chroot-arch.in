@@ -16,6 +16,9 @@ export RUNBASHRC=1
 case ${NARCH} in
   armv6)export QEMU_CPU="arm1176";
         SYSARCH="arm";;
+  armv5)export QEMU_CPU="arm926";
+        export QEMU_LD_PREFIX="/usr/gnemul/qemu-armv5"
+        SYSARCH="arm";;
   *)SYSARCH=${NARCH};;
 esac;
 

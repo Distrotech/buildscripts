@@ -1,1 +1,1 @@
-(for pkg in `ls /etc/opt/dtsbuild/builddef/`;do DEPENDS=$(getdeps $pkg);echo "$pkg: $DEPENDS";echo;done) > Makefile.depends
+(for pkg in `ls /etc/opt/dtsbuild/builddef/`;do DEPENDS=$(./getdeps $pkg);echo "$pkg: $DEPENDS";echo;done) > Makefile.depends
