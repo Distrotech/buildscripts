@@ -1,4 +1,4 @@
-VERSION="0.18.0"
+VERSION="0.18.4"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--with-isl=system --with-gmp=system --with-bits=gmp";

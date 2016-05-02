@@ -1,8 +1,8 @@
-VERSION="15.2"
+VERSION="16.1"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-external-ffmpeg --enable-external-libraries --disable-rsxs PYTHON=${ARCHROOT}/${barch}/usr/bin/python";
-ADDCFLAG="-I=/usr/include/python2.7 -I=/opt/mysql/include";
+ADDCFLAG="-I=/usr/include/python2.7 -I=/opt/mysql/include -std=gnu++98";
 BUILDDIR="0";
 AMVER="1.14";
 ADDPATH="/opt/mysql/bin";

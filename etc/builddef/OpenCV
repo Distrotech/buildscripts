@@ -1,9 +1,9 @@
-VERSION="2.4.6.2";
+VERSION="2.4.12.3";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="-DWITH_FFMPEG:BOOL=OFF -DWITH_GTK:BOOL=OFF -DZLIB_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libz.so";
 BUILDDIR="1";
-ADDCFLAG="-I=/usr/include/gstreamer-0.10 -I=/usr/include/python2.7";
+ADDCFLAG="-I=/usr/include/gstreamer-1.0 -I=/usr/include/python2.7 -I=/usr/include/libxml2";
 FIXUPLIB="1";
 OPT_i686="-DPYTHON_INCLUDE_DIR:PATH=${ARCHROOT}/i686/usr/include/python2.7";
 OPT_x86_32="-DPYTHON_INCLUDE_DIR:PATH=${ARCHROOT}/x86_32/usr/include/python2.7";

@@ -1,4 +1,4 @@
-VERSION="2.40.0"
+VERSION="2.48.0"
 VERSEP="-";
 CONFOPT="--enable-shared --disable-libelf";
 if [ "${barch:0:3}" == "win" ];then

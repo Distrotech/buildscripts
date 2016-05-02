@@ -1,4 +1,4 @@
-VERSION="2.4.0"
+VERSION="2.4.10"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-introspection --enable-accelerated-compositing --enable-web-audio --disable-static LIBXSLT_LIBS=\"-lxml2 -lxslt\"";
