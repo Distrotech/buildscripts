@@ -1,0 +1,8 @@
+VERSION="git"
+VERSEP="-";
+PREFIX="/usr";
+CONFOPT="";
+BUILDDIR="0";
+GITBRANCH="distrotech-crossguid";
+RPMGROUP="gui";
+MAKEOPTS="LIBPATH=${C_LIBDIRS}";
