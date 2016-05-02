@@ -1,7 +1,7 @@
-VERSION="8.33"
+VERSION="8.38"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+CONFOPT="--enable-utf=yes --enable-pcre16=yes --enable-pcre32=yes --enable-unicode-properties=yes";
 #STDCSTATIC="--disable-shared LDFLAGS=-static";
 CLEARFLAGS="1";
 MLIBDIRLN="libpcre.so";
