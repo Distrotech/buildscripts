@@ -3,3 +3,4 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 RPMGROUP="core";
+ADDCFLAG="-Wno-narrowing -std=gnu++98";

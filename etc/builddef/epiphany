@@ -7,3 +7,4 @@ RPMGROUP="gui";
 AMVER="1.14";
 AUTORECONF="1";
 DONTBUILD="armv5";
+ADDCFLAG="-Wno-format-nonliteral";

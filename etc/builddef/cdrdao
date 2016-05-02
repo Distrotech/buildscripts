@@ -10,3 +10,4 @@ case ${barch} in
 esac;
 RPMGROUP="core";
 DONTBUILD="mips64";
+ADDCFLAG="-Wno-narrowing -std=gnu++98";

@@ -5,4 +5,4 @@ CONFOPT="";
 GITBRANCH="master";
 CHROOTBUILD="1";
 RPMGROUP="gui";
-
+ADDCFLAG="-Wno-narrowing -std=gnu++98";

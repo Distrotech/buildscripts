@@ -7,3 +7,4 @@ MAKE_J="";
 GITBRANCH="master";
 AMVER="1.14";
 RPMGROUP="core";
+ADDCFLAG="-Wno-narrowing -std=gnu++98";

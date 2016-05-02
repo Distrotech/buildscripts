@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 CHROOTBUILD="1";
 RPMGROUP="gui";
+ADDCFLAG="-Wno-format-nonliteral";

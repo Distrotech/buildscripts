@@ -7,3 +7,4 @@ BUILDDIR="0";
 EXTRALIBS="-ldl -lcares -lidn -lrt -lpthread -lrtmp -lssl -lcrypto -lz";
 AMVER="1.13";
 RPMGROUP="core";
+ADDCFLAG="-Wno-misleading-indentation";

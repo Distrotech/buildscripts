@@ -9,3 +9,4 @@ case ${barch} in
         arm|armv6|armv5|i686|x86_32|ppc64|mips*)CHROOTBUILD="1";;
 esac;
 RPMGROUP="gui";
+ADDCFLAG="-std=gnu++98";

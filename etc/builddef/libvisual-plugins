@@ -8,3 +8,4 @@ AMVER="1.14";
 ALIAS="libvisual";
 CHROOTBUILD="1";
 RPMGROUP="core";
+ADDCFLAG="-Wno-misleading-indentation -Wno-misleading-indentation";

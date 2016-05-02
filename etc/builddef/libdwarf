@@ -9,3 +9,4 @@ case ${barch} in
   ppc*)DONTBUILD="${barch}";;
   mips64)CHROOTBUILD="1";;
 esac;
+ADDCFLAG="-std=gnu++98";

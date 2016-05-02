@@ -2,6 +2,6 @@ VERSION="3.10.3"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--disable-nautilus";
-ADDCFLAG="-I=/usr/include/poppler/glib";
+ADDCFLAG="-I=/usr/include/poppler/glib -Wno-format-y2k -Wno-format-nonliteral";
 CHROOTBUILD="1";
 RPMGROUP="gui";

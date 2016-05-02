@@ -4,3 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 CHROOTBUILD="1";
 RPMGROUP="root";
+ADDCFLAG="-Wno-misleading-indentation -Wno-nonnull-compare";

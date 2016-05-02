@@ -6,3 +6,4 @@ RPMGROUP="office";
 case ${barch} in
   mips64|ppc64)CHROOTBUILD="1";;
 esac
+ADDCFLAG="-Wno-narrowing -std=gnu++98";

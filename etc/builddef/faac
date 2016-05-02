@@ -6,3 +6,4 @@ BUILDDIR="0";
 AMVER="1.14";
 GITBRANCH="master";
 RPMGROUP="core";
+ADDCFLAG="-std=gnu++98";

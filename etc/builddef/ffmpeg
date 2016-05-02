@@ -36,7 +36,7 @@ OPT_mips64="--disable-mips32r2 --disable-mipsdspr1 --disable-mipsdspr2 --enable-
 OPT_ppc="--enable-libv4l2 --enable-libvpx";
 OPT_ppc64="--enable-libv4l2 --enable-libvpx";
 OPT_arm64="--disable-asm --enable-libvpx";
-ADDCFLAG="-fPIC -I=/usr/include/openjpeg-1.5";
+ADDCFLAG="-fPIC -I=/usr/include/openjpeg-1.5 -std=gnu++98";
 XADDLDFLAG="-L../libavutil -lavutil";
 NOTCONF="--enable-libilbc";
 FIXUPLIB="1";

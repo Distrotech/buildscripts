@@ -12,6 +12,7 @@ CONFOPT="-DUSE_RE2:BOOL=ON
 CFGPTH="cpp";
 CFGBIN="cpp/";
 ADDLDFLAG="-lboost_system";
+ADDCFLAG="-std=gnu++98";
 FIXUPLIB="1";
 CHROOTBUILD="1";
 DONTBUILD="x86_32 arm64 ppc ppc64 mips mips64";

@@ -8,3 +8,4 @@ case ${barch} in
   arm*|ppc*|i686)CHROOTBUILD="1";;
   mips|x86_32|mips64)DONTBUILD="${barch}";;
 esac;
+ADDCFLAG="-Wno-narrowing -std=gnu++98";

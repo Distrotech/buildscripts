@@ -2,7 +2,7 @@ VERSION="0.3.6"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
-ADDCFLAG="-std=gnu99";
+ADDCFLAG="-std=gnu99 -Wno-shift-negative-value -fpermissive";
 EXTRALIBS="-lm";
 CHROOTBUILD="1";
 RPMGROUP="core";

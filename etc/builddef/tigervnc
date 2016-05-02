@@ -13,5 +13,5 @@ CONFOPT="-DJPEG_LIBRARY=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libjpeg.so -DFONTC
          -DFLTK_IMAGES_LIBRARY=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libfltk_images.so
          -DFLTK_MATH_LIBRARY=${ARCHROOT}/${barch}/usr/${B_LIBDIRS}/libm.so";
 #         -DGCRYPT_LIBRARY=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libgcrypt.so -DGPG_ERROR_LIBRARY=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libgpg_error.so
-ADDCFLAG="-fPIC";
+ADDCFLAG="-fPIC -std=gnu++98";
 RPMGROUP="gui";

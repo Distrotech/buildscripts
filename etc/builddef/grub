@@ -4,7 +4,7 @@ PREFIX="/usr";
 ADDPATH="${SRCDIR}/grub/grub-2.00/build-${barch}";
 STDOPTS="--prefix=/usr/ --sysconfdir=/etc --mandir=/usr/share/man --localstatedir=/var --disable-werror";
 CONFOPT="--enable-device-mapper --enable-grub-mkfont --enable-grub-mount FONT_SOURCE=/usr/share/grubfont/X11/misc/unifont.pcf.gz";
-ADDCFLAG="-I/usr/include/freetype2";
+ADDCFLAG="-I/usr/include/freetype2 -std=gnu99";
 OPT_i686="--host=i686-linux-gnu";
 OPT_x86_64="--host=x86_64-linux-gnu";
 OPT_x86_32="--host=x86_64-linux-gnux32";
