@@ -1525,6 +1525,8 @@ build_project() {
     BASE_LIBPATH="${BASE_LIBPATH} -L=${PKGDESTDIR}/${ORIGARCH}/Xorg-git/opt/Xorg/${B_LIBDIRS}";
     rm ${ARCHROOT}/${ORIGARCH}/opt/Xorg
     ln -s -r ${PKGDESTDIR}/${ORIGARCH}/Xorg-git/opt/Xorg ${ARCHROOT}/${ORIGARCH}/opt/Xorg
+   else
+    PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${SYSROOT}${ARCHPREFIX}/opt/Xorg/${B_LIBDIRS}/pkgconfig";
   fi;
 
   export CC_SYSROOT="--sysroot=${SYSROOT}/ -Wl,--rpath-link=${RLINK_PATH} ${BASE_LIBPATH} -I=${ARCHPREFIX}/include -I=${X11DIR}/include -I=/opt/xfce/include";
@@ -2165,7 +2167,11 @@ build_gcc_bootstrap() {
     MARCH=BOOTOPT_${1}
     CONFOPT="${SHAREDOPT} ${SYSROOT} ${CONFOPTX} --with-gmp-lib=${ARCHROOT}/${3}/usr/${TLIBDIR}/${TMLIBDIR}";
     if [ "${1:0:3}" != "cyg" ];then
-      CONFOPT="${CONFOPT} --enable-languages=c,c++,ada,java --with-ecj-jar=/usr/share/java/ecj-4.3.2.jar --enable-java-home";
+      if [ ${1} != "x86_32" ];then
+        CONFOPT="${CONFOPT} --enable-languages=c,c++,ada,java --with-ecj-jar=/usr/share/java/ecj-4.3.2.jar --enable-java-home";
+       else
+        CONFOPT="${CONFOPT} --enable-languages=c,c++,java --with-ecj-jar=/usr/share/java/ecj-4.3.2.jar --enable-java-home";
+      fi;
       if [ "${1}" == "${TARCH}" ];then
         CONFOPT="${CONFOPT} --with-jvm-root-dir=/usr/${TLIBDIR}/jvm/gcj-jdk";
        else
@@ -2510,7 +2516,7 @@ setup_hybrid_boot() {
   ERROR=0;
 
   for pkg in glibc mpc mpfr gmp cloog isl readline ncurses zlib flex ncursesw glib popt \
-             gcc pcre selinux xz libsigsegv guile acl gc attr libffi libunistring libtool \
+             gcc pcre pcre2 selinux xz libsigsegv guile acl gc attr libffi libunistring libtool \
              gettext libcroco libxml2 libxslt libatomic_ops libgcrypt libgpg-error openssl \
              DirectFB;do
    (get_pkg_name ${pkg} ${NARCH}
@@ -2737,7 +2743,7 @@ bootstrap_arch_root() {
 
     #GCC needs system zlib glibc can use selinux/gd Add packages for a build enviroment
     BOOTCLEAN=distclean
-    build_packages ${arch} dtsbuild libtool attr acl pcre ustr bzip2 libaudit selinux libpng expat xz libxml2 freetype \
+    build_packages ${arch} dtsbuild libtool attr acl pcre pcre2 ustr bzip2 libaudit selinux libpng expat xz libxml2 freetype \
       fontconfig jpeg jbigkit tiff libvpx gd glibc tzdata gmp mpfr mpc isl cloog gcc javac ncurses ncursesw \
       onig slang nettle libtasn1 libffi p11-kit libidn gnutls libgpg-error libgcrypt libprelude glib libevent libverto \
       krb5 libtirpc flex readline popt dialog libcap-ng Linux-PAM || exit 1
@@ -2859,7 +2865,7 @@ build_glibc_march() {
 build_dependancies() {
   #Base dependancies
   build_packages ${1} groff gdbm perl gperf gettext make sed ncursesw ncurses texinfo zlib binutils libsigsegv \
-    m4 diffutils attr acl pcre libaudit selinux file gengetopt libidn libtasn1 p11-kit nettle gnutls \
+    m4 diffutils attr acl pcre pcre2 libaudit selinux file gengetopt libidn libtasn1 p11-kit nettle gnutls \
     libgpg-error libgcrypt libprelude libtirpc Linux-PAM libcap bison flex gawk readline bash coreutils \
     xz expat openssl wget iana-etc || return 1
 
@@ -3156,7 +3162,7 @@ bootstrap_native() {
     build_packages ${NARCH} ${BOOTSTRAP_PKG} || return 1
   fi;
 
-  build_packages ${NARCH} ncursesw ncurses gettext p11-kit nettle texinfo gnutls libgpg-error libgcrypt pcre ustr \
+  build_packages ${NARCH} ncursesw ncurses gettext p11-kit nettle texinfo gnutls libgpg-error libgcrypt pcre pcre2 ustr \
     flex bison libprelude bzip2 libcap-ng libaudit selinux glib libverto keyutils krb5 libtirpc dialog ||return 1
 
   #Bootstrap native arch with deps for GCC [libjava] if gcc not built
@@ -3248,7 +3254,7 @@ windows_build_toolchain() {
 
 #ecj with sysroot ??
   build_packages ${1} evil zlib regex libtool gmp mpfr mpc isl cloog gcc binutils libiconv libunistring icu \
-    make gettext xz openssl libxml2 libxslt libffi pcre glib libcroco c-ares curl cyrus-sasl \
+    make gettext xz openssl libxml2 libxslt libffi pcre pcre2 glib libcroco c-ares curl cyrus-sasl \
     unixODBC openldap libidn libpng jbigkit tiff jpeg freetype expat fontconfig libtasn1 p11-kit nettle \
     libgpg-error libgcrypt gnutls libvpx gd lcms2 pixman cairo openjpeg1 poppler graphite2 harfbuzz pango atk \
     gdk-pixbuf gtk+ SDL wxWidgets dtsapplib sqlite-autoconf dtsguiapp leafpad libsoup libosip2 \
