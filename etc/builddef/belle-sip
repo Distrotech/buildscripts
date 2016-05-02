@@ -1,6 +1,7 @@
-VERSION="1.3.0"
+VERSION="1.4.2"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 RPMGROUP="gui";
 BUILDDIR="0";
+ADDCFLAG="-Wno-tautological-compare";
