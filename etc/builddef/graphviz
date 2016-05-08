@@ -1,9 +1,8 @@
 VERSION="2.38"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="--disable-guile --disable-lua";
-OPT_ppc="--enable-tcl=no --enable-php=no";
-OPT_x86_64="--enable-php=no";
+CONFOPT="--disable-guile --disable-lua --enable-php=no";
+OPT_ppc="--enable-tcl=no";
 QT_VER="4";
 BUILDDIR="0";
 AMVER="1.14";
