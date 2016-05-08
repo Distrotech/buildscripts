@@ -1,6 +1,13 @@
-VERSION="4"
+VERSION="6"
 VERSEP=".";
 PREFIX="/usr";
+if [ -d /usr/${NLIBDIR}/jvm/jdk-${JAVA_VER}/ ];then
+  JAVA_HOME=/usr/${NLIBDIR}/jvm/jdk-${JAVA_VER}/
+ elif [ -d /usr/${NLIBDIR}/jvm/jdk-${JAVA6_VER}/ ];then
+  JAVA_HOME=/usr/${NLIBDIR}/jvm/jdk-${JAVA6_VER}/
+ else
+  JAVA_HOME=/usr/${B_LIBDIRS}/jvm/gcj-jdk
+fi;
 CONFOPT="--with-jdk-home=${JAVA_HOME}";
 CONFOPTX="--disable-bootstrap";
 OPT_x86_32="--enable-zero";
