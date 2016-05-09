@@ -1,8 +1,8 @@
 VERSION="6"
 VERSEP=".";
 PREFIX="/usr";
-if [ -d /usr/${NLIBDIR}/jvm/jdk-${JAVA_VER}/ ];then
-  JAVA_HOME=/usr/${NLIBDIR}/jvm/jdk-${JAVA_VER}/
+if [ -d /usr/${NLIBDIR}/jvm/jdk-${JAVA7_VER}/ ];then
+  JAVA_HOME=/usr/${NLIBDIR}/jvm/jdk-${JAVA7_VER}/
  elif [ -d /usr/${NLIBDIR}/jvm/jdk-${JAVA6_VER}/ ];then
   JAVA_HOME=/usr/${NLIBDIR}/jvm/jdk-${JAVA6_VER}/
  else
@@ -15,7 +15,6 @@ OPT_arm="--enable-zero";
 NOCCOPT="1";
 NOCROSS="1";
 AMVER="1.14";
-JAVA_VER="1.7.0_95";
 ADDCFLAG="-I=${X11DIR}/include -I${JAVA_HOME}/include"
 ADDLDFLAG="-Wl,--rpath-link=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}:${ARCHROOT}/${barch}/usr/${B_LIBDIRS}";
 ADDCC="0";
