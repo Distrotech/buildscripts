@@ -5,12 +5,11 @@ CONFOPT="--with-jdk-home=${JAVA_HOME}";
 CONFOPTX="--disable-bootstrap";
 OPT_x86_32="--enable-zero";
 OPT_arm="--enable-zero";
-DONTBUILD="arm64 mips mips64 ppc ppc64 x86_64 x86_32 i686";
+DONTBUILD="${barch}";
 NOCCOPT="1";
 NOCROSS="1";
 AMVER="1.14";
 CLEARFLAGS="1";
-JAVA_VER="1.7.0_25";
 ADDCFLAG="-I=${X11DIR}/include -I${JAVA_HOME}/include"
 ADDCC="0";
 GITCLEAN="0";
