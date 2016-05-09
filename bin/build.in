@@ -19,7 +19,9 @@ NARCH=${NARCH:=$( uname -m )}
 
 DISTRONAME="Distro Solutions"
 
-DEF_JAVA_VER="1.7.0_95";
+DEF_JAVA6_VER="1.6.0_39";
+DEF_JAVA7_VER="1.7.0_101";
+DEF_JAVA8_VER="1.8.0_91";
 DEF_LINUX_VER="4.4.0";
 DAHDI_VER="2.11.0";
 WANPIPE_VER="7.0.15";
@@ -29,8 +31,9 @@ PYVER=2;
 
 GCC_OPT="-O2 ";
 
-JAVA6_VER="1.6.0_38";
-JAVA_VER="${DEF_JAVA_VER}";
+JAVA6_VER="${DEF_JAVA6_VER}";
+JAVA7_VER="${DEF_JAVA7_VER}";
+JAVA8_VER="${DEF_JAVA8_VER}";
 QT_VER="${DEF_QT_VER}";
 
 case ${NARCH} in
@@ -44,7 +47,7 @@ case ${NARCH} in
   armv5)NARCH=armv5;
         SYSARCH="arm";;
   arm*)NARCH=arm;
-      JAVA_VER="1.7.0_25";;
+      JAVA7_VER="1.7.0_25";;
 esac;
 if [ ! "${SYSARCH}" ];then
   SYSARCH=${NARCH}
@@ -108,7 +111,7 @@ MARCH_x86_64='@(x86_32|i[3-6]86|x86_64)'
 MARCH_x86_32=${MARCH_x86_64}
 MARCH_ppc64='@(ppc|ppc64)'
 
-export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA_VER JAVA6_VER M2_VER QT_VER
+export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA6_VER JAVA7_VER JAVA8_VER M2_VER QT_VER
 
 #Parse cmdline opts
 #Adding a arch here may require you adding tupple/kernel arch/libdirs and bellow in arch_config
@@ -378,10 +381,12 @@ check_java() {
   fi;
 
   if [ ! "${JAVA_HOME}" ];then
-    if [ -d /usr/${NLIBDIR}/jvm/jdk-${JAVA_VER} ];then
-      export JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-${JAVA_VER}"
-     elif [ -d /usr/${NLIBDIR}/jvm/jre-${JAVA_VER} ];then
-      export JAVA_HOME="/usr/${NLIBDIR}/jvm/jre-${JAVA_VER}"
+    if [ -d /usr/${NLIBDIR}/jvm/jdk-${JAVA8_VER} ];then
+      export JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-${JAVA8_VER}"
+     elif [ -d /usr/${NLIBDIR}/jvm/jdk-${JAVA7_VER} ];then
+      export JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-${JAVA7_VER}"
+     elif [ -d /usr/${NLIBDIR}/jvm/jre-${JAVA7_VER} ];then
+      export JAVA_HOME="/usr/${NLIBDIR}/jvm/jre-${JAVA7_VER}"
      elif [ -d /usr/lib/jvm/default-java ];then
       export JAVA_HOME="/usr/lib/jvm/default-java"
      else
@@ -402,7 +407,9 @@ HOST_ARCH="${HOST_ARCH}";
 HOST_BITS="${HOST_BITS}"
 HOST_LIBDIR="${HOST_LIBDIR}";
 HOST_MLIBDIR="${HOST_MLIBDIR}";
-JAVA_VER="${JAVA_VER}";
+JAVA6_VER="${JAVA6_VER}";
+JAVA7_VER="${JAVA7_VER}";
+JAVA8_VER="${JAVA8_VER}";
 ANT_VER="${ANT_VER}";
 M2_VER="${M2_VER}";
 QT_VER="${QT_VER}";
@@ -957,7 +964,7 @@ cmake_cross_build() {
 
     if [ "${ADDCFLAG}" ];then
       export CFLAGS="${GCC_OPT}${ADDCFLAG}"
-      export CXXFLAGS="${GCC_OPT}${ADDCFLAG}"
+      export CXXFLAGS="${GCC_OPT}${ADDCFLAG}${ADDCXXFLAG}"
     fi;
   fi;
   export LDFLAGS="${LDFLAGS} ${EXTRALIBS}"
@@ -2991,8 +2998,8 @@ build_dependancies() {
   if [ "${NARCH}" == "${1}" ];then
     build_packages ${1} icedtea6-1.13 || return 1
     JAVA_DIR=/usr/lib64/jvm
-    for JARSEC in ${JAVA_DIR}/jre-${JAVA_VER}/lib/security/cacerts \
-                  ${JAVA_DIR}/jdk-${JAVA_VER}/jre/lib/security/cacerts;do
+    for JARSEC in ${JAVA_DIR}/jre-${JAVA7_VER}/lib/security/cacerts \
+                  ${JAVA_DIR}/jdk-${JAVA7_VER}/jre/lib/security/cacerts;do
       if [ ! -h ${JARSEC} ] && [ -e ${JARSEC} ];then
         ln -srf /etc/ssl/certs/java/cacerts ${JARSEC}
       fi;
@@ -3785,7 +3792,7 @@ for barch in ${ARCHLIST};do
 
   setup_hybrid_qemu ${barch}
 
-  JAVA_VER=${DEF_JAVA_VER}
+  JAVA7_VER=${DEF_JAVA7_VER}
   QT_VER="${DEF_QT_VER}";
   case ${barch} in
     ppc|powerpc)QT_VER="4";;

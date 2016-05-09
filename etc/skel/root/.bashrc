@@ -82,8 +82,11 @@ if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
 fi;
 MANPATH=/share:/usr/share/man
 
-if [ "${JAVA_VER}" ] && [ -d /usr/${HOST_LIBDIR}/jvm/jdk-${JAVA_VER} ];then
-  export JAVA_HOME=/usr/${HOST_LIBDIR}/jvm/jdk-${JAVA_VER}
+if [ "${JAVA8_VER}" ] && [ -d /usr/${HOST_LIBDIR}/jvm/jdk-${JAVA8_VER} ];then
+  export JAVA_HOME=/usr/${HOST_LIBDIR}/jvm/jdk-${JAVA8_VER}
+  PATH=${PATH}:${JAVA_HOME}/bin
+ elif [ "${JAVA7_VER}" ] && [ -d /usr/${HOST_LIBDIR}/jvm/jdk-${JAVA7_VER} ];then
+  export JAVA_HOME=/usr/${HOST_LIBDIR}/jvm/jdk-${JAVA7_VER}
   PATH=${PATH}:${JAVA_HOME}/bin
 fi;
 
