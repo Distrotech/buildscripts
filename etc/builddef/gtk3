@@ -1,4 +1,4 @@
-VERSION="3.10.6";
+VERSION="3.20.4";
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-gtk2-dependency --enable-broadway-backend --enable-x11-backend";

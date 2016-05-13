@@ -1,4 +1,4 @@
-VERSION="1.36.1"
+VERSION="1.40.1"
 VERSEP="-";
 if [ "${barch:0:3}" == "win" ];then
   PREFIX="/mingw";

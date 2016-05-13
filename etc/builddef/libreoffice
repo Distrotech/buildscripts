@@ -1,6 +1,7 @@
-VERSION="4.4.3.2"
+VERSION="5.2.0.0"
 VERSEP="-";
 PREFIX="/usr";
+JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-${JAVA7_VER}";
 CONFOPT="--with-junit=/usr/share/java/junit-4.11.jar --with-system-hunspell --with-system-cairo --with-system-graphite 
          --with-system-nss  --with-system-zlib --with-system-openssl --with-system-jpeg --with-system-expat 
          --with-system-lcms2 --with-system-libxml --with-system-icu --with-system-openldap --with-system-poppler 
@@ -9,10 +10,11 @@ CONFOPT="--with-junit=/usr/share/java/junit-4.11.jar --with-system-hunspell --wi
          --with-system-mdds --enable-python=system --with-system-boost --with-boost
          --x-includes=${ARCHROOT}/${barch}/opt/Xorg/include --x-libraries=${ARCHROOT}/${barch}/opt/Xorg/${B_LIBDIRS}
          --with-system-glew --with-boost-libdir=${ARCHROOT}/${barch}/usr/${C_LIBDIRS} --with-system-librevenge
-         --with-system-libmwaw --with-system-libodfgen --with-system-libwps --disable-coinmp";
+         --with-system-libmwaw --with-system-libodfgen --with-system-libwps --disable-coinmp --disable-gtk --enable-gtk3
+         --disable-firebird-sdbc";
 OPT_x86_32="--enable-debug";
 BUILDDIR="0";
-ADDCFLAG="-I=/usr/include/gtk-2.0 -I=/opt/Xorg/include";
+ADDCFLAG="-I=/usr/include/gtk-3.0 -I=/opt/Xorg/include";
 DONTBUILD="x86_32 arm arm64 mips mips64 ppc ppc64";
 RPMGROUP="office";
 LDISCC="1";
