@@ -7,3 +7,4 @@ MAKEOPTS="LIBDIR=${B_LIBDIRS} GCJ=${HOST}-gcj";
 COREBUILD="1";
 RPMOBSOLETE="javac";
 RPMGROUP="dev";
+JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-${JAVA7_VER}";
