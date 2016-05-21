@@ -1,0 +1,25 @@
+#!/bin/bash
+
+DTSPREFIX=opt
+MNTPNT=/mnt
+GITPTH=/var/spool/git
+
+if [ ! -d ${MNTPNT}/build ];then
+  mkdir ${MNTPNT}/build
+fi;
+
+for img_file in qemu root core buildroot repo build mnt;do
+  if [ ! -d ${MNTPNT}/aufs/${img_file} ];then
+    mkdir -p ${MNTPNT}/aufs/${img_file}
+  fi;
+done;
+
+rsync -avP --delete /srv/${DTSPREFIX}/dtsbuild/{install,tar,yum} ${MNTPNT}/build/srv/${DTSPREFIX}/dtsbuild/
+rsync -avP --delete /etc/${DTSPREFIX}/dtsbuild ${MNTPNT}/build/etc/${DTSPREFIX}/
+rsync -avP --delete /${DTSPREFIX}/dtsbuild ${MNTPNT}/build/${DTSPREFIX}/
+
+if [ ! -d ${MNTPNT}/repo ];then
+  mkdir ${MNTPNT}/repo
+fi;
+rsync -avP --delete ${GITPTH}/ ${MNTPNT}/repo${GITPTH}/
+

@@ -258,6 +258,8 @@ bin_SCRIPTS = \
 	bin/mkbuilddef \
 	bin/pkg2rpm \
 	bin/chroot-arch \
+	bin/chroot-backup \
+	bin/mkbackup \
 	bin/umount-arch \
 	bin/wine \
 	bin/binfmt.sh \
