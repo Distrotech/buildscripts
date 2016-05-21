@@ -2925,7 +2925,7 @@ build_dependancies() {
     if [ ! -e ${STATDIR}/${1}/done/Xorg ] && [ -e ${STATDIR}/${1}/fail/Xorg ];then
       (unset CLEANOPT;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
     fi;
-    build_packages ${1}  mozjs mozjs-17 polkit libmicrohttpd cryptsetup systemd db bash-completion colord || return 1
+    build_packages ${1}  mozjs mozjs-17 polkit libmicrohttpd cryptsetup systemd db bash-completion colord libepoxy || return 1
   fi;
 
   build_packages ${1} cairo gobject-introspection icu cmake openjpeg graphite2 kelbt ragel harfbuzz pango vala-bootstrap || return 1
@@ -2959,7 +2959,7 @@ build_dependancies() {
   build_packages ${1} tcl8 tk8 unixODBC perl-modules || return 1
 
   build_packages ${1} gtk+ freeglut pcsc-lite wayland libxkbcommon at-spi2-core at-spi2-atk \
-    bash-completion libgusb mozjs mozjs-17 polkit colord || return 1
+    bash-completion libgusb mozjs mozjs-17 polkit colord libepoxy || return 1
 
   #we need gdk-pixbuf/librsvg built with gtk3 to build gtk33 bootstrap it [dont build demos/tests/examples on 1st pass]
   if [ ! -e ${STATDIR}/${1}/done/gtk3 ] && [ "${1}" == "${NARCH}" ];then
@@ -3039,7 +3039,7 @@ build_dependancies() {
     libdvdnav MPlayer boost clucene-core libzip iso-codes ffcall || return 1
 
   #Libre Office
-  build_packages ${1} bison3 mdds libixion liborcus raptor rasqal librdf cppunit librevenge libpwd libmwaw libodfgen libwps || return 1
+  build_packages ${1} bison3 mdds-1.2 mdds-1.1 libixion liborcus raptor rasqal librdf cppunit librevenge libpwd libmwaw libodfgen libwps || return 1
 
   #Rebuild and reinstall bison
   if [ -e ${STATDIR}/${1}/done/bison ] && [ ! -e ${ARCHROOT}/${1}/usr/bin/bison ];then
