@@ -10,3 +10,4 @@ FIXUPLIB="1";
 CHROOTBUILD="1";
 DONTBUILD="arm64 mips mips64";
 RPMGROUP="core";
+ADDCFLAG="-Wno-narrowing";

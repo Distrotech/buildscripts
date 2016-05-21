@@ -13,6 +13,7 @@ CONFOPTX="-DCMAKE_CROSSCOMPILING=TRUE
         -DCURSES_EXTRA_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libncurses.so
         -DCURSES_CURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libtinfo.so
         -DCURSES_LIBRARY:FILEPATH=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}/libtinfo.so";
+OPT_arm="-DHAVE_GLIBC_STRERROR_R:BOOL=ON";
 NOCCOPT="1";
 ADDPATH="${SRCDIR}/cmake/cmake-2.8.9/build-${barch}/bin";
 QT_VER="4";
