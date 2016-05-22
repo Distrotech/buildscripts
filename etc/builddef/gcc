@@ -46,7 +46,7 @@ ADDCC="0";
 CLEARFLAGS="1";
 BASEOPT="--without-cloog --without-isl --disable-bootstrap";
 BASEOPT2="--disable-libitm --disable-libmudflap  --disable-libswsp --disable-libgomp
-          --disable-libatomic --disable-libssp --disable-libquadmath";
+          --disable-libatomic --disable-libssp --disable-libquadmath --disable-libmpx";
 NULLOPT="${BASEOPT} ${BASEOPT2} --with-system-zlib --enable-languages=c --with-newlib --disable-decimal-float --disable-shared --disable-threads";
 case ${barch} in
   x86_32)BOOTOPT="${BASEOPT} ${BASEOPT2} --enable-languages=c,c++";;

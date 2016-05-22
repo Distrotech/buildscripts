@@ -1911,7 +1911,7 @@ build_glibc() {
      elif [ "${1}" != "${NARCH}" ] && [ -e ${ARCHROOT}/usr/${NLIBDIR}/libc_nonshared.a ];then
       return 0;
     fi;
-    build_project glibc ${1} libc_cv_ssp=no
+    build_project glibc ${1} libc_cv_ssp=no libc_cv_ssp_strong=no
     RES=$?
     #i want to rebuild this when i have toolchain
     if [ -e ${STATDIR}/${1}/done/glibc ];then
@@ -3176,7 +3176,7 @@ bootstrap_native() {
   if [ ! -e ${STATDIR}/${NARCH}/done/unzip ];then
     build_packages ${NARCH} xz libxml2 libxslt Python libcap patch docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 \
       docbook-4.5 docbook-xsl xmlto OpenSP openjade expat intltool gtk-doc attr acl kmod openssl trousers dbus popt \
-      cryptsetup systemd pkg-config libcroco zip unzip || return 1
+      cryptsetup libxkbcommon systemd pkg-config libcroco zip unzip || return 1
   fi;
 
   #Need yasm that needs cmake add nasm for free
