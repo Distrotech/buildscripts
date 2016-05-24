@@ -15,3 +15,4 @@ ADDCFLAG="-I=/usr/lib/glib-2.0/include";
 USEMINGW="1";
 ADDWITHSYSROOT="1";
 RPMGROUP="root";
+BUILDDIR="0";
