@@ -12,7 +12,9 @@ if [ "${BUILDPROJECT}" == "util-linux" ];then
            --disable-vipw --disable-newgrp --disable-chfn-chsh --enable-write --enable-socket-activation --disable-chfn-chsh
            --without-selinux --without-udev --without-slang --disable-login --disable-su --disable-runuser --without-ncurses
            --without-slang --disable-nologin --disable-pylibmount --disable-more --without-systemd";
-  NOINST="1";
+  if [ -e ${ARCHROOT}/${barch}/${C_LIBDIRS}/libuuid.la ];then
+    NOINST="1";
+  fi;
   ALIAS="util-linux";
   RPMOBSOLETE="util-linux-static";
  else
