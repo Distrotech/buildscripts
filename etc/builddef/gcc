@@ -67,7 +67,7 @@ BOOTOPT_arm64="--enable-multilib";
 BOOTOPT_win32="--disable-multilib";
 BOOTOPT_cyg32="--disable-multilib --enable-version-specific-runtime-libs";
 BOOTOPT_cyg32="--enable-version-specific-runtime-libs";
-CROSSOPT_x86_32="--with-multilib-list=m32,m64,mx32";
+CROSSOPT_x86_32="--with-multilib-list=mx32";
 CROSSOPT_x86_64="--with-multilib-list=m32,m64,mx32";
 CROSSOPT_ppc="--disable-multilib --disable-libsanitizer";
 CROSSOPT_ppc64="--disable-multilib --disable-libsanitizer";
