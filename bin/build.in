@@ -2757,7 +2757,6 @@ bootstrap_arch_root() {
 
     if [ ! -e ${STATDIR}/${arch}/done/util-linux ];then
       build_packages ${arch} util-linux-boot || exit 1
-      rsync -avP ${PKGDESTDIR}/${arch}/util-linux-boot/ ${ARCHROOT}/${arch}/
     fi;
 
     build_packages ${arch} libcap libnfnetlink iptables dbus || exit 1
@@ -3094,7 +3093,7 @@ build_dependancies() {
 
   #Other bits
   build_packages ${1} alsa-oss alsa-plugins alsa-tools alsa-utils TiMidity calamaris dirac netatalk mod_perl \
-    mod_python nut omniORB dtc qemu wxWidgets taglib xerces-c maven jhylafax admin_console forrest || return 1
+    mod_python nut omniORB dtc libcacard qemu wxWidgets taglib xerces-c maven jhylafax admin_console forrest || return 1
 
   #XFCE
   build_packages ${1} xfce4-dev-tools libxfce4util xfconf libxfce4ui garcon exo xfce4-panel tumbler \
