@@ -33,12 +33,14 @@ sync_fin() {
   fi;
   echo "${PREFIX}/${B_LIBDIRS}" > ${DESTDIR}/etc/ld.so.conf.d/xwin_${BARCH}.conf
 
-#  if [ "${NARCH}" == "${BARCH}" ] && [ ! -h ${ARCHROOT}/${NARCH} ];then
-#    rsync -a ${DESTDIR}/ /
-#  fi;
-
-  #Clean up failed pkg
   if [ "${2}" ] && [ "${2}" == "1" ];then
+    #Clean up failed pkg
+    if [ "${NARCH}" == "${BARCH}" ] && [ ! -h ${ARCHROOT}/${NARCH} ];then
+      rsync -avP ${DESTDIR}/ /
+     elif [ -d ${ARCHROOT}/${BARCH} ];then
+      rsync -avP ${DESTDIR}/ ${ARCHROOT}/${BARCH}
+    fi;
+
 #    for pkgfail in `awk -F: '$1 == "FAIL" {printf "%s\n",substr($2,2)}' ${1}.done`;do
 #      if [ -e ${pkgfail}/Makefile ];then
 #        make -C ${pkgfail} clean distclean
