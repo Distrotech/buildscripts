@@ -3,7 +3,7 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 CLEARFLAGS="1";
-ADDCFLAG="-I=/usr/${C_LIBDIRS}/glib-2.0/include -I=/usr/include/gtk-2.0";
+ADDCFLAG="-I=/usr/${C_LIBDIRS}/glib-2.0/include -I=/usr/include/gtk-2.0 -I=/usr/${C_LIBDIRS}/gtk-2.0/include";
 BUILDDIR="0";
 CHROOTBUILD="1";
 RPMGROUP="obsolete";
