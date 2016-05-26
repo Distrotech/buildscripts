@@ -2772,10 +2772,10 @@ bootstrap_arch_root() {
       (unset CLEANOPT;build_project Xorg ${arch}) || touch ${STATDIR}/${arch}/fail/Xorg
     fi;
 
-    build_packages ${arch} libxkbcommon c-ares curl LVM2 cryptsetup systemd bash coreutils sed libunistring \
+    build_packages ${arch} libxkbcommon c-ares curl LVM2 cryptsetup libxkbcommon systemd bash coreutils sed libunistring \
       libatomic_ops gc texinfo pkg-config gzip tar rsync grep diffutils patch gperf m4 cpio findutils less libxslt gdbm \
       iana-etc binutils autoconf automake-1.9 automake-1.10 automake-1.11 automake-1.12 automake-1.13 automake-1.14 \
-      file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl which groff tcl8 make libsigsegv gawk || exit 1
+      file docbook-4.1.2 docbook-4.2 docbook-4.3 docbook-4.4 docbook-4.5 docbook-xsl which groff tcl8 make gawk || exit 1
 
     if [ ! -e ${STATDIR}/${arch}/done/guile ];then
       rm ${STATDIR}/${arch}/done/make
@@ -2786,9 +2786,24 @@ bootstrap_arch_root() {
       (setup_hybrid_boot ${arch} ${NARCH}) || return 1
     fi;
 
+    if [ "${arch}" == "x86_32" ] || [ "${arch}" == "mips" ];then
+      build_packages ${arch} perl || exit 1
+    fi;
+
     #Dependancies requireing CHROOT
-    build_packages ${arch} perl guile make help2man bison Python talloc tevent selinux libtool-chroot c-ares curl unzip \
-      zip linux_logo cmake dbus gengetopt libcroco gettext gtk-doc libcap nasm xmlto OpenSP intltool openjade yasm nano || exit 1
+    build_packages ${arch} libsigsegv perl guile make help2man bison Python talloc tevent selinux libtool-chroot c-ares curl unzip \
+      zip linux_logo cmake dbus gengetopt libcroco gettext gtk-doc libcap nasm xmlto OpenSP intltool openjade yasm nano openssl wget \
+      libdrm llvm Mesa pixman wayland libepoxy mtdev cairo  || exit 1
+
+    if [ ! -e ${STATDIR}/${arch}/done/Xorg ] && [ -e ${STATDIR}/${arch}/fail/Xorg ];then
+      (unset CLEANOPT;build_project Xorg ${arch}) || touch ${STATDIR}/${arch}/fail/Xorg
+    fi;
+
+    build_packages ${arch} glamor || exit 1
+
+    if [ ! -e ${STATDIR}/${arch}/done/Xorg ] && [ -e ${STATDIR}/${arch}/fail/Xorg ];then
+      (unset CLEANOPT;build_project Xorg ${arch}) || touch ${STATDIR}/${arch}/fail/Xorg
+    fi;
 
     #Bootstrap some perl modules
     if [ ! -e ${STATDIR}/${arch}/done/perl-modules ];then
@@ -2917,7 +2932,7 @@ build_dependancies() {
 
   if [ "${1}" != "${NARCH}" ];then
     build_packages ${1} gobject-introspection libdaemon avahi-nogui talloc tevent libevent libverto krb5-static krb5 libpaper cups ghostscript \
-      gs-fonts ijs libspectre libdrm llvm libvdpau setuptools mako Mesa LVM2 cryptsetup kmod systemd libgusb mtdev || return 1
+      gs-fonts ijs libspectre libdrm llvm libvdpau setuptools mako Mesa LVM2 cryptsetup kmod libxkbcommon systemd libgusb mtdev || return 1
     if [ ! -e ${STATDIR}/${1}/done/Xorg ] && [ -e ${STATDIR}/${1}/fail/Xorg ];then
       (unset CLEANOPT;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
     fi;
@@ -2925,7 +2940,7 @@ build_dependancies() {
     if [ ! -e ${STATDIR}/${1}/done/Xorg ] && [ -e ${STATDIR}/${1}/fail/Xorg ];then
       (unset CLEANOPT;build_project Xorg ${1}) || touch ${STATDIR}/${1}/fail/Xorg
     fi;
-    build_packages ${1}  mozjs mozjs-17 polkit libmicrohttpd cryptsetup systemd db bash-completion colord libepoxy || return 1
+    build_packages ${1}  mozjs mozjs-17 polkit libmicrohttpd cryptsetup libxkbcommon systemd db bash-completion colord libepoxy || return 1
   fi;
 
   build_packages ${1} cairo gobject-introspection icu cmake openjpeg graphite2 kelbt ragel harfbuzz pango vala-bootstrap || return 1
@@ -2936,7 +2951,7 @@ build_dependancies() {
   fi;
 
   build_packages ${1} vala libdrm intltool llvm talloc tevent libevent libverto krb5-static krb5 libdaemon avahi-nogui cups ghostscript gs-fonts ijs kmod  \
-    module-init-tools libvdpau setuptools mako Mesa glu glw glew mtdev fontforge atk jasper gdk-pixbuf librsvg libssh LVM2 cryptsetup systemd || return 1
+    module-init-tools libvdpau setuptools mako Mesa glu glw glew mtdev fontforge atk jasper gdk-pixbuf librsvg libssh LVM2 cryptsetup libxkbcommon systemd || return 1
 
   if [ "${NARCH}" == "${1}" ];then
     (if [ "${MLIBDIR}" ];then
@@ -2959,7 +2974,7 @@ build_dependancies() {
   build_packages ${1} tcl8 tk8 unixODBC perl-modules || return 1
 
   build_packages ${1} gtk+ freeglut pcsc-lite wayland libxkbcommon at-spi2-core at-spi2-atk \
-    bash-completion libgusb mozjs mozjs-17 polkit colord libepoxy || return 1
+    bash-completion libgusb mozjs mozjs-17 polkit colord libepoxy librest shared-mime-info || return 1
 
   #we need gdk-pixbuf/librsvg built with gtk3 to build gtk33 bootstrap it [dont build demos/tests/examples on 1st pass]
   if [ ! -e ${STATDIR}/${1}/done/gtk3 ] && [ "${1}" == "${NARCH}" ];then
@@ -2978,8 +2993,8 @@ build_dependancies() {
     build_packages ${1} gtk3 || return 1
   fi;
 
-  build_packages ${1} Xorg openjpeg1 poppler poppler-data fop qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
-    txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib docutils dbus-python mozjs mozjs-17 polkit GConf libbonobo \
+  build_packages ${1} Xorg openjpeg1 poppler poppler-data forrest fop qpdf cups-filters foomatic-filters patch alsa-lib fastjar yasm nasm fuse libunistring \
+    txt2man printproto libnl-1 libnl libpcap ppp libIDL ORBit2 dbus-glib docutils dbus-python mozjs mozjs-17 polkit GConf gnome-common libbonobo \
     libatomic_ops gc guile autogen libmad Xaw3d gv rtmpdump polkit-gnome icmake yodl swig M2Crypto wireless-regdb crda || return 1
 
   if [ "${NARCH}" != "${1}" ];then
@@ -3017,7 +3032,7 @@ build_dependancies() {
     libnetfilter_conntrack libao libtimidity libnetfilter_cttimeout ilmbase gss iptables \
     usbutils xavs x264 libvpx fdk-aac libmpeg2 a52dec ffmpeg h323plus gnugk t38modem qt-5 qt-4 \
     py2cairo pygobject libglade pygtk help2man rrdtool avahi djvulibre libarchive cogl json-glib \
-    pciutils net-snmp zziplib teckit texlive-boot texlive sane-backends libvdpau LibVNCServer i2c-tools \
+    pciutils net-snmp zziplib teckit clisp lua texlive-boot texlive sane-backends libvdpau LibVNCServer i2c-tools \
     openexr ImageMagick libungif libiodbc tdb libcanberra libgnome-keyring pangox-compat mhash libmcrypt vim || return 1
 
   #Core Utilities
@@ -3048,9 +3063,9 @@ build_dependancies() {
   fi;
 
   #Gnoem (Base)
-  build_packages ${1} shared-mime-info gnome-common itstool gsettings-desktop-schemas gnome-desktop-3 \
+  build_packages ${1} shared-mime-info gnome-common itstool gsettings-desktop-schemas yelp-xsl yelp-tools gnome-desktop-3 \
     icon-naming-utils gnome-icon-theme gnome-icon-theme-symbolic gnome-icon-theme-extras gnome-themes-standard \
-    yelp-xsl yelp-tools libnotify startup-notification || return 1
+    libnotify startup-notification || return 1
 
   #Webkit bits
   build_packages ${1} glib-networking libsoup aspell hunspell enchant gtkspell libsecret libwebp \
@@ -3079,7 +3094,7 @@ build_dependancies() {
 
   #Other bits
   build_packages ${1} alsa-oss alsa-plugins alsa-tools alsa-utils TiMidity calamaris dirac netatalk mod_perl \
-    mod_python nut omniORB dtc qemu wxWidgets taglib xerces-c maven jhylafax admin_console forrest lua || return 1
+    mod_python nut omniORB dtc qemu wxWidgets taglib xerces-c maven jhylafax admin_console forrest || return 1
 
   #XFCE
   build_packages ${1} xfce4-dev-tools libxfce4util xfconf libxfce4ui garcon exo xfce4-panel tumbler \
