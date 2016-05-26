@@ -5,3 +5,4 @@ CONFOPT="";
 STATICMOPT="LDFLAGS=-static";
 COREBUILD="1";
 RPMGROUP="root";
+ADDCFLAG="-Wno-missing-include-dirs";
