@@ -7,7 +7,7 @@ if [ "${barch:0:3}" == "win" ];then
 fi;
 ADDWITHSYSROOT="1";
 CONFOPT="--with-ca-certificates=/etc/ssl/certs";
-ADDCFLAG="-I=${PREFIX}/${B_LIBDIRS}/glib-2.0/include -I=${PREFIX}/include/glib-2.0/ -I=${PREFIX}/include/p11-kit-1 -I=${PREFIX}/include/gsettings-desktop-schemas";
+ADDCFLAG="-I=${PREFIX}/${B_LIBDIRS}/glib-2.0/include -I=${PREFIX}/include/glib-2.0/ -I=${PREFIX}/include/p11-kit-1 -I=${PREFIX}/include/gsettings-desktop-schemas -Wno-format-nonliteral";
 #LDFLAGS="-L=/mingw/lib"
 NOCCOPT="1";
 CLEARFLAGS="1";
