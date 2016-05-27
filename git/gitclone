@@ -3,14 +3,14 @@
 REPO=${1}
 GITUSER=Distrotech
 REMOTE=${2}
-SROOT=/var/spool/git
+GITPATH=${GITPATH:=/var/spool/git}
 
 echo ${REPO}
 
 export GIT_SSL_NO_VERIFY=true
 
 ##create a bare clone
-RPATH=${SROOT}/${REPO}.git
+RPATH=${GITPATH}/${REPO}.git
 if [ ! -d ${RPATH} ];then
   mkdir ${RPATH}
 fi;
