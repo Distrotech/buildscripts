@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SYSMNT=${1}
+
 NARCH=${NARCH:=$( uname -m )}
 case ${NARCH} in
   powerpc)NARCH=ppc;;
@@ -9,39 +11,51 @@ case ${NARCH} in
   arm*)NARCH=arm;;
 esac;
 
-MNTPNT=/mnt
+SYSARCH=${SYSARCH:=${NARCH}}
+
+MNTPNT=${SYSMNT:=/mnt}
 DTSPREFIX=/opt
-IMGPTH=${MNTPNT}/build/srv/${DTSPREFIX}/dtsbuild/install/${NARCH}/images
+IMGROOT=${MNTPNT}/build/srv/${DTSPREFIX}/dtsbuild/install
+IMGPTH=${IMGROOT}/${SYSARCH}/images
 MNTPTH=${MNTPNT}/aufs
 AUFSROOT=${MNTPNT}/aufs/mnt/
 
 
-AUFS_MNT=":${MNTPNT}/repo=rr:${MNTPNT}/build=rr"
-for img_file in qemu root core buildroot;do
+AUFS_MNT=":${MNTPNT}/repo=rr"
+
+
+for img_file in root core buildroot;do
   if [ -f ${IMGPTH}/${img_file}.img ];then
     if [ ! -d ${MNTPTH}/${img_file} ];then
       mkdir -p ${MNTPTH}/${img_file}
     fi
-    /bin/mount -o ro ${IMGPTH}/${img_file}.img ${MNTPTH}/${img_file}
+    if [ ! -d ${MNTPTH}/${img_file}/tmp ];then
+       /bin/mount -o ro ${IMGPTH}/${img_file}.img ${MNTPTH}/${img_file}
+    fi;
     AUFS_MNT=":${MNTPTH}/${img_file}=rr${AUFS_MNT}"
   fi;
 done
 
-if [ ! -d ${MNTPNT}/user/${NARCH}/etc/yum ];then
-  mkdir -p ${MNTPNT}/user/${NARCH}/etc/yum
-fi
-/bin/mount -t aufs -o br:${MNTPNT}/user/${NARCH}=rw${AUFS_MNT} aufs-root ${AUFSROOT}
-
-for sysmnt in dev proc sys;do
-  if [ ! -d ${AUFSROOT}/${sysmnt} ];then
-    mkdir ${AUFSROOT}/${sysmnt}
+if [ "${SYSARCH}" != "${NARCH}" ] && [ -f ${IMGROOT}/${NARCH}/images/qemu.img ];then
+  if [ ! -d ${MNTPTH}/qemu ];then
+    mkdir -p ${MNTPTH}/qemu
+  fi
+  if [ ! -d ${MNTPTH}/qemu/tmp ];then
+     /bin/mount -o ro ${IMGROOT}/${NARCH}/images/qemu.img ${MNTPTH}/qemu
   fi;
-done;
+  AUFS_MNT=":${MNTPTH}/qemu=rr${AUFS_MNT}"
+fi;
 
-mount -t devtmpfs none ${AUFSROOT}/dev
-mount -t devpts none ${AUFSROOT}/dev/pts
-mount -t sysfs none ${AUFSROOT}/sys
-mount -t proc none ${AUFSROOT}/proc
+AUFS_MNT=":${MNTPNT}/build=rr${AUFS_MNT}"
+
+if [ ! -d ${MNTPNT}/user/${SYSARCH} ];then
+  mkdir -p ${MNTPNT}/user/${SYSARCH}
+  rsync -aP ${MNTPNT}/build/etc/${DTSPREFIX}/dtsbuild/skel/ ${MNTPNT}/user/${SYSARCH}/
+fi;
+
+if [ ! -d ${MNTPNT}/user/${SYSARCH}/etc/yum/repos.d ];then
+  mkdir -p ${MNTPNT}/user/${SYSARCH}/etc/yum/repos.d
+fi
 
 (cat <<__EOF__
 [dtsintel]
@@ -60,19 +74,46 @@ baseurl = file:///srv/${DTSPREFIX}/dtsbuild/yum/ppc
 name = dtsbuild 0.1
 baseurl = file:///srv/${DTSPREFIX}/dtsbuild/yum/mips
 __EOF__
-) > ${MNTPNT}/user/${NARCH}/etc/yum/repos.d/dtsbuild.repo
-rsync -aP ${MNTPNT}/build/etc/${DTSPREFIX}/dtsbuild/skel/ ${MNTPNT}/user/${NARCH}/
+) > ${MNTPNT}/user/${SYSARCH}/etc/yum/repos.d/dtsbuild.repo
 
+/bin/mount -t aufs -o br:${MNTPNT}/user/${SYSARCH}=rw${AUFS_MNT} aufs-root ${AUFSROOT}
+
+for sysmnt in dev proc sys;do
+  if [ ! -d ${AUFSROOT}/${sysmnt} ];then
+    mkdir ${AUFSROOT}/${sysmnt}
+  fi;
+done;
+
+if [ ! -d ${AUFSROOT}/dev/pts ];then
+  mount -t devtmpfs none ${AUFSROOT}/dev
+fi;
+if [ ! -d ${AUFSROOT}/dev/pts/ptmx ];then
+  mount -t devpts none ${AUFSROOT}/dev/pts
+fi;
+if [ ! -d ${AUFSROOT}/sys/class ];then
+  mount -t sysfs none ${AUFSROOT}/sys
+fi;
+if [ ! -d ${AUFSROOT}/proc/sys ];then
+  mount -t proc none ${AUFSROOT}/proc
+fi;
+
+if [ ! -e  ${AUFSROOT}/proc/sys/fs/binfmt_misc/register ];then
+  mount -t binfmt_misc none  ${AUFSROOT}/proc/sys/fs/binfmt_misc/
+fi;
 
 GITURL=file:///var/spool/git chroot ${AUFSROOT}
 
-umount ${AUFSROOT}/dev/pts
-umount ${AUFSROOT}/dev
-umount ${AUFSROOT}/proc/sys/fs/binfmt_misc
-umount ${AUFSROOT}/proc
-umount ${AUFSROOT}/sys
+if [ -d ${AUFSROOT}/var/opt/dtsbuild/sysroot/ ];then
+  for sysroot in `ls ${AUFSROOT}/var/opt/dtsbuild/sysroot/`;do
+     chroot  ${AUFSROOT} /opt/dtsbuild/bin/umount-arch ${sysroot} >/dev/null 2>&1
+  done
+fi;
+
+umount ${AUFSROOT}/dev/pts ${AUFSROOT}/dev ${AUFSROOT}/proc/sys/fs/binfmt_misc ${AUFSROOT}/proc ${AUFSROOT}/sys > /dev/null 2>&1
 umount ${AUFSROOT}
 
 for img_file in qemu root core buildroot;do
-  umount ${MNTPTH}/${img_file}
+  if [ -d ${MNTPTH}/${img_file}/tmp ];then
+    umount ${MNTPTH}/${img_file}
+  fi;
 done
