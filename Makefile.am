@@ -13,7 +13,6 @@ bin_SCRIPTS = \
 	bin/mkbackup \
 	bin/umount-arch \
 	bin/wine \
-	bin/mkbackup \
 	bin/binfmt.sh \
 	bin/rpmconflict \
 	bin/mkinstimg
