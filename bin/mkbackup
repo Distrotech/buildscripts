@@ -1,11 +1,20 @@
 #!/bin/bash
 
+SYSMNT=${1}
+
+
 DTSPREFIX=opt
-MNTPNT=/mnt
+MNTPNT=${SYSMNT:=/mnt}
 GITPTH=/var/spool/git
 
-if [ ! -d ${MNTPNT}/build ];then
-  mkdir ${MNTPNT}/build
+for bdir in etc/${DTSPREFIX} ${DTSPREFIS} srv/${DTSPREFIX}/dtsbuild/;do
+  if [ ! -d ${MNTPNT}/build/${bdir} ];then
+    mkdir -p ${MNTPNT}/build/${bdir}
+  fi;
+done
+
+if [ ! -d ${MNTPNT}/repo${GITPTH} ];then
+  mkdir -p ${MNTPNT}/repo${GITPTH}
 fi;
 
 for img_file in qemu root core buildroot repo build mnt;do
@@ -14,12 +23,8 @@ for img_file in qemu root core buildroot repo build mnt;do
   fi;
 done;
 
+rsync -avP --delete ${GITPTH}/ ${MNTPNT}/repo${GITPTH}/
 rsync -avP --delete /srv/${DTSPREFIX}/dtsbuild/{install,tar,yum} ${MNTPNT}/build/srv/${DTSPREFIX}/dtsbuild/
 rsync -avP --delete /etc/${DTSPREFIX}/dtsbuild ${MNTPNT}/build/etc/${DTSPREFIX}/
 rsync -avP --delete /${DTSPREFIX}/dtsbuild ${MNTPNT}/build/${DTSPREFIX}/
-
-if [ ! -d ${MNTPNT}/repo ];then
-  mkdir ${MNTPNT}/repo
-fi;
-rsync -avP --delete ${GITPTH}/ ${MNTPNT}/repo${GITPTH}/
 
