@@ -54,8 +54,10 @@ distclean-local:
 
 install-data-local:
 	$(INSTALL) -d $(DESTDIR)$(sysconfdir) $(DESTDIR)$(localstatedir) $(DESTDIR)$(YUMREPOCONFDIR) \
-	              $(DESTDIR)$(SRCDIR) $(DESTDIR)$(PATCHDIR) $(DESTDIR)$(KCONFIGDIR)
+	              $(DESTDIR)$(SRCDIR) $(DESTDIR)$(PATCHDIR) $(DESTDIR)$(KCONFIGDIR) \
+	              $(DESTDIR)/usr/libexec/git-core/
 	$(INSTALL) etc/yum_repo.conf $(DESTDIR)$(YUMREPOCONFDIR)/$(PACKAGE_NAME).repo
+	$(INSTALL) -t $(DESTDIR)/usr/libexec/git-core/ git/git-remote*
 	cp -Ppr etc/{builddef,waf_cross,skel,cmake_cross} $(DESTDIR)$(sysconfdir)
 	@cp -Ppr patches/* $(DESTDIR)$(PATCHDIR)/ || true
 	@cp -Ppr kernconfig/* $(DESTDIR)$(KCONFIGDIR)/ || true
