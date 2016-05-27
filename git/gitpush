@@ -1,8 +1,0 @@
-#!/bin/bash
-
-export GIT_SSL_NO_VERIFY=true
-
-git push origin distrotech-${1}
-git tag -f distrotech-${1}-${2}
-git push --tags -f
-/root/gitclone ${1}
