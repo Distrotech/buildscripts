@@ -1,0 +1,18 @@
+#!/bin/bash
+
+REPO=${1}
+GITUSER=Distrotech
+REMOTE=${2}
+SROOT=/var/spool/git
+
+##create a bare clone
+RPATH=${SROOT}/${REPO}.git
+if [ ! -d ${RPATH} ];then
+  mkdir ${RPATH}
+fi;
+cd ${RPATH}
+
+if [ ! -e config ] && [ ${REMOTE} ];then
+  git clone --mirror "hg::${REMOTE}" .
+  git config daemon.uploadarch true
+fi;

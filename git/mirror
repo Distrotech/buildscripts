@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd /var/spool/git
+(time ls -d *.git |awk '{printf "/root/git/gitclone %s\n", substr($1,0,length($1)-4)}' |sh) >update.out 2>&1
+

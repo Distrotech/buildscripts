@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#Remove dead folders
+ls /var/spool/git/ |awk '{printf "if [ ! -e /var/spool/git/%s/HEAD ];then rm -rf /var/spool/git/%s;fi\n", $1, $1}' |sh
+
+#Get all configs
+rsync -avPRe "ssh -i greg.key" root@ns2.distrotech.co.za:/var/spool/git/*.git/config /
+
+#Get New Repositories
+ls /var/spool/git/ |awk '{printf "if [ ! -e /var/spool/git/%s/HEAD ];then rsync -aPRe \"ssh -i /root/greg.key\" ns2.distrotech.co.za:/var/spool/git/%s /;fi\n", $1, $1}' |sh

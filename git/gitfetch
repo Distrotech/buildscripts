@@ -1,0 +1,13 @@
+#!/bin/bash
+
+export GIT_SSL_NO_VERIFY=true
+
+if git clone git://[::1]/${1}.git;then
+  cd ${1}
+  git remote set-url origin https://github.com/Distrotech/${1}.git
+  git pull
+  #if [ -e .git/refs/remotes/origin/distrotech-${1} ];then
+    git checkout distrotech-${1}
+  #fi;
+  git config http.postBuffer 419430400
+fi;

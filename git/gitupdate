@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd /var/spool/git
+(time ls -d *.git |grep -vE "webkit" |awk '{printf "(cd %s;echo %s;git fetch --all;git fetch --tags;touch git-daemon-export-ok)\n", $1, $1}') |sh

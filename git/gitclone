@@ -1,0 +1,61 @@
+#!/bin/bash
+
+REPO=${1}
+GITUSER=Distrotech
+REMOTE=${2}
+SROOT=/var/spool/git
+
+echo ${REPO}
+
+export GIT_SSL_NO_VERIFY=true
+
+##create a bare clone
+RPATH=${SROOT}/${REPO}.git
+if [ ! -d ${RPATH} ];then
+  mkdir ${RPATH}
+fi;
+cd ${RPATH}
+
+if [ ! -e config ] && [ ${REMOTE} ];then
+  git clone --mirror ${REMOTE} .
+  git config daemon.uploadarch true
+ elif [ ! -e config ];then
+  exit
+fi;
+
+#if [ ! -d refs/remotes/gerrit_dts_branch ];then
+#  git remote add gerrit_dts_branch ssh://review.gerrithub.io/${GITUSER}/${REPO}.git
+#  git push -u gerrit_dts_branch
+# else
+#  git remote set-url gerrit_dts_branch ssh://review.gerrithub.io/${GITUSER}/${REPO}.git
+#fi;
+
+if [ ! -d refs/remotes/github_dts_branch ];then
+  git remote add github_dts_branch https://github.com/${GITUSER}/${REPO}.git
+  git push -u github_dts_branch
+ else
+  git remote set-url github_dts_branch https://github.com/${GITUSER}/${REPO}.git
+fi;
+
+if [ -d svn ];then
+  git svn fetch --all
+  #Add Branches/Tags
+  (git branch -r |grep -vE "^[\ ]+tags" |awk '{printf "if [ ! -e refs/heads/%s ]  && [ -d svn/refs/remotes/%s ];then git branch %s remotes/%s;fi\n",$1,$1,$1,$1}' |sh
+  git branch -r |grep -E "^[\ ]+tags" |awk -F/ '{printf "if [ ! -e refs/tags/%s ]  && [ -d svn/refs/remotes/tags/%s ];then git tag %s refs/remotes/tags/%s;fi\n",$2,$2,$2,$2}'  |sh) >/dev/null 2>&1
+fi;
+
+git fetch --all
+git fetch -u github_dts_branch -t
+
+#Set postbuffer high
+git config http.postBuffer 419430400
+
+#git push -u gerrit_dts_branch > /dev/null 2>&1
+#git push --all -u gerrit_dts_branch > /dev/null 2>&1
+git push --tags github_dts_branch
+#git push gerrit_dts_branch
+
+if [ ! -e git-daemon-export-ok ];then
+  touch git-daemon-export-ok
+fi;
+rsync -avP refs/remotes/github_dts_branch/ refs/heads/ >/dev/null 2>&1

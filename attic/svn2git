@@ -1,0 +1,86 @@
+#!/bin/bash
+
+export GIT_SSL_NO_VERIFY=true
+eval `cat /dist/def/${1}`
+
+SVNAPP=${1}
+if [ "${2}" ];then
+  GITREPO=${2}
+ else
+  GITREPO=${1}
+fi;
+SVNVER=${SVNAPP}${VERSEP}${VERSION}
+SVNGIT=/usr/src/gitsvn/${GITREPO}
+GITROOT=/var/spool/git/${GITREPO}.git
+
+mkdir -p ${SVNGIT}
+cd ${SVNGIT}
+
+fixmail () {
+git filter-branch -f --commit-filter '
+        if [ "$GIT_AUTHOR_NAME" = "Admin" ];
+        then
+                GIT_COMMITTER_NAME="Gregory Nietsky";
+		GIT_AUTHOR_NAME="Gregory Nietsky";
+                GIT_COMMITTER_EMAIL="gregory@distrotech.co.za";
+                GIT_AUTHOR_EMAIL="gregory@distrotech.co.za";
+                git commit-tree "$@";
+        else
+                git commit-tree "$@";
+        fi' HEAD
+}
+
+if [ ! "${SVNAPP}" ];then
+  exit;
+fi;
+
+if [ -d ${SVNGIT} ];then
+  rm -rf ${SVNGIT}
+fi;
+mkdir -p ${SVNGIT}
+
+cd ${SVNGIT}
+git svn clone -A /root/authors -T ${SVNVER} http://ns2/svnsrc/distro/${SVNAPP} .
+git svn show-ignore > .gitignore
+if [ -s .gitignore ];then
+  git add .gitignore
+  git commit -m 'Convert svn:ignore properties to .gitignore.'
+ else
+  rm .gitignore
+fi;
+
+for branch in `svn ls http://ns2/svnsrc/distro/${SVNAPP} |cut -d/ -f1`;do
+  if [ "${branch}" != "${SVNVER}" ];then
+    (cat<<EOF
+[svn-remote "${branch}"]
+        url = http://ns2/svnsrc
+        fetch = distro/${SVNAPP}/${branch}:refs/remotes/${branch}
+EOF
+) >> .git/config
+    git svn fetch ${branch}
+    git checkout ${branch} -b ${branch}
+    git svn show-ignore > .gitignore
+    git add .gitignore
+    git commit -m 'Convert svn:ignore properties to .gitignore.'
+  fi;
+done
+git checkout master
+
+if [ ! -d $GITROOT} ];then
+  mkdir -p ${GITROOT}
+  cd ${GITROOT}
+  git clone --mirror ${SVNGIT} .
+  rm -rf ${SVNGIT}
+  git remote remove origin
+fi;
+
+cd ${GITROOT}
+git remote add github_dts_branch https://github.com/Distrotech/${GITREPO}.git
+
+fixmail
+
+git fetch --all
+git fetch --tags
+git config http.postBuffer 209715200
+git push --all -u github_dts_branch
+git push --tags -u github_dts_branch
