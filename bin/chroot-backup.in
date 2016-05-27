@@ -18,10 +18,10 @@ esac;
 
 SYSARCH=${SYSARCH:=${NARCH}}
 
-DTSSRVDIR=/srv/opt/dtsbuild
-ARCHROOT=/var/opt/dtsbuild/sysroot
-SCRIPTDIR=/opt/dtsbuild/bin
-DTSETCDIR=/etc/opt/dtsbuild
+DTSSRVDIR=@SRVDIR@
+ARCHROOT=@ARCHROOT@
+SCRIPTDIR=@bindir@
+DTSETCDIR=@sysconfdir@
 SKELDIR=${DTSETCDIR}/skel
 
 MNTPNT=${SYSMNT:=/mnt}

@@ -6,9 +6,9 @@ SYSMNT=${1}
 MNTPNT=${SYSMNT:=/mnt}
 GITPTH=${GITPATH:=/var/spool/git}
 
-DTSETCDIR=/etc/opt/dtsbuild
-DTSSRVDIR=/srv/opt/dtsbuild
-SRCDIR=/var/opt/dtsbuild/src
+DTSETCDIR=@sysconfdir@
+DTSSRVDIR=@SRVDIR@
+SRCDIR=@SRCDIR@
 DEFDIR=${DTSETCDIR}/builddef
 
 for bdir in ${DTSETCDIR} ${DTSSRVDIR};do
