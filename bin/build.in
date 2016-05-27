@@ -2823,7 +2823,9 @@ bootstrap_arch_root() {
       fi;
       ) || return 1
     fi) || return 1;
-    build_packages ${arch} wine || exit 1
+    if [ "${arch}" != "${NARCH}" ];then
+      build_packages ${arch} wine || exit 1
+    fi;
   done;
 }
 
