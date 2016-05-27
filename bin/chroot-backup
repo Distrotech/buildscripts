@@ -11,6 +11,11 @@ case ${NARCH} in
   arm*)NARCH=arm;;
 esac;
 
+case ${SYSARCH} in
+  armv6)export QEMU_CPU="arm1176";;
+  armv5)export QEMU_CPU="arm926";;
+esac;
+
 SYSARCH=${SYSARCH:=${NARCH}}
 
 MNTPNT=${SYSMNT:=/mnt}
@@ -34,6 +39,7 @@ for img_file in root core buildroot;do
     fi;
     AUFS_MNT=":${MNTPTH}/${img_file}=rr${AUFS_MNT}"
   fi;
+  binfmt.sh
 done
 
 if [ "${SYSARCH}" != "${NARCH}" ] && [ -f ${IMGROOT}/${NARCH}/images/qemu.img ];then
@@ -103,9 +109,9 @@ fi;
 
 GITURL=file:///var/spool/git chroot ${AUFSROOT}
 
-if [ -d ${AUFSROOT}/var/opt/dtsbuild/sysroot/ ];then
-  for sysroot in `ls ${AUFSROOT}/var/opt/dtsbuild/sysroot/`;do
-     chroot  ${AUFSROOT} /opt/dtsbuild/bin/umount-arch ${sysroot} >/dev/null 2>&1
+if [ -d ${AUFSROOT}/var/${DTSPREFIX}/dtsbuild/sysroot/ ];then
+  for sysroot in `ls ${AUFSROOT}/var/${DTSPREFIX}/dtsbuild/sysroot/`;do
+     chroot  ${AUFSROOT} /${DTSPREFIX}/dtsbuild/bin/umount-arch ${sysroot} >/dev/null 2>&1
   done
 fi;
 
