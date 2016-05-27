@@ -1,9 +1,11 @@
 #!/bin/bash
 
+GITPATH=${GITPATH:=/var/spool/git}
+
 URL=https://github.com/distrotech/${1}
 
-if [ -d /var/spool/git/${1}.git  ];then
-  git clone file:////var/spool/git/${1}.git
+if [ -d ${GITPATH}/${1}.git  ];then
+  git clone file://${GITPATH}/${1}.git
  else
   git clone ${URL}
 fi

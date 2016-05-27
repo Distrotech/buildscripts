@@ -2,6 +2,8 @@
 
 SYSMNT=${1}
 
+GITPATH=${GITPATH:=/var/spool/git}
+
 NARCH=${NARCH:=$( uname -m )}
 case ${NARCH} in
   powerpc)NARCH=ppc;;
@@ -112,7 +114,7 @@ if [ ! -e  ${AUFSROOT}/proc/sys/fs/binfmt_misc/register ];then
   mount -t binfmt_misc none  ${AUFSROOT}/proc/sys/fs/binfmt_misc/
 fi;
 
-GITURL=file:///var/spool/git chroot ${AUFSROOT}
+GITURL=file://${GITPATH} chroot ${AUFSROOT}
 
 if [ -d ${AUFSROOT}/${ARCHROOT} ];then
   for sysroot in `ls ${AUFSROOT}/${ARCHROOT}`;do

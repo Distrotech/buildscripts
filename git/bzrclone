@@ -1,12 +1,13 @@
 #!/bin/bash
 
+GITPATH=${GITPATH:=/var/spool/git}
+
 REPO=${1}
 GITUSER=Distrotech
 REMOTE=${2}
-SROOT=/var/spool/git
 
 ##create a bare clone
-RPATH=${SROOT}/${REPO}.git
+RPATH=${GITPATH}/${REPO}.git
 if [ ! -d ${RPATH} ];then
   mkdir ${RPATH}
 fi;

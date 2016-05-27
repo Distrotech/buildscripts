@@ -4,7 +4,7 @@ SYSMNT=${1}
 
 
 MNTPNT=${SYSMNT:=/mnt}
-GITPTH=${GITPATH:=/var/spool/git}
+GITPATH=${GITPATH:=/var/spool/git}
 
 DTSETCDIR=@sysconfdir@
 DTSSRVDIR=@SRVDIR@
@@ -17,8 +17,8 @@ for bdir in ${DTSETCDIR} ${DTSSRVDIR};do
   fi;
 done
 
-if [ ! -d ${MNTPNT}/repo${GITPTH} ];then
-  mkdir -p ${MNTPNT}/repo${GITPTH}
+if [ ! -d ${MNTPNT}/repo${GITPATH} ];then
+  mkdir -p ${MNTPNT}/repo${GITPATH}
 fi;
 
 for img_file in qemu root core buildroot repo build mnt;do
@@ -28,7 +28,7 @@ for img_file in qemu root core buildroot repo build mnt;do
 done;
 
 #Sync git and build
-rsync -avP --delete ${GITPTH}/ ${MNTPNT}/repo${GITPTH}/
+rsync -avP --delete ${GITPATH}/ ${MNTPNT}/repo${GITPATH}/
 rsync -avP --delete ${DTSSRVDIR}/{install,tar,yum} ${MNTPNT}/build/${DTSSRVDIR}
 
 #Install build scripts into build directory
@@ -39,7 +39,7 @@ if [ ! -d ${SRCDIR}/${PKGNAME}/${PKGNAME}-${VERSION} ];then
   if [ ! -d ${SRCDIR}/${PKGNAME} ];then
     mkdir -p ${SRCDIR}/${PKGNAME}
   fi;
-  git clone --depth=1 -b master file:///${GITPTH}/${PKGNAME} ${SRCDIR}/${PKGNAME}/${PKGNAME}-${VERSION}
+  git clone --depth=1 -b master file:///${GITPATH}/${PKGNAME} ${SRCDIR}/${PKGNAME}/${PKGNAME}-${VERSION}
 fi;
 
 cd ${SRCDIR}/${PKGNAME}/${PKGNAME}-${VERSION}

@@ -3,12 +3,13 @@
 REPO=${1}
 GITUSER=Distrotech
 REMOTE=${2}
-SROOT=/var/spool/gitroot
+GITPATH=${GITPATH:=/var/spool/git}
+SVNPATH=${SVNPATH:=/usr/src/svngit}
 
 export GIT_SSL_NO_VERIFY=true
 
-mkdir -p /usr/src/svngit/${REPO}
-cd /usr/src/svngit/${REPO}
+mkdir -p ${SVNPATH}/${REPO}
+cd ${SVNPATH}/${REPO}
 
 git svn init -t tags -b branches -T trunk ${2}
 git svn fetch
@@ -18,11 +19,11 @@ git branch -r |grep -vE "^[\ ]+tags" |awk '{printf "if [ ! -e refs/heads/%s ];th
 exit
 
 ##create a bare clone
-RPATH=${SROOT}/${REPO}.git
+RPATH=${GITPATH}/${REPO}.git
 if [ ! -d ${RPATH} ];then
   mkdir ${RPATH}
 fi;
 cd ${RPATH}
 
-#rsync -avP svngit/bakefile/.git/ /var/spool/git/bakefile.git
-#sed -i -e "s/bare = false/bare = true/" /var/spool/git/bakefile.git/config
+#rsync -avP svngit/bakefile/.git/ ${GITPATH}/bakefile.git
+#sed -i -e "s/bare = false/bare = true/" ${GITPATH}/bakefile.git/config

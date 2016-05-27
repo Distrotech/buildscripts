@@ -1,10 +1,12 @@
 #!/bin/bash
 
-if [ ! -d /var/spool/git/${1}.git ];then
+GITPATH=${GITPATH:=/var/spool/git}
+
+if [ ! -d ${GITPATH}/${1}.git ];then
   exit
 fi;
 
-cd /var/spool/git/${1}.git
+cd ${GITPATH}/${1}.git
 if [ ! -d bzr ] && [ ! -d hg ] && [ ! -d svn ];then
   exit
 fi;
