@@ -1,12 +1,11 @@
 #!/bin/bash
 
 URL=https://github.com/distrotech/${1}
-#URL=ssh://review.gerrithub.io/Distrotech/${1}
 
 if [ -d /var/spool/git/${1}.git  ];then
   git clone file:////var/spool/git/${1}.git
  else
-  git clone 
+  git clone ${URL}
 fi
 
 cd ${1}
