@@ -111,6 +111,8 @@ MARCH_x86_64='@(x86_32|i[3-6]86|x86_64)'
 MARCH_x86_32=${MARCH_x86_64}
 MARCH_ppc64='@(ppc|ppc64)'
 
+PATH=${PATH}:${SCRIPTDIR}
+
 export ARCHROOT XML_CATALOG_FILES LANG ANT_VER JAVA6_VER JAVA7_VER JAVA8_VER M2_VER QT_VER
 
 #Parse cmdline opts
@@ -2821,6 +2823,7 @@ bootstrap_arch_root() {
       fi;
       ) || return 1
     fi) || return 1;
+    build_packages ${arch} wine || exit 1
   done;
 }
 
