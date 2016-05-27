@@ -23,13 +23,6 @@ if [ ! -e config ] && [ ${REMOTE} ];then
   exit
 fi;
 
-#if [ ! -d refs/remotes/gerrit_dts_branch ];then
-#  git remote add gerrit_dts_branch ssh://review.gerrithub.io/${GITUSER}/${REPO}.git
-#  git push -u gerrit_dts_branch
-# else
-#  git remote set-url gerrit_dts_branch ssh://review.gerrithub.io/${GITUSER}/${REPO}.git
-#fi;
-
 if [ ! -d refs/remotes/github_dts_branch ];then
   git remote add github_dts_branch https://github.com/${GITUSER}/${REPO}.git
   git push -u github_dts_branch
@@ -50,10 +43,7 @@ git fetch -u github_dts_branch -t
 #Set postbuffer high
 git config http.postBuffer 419430400
 
-#git push -u gerrit_dts_branch > /dev/null 2>&1
-#git push --all -u gerrit_dts_branch > /dev/null 2>&1
 git push --tags github_dts_branch
-#git push gerrit_dts_branch
 
 if [ ! -e git-daemon-export-ok ];then
   touch git-daemon-export-ok

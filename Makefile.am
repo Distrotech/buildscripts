@@ -15,7 +15,8 @@ bin_SCRIPTS = \
 	bin/wine \
 	bin/binfmt.sh \
 	bin/rpmconflict \
-	bin/mkinstimg
+	bin/mkinstimg \
+	git/gitclone
 
 libexec_SCRIPTS	= \
 	libexec/make_apache-ant \
