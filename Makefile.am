@@ -16,8 +16,11 @@ bin_SCRIPTS = \
 	bin/binfmt.sh \
 	bin/rpmconflict \
 	bin/mkinstimg \
+	git/gitworking \
 	git/gitclone \
-	git/gitworking
+	git/hgclone \
+	git/bzrclone \
+	git/svnclone
 
 libexec_SCRIPTS	= \
 	libexec/make_apache-ant \
