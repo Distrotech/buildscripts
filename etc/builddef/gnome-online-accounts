@@ -10,3 +10,4 @@ case ${barch} in
 esac;
 RPMGROUP="gui";
 DONTBUILD="armv5";
+ADDCFLAG="-Wno-missing-include-dirs";

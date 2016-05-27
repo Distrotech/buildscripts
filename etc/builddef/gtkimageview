@@ -4,4 +4,4 @@ PREFIX="/usr";
 CONFOPT="";
 RPMGROUP="gui";
 CHROOTBUILD="1";
-ADDCFLAG="-Wno-misleading-indentation";
+ADDCFLAG="-Wno-misleading-indentation -Wno-deprecated-declarations";
