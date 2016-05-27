@@ -26,3 +26,5 @@
 /dts-install
 /bin/wine
 /bin/rpmconflict
+/bin/mkbackup
+/bin/chroot-backup
