@@ -7,7 +7,9 @@ case ${NARCH} in
   aarch64)NARCH=arm64;;
   armv7l)NARCH=arm;;
   armv6l|armv6)NARCH=armv6;
-         SYSARCH=arm;
+         SYSARCH=arm;;
+  armv5*)NARCH=armv5;
+         SYSARCH=arm;;
 esac;
 if [ ! "${SYSARCH}" ];then
   SYSARCH=${NARCH}
@@ -74,9 +76,17 @@ for libpth in /usr /opt/Xorg /opt/qt-5 /opt/qt-4 /opt/xfce /opt/apr /opt/mysql /
 done;
 
 if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
-  PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin/hybrid:/usr/bin:/sbin:/bin/hybrid:/bin:/opt/apache2/bin:/opt/Xorg/bin:/opt/xfce/bin
-  export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
-  export GIT_EXEC_PATH=/var/hybrid/git-core
+  if [ -d /usr/bin/hybrid ];then
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin/hybrid:/usr/bin:/sbin:/bin/hybrid:/bin:/opt/apache2/bin:/opt/Xorg/bin:/opt/xfce/bin
+   else
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/apache2/bin:/opt/Xorg/bin:/opt/xfce/bin
+  fi;
+  if [ -d /var/hybrid/libexec/gcc/ ];then
+    export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
+  fi;
+  if [ -d /var/hybrid/git-core ];then
+    export GIT_EXEC_PATH=/var/hybrid/git-core
+  fi;
  else
   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/apache2/bin:/opt/Xorg/bin:/opt/xfce/bin
 fi;
