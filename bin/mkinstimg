@@ -146,53 +146,101 @@ fixup_glibc_link() {
   ln -s -r ${1}/${2}/${3}.${4} ${1}/usr/${2}/${3}
 }
 
-fixup_qemu_narch() {
-  QARCH=${3}
-
+fixup_hybrid_libdir() {
   case ${1} in
-    x86_64)NLIBDIR="lib64";
-           NLDNAME="ld-linux-x86-64.so.2";
-           NMLIBDIR="x86_64";;
-    x86_32)NLIBDIR="libx32";
-           NLDNAME="ld-linux-x32.so.2";
-           NMLIBDIR="i686";;
     i686)NLIBDIR="lib";
-           NLDNAME="ld-linux.so.2";
-           NMLIBDIR="i686";;
-    *)return 1;;
+         LDLIB="ld-linux.so.2";
+         NMLIBDIR="i686";;
+    x86_32)NLIBDIR="libx32";
+         LDLIB="ld-linux-x32.so.2";
+         MMLIBDIR="i686";;
+    x86_64)NLIBDIR="lib64";
+         LDLIB="ld-linux-x86-64.so.2";
+         NMLIBDIR="x86_64";;
   esac;
 
-  for pth in ${2}/${QARCH} ${2}/${QARCH}/usr;do
-    if [ -e ${pth}/${NLIBDIR} ];then
-      mv ${pth}/${NLIBDIR}/ ${pth}/${NLIBDIR}-tmp
-      mkdir -p ${pth}/${NLIBDIR}/${NMLIBDIR}
-      mv ${pth}/${NLIBDIR}-tmp/${NMLIBDIR} ${pth}/${NLIBDIR}/
-    fi;
+  QEMU_DIR=${2}
+
+  if [ -h ${QEMU_DIR}/${NLIBDIR}/${LDLIB} ];then
+    rm ${QEMU_DIR}/${NLIBDIR}/${LDLIB}
+  fi;
+
+  for pth in ${QEMU_DIR} ${QEMU_DIR}/usr;do
     if [ ! -d ${pth}/${NLIBDIR}/${NMLIBDIR} ];then
       mkdir -p ${pth}/${NLIBDIR}/${NMLIBDIR}
     fi;
-    if [ -e ${pth}/${NLIBDIR}-tmp ];then
-      mv ${pth}/${NLIBDIR}-tmp/* ${pth}/${NLIBDIR}/${NMLIBDIR}
-      rm -rf ${pth}/${NLIBDIR}-tmp
-    fi;
+    find ${pth}/${NLIBDIR}/ -maxdepth 1 -type f -exec mv {} ${pth}/${NLIBDIR}/${NMLIBDIR}/ \;
+    find ${pth}/${NLIBDIR}/ -maxdepth 1 -type l -exec mv {} ${pth}/${NLIBDIR}/${NMLIBDIR}/ \;
+    find ${pth}/${NLIBDIR}/ -maxdepth 1 -type l -exec rm {} \;
   done
-
-  ln -sr ${2}/${QARCH}/${NLIBDIR}/${NMLIBDIR}/${NLDNAME} ${2}/${QARCH}/${NLIBDIR}/
 
   for fixln in "libanl.so 1" "libBrokenLocale.so 1" "libcidn.so 1" "libcrypt.so 1" "libdl.so 2" \
                "libm.so 6" "libnsl.so 1" "libnss_compat.so 2" "libnss_db.so 2" "libnss_dns.so 2" \
                "libnss_files.so 2" "libnss_hesiod.so 2" "libnss_nisplus.so 2" "libnss_nis.so 2" \
-               "libresolv.so 2" "librt.so 1" "libthread_db.so 1" "libutil.so 1";do
-    fixup_glibc_link ${2}/${QARCH} ${NLIBDIR}/${NMLIBDIR} ${fixln}
+               "libresolv.so 2" "librt.so 1" "libthread_db.so 1" "libutil.so 1" "libpthread.so 0" \
+               "libmvec.so 1";do
+    fixup_glibc_link ${QEMU_DIR} ${NLIBDIR}/${NMLIBDIR} ${fixln}
   done
 
-  ln -sr ${2}/${QARCH}/${NLIBDIR}/${NMLIBDIR} ${2}/${QARCH}/${NLIBDIR}/${NMLIBDIR}/${NMLIBDIR}
-  ln -sr ${2}/${QARCH}/usr/${NLIBDIR}/${NMLIBDIR} ${2}/${QARCH}/usr/${NLIBDIR}/${NMLIBDIR}/${NMLIBDIR}
+  for dbm_lib in libdbm.s libndbm.so;do
+    if [ -h ${QEMU_DIR}/usr/${NLIBDIR}/${NMLIBDIR}/${dbm_lib} ];then
+      rm ${QEMU_DIR}/usr/${NLIBDIR}/${NMLIBDIR}/${dbm_lib}
+      ln -s -r ${QEMU_DIR}/usr/${NLIBDIR}/${NMLIBDIR}/libgdbm_compat.so ${QEMU_DIR}/usr/${NLIBDIR}/${NMLIBDIR}/${dbm_lib}
+    fi;
+  done;
 
-  mkdir ${2}/${QARCH}/etc
-  (echo "/${NLIBDIR}/${NMLIBDIR}";echo "/usr/${NLIBDIR}/${NMLIBDIR}") > ${2}/${QARCH}/etc/ld.so.conf
-  chroot ${2}/${QARCH} /sbin/ldconfig
-  rm -rf ${2}/${QARCH}/etc
+  if [ ! -e ${QEMU_DIR}/usr/${NLIBDIR}/${NMLIBDIR}/${NMLIBDIR} ];then
+    ln -sr ${QEMU_DIR}/usr/${NLIBDIR}/${NMLIBDIR} ${QEMU_DIR}/usr/${NLIBDIR}/${NMLIBDIR}/${NMLIBDIR}
+  fi;
+  ln -s -r ${QEMU_DIR}/${NLIBDIR}/${NMLIBDIR}/ld-*.so ${QEMU_DIR}/${NLIBDIR}/${LDLIB}
+
+  (echo "/${NLIBDIR}/${NMLIBDIR}";echo "/usr/${NLIBDIR}/${NMLIBDIR}") > ${QEMU_DIR}/etc/ld.so.conf.d/qemu_${1}.conf
+
+}
+
+install_hybrid_dir() {
+  QEMU_DIR=${2}
+
+  if [ ! -d ${QEMU_DIR} ];then
+    mkdir -p ${QEMU_DIR}
+  fi;
+
+  /usr/libexec/distrotech/instpkg ${1} ${QEMU_DIR} qemu glibc javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep gettext libxslt glib openssl flux ncursesw git doxygen ruby ruby-libs
+
+  if [ ! -d ${QEMU_DIR}/etc/ld.so.conf.d ];then
+    mkdir -p ${2}/${QARCH}/etc/ld.so.conf.d
+  fi;
+
+  if [ ! -e ${QEMU_DIR}/etc/ld.so.conf ];then
+    echo "include /etc/ld.so.conf.d/*.conf" > ${QEMU_DIR}/etc/ld.so.conf
+  fi;
+
+  for pth in ${QEMU_DIR} ${QEMU_DIR}/usr;do
+    if [ ! -d ${pth}/bin/hybrid ];then
+      rm ${pth}/bin/hybrid
+      mkdir -p ${pth}/bin/hybrid
+    fi;
+    find ${pth}/bin/ -maxdepth 1 -type f ! -regex ".*qemu-[a-z0-9_]+" -and ! -regex ".*/hybrid" -exec mv {} ${pth}/bin/hybrid \;
+    find ${pth}/bin/ -maxdepth 1 -type l -exec mv {} ${pth}/bin/hybrid \;
+  done
+
+  fixup_hybrid_libdir ${1} ${QEMU_DIR}
+
+  case ${1} in
+    x86_64|x86_32)for march in i686 x86_32 x86_64;do
+        if [ "${march}" == "${1}" ];then
+          continue;
+        fi;
+        fixup_hybrid_libdir ${march} ${QEMU_DIR}
+      done;;
+  esac;
+
+  rm -rf ${QEMU_DIR}/qemu/var/lib/yum ${QEMU_DIR}/qemu/var/lib/rpm ${QEMU_DIR}/var/cache/yum
+
+  chroot ${QEMU_DIR} /sbin/ldconfig
+  rm ${QEMU_DIR}/etc/ld.so.cache
+
+  mksquashfs ${QEMU_DIR}/* ${3} -comp xz -noappend
 }
 
 install_group_aufs() {
@@ -227,14 +275,7 @@ install_group_aufs() {
 }
 
 umount_aufs() {
-  if [ ${2} == "qemu" ];then
-    rm -rf ${3}/${1}/qemu/var/lib/yum ${3}/${1}/qemu/var/lib/rpm
-    if [ "${1}" == "i686" ] || [ "${1}" == "x86_32" ] || [ "${1}" == "x86_64" ];then
-      for mlib_arch in i686 x86_32 x86_64;do
-        fixup_qemu_narch ${mlib_arch} ${3}/${1} qemu > /dev/null 2>&1
-      done;
-    fi;
-   else
+  if [ ${2} != "qemu" ];then
     rpm --rebuilddb --root ${3}/${1}/aufs
   fi;
 
@@ -251,9 +292,9 @@ umount_aufs() {
       mkdir -p ${IMG_OUTPUT_DIR}/${1}/repo/${2}
     fi;
     rsync -a ${3}/${1}/${2}/var/cache/yum/*/packages/*.rpm  ${IMG_OUTPUT_DIR}/${1}/repo/${2}/
+    rm -rf ${3}/${1}/${2}/var/cache/yum
+    mksquashfs ${3}/${1}/${2}/* ${IMG_OUTPUT_DIR}/${1}/images/${2}.img -comp xz
   fi;
-  rm -rf ${3}/${1}/${2}/var/cache/yum
-  mksquashfs ${3}/${1}/${2}/* ${IMG_OUTPUT_DIR}/${1}/images/${2}.img -comp xz
 }
 
 create_images_squashfs() {
@@ -321,13 +362,7 @@ create_images_squashfs() {
 
     if [ "${NARCH}" == "i686" ] || [ "${NARCH}" == "x86_32" ] || [ "${NARCH}" == "x86_64" ];then
       if [ ! -f ${IMG_OUTPUT_DIR}/${NARCH}/images/qemu.img ];then
-        /usr/libexec/distrotech/instpkg ${NARCH} ${IMGDIR}/${ARCH}/qemu-narch qemu glibc
-        rm -rf ${IMGDIR}/${ARCH}/qemu-narch/var/cache/yum ${IMGDIR}/${ARCH}/qemu-narch/var/lib/yum ${IMGDIR}/${ARCH}/qemu-narch/var/lib/rpm
-
-        for mlib_arch in i686 x86_32 x86_64;do
-          fixup_qemu_narch ${mlib_arch} ${IMGDIR}/${ARCH} qemu-narch > /dev/null 2>&1
-        done;
-        mksquashfs ${IMGDIR}/${ARCH}/qemu-narch/* ${IMG_OUTPUT_DIR}/${NARCH}/images/qemu.img -comp xz
+        install_hybrid_dir ${NARCH} ${IMGDIR}/${ARCH}/qemu-narch ${IMG_OUTPUT_DIR}/${NARCH}/images/qemu.img
       fi;
      else
       break;
