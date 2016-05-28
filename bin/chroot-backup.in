@@ -30,33 +30,32 @@ MNTPNT=${SYSMNT:=/mnt}
 IMGROOT=${MNTPNT}/build/${DTSSRVDIR}/install
 IMGPTH=${IMGROOT}/${SYSARCH}/images
 MNTPTH=${MNTPNT}/aufs
-AUFSROOT=${MNTPNT}/aufs/mnt/
+AUFSROOT=${MNTPNT}/aufs/mnt_${SYSARCH}
 
 
 AUFS_MNT=":${MNTPNT}/repo=rr"
 
-
 for img_file in root core buildroot;do
   if [ -f ${IMGPTH}/${img_file}.img ];then
-    if [ ! -d ${MNTPTH}/${img_file} ];then
-      mkdir -p ${MNTPTH}/${img_file}
+    if [ ! -d ${MNTPTH}/${SYSARCH}/${img_file} ];then
+      mkdir -p ${MNTPTH}/${SYSARCH}/${img_file}
     fi
-    if [ ! -d ${MNTPTH}/${img_file}/tmp ];then
-       /bin/mount -o ro ${IMGPTH}/${img_file}.img ${MNTPTH}/${img_file}
+    if [ ! -d ${MNTPTH}/${SYSARCH}/${img_file}/tmp ];then
+       /bin/mount -o ro ${IMGPTH}/${img_file}.img ${MNTPTH}/${SYSARCH}/${img_file}
     fi;
-    AUFS_MNT=":${MNTPTH}/${img_file}=rr${AUFS_MNT}"
+    AUFS_MNT=":${MNTPTH}/${SYSARCH}/${img_file}=rr${AUFS_MNT}"
   fi;
   binfmt.sh
 done
 
 if [ "${SYSARCH}" != "${NARCH}" ] && [ -f ${IMGROOT}/${NARCH}/images/qemu.img ];then
-  if [ ! -d ${MNTPTH}/qemu ];then
-    mkdir -p ${MNTPTH}/qemu
+  if [ ! -d ${MNTPTH}/${SYSARCH}/qemu ];then
+    mkdir -p ${MNTPTH}/${SYSARCH}/qemu
   fi
-  if [ ! -d ${MNTPTH}/qemu/tmp ];then
-     /bin/mount -o ro ${IMGROOT}/${NARCH}/images/qemu.img ${MNTPTH}/qemu
+  if [ ! -d ${MNTPTH}/${SYSARCH}/qemu/tmp ];then
+     /bin/mount -o ro ${IMGROOT}/${NARCH}/images/qemu.img ${MNTPTH}/${SYSARCH}/qemu
   fi;
-  AUFS_MNT=":${MNTPTH}/qemu=rr${AUFS_MNT}"
+  AUFS_MNT=":${MNTPTH}/${SYSARCH}/qemu=rr${AUFS_MNT}"
 fi;
 
 AUFS_MNT=":${MNTPNT}/build=rr${AUFS_MNT}"
@@ -89,6 +88,10 @@ baseurl = file:///${DTSSRVDIR}/yum/mips
 __EOF__
 ) > ${MNTPNT}/user/${SYSARCH}/etc/yum/repos.d/dtsbuild.repo
 
+if [ ! -d ${AUFSROOT} ];then
+  mkdir ${AUFSROOT}
+fi;
+
 /bin/mount -t aufs -o br:${MNTPNT}/user/${SYSARCH}=rw${AUFS_MNT} aufs-root ${AUFSROOT}
 
 for sysmnt in dev proc sys;do
@@ -114,7 +117,7 @@ if [ ! -e  ${AUFSROOT}/proc/sys/fs/binfmt_misc/register ];then
   mount -t binfmt_misc none  ${AUFSROOT}/proc/sys/fs/binfmt_misc/
 fi;
 
-GITURL=file://${GITPATH} chroot ${AUFSROOT}
+NARCH=${SYSARCH} GITURL=file://${GITPATH} chroot ${AUFSROOT}
 
 if [ -d ${AUFSROOT}/${ARCHROOT} ];then
   for sysroot in `ls ${AUFSROOT}/${ARCHROOT}`;do
@@ -126,7 +129,7 @@ umount ${AUFSROOT}/dev/pts ${AUFSROOT}/dev ${AUFSROOT}/proc/sys/fs/binfmt_misc $
 umount ${AUFSROOT}
 
 for img_file in qemu root core buildroot;do
-  if [ -d ${MNTPTH}/${img_file}/tmp ];then
-    umount ${MNTPTH}/${img_file}
+  if [ -d ${MNTPTH}/${SYSARCH}/${img_file}/tmp ];then
+    umount ${MNTPTH}/${SYSARCH}/${img_file}
   fi;
 done
