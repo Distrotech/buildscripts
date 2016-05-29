@@ -205,7 +205,8 @@ install_hybrid_dir() {
     mkdir -p ${QEMU_DIR}
   fi;
 
-  /usr/libexec/distrotech/instpkg ${1} ${QEMU_DIR} qemu glibc javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep gettext libxslt glib openssl flux ncursesw git doxygen ruby ruby-libs
+  /usr/libexec/distrotech/instpkg ${1} ${QEMU_DIR} qemu glibc javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep gettext libxslt \
+    glib openssl flux ncursesw git doxygen ruby ruby-libs mpc-libs mpfr-libs isl-libs gmp-libs
 
   if [ ! -d ${QEMU_DIR}/etc/ld.so.conf.d ];then
     mkdir -p ${2}/${QARCH}/etc/ld.so.conf.d
@@ -235,10 +236,15 @@ install_hybrid_dir() {
       done;;
   esac;
 
+  if [ ! -d ${QEMU_DIR}/var/hybrid ];then
+    mkdir -p ${QEMU_DIR}/var/hybrid
+  fi;
+  mv ${QEMU_DIR}/usr/libexec/git-core ${QEMU_DIR}/var/hybrid/
+
   rm -rf ${QEMU_DIR}/qemu/var/lib/yum ${QEMU_DIR}/qemu/var/lib/rpm ${QEMU_DIR}/var/cache/yum
 
   chroot ${QEMU_DIR} /sbin/ldconfig
-  rm ${QEMU_DIR}/etc/ld.so.cache
+  rm -rf ${QEMU_DIR}/etc
 
   mksquashfs ${QEMU_DIR}/* ${3} -comp xz -noappend
 }
