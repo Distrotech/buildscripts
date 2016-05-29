@@ -6,19 +6,26 @@ GITPATH=${GITPATH:=/var/spool/git}
 
 NARCH=${NARCH:=$( uname -m )}
 case ${NARCH} in
-  powerpc)NARCH=ppc;;
-  powerpc64)NARCH=ppc64;;
-  arm64|aarch64)NARCH=arm64;;
-  armv5|armv6)NARCH=${NARCH};;
-  arm*)NARCH=arm;;
+  powerpc|ppc)NARCH="ppc";;
+  powerpc64|ppc64)NARCH="ppc64";;
+  arm64|aarch64)NARCH="arm64";;
+  armv5*)NARCH="armv5";;
+  armv6l)NARCH="armv6";;
+  arm7l)NARCH="arm";;
 esac;
+
+SYSARCH=${SYSARCH:=${NARCH}}
+case ${SYSARCH} in
+  arm64|aarch64)QARCH="aarch64";;
+  armv5*)QARCH="armv5";;
+  armv6l)QARCH="armv6";;
+esac;
+QARCH=${QARCH:=${SYSARCH}}
 
 case ${SYSARCH} in
   armv6)export QEMU_CPU="arm1176";;
   armv5)export QEMU_CPU="arm926";;
 esac;
-
-SYSARCH=${SYSARCH:=${NARCH}}
 
 DTSSRVDIR=@SRVDIR@
 ARCHROOT=@ARCHROOT@
@@ -32,6 +39,11 @@ IMGPTH=${IMGROOT}/${SYSARCH}/images
 MNTPTH=${MNTPNT}/aufs
 AUFSROOT=${MNTPNT}/aufs/mnt_${SYSARCH}
 
+
+if [ ! -d ${MNTPNT}/user/${SYSARCH}/${ARCHROOT} ];then
+  mkdir -p ${MNTPNT}/user/${SYSARCH}/${ARCHROOT}
+  rsync -aP ${MNTPNT}/build/${SKELDIR}/ ${MNTPNT}/user/${SYSARCH}/
+fi;
 
 AUFS_MNT=":${MNTPNT}/repo=rr"
 
@@ -56,14 +68,22 @@ if [ "${SYSARCH}" != "${NARCH}" ] && [ -f ${IMGROOT}/${NARCH}/images/qemu.img ];
      /bin/mount -o ro ${IMGROOT}/${NARCH}/images/qemu.img ${MNTPTH}/${SYSARCH}/qemu
   fi;
   AUFS_MNT=":${MNTPTH}/${SYSARCH}/qemu=rr${AUFS_MNT}"
+
+  if [ -f ${IMGROOT}/${NARCH}/images/cross/${SYSARCH}.img ];then
+    if [ ! -d ${MNTPTH}/${SYSARCH}/cross ];then
+      mkdir -p ${MNTPTH}/${SYSARCH}/cross
+    fi
+    if [ ! -d ${MNTPTH}/${SYSARCH}/cross/usr ];then
+       /bin/mount -o ro ${IMGROOT}/${NARCH}/images/cross/${SYSARCH}.img ${MNTPTH}/${SYSARCH}/cross
+    fi;
+    AUFS_MNT=":${MNTPTH}/${SYSARCH}/cross=rr${AUFS_MNT}"
+    if [ ! -e ${MNTPNT}/user/${SYSARCH}/${ARCHROOT}/${SYSARCH} ];then
+      ln -s -r ${MNTPNT}/user/ ${MNTPNT}/user/${SYSARCH}/${ARCHROOT}/${SYSARCH}
+    fi;
+  fi;
 fi;
 
 AUFS_MNT=":${MNTPNT}/build=rr${AUFS_MNT}"
-
-if [ ! -d ${MNTPNT}/user/${SYSARCH} ];then
-  mkdir -p ${MNTPNT}/user/${SYSARCH}
-  rsync -aP ${MNTPNT}/build/${SKELDIR}/ ${MNTPNT}/user/${SYSARCH}/
-fi;
 
 if [ ! -d ${MNTPNT}/user/${SYSARCH}/etc/yum/repos.d ];then
   mkdir -p ${MNTPNT}/user/${SYSARCH}/etc/yum/repos.d
@@ -117,13 +137,24 @@ if [ ! -e  ${AUFSROOT}/proc/sys/fs/binfmt_misc/register ];then
   mount -t binfmt_misc none  ${AUFSROOT}/proc/sys/fs/binfmt_misc/
 fi;
 
-NARCH=${SYSARCH} GITURL=file://${GITPATH} chroot ${AUFSROOT}
+if [ -x ${AUFSROOT}/bin/hybrid/bash ];then
+  ROOTBASH=/bin/hybrid/bash
+ else
+  ROOTBASH=/bin/bash
+fi;
+NARCH=${SYSARCH} GITURL=file://${GITPATH} chroot ${AUFSROOT} ${ROOTBASH}
 
 if [ -d ${AUFSROOT}/${ARCHROOT} ];then
   for sysroot in `ls ${AUFSROOT}/${ARCHROOT}`;do
      chroot  ${AUFSROOT} ${SCRIPTDIR}/umount-arch ${sysroot} >/dev/null 2>&1
   done
 fi;
+
+for qemu in opt/Xorg usr/lib usr/libx32 usr/lib64 lib libx32 lib64;do
+  if [ -d ${AUFSROOT}/usr/gnemul/qemu-${QARCH}/${qemu} ];then
+    umount ${AUFSROOT}/usr/gnemul/qemu-${QARCH}/${qemu} >/dev/null 2>&1
+  fi;
+done;
 
 umount ${AUFSROOT}/dev/pts ${AUFSROOT}/dev ${AUFSROOT}/proc/sys/fs/binfmt_misc ${AUFSROOT}/proc ${AUFSROOT}/sys > /dev/null 2>&1
 umount ${AUFSROOT}
@@ -133,3 +164,6 @@ for img_file in qemu root core buildroot;do
     umount ${MNTPTH}/${SYSARCH}/${img_file}
   fi;
 done
+if [ -d ${MNTPTH}/${SYSARCH}/cross/usr ];then
+  umount ${MNTPTH}/${SYSARCH}/cross
+fi;
