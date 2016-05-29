@@ -3583,12 +3583,12 @@ build_linux_headers() {
   if [ ! -d ${SRCDIR}/linux/linux-${LINUX_VER} ] || [ ! -e ${KERN_HEADERS}/usr/include/linux/version.h ];then
     echo "Linux Headers"
     (git_load_pkg linux -${LINUX_VER} distrotech-linux-${LINUX_VER} linux || exit 1
+    cd ${SRCDIR}/linux/linux-${LINUX_VER}
     git tag -f distrotech-linux-${LINUX_VER} -a -m distrotech-linux-${LINUX_VER}
     if [ -e ${LINSRCDIR}/kernel/linux ];then
       rm ${LINSRCDIR}/kernel/linux
     fi;
     ln -s ${SRCDIR}/linux/linux-${LINUX_VER} ${LINSRCDIR}/kernel/linux
-    cd ${SRCDIR}/linux/linux-${LINUX_VER}
     make INSTALL_HDR_PATH=${KERN_HEADERS}/usr ARCH=${KARCH} headers_install distclean
     if [ -h ${KERN_HEADERS}/usr/include/asm ] && [ -d ${KERN_HEADERS}/usr/include/asm-${KARCH} ];then
         rm ${KERN_HEADERS}/usr/include/asm
