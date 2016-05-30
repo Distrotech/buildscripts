@@ -206,7 +206,7 @@ install_hybrid_dir() {
   fi;
 
   /usr/libexec/distrotech/instpkg ${1} ${QEMU_DIR} qemu glibc javac bash make rsync findutils cpio xz gzip tar sed gawk m4 grep gettext libxslt \
-    glib openssl flux ncursesw git doxygen ruby ruby-libs mpc-libs mpfr-libs isl-libs gmp-libs
+    glib openssl flux ncursesw git doxygen ruby ruby-libs mpc-libs mpfr-libs isl-libs gmp-libs flex-libs
 
   if [ ! -d ${QEMU_DIR}/etc/ld.so.conf.d ];then
     mkdir -p ${2}/${QARCH}/etc/ld.so.conf.d
