@@ -67,6 +67,10 @@ if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
   export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
   export GIT_EXEC_PATH=/var/hybrid/git-core
   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin/hybrid:/usr/bin:/sbin:/bin/hybrid:/bin:${X11DIR}/bin:/opt/xfce/bin:${GCC_EXEC_PREFIX}
+  LIBGCC_DIR=$(dirname $(gcc -print-libgcc-file-name))
+  export ADA_INCLUDE_PATH=${LIBGCC_DIR}/adainclude
+  export ADA_OBJECTS_PATH=${LIBGCC_DIR}/adalib
+  unset LIBGCC_DIR
  else
   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${X11DIR}/bin:/opt/xfce/bin
 fi;

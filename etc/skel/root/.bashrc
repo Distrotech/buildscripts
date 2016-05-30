@@ -87,6 +87,10 @@ if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
   if [ -d /var/hybrid/git-core ];then
     export GIT_EXEC_PATH=/var/hybrid/git-core
   fi;
+  LIBGCC_DIR=$(dirname $(gcc -print-libgcc-file-name))
+  export ADA_INCLUDE_PATH=${LIBGCC_DIR}/adainclude
+  export ADA_OBJECTS_PATH=${LIBGCC_DIR}/adalib
+  unset LIBGCC_DIR
  else
   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/apache2/bin:/opt/Xorg/bin:/opt/xfce/bin
 fi;
