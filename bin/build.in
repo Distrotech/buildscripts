@@ -3182,7 +3182,7 @@ bootstrap_native() {
   build_packages ${NARCH} ${BOOTSTRAP_PKG} || return 1
 
   #build shared gcc and bootstrap packages
-  if [ ! -e ${STATDIR}/${NARCH}/done/gcc-shared ];then
+  if [ ! -e ${STATDIR}/${NARCH}/done/gcc-shared ] && [ ! -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
     (build_gcc_bootstrap ${NARCH} ${BUILD} ${NARCH} shared) || return 1
     for delstamp in ${BOOTSTRAP_PKG} ;do
       if [ -e ${STATDIR}/${NARCH}/done/${delstamp} ];then
@@ -3240,8 +3240,10 @@ cygwin_build_toolchain() {
 
   build_packages ${1} libtool || return 1
 
-  echo "GCC Cross Compiler"
-  (build_gcc_bootstrap ${1} ${TUPPLE} ${2} cross) || return 1
+  if [ ! -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+    echo "GCC Cross Compiler"
+    (build_gcc_bootstrap ${1} ${TUPPLE} ${2} cross) || return 1
+  fi;
 
   build_packages ${1} libtool cygwin libiconv libcrypt || return 1
   rsync -a /build/${1}/usr/${TUPPLE}/ /usr/${TUPPLE}/
@@ -3328,7 +3330,7 @@ bootstrap_toolchain() {
   fi;
 
   #Shared GCC C/C++/ADA/Java distributable
-  if [ "${1}" == "${NARCH}" ];then
+  if [ "${1}" == "${NARCH}" ] && [ ! -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
     (build_gcc_bootstrap ${1} ${HOST} ${1} shared) || return 1
   fi;
   build_dependancies ${1} ${HOST} || return 1
