@@ -6,3 +6,6 @@ BUILDDIR="0";
 RPMGROUP="java";
 JAVA_HOME=/usr/${NLIBDIR}/jvm/jdk-${JAVA6_VER}/
 PATH=${JAVA_HOME}/bin:${PATH}
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  DONTBUILD="${barch}";
+fi;
