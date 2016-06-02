@@ -2,7 +2,10 @@ VERSION="2.10.0"
 VERSEP="-";
 PREFIX="/usr";
 CONFOPT="ac_cv_alignof_char=1 ac_cv_alignof_dbus_bool_t=4 ac_cv_alignof_dbus_int16_t=2 ac_cv_alignof_dbus_int32_t=4 ac_cv_alignof_dbind_struct=1";
+OPT_arm="ac_cv_alignof_dbus_int64_t=8 ac_cv_alignof_double=8 ac_cv_alignof_dbind_pointer=4";
 OPT_i686="ac_cv_alignof_dbus_int64_t=4 ac_cv_alignof_double=4 ac_cv_alignof_dbind_pointer=4";
 OPT_x86_32="ac_cv_alignof_dbus_int64_t=8 ac_cv_alignof_double=8 ac_cv_alignof_dbind_pointer=4";
-CHROOTBUILD="1";
 RPMGROUP="root";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  OPT_arm="--enable-introspection=no";
+fi

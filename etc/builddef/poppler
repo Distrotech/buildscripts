@@ -3,11 +3,9 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="--enable-xpdf-headers --enable-libcurl --enable-zlib --enable-cairo-output";
 EXTRALIBS="-ldl -lpng16";
-CLEARFLAGS="1";
 ADDWITHSYSROOT="1";
-ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/openjpeg-1.5 -I=/usr/include/cairo -I=/usr/include/pango-1.0
-          -I=/usr/include/gdk-pixbuf-2.0 -I=/usr/include/atk-1.0";
-CHROOTBUILD="1";
+ADDCFLAG=" -I=${PREFIX}/${B_LIBDIRS}/glib-2.0/include -I=/usr/include/freetype2 -I=/usr/include/openjpeg-1.5 -I=/usr/include/cairo -I=/usr/include/pango-1.0
+          -I=/usr/include/gdk-pixbuf-2.0 -I=/usr/include/atk-1.0"
 OPT_cyg32="--enable-introspection=no";
 OPT_cyg64="--enable-introspection=no";
 OPT_win32="--enable-introspection=no ac_cv_func_strcat_s=yes";
@@ -15,3 +13,6 @@ OPT_win64="--enable-introspection=no ac_cv_func_strcat_s=yes";
 USEMINGW="1";
 RPMOBSOLETE="xpdf";
 RPMGROUP="core";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  OPT_arm="--enable-introspection=no";
+fi;

@@ -11,9 +11,12 @@ OPT_cyg64="--enable-introspection=no";
 if [ "${barch:0:3}" != "cyg" ] && [ "${barch:0:3}" != "win" ];then
   EXTRALIBS="-lpthread -lrt -ldl";
 fi;
-CHROOTBUILD="1";
+ADDCFLAG="-I=${PREFIX}/${B_LIBDIRS}/glib-2.0/include";
 USEMINGW="1";
 ADDWITHSYSROOT="1";
 RPMGROUP="root";
 AMVER="1.14";
 BUILDDIR="0";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  OPT_arm="--enable-introspection=no";
+fi;

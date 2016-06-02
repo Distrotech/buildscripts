@@ -3,3 +3,6 @@ VERSEP="-";
 PREFIX="/usr";
 CONFOPT="";
 RPMGROUP="root";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  OPT_arm="--enable-introspection=no";
+fi

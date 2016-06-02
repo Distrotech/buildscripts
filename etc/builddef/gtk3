@@ -4,11 +4,15 @@ PREFIX="/usr";
 CONFOPT="--enable-gtk2-dependency --enable-broadway-backend --enable-x11-backend";
 GITREPO="gtk";
 AMVER="1.14";
-CHROOTBUILD="1";
 OPT_cyg32="--disable-x11-backend --disable-cups --disable-wayland-backend --enable-win32-backend --disable-broadway-backend WINDRES=${HOST}-windres --disable-introspection";
 USEMINGW="1";
-ADDCFLAG="-I${ARCHROOT}/${barch}/usr/lib/glib-2.0/include";
-CLEARFLAGS="1";
-ADDCC="0";
+ADDCFLAG="-I=${PREFIX}/${B_LIBDIRS}/glib-2.0/include -I=${PREFIX}/include/gio-unix-2.0 -I=${PREFIX}/include/cairo
+          -I=${PREFIX}/include/freetype2 -I=${PREFIX}/include/pango-1.0 -I=${PREFIX}/include/gdk-pixbuf-2.0 -I=${PREFIX}/include/glib-2.0
+          -I=${PREFIX}/include/atk-1.0";
+AMVER="1.14";
+ADDLDFLAG="-L=${PREFIX}/${B_LIBDIRS} -L=${X11DIR}/${B_LIBDIRS}";
 ADDWITHSYSROOT="1";
 RPMGROUP="root";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  OPT_arm="--enable-introspection=no";
+fi;

@@ -2,7 +2,6 @@ VERSION="2.24.30"
 VERSEP="-";
 if [ "${barch:0:3}" != "win" ] && [ "${barch:0:3}" != "cyg" ];then
   PREFIX="/usr";
-  CHROOTBUILD="1";
  else
   USEMINGW="1";
   ADDCFLAG="${ADDCFLAG} -I=/usr/include/w32api -I=/mingw/include";
@@ -23,12 +22,14 @@ OPT_x86_64="ac_cv_path_GDK_PIXBUF_CSOURCE=gdk-pixbuf-csource ac_cv_path_CUPS_CON
 OPT_cyg32="--disable-cups --enable-introspection=no WINDRES=${HOST}-windres --with-gdktarget=win32";
 OPT_win32="--disable-cups --enable-introspection=no WINDRES=${HOST}-windres --with-gdktarget=win32 --disable-glibtest";
 OPT_win64="--disable-cups --enable-introspection=no WINDRES=${HOST}-windres --with-gdktarget=win32 --disable-glibtest";
-ADDCFLAG="-I=${PREFIX}/include/gio-unix-2.0 -I=${PREFIX}/include/cairo -I=${PREFIX}/include/freetype2
-          -I=${PREFIX}/include/pango-1.0 -I=${PREFIX}/include/gdk-pixbuf-2.0 -I=${PREFIX}/include/glib-2.0
-          -I=${PREFIX}/include/atk-1.0 -I=${PREFIX}/lib/glib-2.0/include -I=/mingw/glib-2.0/include";
-AMVER="1.12";
+ADDCFLAG="-I=${PREFIX}/${B_LIBDIRS}/glib-2.0/include -I=${PREFIX}/include/gio-unix-2.0 -I=${PREFIX}/include/cairo
+          -I=${PREFIX}/include/freetype2 -I=${PREFIX}/include/pango-1.0 -I=${PREFIX}/include/gdk-pixbuf-2.0 -I=${PREFIX}/include/glib-2.0
+          -I=${PREFIX}/include/atk-1.0";
+AMVER="1.14";
 ADDLDFLAG="-L=${PREFIX}/${B_LIBDIRS} -L=${X11DIR}/${B_LIBDIRS}";
 GITREPO="gtk";
-CLEARFLAGS="1";
 ADDWITHSYSROOT="1";
 RPMGROUP="root";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  OPT_arm="--enable-introspection=no";
+fi;
