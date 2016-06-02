@@ -125,3 +125,6 @@ case ${barch} in
          libgcc_s.so.1(GCC_4.4.0)(64bit) libgcc_s.so.1(GCC_4.8.0)(64bit) libgcc_s.so.1(GLIBC_2.0)(64bit)";;
 esac;
 RPMGROUP="dev";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  DONTBUILD="${barch}";
+fi;
