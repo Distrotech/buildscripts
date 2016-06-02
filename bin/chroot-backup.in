@@ -57,7 +57,7 @@ for img_file in root core buildroot;do
     fi;
     AUFS_MNT=":${MNTPTH}/${SYSARCH}/${img_file}=rr${AUFS_MNT}"
   fi;
-  binfmt.sh
+  ${SYSMNT}/build/${SCRIPTDIR}/binfmt.sh
 done
 
 if [ "${SYSARCH}" != "${NARCH}" ] && [ -f ${IMGROOT}/${NARCH}/images/qemu.img ];then
