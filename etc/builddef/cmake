@@ -20,3 +20,6 @@ QT_VER="4";
 MAKE_J="-j2";
 DONTBUILD="cyg32 cyg64";
 RPMGROUP="dev";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  DONTBUILD="${barch}";
+fi;
