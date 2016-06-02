@@ -20,3 +20,7 @@ GITCLEAN="0";
 RPMGROUP="java";
 NEEDS_NET="1";
 #BUILDDIR="0";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  DONTBUILD="${barch}";
+fi;
+
