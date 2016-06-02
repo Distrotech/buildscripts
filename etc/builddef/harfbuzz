@@ -7,9 +7,6 @@ if [ "${barch}" != "win64" ];then
   CONFOPT="";
 fi;
 ADDCFLAG="-I=/usr/include/freetype2 -I=/usr/include/cairo";
-case ${barch} in
-  *)CHROOTBUILD="1";;
-esac;
 ADDCXXFLAG="-std=gnu++0x";
 RPMGROUP="root";
-SYSROOTFIXUP="0";
+ADDWITHSYSROOT="1";
