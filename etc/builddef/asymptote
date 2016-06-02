@@ -14,3 +14,6 @@ if [ "${barch}" != "${NARCH}" ];then
 fi;
 RPMGROUP="gui";
 AMVER="1.14";
+if [ ! -x /opt/texlive/bin/custom/latex ];then
+  DONTBUILD="${barch}";
+fi;

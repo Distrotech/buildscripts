@@ -19,7 +19,7 @@ case ${BUILDPROJECT} in
     fi;;
   texlive)
     RPMOBSOLETE="texlive-boot";
-    if [ -x ${ARCHROOT}/${barch}/usr/bin/clisp ];then
+    if [ -x ${ARCHROOT}/${barch}/usr/bin/clisp ] && [ -x ${ARCHROOT}/${barch}/opt/texlive/bin/custom/latex ];then
       STDOPTS="${STDOPTS} --enable-xindy --enable-xindy-rules --enable-xindy-doc";
       CHROOTBUILD="1";
      else
