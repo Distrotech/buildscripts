@@ -18,3 +18,7 @@ OPT_ppc="-DPYTHON_INCLUDE_DIR:PATH=${ARCHROOT}/ppc/usr/include/python2.7
 OPT_ppc64="-DPYTHON_INCLUDE_DIR:PATH=${ARCHROOT}/ppc64/usr/include/python2.7";
 DONTBUILD="aarch64 mips mips64";
 RPMGROUP="core";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  DONTBUILD="${barch}";
+fi;
+

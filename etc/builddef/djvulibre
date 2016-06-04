@@ -6,3 +6,6 @@ BUILDDIR="0";
 RPMPROVIDES_libs="libdjvulibre.so.21()${ARCH_BITS}";
 CHROOTBUILD="1";
 RPMGROUP="gui";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  DONTBUILD="${barch}";
+fi;
