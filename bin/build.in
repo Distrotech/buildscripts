@@ -2463,7 +2463,7 @@ java_hybrid_setup() {
 }
 
 setup_hybrid_qemu() {
-  if [ "${QCPU}" ];then
+  if [ "${QCPU}" ] && [ "${NARCH}" != "${1}" ];then
     for emldir in /${B_LIBDIRS} /usr/${B_LIBDIRS} ${X11DIR} /opt;do
       if [ ! -d /usr/gnemul/qemu-${QCPU}${emldir} ];then
         mkdir -p /usr/gnemul/qemu-${QCPU}${emldir}
@@ -2798,7 +2798,7 @@ bootstrap_arch_root() {
     #Dependancies requireing CHROOT
     build_packages ${arch} libsigsegv perl guile make help2man bison Python talloc tevent selinux libtool-chroot c-ares curl unzip \
       zip linux_logo cmake dbus gengetopt libcroco gettext gtk-doc libcap nasm xmlto OpenSP intltool openjade yasm nano openssl wget \
-      libdrm llvm Mesa pixman wayland libepoxy mtdev cairo  || exit 1
+      pixman libdrm llvm Mesa wayland libepoxy mtdev cairo  || exit 1
 
     if [ ! -e ${STATDIR}/${arch}/done/Xorg ] && [ -e ${STATDIR}/${arch}/fail/Xorg ];then
       (unset CLEANOPT;build_project Xorg ${arch}) || touch ${STATDIR}/${arch}/fail/Xorg
@@ -2982,7 +2982,8 @@ build_dependancies() {
   build_packages ${1} tcl8 tk8 unixODBC perl-modules || return 1
 
   build_packages ${1} gtk+ freeglut pcsc-lite wayland libxkbcommon at-spi2-core at-spi2-atk \
-    bash-completion libgusb mozjs mozjs-17 polkit colord libepoxy librest shared-mime-info || return 1
+    bash-completion libgusb mozjs mozjs-17 polkit colord libepoxy gsettings-desktop-schemas \
+    glib-networking libsoup cacerts-lfs librest shared-mime-info || return 1
 
   #we need gdk-pixbuf/librsvg built with gtk3 to build gtk33 bootstrap it [dont build demos/tests/examples on 1st pass]
   if [ ! -e ${STATDIR}/${1}/done/gtk3 ] && [ "${1}" == "${NARCH}" ];then
@@ -3033,7 +3034,7 @@ build_dependancies() {
     ecj antlr2 gjdoc db unixODBC cyrus-sasl openslp mysql openldap postgresql apr-util httpd subversion \
     libva gmerlin jasper libraw1394 orc libogg libvorbis libkate gnome-mime-data gnome-vfs \
     libvisual gstreamer gstreamer-1 v4l-utils flac audiofile esound libsndfile json-c fftw \
-    libsamplerate speex pulseaudio SDL SDL2 libdc1394 libtheora gst-plugins-base OpenCV frei0r \
+    libsamplerate speex pulseaudio SDL SDL2 libdc1394 libtheora gst-plugins-base gst-plugins-base-1 OpenCV frei0r \
     gst-plugins-base-1 libavc1394 libiec61883 faac libaacplus vo-aacenc vo-amrwbenc fribidi libass \
     libbluray celt libcaca gsm modplug lame twolame libnut opencore-amr opus schroedinger utvideo \
     openal xvidcore ptlib libcddb libcdio libcdio-cdda fltk libnfnetlink libmnl libexif exif \
