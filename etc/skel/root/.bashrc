@@ -75,7 +75,7 @@ for libpth in /usr /opt/Xorg /opt/qt-5 /opt/qt-4 /opt/xfce /opt/apr /opt/mysql /
   fi;
 done;
 
-if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ] || [ -e /proc/sys/fs/binfmt_misc/${NARCH} ];then
   if [ -d /usr/bin/hybrid ];then
     PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin/hybrid:/usr/bin:/sbin:/bin/hybrid:/bin:/opt/apache2/bin:/opt/Xorg/bin:/opt/xfce/bin
    else
@@ -83,14 +83,14 @@ if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
   fi;
   if [ -d /var/hybrid/libexec/gcc/ ];then
     export GCC_EXEC_PREFIX=/var/hybrid/libexec/gcc/
+    LIBGCC_DIR=$(dirname $(gcc -print-libgcc-file-name))
+    export ADA_INCLUDE_PATH=${LIBGCC_DIR}/adainclude
+    export ADA_OBJECTS_PATH=${LIBGCC_DIR}/adalib
+    unset LIBGCC_DIR
   fi;
   if [ -d /var/hybrid/git-core ];then
     export GIT_EXEC_PATH=/var/hybrid/git-core
   fi;
-  LIBGCC_DIR=$(dirname $(gcc -print-libgcc-file-name))
-  export ADA_INCLUDE_PATH=${LIBGCC_DIR}/adainclude
-  export ADA_OBJECTS_PATH=${LIBGCC_DIR}/adalib
-  unset LIBGCC_DIR
  else
   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/apache2/bin:/opt/Xorg/bin:/opt/xfce/bin
 fi;
