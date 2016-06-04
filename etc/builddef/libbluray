@@ -1,6 +1,10 @@
 VERSION="0.8.0"
 VERSEP="-";
 PREFIX="/usr";
-CONFOPT="";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  CONFOPT="--disable-bdjava";
+ else
+  CONFOPT="";
+fi;
 ADDCFLAG="-I=/usr/include/libxml2 -Ilibbluray";
 RPMGROUP="core";

@@ -5,3 +5,6 @@ CONFOPT="";
 BUILDDIR="0";
 RPMGROUP="java";
 JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-${JAVA6_VER}";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  DONTBUILD="${barch}";
+fi;

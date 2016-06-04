@@ -6,3 +6,6 @@ BUILDDIR="0";
 GITBRANCH="master";
 RPMGROUP="core";
 NEEDS_NET="1";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  DONTBUILD="${barch}";
+fi;

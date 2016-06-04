@@ -3,8 +3,14 @@ VERSEP="-";
 PREFIX="/usr";
 JAVA_HOME="/usr/${NLIBDIR}/jvm/jdk-${JAVA6_VER}";
 CONFOPT="--enable-compat185 --enable-shared=yes --enable-dbm --enable-cxx --enable-tcl
-         --with-tcl=${ARCHROOT}/${barch}/usr/${C_LIBDIRS} --enable-java
+         --with-tcl=${ARCHROOT}/${barch}/usr/${C_LIBDIRS}
          ac_cv_prog_JAVAC=${JAVA_HOME}/bin/javac";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  CONFOPT="${CONFOPT} --disable-java";
+ else
+  CONFOPT="${CONFOPT} --enable-java";
+fi;
+
 CFGPTH="build_unix";
 CFGBIN="/dist/";
 OPT_arm="ac_cv_func_pstat_getdynamic=no";

@@ -11,3 +11,6 @@ ADDCC="0";
 RPMGROUP="java";
 AMVER="1.14";
 AUTORECONF="1";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  DONTBUILD="${barch}";
+fi;

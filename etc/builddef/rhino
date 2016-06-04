@@ -4,3 +4,6 @@ PREFIX="/usr";
 CONFOPT="";
 BUILDDIR="0";
 RPMGROUP="java";
+if [ -e /proc/sys/fs/binfmt_misc/${SYSARCH} ];then
+  DONTBUILD="${barch}";
+fi;

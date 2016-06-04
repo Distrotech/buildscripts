@@ -5,7 +5,7 @@ CONFOPT="--with-swig --with-ssl --with-apxs=${ARCHROOT}/${barch}/opt/apache2/bin
          --with-apr-util=${ARCHROOT}/${barch}/opt/apr --with-gssapi=${ARCHROOT}/${barch}/usr --with-swig=${ARCHROOT}/${barch}/usr
          --with-neon=${ARCHROOT}/${barch}/usr --enable-dav";
 MAKEITARGETS="install swig-pl swig-py install-swig-pl install-swig-py";
-if [ -x /usr/${B_LIBDIRS}/jvm/gcj-jdk/bin/javac ];then
+if [ ! -e /proc/sys/fs/binfmt_misc/${SYSARCH} ] && [ -x /usr/${B_LIBDIRS}/jvm/gcj-jdk/bin/javac ];then
   MAKETARGETS="javahl";
   MAKEITARGETS="${MAKEITARGETS} install-javahl";
   if [ ! "${JAVA_HOME}" ];then
